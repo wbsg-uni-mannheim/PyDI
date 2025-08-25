@@ -65,8 +65,8 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
             text = self.preprocess(text)
         
         if self.tokenize:
-            # Simple tokenization on non-alphanumeric characters
-            tokens = re.findall(r'\w+', text.lower())
+            # Tokenize on non-alphabetic characters (including underscores, numbers, etc.)
+            tokens = re.findall(r'[a-zA-Z]+', text.lower())
             return tokens
         return text
     
