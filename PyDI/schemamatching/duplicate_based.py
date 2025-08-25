@@ -1,0 +1,258 @@
+"""
+Duplicate-based schema matching using known record correspondences.
+"""
+
+from __future__ import annotations
+
+import logging
+from collections import defaultdict
+from typing import Any, Dict, List, Optional, Tuple
+
+import pandas as pd
+
+from .base import BaseSchemaMatcher, SchemaMapping
+
+
+class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
+    """Duplicate-based schema matcher using known record correspondences.
+    
+    This matcher uses known duplicate records (correspondences) between datasets
+    to determine schema correspondences. For each pair of duplicate records,
+    it compares attribute values and aggregates votes to determine which
+    attributes correspond across schemas.
+    """
+    
+    def __init__(
+        self,
+        vote_aggregation: str = "majority",
+        value_comparison: str = "exact",
+        min_votes: int = 1,
+        ignore_zero_values: bool = True,
+    ) -> None:
+        """Initialize the duplicate-based schema matcher.
+        
+        Parameters
+        ----------
+        vote_aggregation : str, optional
+            Method for aggregating votes. Options: "majority", "weighted".
+            Default is "majority".
+        value_comparison : str, optional
+            Method for comparing values. Options: "exact", "normalized".
+            Default is "exact".
+        min_votes : int, optional
+            Minimum number of votes required for a correspondence.
+        ignore_zero_values : bool, optional
+            Whether to ignore zero or empty values when voting.
+        """
+        self.vote_aggregation = vote_aggregation
+        self.value_comparison = value_comparison
+        self.min_votes = min_votes
+        self.ignore_zero_values = ignore_zero_values
+        
+        if vote_aggregation not in ["majority", "weighted"]:
+            raise ValueError(f"Unsupported vote aggregation: {vote_aggregation}")
+        
+        if value_comparison not in ["exact", "normalized"]:
+            raise ValueError(f"Unsupported value comparison: {value_comparison}")
+    
+    def _normalize_value(self, value: Any) -> str:
+        """Normalize a value for comparison."""
+        if pd.isna(value):
+            return ""
+        
+        str_val = str(value).strip().lower()
+        
+        if self.value_comparison == "normalized":
+            # Remove extra whitespace and punctuation
+            import re
+            str_val = re.sub(r'[^\w\s]', '', str_val)
+            str_val = ' '.join(str_val.split())
+        
+        return str_val
+    
+    def _values_match(self, val1: Any, val2: Any) -> bool:
+        """Check if two values match according to comparison method."""
+        norm_val1 = self._normalize_value(val1)
+        norm_val2 = self._normalize_value(val2)
+        
+        # Skip empty/zero values if configured
+        if self.ignore_zero_values:
+            if norm_val1 in ["", "0", "0.0", "nan", "null", "none"]:
+                return False
+            if norm_val2 in ["", "0", "0.0", "nan", "null", "none"]:
+                return False
+        
+        return norm_val1 == norm_val2
+    
+    def _collect_votes(
+        self,
+        df1: pd.DataFrame,
+        df2: pd.DataFrame,
+        correspondences: pd.DataFrame
+    ) -> Dict[Tuple[str, str], int]:
+        """Collect votes for schema correspondences from record correspondences."""
+        votes = defaultdict(int)
+        
+        logging.info(f"Collecting votes from {len(correspondences)} record correspondences")
+        
+        for _, corr in correspondences.iterrows():
+            # Get the matching records
+            id1 = corr.get("id1", corr.get("source_id", corr.get("first_id")))
+            id2 = corr.get("id2", corr.get("target_id", corr.get("second_id")))
+            
+            if id1 is None or id2 is None:
+                logging.warning("Could not find ID columns in correspondence")
+                continue
+            
+            # Find records in dataframes
+            # Try different common ID column names
+            id_cols_1 = [col for col in df1.columns if 'id' in col.lower()]
+            id_cols_2 = [col for col in df2.columns if 'id' in col.lower()]
+            
+            record1 = None
+            record2 = None
+            
+            # Try to find matching records
+            id_cols_1_extended = id_cols_1 + ([df1.index.name] if df1.index.name else [])
+            for id_col in id_cols_1_extended:
+                if id_col and id_col in df1.columns:
+                    matching_rows = df1[df1[id_col] == id1]
+                    if not matching_rows.empty:
+                        record1 = matching_rows.iloc[0]
+                        break
+            
+            id_cols_2_extended = id_cols_2 + ([df2.index.name] if df2.index.name else [])
+            for id_col in id_cols_2_extended:
+                if id_col and id_col in df2.columns:
+                    matching_rows = df2[df2[id_col] == id2]
+                    if not matching_rows.empty:
+                        record2 = matching_rows.iloc[0]
+                        break
+            
+            if record1 is None or record2 is None:
+                logging.debug(f"Could not find records for correspondence {id1} <-> {id2}")
+                continue
+            
+            # Compare all attribute pairs
+            for attr1 in df1.columns:
+                for attr2 in df2.columns:
+                    val1 = record1[attr1]
+                    val2 = record2[attr2]
+                    
+                    if self._values_match(val1, val2):
+                        votes[(attr1, attr2)] += 1
+        
+        return votes
+    
+    def _aggregate_votes(
+        self,
+        votes: Dict[Tuple[str, str], int],
+        threshold: float
+    ) -> List[Dict[str, Any]]:
+        """Aggregate votes to determine final correspondences."""
+        results = []
+        
+        if self.vote_aggregation == "majority":
+            # Simple majority voting
+            for (attr1, attr2), vote_count in votes.items():
+                if vote_count >= self.min_votes:
+                    confidence = min(vote_count / max(votes.values()), 1.0) if votes else 0.0
+                    
+                    if confidence >= threshold:
+                        results.append({
+                            "source_column": attr1,
+                            "target_column": attr2,
+                            "score": confidence,
+                            "votes": vote_count
+                        })
+        
+        elif self.vote_aggregation == "weighted":
+            # Weighted voting (could be extended with more sophisticated weighting)
+            total_votes = sum(votes.values())
+            
+            for (attr1, attr2), vote_count in votes.items():
+                if vote_count >= self.min_votes:
+                    confidence = vote_count / total_votes if total_votes > 0 else 0.0
+                    
+                    if confidence >= threshold:
+                        results.append({
+                            "source_column": attr1,
+                            "target_column": attr2,
+                            "score": confidence,
+                            "votes": vote_count
+                        })
+        
+        return results
+    
+    def match(
+        self,
+        datasets: List[pd.DataFrame],
+        correspondences: Optional[pd.DataFrame] = None,
+        method: str = "label",  # Not used but kept for interface compatibility
+        preprocess: Optional[Any] = None,  # Not used
+        threshold: float = 0.1,
+    ) -> SchemaMapping:
+        """Find schema correspondences using duplicate-based matching.
+        
+        Parameters
+        ----------
+        datasets : list of pandas.DataFrame
+            The datasets whose schemata should be matched. Must contain exactly 2 datasets.
+        correspondences : pandas.DataFrame, optional
+            Record correspondences between the datasets. Must contain columns
+            identifying matching records (e.g., 'id1', 'id2' or 'source_id', 'target_id').
+        method : str, optional
+            Not used, kept for interface compatibility.
+        preprocess : Any, optional
+            Not used in duplicate-based matching.
+        threshold : float, optional
+            Minimum confidence score for correspondences.
+            
+        Returns
+        -------
+        SchemaMapping
+            DataFrame with schema correspondences.
+            
+        Raises
+        ------
+        ValueError
+            If correspondences are not provided or if not exactly 2 datasets are provided.
+        """
+        if correspondences is None or correspondences.empty:
+            raise ValueError("Duplicate-based matching requires record correspondences")
+        
+        if len(datasets) != 2:
+            raise ValueError("Duplicate-based matching requires exactly 2 datasets")
+        
+        df1, df2 = datasets[0], datasets[1]
+        name1 = df1.attrs.get("dataset_name", "ds0")
+        name2 = df2.attrs.get("dataset_name", "ds1")
+        
+        logging.info(f"Duplicate-based matching: {name1} <-> {name2}")
+        
+        # Collect votes from record correspondences
+        votes = self._collect_votes(df1, df2, correspondences)
+        
+        logging.info(f"Collected {len(votes)} attribute pair votes")
+        
+        # Aggregate votes to get final correspondences
+        aggregated_results = self._aggregate_votes(votes, threshold)
+        
+        # Format results
+        results = []
+        for result in aggregated_results:
+            results.append({
+                "source_dataset": name1,
+                "source_column": result["source_column"],
+                "target_dataset": name2,
+                "target_column": result["target_column"],
+                "score": result["score"],
+                "notes": f"votes={result['votes']},method=duplicate_based"
+            })
+            
+            logging.debug(
+                f"Duplicate match: {result['source_column']} <-> {result['target_column']} "
+                f"({result['score']:.4f}, {result['votes']} votes)"
+            )
+        
+        return pd.DataFrame(results)
