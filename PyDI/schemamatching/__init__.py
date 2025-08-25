@@ -20,7 +20,6 @@ from .evaluation import SchemaMappingEvaluator
 __all__ = [
     "BaseSchemaMatcher",
     "SchemaMapping",
-    "SimpleSchemaMatcher",
     "LabelBasedSchemaMatcher",
     "InstanceBasedSchemaMatcher",
     "DuplicateBasedSchemaMatcher",

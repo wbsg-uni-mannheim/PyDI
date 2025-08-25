@@ -23,9 +23,9 @@ class BaseSchemaMatcher(ABC):
     def match(
         self,
         datasets: List[pd.DataFrame],
-        method: str = "label",
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
+        **kwargs,
     ) -> SchemaMapping:
         """Find attribute correspondences between multiple datasets.
 
@@ -34,12 +34,17 @@ class BaseSchemaMatcher(ABC):
         datasets : list of pandas.DataFrame
             The datasets whose schemata should be matched. Each DataFrame must
             have a meaningful ``dataset_name`` entry in ``df.attrs``.
-        method : str, optional
-            Matching strategy. Currently only ``"label"`` is supported.
         preprocess : callable, optional
-            A function applied to column names before comparison (e.g., ``str.lower``).
+            A function applied to values before comparison (e.g., ``str.lower``).
+            Applied to column names in label-based matching, to data values in
+            instance-based matching, and to record values in duplicate-based matching.
         threshold : float, optional
-            Minimum similarity score required to include a mapping. Default is 0.8.
+            Minimum similarity/confidence score required to include a mapping. 
+            Default is 0.8.
+        **kwargs
+            Additional keyword arguments specific to the matcher implementation.
+            For example, DuplicateBasedSchemaMatcher requires a ``correspondences``
+            parameter, and LabelBasedSchemaMatcher accepts a ``method`` parameter.
 
         Returns
         -------

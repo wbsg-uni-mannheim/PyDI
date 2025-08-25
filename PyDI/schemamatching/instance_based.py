@@ -57,7 +57,7 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         if similarity_function not in ["cosine", "jaccard", "containment"]:
             raise ValueError(f"Unsupported similarity function: {similarity_function}")
     
-    def _extract_column_values(self, df: pd.DataFrame, column: str) -> List[str]:
+    def _extract_column_values(self, df: pd.DataFrame, column: str, preprocess: Optional[Callable[[str], str]] = None) -> List[str]:
         """Extract and preprocess values from a column."""
         # Get non-null values
         values = df[column].dropna()
@@ -71,6 +71,9 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         for val in values:
             str_val = str(val).strip().lower()
             if str_val and str_val != "nan":
+                # Apply preprocessing if provided
+                if preprocess:
+                    str_val = preprocess(str_val)
                 str_values.append(str_val)
         
         return str_values
@@ -197,9 +200,9 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
     def match(
         self,
         datasets: List[pd.DataFrame],
-        method: str = "label",
-        preprocess: Optional[Any] = None,
+        preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
+        **kwargs,
     ) -> SchemaMapping:
         """Find schema correspondences using instance-based matching.
         
@@ -207,12 +210,12 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         ----------
         datasets : list of pandas.DataFrame
             The datasets whose schemata should be matched.
-        method : str, optional
-            Matching method (not used, kept for compatibility).
-        preprocess : Any, optional
-            Not used in instance-based matching.
+        preprocess : callable, optional
+            Function to preprocess string values before analysis.
         threshold : float, optional
             Minimum similarity score for correspondences.
+        **kwargs
+            Additional keyword arguments (ignored).
             
         Returns
         -------
@@ -236,7 +239,7 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
             
             # Dataset i columns
             for col in df_i.columns:
-                values = self._extract_column_values(df_i, col)
+                values = self._extract_column_values(df_i, col, preprocess)
                 non_null_ratio = len(values) / len(df_i) if len(df_i) > 0 else 0
                 
                 if non_null_ratio >= self.min_non_null_ratio:
@@ -244,7 +247,7 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
             
             # Dataset j columns  
             for col in df_j.columns:
-                values = self._extract_column_values(df_j, col)
+                values = self._extract_column_values(df_j, col, preprocess)
                 non_null_ratio = len(values) / len(df_j) if len(df_j) > 0 else 0
                 
                 if non_null_ratio >= self.min_non_null_ratio:

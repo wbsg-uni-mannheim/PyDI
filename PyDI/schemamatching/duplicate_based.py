@@ -55,7 +55,7 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         if value_comparison not in ["exact", "normalized"]:
             raise ValueError(f"Unsupported value comparison: {value_comparison}")
     
-    def _normalize_value(self, value: Any) -> str:
+    def _normalize_value(self, value: Any, preprocess: Optional[Callable[[str], str]] = None) -> str:
         """Normalize a value for comparison."""
         if pd.isna(value):
             return ""
@@ -68,12 +68,16 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
             str_val = re.sub(r'[^\w\s]', '', str_val)
             str_val = ' '.join(str_val.split())
         
+        # Apply preprocessing if provided
+        if preprocess:
+            str_val = preprocess(str_val)
+            
         return str_val
     
-    def _values_match(self, val1: Any, val2: Any) -> bool:
+    def _values_match(self, val1: Any, val2: Any, preprocess: Optional[Callable[[str], str]] = None) -> bool:
         """Check if two values match according to comparison method."""
-        norm_val1 = self._normalize_value(val1)
-        norm_val2 = self._normalize_value(val2)
+        norm_val1 = self._normalize_value(val1, preprocess)
+        norm_val2 = self._normalize_value(val2, preprocess)
         
         # Skip empty/zero values if configured
         if self.ignore_zero_values:
@@ -88,7 +92,8 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         self,
         df1: pd.DataFrame,
         df2: pd.DataFrame,
-        correspondences: pd.DataFrame
+        correspondences: pd.DataFrame,
+        preprocess: Optional[Callable[[str], str]] = None
     ) -> Dict[Tuple[str, str], int]:
         """Collect votes for schema correspondences from record correspondences."""
         votes = defaultdict(int)
@@ -139,7 +144,7 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
                     val1 = record1[attr1]
                     val2 = record2[attr2]
                     
-                    if self._values_match(val1, val2):
+                    if self._values_match(val1, val2, preprocess):
                         votes[(attr1, attr2)] += 1
         
         return votes
@@ -187,10 +192,10 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
     def match(
         self,
         datasets: List[pd.DataFrame],
-        correspondences: Optional[pd.DataFrame] = None,
-        method: str = "label",  # Not used but kept for interface compatibility
-        preprocess: Optional[Any] = None,  # Not used
+        preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.1,
+        correspondences: Optional[pd.DataFrame] = None,
+        **kwargs,
     ) -> SchemaMapping:
         """Find schema correspondences using duplicate-based matching.
         
@@ -198,15 +203,15 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         ----------
         datasets : list of pandas.DataFrame
             The datasets whose schemata should be matched. Must contain exactly 2 datasets.
+        preprocess : callable, optional
+            Function to preprocess values before comparison.
+        threshold : float, optional
+            Minimum confidence score for correspondences.
         correspondences : pandas.DataFrame, optional
             Record correspondences between the datasets. Must contain columns
             identifying matching records (e.g., 'id1', 'id2' or 'source_id', 'target_id').
-        method : str, optional
-            Not used, kept for interface compatibility.
-        preprocess : Any, optional
-            Not used in duplicate-based matching.
-        threshold : float, optional
-            Minimum confidence score for correspondences.
+        **kwargs
+            Additional keyword arguments (ignored).
             
         Returns
         -------
@@ -231,7 +236,7 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         logging.info(f"Duplicate-based matching: {name1} <-> {name2}")
         
         # Collect votes from record correspondences
-        votes = self._collect_votes(df1, df2, correspondences)
+        votes = self._collect_votes(df1, df2, correspondences, preprocess)
         
         logging.info(f"Collected {len(votes)} attribute pair votes")
         

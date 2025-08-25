@@ -73,9 +73,10 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
     def match(
         self,
         datasets: List[pd.DataFrame],
-        method: str = "label",
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
+        method: str = "label",
+        **kwargs,
     ) -> SchemaMapping:
         """Find schema correspondences using label-based matching.
         
@@ -83,12 +84,14 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
         ----------
         datasets : list of pandas.DataFrame
             The datasets whose schemata should be matched.
-        method : str, optional
-            Matching method. Only "label" is supported.
         preprocess : callable, optional
             Preprocessing function (overrides instance setting).
         threshold : float, optional
             Minimum similarity score for correspondences.
+        method : str, optional
+            Matching method. Only "label" is supported.
+        **kwargs
+            Additional keyword arguments (ignored).
             
         Returns
         -------
