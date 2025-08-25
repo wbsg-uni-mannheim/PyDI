@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 import numpy as np
 import pandas as pd
@@ -199,7 +199,8 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
     
     def match(
         self,
-        datasets: List[pd.DataFrame],
+        source_dataset: pd.DataFrame,
+        target_dataset: pd.DataFrame,
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
         **kwargs,
@@ -208,8 +209,10 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         
         Parameters
         ----------
-        datasets : list of pandas.DataFrame
-            The datasets whose schemata should be matched.
+        source_dataset : pandas.DataFrame
+            The source dataset.
+        target_dataset : pandas.DataFrame
+            The target dataset.
         preprocess : callable, optional
             Function to preprocess string values before analysis.
         threshold : float, optional
@@ -224,75 +227,71 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         """
         results = []
         
-        # Process datasets in pairs
-        import itertools
-        for i, j in itertools.combinations(range(len(datasets)), 2):
-            df_i = datasets[i]
-            df_j = datasets[j]
-            name_i = df_i.attrs.get("dataset_name", f"ds{i}")
-            name_j = df_j.attrs.get("dataset_name", f"ds{j}")
+        # Get dataset names
+        source_name = source_dataset.attrs.get("dataset_name", "source")
+        target_name = target_dataset.attrs.get("dataset_name", "target")
+        
+        logging.info(f"Instance-based matching: {source_name} -> {target_name}")
+        
+        # Extract values for all columns in both datasets
+        all_column_values = {}
+        
+        # Source dataset columns
+        for col in source_dataset.columns:
+            values = self._extract_column_values(source_dataset, col, preprocess)
+            non_null_ratio = len(values) / len(source_dataset) if len(source_dataset) > 0 else 0
             
-            logging.info(f"Instance-based matching: {name_i} <-> {name_j}")
+            if non_null_ratio >= self.min_non_null_ratio:
+                all_column_values[f"{source_name}.{col}"] = values
+        
+        # Target dataset columns  
+        for col in target_dataset.columns:
+            values = self._extract_column_values(target_dataset, col, preprocess)
+            non_null_ratio = len(values) / len(target_dataset) if len(target_dataset) > 0 else 0
             
-            # Extract values for all columns in both datasets
-            all_column_values = {}
-            
-            # Dataset i columns
-            for col in df_i.columns:
-                values = self._extract_column_values(df_i, col, preprocess)
-                non_null_ratio = len(values) / len(df_i) if len(df_i) > 0 else 0
+            if non_null_ratio >= self.min_non_null_ratio:
+                all_column_values[f"{target_name}.{col}"] = values
+        
+        # Create vectors based on method
+        if self.vector_creation_method == "tfidf":
+            vectors = self._create_tfidf_vectors(all_column_values)
+        else:
+            vectors = {}
+            for col_key, values in all_column_values.items():
+                if self.vector_creation_method == "term_frequencies":
+                    vectors[col_key] = self._create_term_frequency_vector(values)
+                elif self.vector_creation_method == "binary_occurrence":
+                    vectors[col_key] = self._create_binary_vector(values)
+        
+        # Compare columns between datasets
+        for source_col in source_dataset.columns:
+            source_key = f"{source_name}.{source_col}"
+            if source_key not in vectors:
+                continue
                 
-                if non_null_ratio >= self.min_non_null_ratio:
-                    all_column_values[f"{name_i}.{col}"] = values
-            
-            # Dataset j columns  
-            for col in df_j.columns:
-                values = self._extract_column_values(df_j, col, preprocess)
-                non_null_ratio = len(values) / len(df_j) if len(df_j) > 0 else 0
-                
-                if non_null_ratio >= self.min_non_null_ratio:
-                    all_column_values[f"{name_j}.{col}"] = values
-            
-            # Create vectors based on method
-            if self.vector_creation_method == "tfidf":
-                vectors = self._create_tfidf_vectors(all_column_values)
-            else:
-                vectors = {}
-                for col_key, values in all_column_values.items():
-                    if self.vector_creation_method == "term_frequencies":
-                        vectors[col_key] = self._create_term_frequency_vector(values)
-                    elif self.vector_creation_method == "binary_occurrence":
-                        vectors[col_key] = self._create_binary_vector(values)
-            
-            # Compare columns between datasets
-            for col_i in df_i.columns:
-                key_i = f"{name_i}.{col_i}"
-                if key_i not in vectors:
+            for target_col in target_dataset.columns:
+                target_key = f"{target_name}.{target_col}"
+                if target_key not in vectors:
                     continue
+                
+                # Calculate similarity
+                if self.similarity_function == "cosine":
+                    similarity = self._calculate_cosine_similarity(vectors[source_key], vectors[target_key])
+                elif self.similarity_function == "jaccard":
+                    similarity = self._calculate_jaccard_similarity(vectors[source_key], vectors[target_key])
+                elif self.similarity_function == "containment":
+                    similarity = self._calculate_containment_similarity(vectors[source_key], vectors[target_key])
+                
+                if similarity >= threshold:
+                    results.append({
+                        "source_dataset": source_name,
+                        "source_column": source_col,
+                        "target_dataset": target_name,
+                        "target_column": target_col,
+                        "score": float(similarity),
+                        "notes": f"vector_method={self.vector_creation_method},similarity={self.similarity_function}"
+                    })
                     
-                for col_j in df_j.columns:
-                    key_j = f"{name_j}.{col_j}"
-                    if key_j not in vectors:
-                        continue
-                    
-                    # Calculate similarity
-                    if self.similarity_function == "cosine":
-                        similarity = self._calculate_cosine_similarity(vectors[key_i], vectors[key_j])
-                    elif self.similarity_function == "jaccard":
-                        similarity = self._calculate_jaccard_similarity(vectors[key_i], vectors[key_j])
-                    elif self.similarity_function == "containment":
-                        similarity = self._calculate_containment_similarity(vectors[key_i], vectors[key_j])
-                    
-                    if similarity >= threshold:
-                        results.append({
-                            "source_dataset": name_i,
-                            "source_column": col_i,
-                            "target_dataset": name_j,
-                            "target_column": col_j,
-                            "score": float(similarity),
-                            "notes": f"vector_method={self.vector_creation_method},similarity={self.similarity_function}"
-                        })
-                        
-                        logging.debug(f"Instance match: {col_i} <-> {col_j} ({similarity:.4f})")
+                    logging.debug(f"Instance match: {source_col} -> {target_col} ({similarity:.4f})")
         
         return pd.DataFrame(results)

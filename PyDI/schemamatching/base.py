@@ -15,25 +15,27 @@ SchemaMapping = pd.DataFrame
 class BaseSchemaMatcher(ABC):
     """Abstract base class for schema matchers.
 
-    Schema matchers take a list of DataFrames and return a
+    Schema matchers take two DataFrames and return a
     ``SchemaMapping`` containing column correspondences.
     """
 
     @abstractmethod
     def match(
         self,
-        datasets: List[pd.DataFrame],
+        source_dataset: pd.DataFrame,
+        target_dataset: pd.DataFrame,
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
         **kwargs,
     ) -> SchemaMapping:
-        """Find attribute correspondences between multiple datasets.
+        """Find attribute correspondences between two datasets.
 
         Parameters
         ----------
-        datasets : list of pandas.DataFrame
-            The datasets whose schemata should be matched. Each DataFrame must
-            have a meaningful ``dataset_name`` entry in ``df.attrs``.
+        source_dataset : pandas.DataFrame
+            The source dataset. Must have a meaningful ``dataset_name`` entry in ``df.attrs``.
+        target_dataset : pandas.DataFrame
+            The target dataset. Must have a meaningful ``dataset_name`` entry in ``df.attrs``.
         preprocess : callable, optional
             A function applied to values before comparison (e.g., ``str.lower``).
             Applied to column names in label-based matching, to data values in

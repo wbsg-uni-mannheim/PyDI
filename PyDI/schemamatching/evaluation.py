@@ -16,8 +16,7 @@ class SchemaMappingEvaluator:
 
     Methods in this class compute precision, recall and F1 scores
     comparing an automatically produced mapping against a reference
-    (test) mapping. Optionally, metrics can be aggregated by dataset
-    or column.
+    (test) mapping.
     """
 
     @staticmethod
@@ -26,7 +25,6 @@ class SchemaMappingEvaluator:
         test_set: SchemaMapping,
         *,
         threshold: Optional[float] = None,
-        by: Optional[List[str]] = None,
     ) -> dict:
         """Compute precision, recall and F1 for a mapping.
 
@@ -38,15 +36,11 @@ class SchemaMappingEvaluator:
             The gold standard mapping.
         threshold : float, optional
             If provided, ignore correspondences with a score below this value.
-        by : list of str, optional
-            If provided, aggregate metrics by these columns (e.g.,
-            ``["source_dataset"]``).
 
         Returns
         -------
         dict
-            A dictionary with precision, recall and F1. If ``by`` is
-            provided, the dictionary contains nested metrics per group.
+            A dictionary with precision, recall and F1.
         """
         if threshold is not None:
             corr = corr[corr["score"] >= threshold]
@@ -73,21 +67,7 @@ class SchemaMappingEvaluator:
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
-        metrics = {"precision": precision, "recall": recall, "f1": f1}
-        # group metrics
-        if by:
-            grouped = {}
-            for key in by:
-                groups = corr.groupby(key)
-                test_groups = test_set.groupby(key)
-                for group_key in set(groups.groups.keys()) | set(test_groups.groups.keys()):
-                    corr_group = groups.get_group(group_key) if group_key in groups.groups else pd.DataFrame([])
-                    test_group = test_groups.get_group(group_key) if group_key in test_groups.groups else pd.DataFrame([])
-                    grouped[group_key] = SchemaMappingEvaluator.evaluate(
-                        corr_group, test_group, threshold=threshold, by=None
-                    )
-            metrics["by"] = grouped
-        return metrics
+        return {"precision": precision, "recall": recall, "f1": f1}
 
     @staticmethod
     def sweep_thresholds(

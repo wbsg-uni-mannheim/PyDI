@@ -72,7 +72,8 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
     
     def match(
         self,
-        datasets: List[pd.DataFrame],
+        source_dataset: pd.DataFrame,
+        target_dataset: pd.DataFrame,
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.8,
         method: str = "label",
@@ -82,8 +83,10 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
         
         Parameters
         ----------
-        datasets : list of pandas.DataFrame
-            The datasets whose schemata should be matched.
+        source_dataset : pandas.DataFrame
+            The source dataset.
+        target_dataset : pandas.DataFrame
+            The target dataset.
         preprocess : callable, optional
             Preprocessing function (overrides instance setting).
         threshold : float, optional
@@ -107,35 +110,31 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
             
         results = []
         
-        # Compare all dataset pairs
-        import itertools
-        for i, j in itertools.combinations(range(len(datasets)), 2):
-            df_i = datasets[i]
-            df_j = datasets[j]
-            name_i = df_i.attrs.get("dataset_name", f"ds{i}")
-            name_j = df_j.attrs.get("dataset_name", f"ds{j}")
-            
-            logging.info(f"Matching schemas: {name_i} <-> {name_j}")
-            
-            for col_i in df_i.columns:
-                for col_j in df_j.columns:
-                    # Prepare strings for comparison
-                    str_i = self._prepare_string(col_i)
-                    str_j = self._prepare_string(col_j)
+        # Get dataset names
+        source_name = source_dataset.attrs.get("dataset_name", "source")
+        target_name = target_dataset.attrs.get("dataset_name", "target")
+        
+        logging.info(f"Matching schemas: {source_name} -> {target_name}")
+        
+        for source_col in source_dataset.columns:
+            for target_col in target_dataset.columns:
+                # Prepare strings for comparison
+                source_str = self._prepare_string(source_col)
+                target_str = self._prepare_string(target_col)
+                
+                # Calculate similarity
+                similarity = self._sim_func(source_str, target_str)
+                
+                if similarity >= threshold:
+                    results.append({
+                        "source_dataset": source_name,
+                        "source_column": source_col,
+                        "target_dataset": target_name,
+                        "target_column": target_col,
+                        "score": float(similarity),
+                        "notes": f"similarity_function={self.similarity_function}"
+                    })
                     
-                    # Calculate similarity
-                    similarity = self._sim_func(str_i, str_j)
-                    
-                    if similarity >= threshold:
-                        results.append({
-                            "source_dataset": name_i,
-                            "source_column": col_i,
-                            "target_dataset": name_j,
-                            "target_column": col_j,
-                            "score": float(similarity),
-                            "notes": f"similarity_function={self.similarity_function}"
-                        })
-                        
-                        logging.debug(f"Match: {col_i} <-> {col_j} ({similarity:.4f})")
+                    logging.debug(f"Match: {source_col} -> {target_col} ({similarity:.4f})")
         
         return pd.DataFrame(results)

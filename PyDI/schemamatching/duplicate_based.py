@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import pandas as pd
 
@@ -191,7 +191,8 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
     
     def match(
         self,
-        datasets: List[pd.DataFrame],
+        source_dataset: pd.DataFrame,
+        target_dataset: pd.DataFrame,
         preprocess: Optional[Callable[[str], str]] = None,
         threshold: float = 0.1,
         correspondences: Optional[pd.DataFrame] = None,
@@ -201,8 +202,10 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         
         Parameters
         ----------
-        datasets : list of pandas.DataFrame
-            The datasets whose schemata should be matched. Must contain exactly 2 datasets.
+        source_dataset : pandas.DataFrame
+            The source dataset.
+        target_dataset : pandas.DataFrame
+            The target dataset.
         preprocess : callable, optional
             Function to preprocess values before comparison.
         threshold : float, optional
@@ -221,22 +224,18 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         Raises
         ------
         ValueError
-            If correspondences are not provided or if not exactly 2 datasets are provided.
+            If correspondences are not provided.
         """
         if correspondences is None or correspondences.empty:
             raise ValueError("Duplicate-based matching requires record correspondences")
         
-        if len(datasets) != 2:
-            raise ValueError("Duplicate-based matching requires exactly 2 datasets")
+        source_name = source_dataset.attrs.get("dataset_name", "source")
+        target_name = target_dataset.attrs.get("dataset_name", "target")
         
-        df1, df2 = datasets[0], datasets[1]
-        name1 = df1.attrs.get("dataset_name", "ds0")
-        name2 = df2.attrs.get("dataset_name", "ds1")
-        
-        logging.info(f"Duplicate-based matching: {name1} <-> {name2}")
+        logging.info(f"Duplicate-based matching: {source_name} -> {target_name}")
         
         # Collect votes from record correspondences
-        votes = self._collect_votes(df1, df2, correspondences, preprocess)
+        votes = self._collect_votes(source_dataset, target_dataset, correspondences, preprocess)
         
         logging.info(f"Collected {len(votes)} attribute pair votes")
         
@@ -247,9 +246,9 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         results = []
         for result in aggregated_results:
             results.append({
-                "source_dataset": name1,
+                "source_dataset": source_name,
                 "source_column": result["source_column"],
-                "target_dataset": name2,
+                "target_dataset": target_name,
                 "target_column": result["target_column"],
                 "score": result["score"],
                 "notes": f"votes={result['votes']},method=duplicate_based"
