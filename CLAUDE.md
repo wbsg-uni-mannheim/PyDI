@@ -98,3 +98,4 @@ python -m pip install -e .[dev]
 ```
 
 This project uses a `pyproject.toml` file to manage dependencies. The `[project.dependencies]` section lists runtime dependencies; `[project.optional-dependencies.dev]` lists tools for development such as `pytest` and `black`.
+- Use the env in the root dir of the project by using `source env/bin/activate`
