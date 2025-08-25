@@ -10,9 +10,8 @@ duplicate-based matching strategies.
 from .base import BaseSchemaMatcher, SchemaMapping
 
 # Matching algorithms
-from .simple import SimpleSchemaMatcher
 from .label_based import LabelBasedSchemaMatcher
-from .instance_based import InstanceBasedSchemaMatcher  
+from .instance_based import InstanceBasedSchemaMatcher
 from .duplicate_based import DuplicateBasedSchemaMatcher
 
 # Evaluation utilities
@@ -20,7 +19,7 @@ from .evaluation import SchemaMappingEvaluator
 
 __all__ = [
     "BaseSchemaMatcher",
-    "SchemaMapping", 
+    "SchemaMapping",
     "SimpleSchemaMatcher",
     "LabelBasedSchemaMatcher",
     "InstanceBasedSchemaMatcher",
