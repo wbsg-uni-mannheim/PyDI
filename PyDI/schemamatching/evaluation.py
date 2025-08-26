@@ -17,20 +17,21 @@ logger = logging.getLogger(__name__)
 
 
 class SchemaMappingEvaluator:
-    """Evaluate schema mapping quality against a gold standard.
+    """Evaluate schema mapping quality against an evaluation set.
 
     Methods in this class compute precision, recall and F1 scores
     comparing an automatically produced mapping against a reference
-    (test) mapping.
+    (evaluation) mapping.
     """
 
     @staticmethod
     def evaluate(
         corr: SchemaMapping,
-        test_set: SchemaMapping,
+        evaluation_set: SchemaMapping,
         *,
         threshold: Optional[float] = None,
         complete: bool = False,
+        label_column: str = "label",
     ) -> dict:
         """Compute precision, recall and F1 for a mapping.
 
@@ -38,16 +39,18 @@ class SchemaMappingEvaluator:
         ----------
         corr : SchemaMapping
             The correspondences produced by a matcher.
-        test_set : SchemaMapping  
-            The gold standard mapping. Can contain both positive and negative examples.
-            If it has a 'label' column with True/False values, negatives will be used.
+        evaluation_set : SchemaMapping  
+            The evaluation mapping. Can contain both positive and negative examples.
+            If it has a label column with True/False values, negatives will be used.
             Otherwise, all correspondences are assumed to be positive examples.
         threshold : float, optional
             If provided, ignore correspondences with a score below this value.
         complete : bool, default False
-            Whether the test_set represents a complete gold standard. If True,
-            any correspondence not in the test_set is considered a negative.
-            If False, only explicit negatives in test_set are used.
+            Whether the evaluation_set represents a complete evaluation set. If True,
+            any correspondence not in the evaluation_set is considered a negative.
+            If False, only explicit negatives in evaluation_set are used.
+        label_column : str, default "label"
+            Name of the column containing True/False labels for positive/negative examples.
 
         Returns
         -------
@@ -67,34 +70,34 @@ class SchemaMappingEvaluator:
             )
         )
         
-        # Determine positive and negative examples from test_set
-        has_labels = 'label' in test_set.columns
+        # Determine positive and negative examples from evaluation_set
+        has_labels = label_column in evaluation_set.columns
         if has_labels:
             # Separate positive and negative examples based on label column
-            positive_test = test_set[test_set['label'] == True]
-            negative_test = test_set[test_set['label'] == False] 
+            positive_eval = evaluation_set[evaluation_set[label_column] == True]
+            negative_eval = evaluation_set[evaluation_set[label_column] == False] 
         else:
-            # All test_set examples are positive
-            positive_test = test_set
-            negative_test = pd.DataFrame(columns=test_set.columns)
+            # All evaluation_set examples are positive
+            positive_eval = evaluation_set
+            negative_eval = pd.DataFrame(columns=evaluation_set.columns)
         
         positive_set = set(
             zip(
-                positive_test["source_dataset"],
-                positive_test["source_column"],
-                positive_test["target_dataset"], 
-                positive_test["target_column"],
+                positive_eval["source_dataset"],
+                positive_eval["source_column"],
+                positive_eval["target_dataset"], 
+                positive_eval["target_column"],
             )
         )
         
         negative_set = set(
             zip(
-                negative_test["source_dataset"],
-                negative_test["source_column"],
-                negative_test["target_dataset"],
-                negative_test["target_column"],
+                negative_eval["source_dataset"],
+                negative_eval["source_column"],
+                negative_eval["target_dataset"],
+                negative_eval["target_column"],
             )
-        ) if not negative_test.empty else set()
+        ) if not negative_eval.empty else set()
         
         # Count matches following Winter's logic
         correct = 0  # True positives
@@ -119,7 +122,7 @@ class SchemaMappingEvaluator:
             elif (complete or 
                   corr_tuple in negative_set or 
                   reverse_tuple in negative_set):
-                # False positive (either complete gold standard or explicit negative)
+                # False positive (either complete evaluation set or explicit negative)
                 matched += 1
                 logger.debug(f"[wrong] {corr_tuple}")
         
@@ -146,10 +149,11 @@ class SchemaMappingEvaluator:
     @staticmethod
     def sweep_thresholds(
         corr: SchemaMapping,
-        gold: SchemaMapping,
+        evaluation_set: SchemaMapping,
         *,
         thresholds: Iterable[float],
         complete: bool = False,
+        label_column: str = "label",
     ) -> pd.DataFrame:
         """Compute precision and recall for multiple thresholds.
 
@@ -157,12 +161,14 @@ class SchemaMappingEvaluator:
         ----------
         corr : SchemaMapping
             The correspondences produced by a matcher.
-        gold : SchemaMapping
-            The gold standard mapping.
+        evaluation_set : SchemaMapping
+            The evaluation mapping.
         thresholds : iterable of float
             A sequence of threshold values to evaluate.
         complete : bool, default False
-            Whether the gold standard represents a complete gold standard.
+            Whether the evaluation_set represents a complete evaluation set.
+        label_column : str, default "label"
+            Name of the column containing True/False labels for positive/negative examples.
 
         Returns
         -------
@@ -172,6 +178,6 @@ class SchemaMappingEvaluator:
         """
         records = []
         for t in thresholds:
-            m = SchemaMappingEvaluator.evaluate(corr, gold, threshold=t, complete=complete)
+            m = SchemaMappingEvaluator.evaluate(corr, evaluation_set, threshold=t, complete=complete, label_column=label_column)
             records.append({"threshold": t, **m})
         return pd.DataFrame(records)
