@@ -548,11 +548,18 @@ class UnitNormalizer:
             UnitCategory.SPEED: 'm/s',
         }
 
-        # Quantity modifiers
+        # Quantity modifiers (word-boundary constrained to avoid unit collisions like 'km')
         self.quantity_modifiers = {}
+        self._quantity_modifier_patterns: List[Tuple[re.Pattern[str], int]] = [
+        ]
         for modifier in QuantityModifier:
             for keyword in modifier.keywords:
-                self.quantity_modifiers[keyword.lower()] = modifier.multiplier
+                key = keyword.lower()
+                self.quantity_modifiers[key] = modifier.multiplier
+                # Whole word match, case-insensitive
+                pattern = re.compile(rf"\b{re.escape(key)}\b", re.IGNORECASE)
+                self._quantity_modifier_patterns.append(
+                    (pattern, modifier.multiplier))
 
     def normalize_value(self, text: str) -> Optional[Tuple[float, str]]:
         """Normalize a value with units."""
@@ -566,10 +573,11 @@ class UnitNormalizer:
         if not quantity:
             return None
 
-        # Look for quantity modifiers
+        # Look for quantity modifiers with whole-word matching
         numeric_value = quantity.value
-        for modifier_keyword, multiplier in self.quantity_modifiers.items():
-            if modifier_keyword in text.lower():
+        lowered = text.lower()
+        for pattern, multiplier in self._quantity_modifier_patterns:
+            if pattern.search(lowered):
                 numeric_value *= multiplier
                 break
 

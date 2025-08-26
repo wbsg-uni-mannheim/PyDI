@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union, Callable
 from dataclasses import dataclass, asdict
@@ -57,7 +58,9 @@ def _resolve_transform_callable(spec: Any) -> Optional[Callable[[pd.Series], pd.
 
 def apply_column_transforms(
     df: pd.DataFrame,
-    transforms: Dict[Any, Any]
+    transforms: Dict[Any, Any],
+    *,
+    missing_policy: str = "warn",
 ) -> pd.DataFrame:
     """Apply per-column transformations efficiently.
 
@@ -74,25 +77,40 @@ def apply_column_transforms(
     - Keys can be a column name or a tuple/list of column names to apply the same transform.
     - Values can be a string (built-in), a callable, or a list/tuple to chain.
     - Operations are vectorized per Series for performance.
+    - Missing columns behaviour is controlled by `missing_policy`:
+      'warn' (default) logs a warning; 'error' raises a KeyError; 'ignore' is silent.
     """
     if not transforms:
         return df
 
     out = df.copy()
     for key, spec in transforms.items():
-        columns: List[str]
+        # Determine requested and missing columns
         if isinstance(key, (list, tuple)):
-            columns = [c for c in key if c in out.columns]
+            requested: List[str] = list(key)
         else:
-            columns = [key] if key in out.columns else []
-        if not columns:
+            requested = [key]
+
+        missing = [c for c in requested if c not in out.columns]
+        present = [c for c in requested if c in out.columns]
+
+        if missing:
+            message = f"Transform targets missing column(s): {missing}"
+            if missing_policy == "error":
+                raise KeyError(message)
+            elif missing_policy == "warn":
+                logger.warning(message)
+            # 'ignore' falls through silently
+
+        # Nothing to do if no requested columns are present
+        if not present:
             continue
 
         fn = _resolve_transform_callable(spec)
         if fn is None:
             continue
 
-        for col in columns:
+        for col in present:
             try:
                 out[col] = fn(out[col])
             except Exception:
@@ -193,6 +211,10 @@ class NormalizationConfig:
     # - callable: function(pd.Series) -> pd.Series
     # - list/tuple of the above to chain multiple transforms
     column_transformations: Optional[Dict[Any, Any]] = None
+    # How to handle transform specs that reference missing columns: 'warn' | 'error' | 'ignore'
+    missing_transform_column_policy: str = "warn"
+    # Require an explicit plan/summary & selected operations; if True, auto type detection/value normalization is skipped
+    explicit_plan_required: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert configuration to dictionary."""
@@ -310,6 +332,9 @@ class DatasetNormalizer:
         output_path: Optional[Union[str, Path]] = None,
         preserve_attrs: bool = True,
         column_transforms: Optional[Dict[Any, Any]] = None,
+        *,
+        summary_plan: Optional[Dict[str, Any]] = None,
+        selected_operations: Optional[Dict[str, List[Any]]] = None,
     ) -> Tuple[pd.DataFrame, DatasetNormalizationResult]:
         """
         Normalize entire dataset with comprehensive transformations.
@@ -345,28 +370,70 @@ class DatasetNormalizer:
         effective_transforms = column_transforms or self.config.column_transformations
         if effective_transforms:
             normalized_df = apply_column_transforms(
-                normalized_df, effective_transforms)
+                normalized_df,
+                effective_transforms,
+                missing_policy=self.config.missing_transform_column_policy)
 
-        # Process each column
-        for column_name in df.columns:
-            try:
-                column_result = self._normalize_column(
-                    normalized_df, column_name, preserve_attrs
+        # Explicit plan mode: apply only user-selected operations and skip auto-detection/value normalization
+        if self.config.explicit_plan_required:
+            if summary_plan is None or selected_operations is None:
+                raise ValueError(
+                    "explicit_plan_required=True: provide summary_plan and selected_operations"
                 )
-                column_results.append(column_result)
 
-            except Exception as e:
-                logger.error(
-                    f"Failed to normalize column '{column_name}': {e}")
-                error_result = ColumnNormalizationResult(
+            # Apply selected per-column operations
+            for column_name, ops in selected_operations.items():
+                if column_name not in normalized_df.columns:
+                    continue
+                for op in (ops or []):
+                    fn = _resolve_transform_callable(op)
+                    if fn is None:
+                        continue
+                    try:
+                        normalized_df[column_name] = fn(
+                            normalized_df[column_name])
+                    except Exception:
+                        pass
+
+            # Build minimal results without auto type detection
+            for column_name in normalized_df.columns:
+                series = normalized_df[column_name]
+                column_results.append(ColumnNormalizationResult(
                     original_name=column_name,
-                    normalized_name=column_name,
+                    normalized_name=self._normalize_column_name(column_name),
                     detected_type=DataTypeExtended.UNKNOWN,
                     confidence=0.0,
-                    total_count=len(df),
-                    errors=[str(e)]
-                )
-                column_results.append(error_result)
+                    null_count=series.isnull().sum(),
+                    total_count=len(series),
+                    normalization_success_rate=1.0
+                ))
+
+            # Skip auto-processing below
+            goto_finalize = True
+        else:
+            goto_finalize = False
+
+        # Process each column (auto) if not in explicit plan mode
+        if not goto_finalize:
+            for column_name in df.columns:
+                try:
+                    column_result = self._normalize_column(
+                        normalized_df, column_name, preserve_attrs
+                    )
+                    column_results.append(column_result)
+
+                except Exception as e:
+                    logger.error(
+                        f"Failed to normalize column '{column_name}': {e}")
+                    error_result = ColumnNormalizationResult(
+                        original_name=column_name,
+                        normalized_name=column_name,
+                        detected_type=DataTypeExtended.UNKNOWN,
+                        confidence=0.0,
+                        total_count=len(df),
+                        errors=[str(e)]
+                    )
+                    column_results.append(error_result)
 
         # Restore dataset-level metadata
         if preserve_attrs:

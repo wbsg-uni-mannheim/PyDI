@@ -4,7 +4,7 @@
     "normalized_columns": 23,
     "rows_processed": 656,
     "overall_success_rate": 1.0,
-    "processing_time": 0.18697118759155273,
+    "processing_time": 0.23168301582336426,
     "type_distribution": {
       "STRING": 7,
       "CURRENCY": 5,
@@ -68,16 +68,16 @@
       "normalized_name": "film",
       "detected_type": "DataTypeExtended.STRING",
       "confidence": 0.9786259541984733,
-      "unit_category": "UnitCategory.TIME",
-      "specific_unit": "h",
+      "unit_category": null,
+      "specific_unit": null,
       "null_count": "1",
       "total_count": 656,
       "normalization_success_rate": 1.0,
       "errors": []
     },
     {
-      "original_name": "lead studio",
-      "normalized_name": "lead studio",
+      "original_name": "lead_studio",
+      "normalized_name": "lead_studio",
       "detected_type": "DataTypeExtended.STRING",
       "confidence": 0.9835466179159049,
       "unit_category": null,
@@ -88,8 +88,8 @@
       "errors": []
     },
     {
-      "original_name": "rotten tomatoes",
-      "normalized_name": "rotten tomatoes",
+      "original_name": "rotten_tomatoes",
+      "normalized_name": "rotten_tomatoes",
       "detected_type": "DataTypeExtended.NUMERIC",
       "confidence": 1.0,
       "unit_category": null,
@@ -100,8 +100,8 @@
       "errors": []
     },
     {
-      "original_name": "audience score",
-      "normalized_name": "audience score",
+      "original_name": "audience_score",
+      "normalized_name": "audience_score",
       "detected_type": "DataTypeExtended.CURRENCY",
       "confidence": 1.0,
       "unit_category": null,
@@ -136,8 +136,8 @@
       "errors": []
     },
     {
-      "original_name": "number of theatres in opening weekend",
-      "normalized_name": "number of theatres in opening weekend",
+      "original_name": "number_of_theatres_in_opening_weekend",
+      "normalized_name": "number_of_theatres_in_opening_weekend",
       "detected_type": "DataTypeExtended.NUMERIC",
       "confidence": 0.911620294599018,
       "unit_category": null,
@@ -148,8 +148,8 @@
       "errors": []
     },
     {
-      "original_name": "box office average per cinema",
-      "normalized_name": "box office average per cinema",
+      "original_name": "box_office_average_per_cinema",
+      "normalized_name": "box_office_average_per_cinema",
       "detected_type": "DataTypeExtended.NUMERIC",
       "confidence": 0.7674418604651163,
       "unit_category": null,
@@ -160,8 +160,8 @@
       "errors": []
     },
     {
-      "original_name": "domestic gross",
-      "normalized_name": "domestic gross",
+      "original_name": "domestic_gross",
+      "normalized_name": "domestic_gross",
       "detected_type": "DataTypeExtended.CURRENCY",
       "confidence": 0.6953846153846154,
       "unit_category": null,
@@ -172,8 +172,8 @@
       "errors": []
     },
     {
-      "original_name": "foreign gross",
-      "normalized_name": "foreign gross",
+      "original_name": "foreign_gross",
+      "normalized_name": "foreign_gross",
       "detected_type": "DataTypeExtended.CURRENCY",
       "confidence": 0.6855241264559068,
       "unit_category": null,
@@ -184,8 +184,8 @@
       "errors": []
     },
     {
-      "original_name": "worldwide gross",
-      "normalized_name": "worldwide gross",
+      "original_name": "worldwide_gross",
+      "normalized_name": "worldwide_gross",
       "detected_type": "DataTypeExtended.CURRENCY",
       "confidence": 0.5322085889570553,
       "unit_category": null,
@@ -232,8 +232,8 @@
       "errors": []
     },
     {
-      "original_name": "opening weekend",
-      "normalized_name": "opening weekend",
+      "original_name": "opening_weekend",
+      "normalized_name": "opening_weekend",
       "detected_type": "DataTypeExtended.NUMERIC",
       "confidence": 0.5646153846153846,
       "unit_category": null,
@@ -304,6 +304,9 @@
     "lowercase_text": true,
     "remove_extra_whitespace": true,
     "preserve_original_columns": false,
-    "add_metadata_columns": true
+    "add_metadata_columns": true,
+    "column_transformations": null,
+    "missing_transform_column_policy": "warn",
+    "explicit_plan_required": false
   }
 }

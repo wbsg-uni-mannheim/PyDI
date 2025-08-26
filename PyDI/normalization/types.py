@@ -18,6 +18,14 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+# Optional: Babel for locale-aware numeric parsing
+try:
+    from babel.numbers import parse_decimal as babel_parse_decimal  # type: ignore
+    from babel.numbers import NumberFormatError  # type: ignore
+    BABEL_AVAILABLE = True
+except Exception:
+    BABEL_AVAILABLE = False
+
 
 class CoordinateParser:
     """
@@ -112,6 +120,20 @@ class CoordinateParser:
                     return lat, lon
             except (ValueError, TypeError):
                 pass
+
+        # Winter compatibility: accept single numeric value as coordinate
+        try:
+            if re.fullmatch(r'[-+]?\d+(?:\.\d+)?', coord_str):
+                val = float(coord_str)
+                # Accept if in valid lat/lon domain
+                if -180.0 < val < 180.0:
+                    # If within latitude range, assume (lat, 0.0); else (0.0, lon)
+                    if -90.0 <= val <= 90.0:
+                        return val, 0.0
+                    else:
+                        return 0.0, val
+        except Exception:
+            pass
 
         return None
 
@@ -374,6 +396,10 @@ class NumericParser:
         handle_percentages: bool = True,
         auto_detect_locale: bool = True,
         extra_thousands_separators: Optional[List[str]] = None,
+        *,
+        use_babel: bool = True,
+        babel_locale: Optional[str] = None,
+        babel_candidate_locales: Optional[List[str]] = None,
     ):
         self.decimal_separator = decimal_separator
         self.thousands_separator = thousands_separator
@@ -382,6 +408,13 @@ class NumericParser:
         self.auto_detect_locale = auto_detect_locale
         self.extra_thousands_separators = set(extra_thousands_separators or [
                                               "'", "’", " ", "\xa0"])  # apostrophe, NBSP, space
+
+        # Babel configuration (optional dependency)
+        self.use_babel = use_babel and BABEL_AVAILABLE
+        self.babel_locale = babel_locale
+        self.babel_candidate_locales = babel_candidate_locales or [
+            'en_US', 'de_DE', 'fr_FR', 'it_IT', 'es_ES', 'sv_SE', 'de_CH', 'fr_CH'
+        ]
 
         # Currency symbols
         self.currency_symbols = {'$', '€', '£', '¥', '₹', '₽', '₩', '₪'}
@@ -432,6 +465,125 @@ class NumericParser:
                 f'[{currency_chars}]?\\s*\\d+(?:{thou_sep}\\d{{3}})*(?:{dec_sep}\\d{{2}})?\\s*[{currency_chars}]?'
             )
 
+    def _ordered_babel_locales_for_value(self, text: str) -> List[str]:
+        """Heuristic ordering of candidate locales for a given value."""
+        # Prefer EU-style first if last punctuation is comma
+        s = str(text)
+        last_comma = s.rfind(',')
+        last_dot = s.rfind('.')
+        eu_first = ['de_DE', 'fr_FR', 'it_IT', 'es_ES',
+                    'sv_SE', 'de_CH', 'fr_CH', 'en_US']
+        us_first = ['en_US', 'de_CH', 'fr_CH', 'de_DE',
+                    'fr_FR', 'it_IT', 'es_ES', 'sv_SE']
+        if last_comma > last_dot:
+            order = eu_first
+        else:
+            order = us_first
+        # Keep only those present in configured candidates, preserve order
+        allowed = set(self.babel_candidate_locales)
+        return [loc for loc in order if loc in allowed] or self.babel_candidate_locales
+
+    def _parse_with_babel(self, text: str) -> Optional[Union[int, float]]:
+        """Try parsing using Babel with an optionally known or inferred locale."""
+        if not self.use_babel:
+            return None
+        if pd.isna(text) or not text:
+            return None
+
+        s = str(text).strip()
+
+        # Parentheses negative
+        negative = s.startswith('(') and s.endswith(')')
+        if negative:
+            s = s[1:-1].strip()
+
+        # Percentage
+        is_percent = s.endswith('%')
+        if is_percent:
+            s = s[:-1].strip()
+
+        # Strip currency symbols
+        for symbol in self.currency_symbols:
+            s = s.replace(symbol, '')
+        s = s.strip()
+
+        locales_to_try: List[str]
+        if self.babel_locale:
+            locales_to_try = [self.babel_locale]
+        else:
+            locales_to_try = self._ordered_babel_locales_for_value(s)
+
+        for loc in locales_to_try:
+            try:
+                # Attempt direct parse first
+                val = float(babel_parse_decimal(s, locale=loc))
+                if is_percent:
+                    val /= 100.0
+                if negative:
+                    val = -val
+                return val
+            except Exception:
+                # Fallback: strip common grouping characters and retry
+                try:
+                    sanitized = s
+                    for grp in (" ", "\xa0", "'", "’"):
+                        sanitized = sanitized.replace(grp, '')
+                    val = float(babel_parse_decimal(sanitized, locale=loc))
+                    if is_percent:
+                        val /= 100.0
+                    if negative:
+                        val = -val
+                    return val
+                except Exception:
+                    continue
+        return None
+
+    def infer_babel_locale(
+        self,
+        values: List[str],
+        candidate_locales: Optional[List[str]] = None,
+        *,
+        sample_size: int = 500,
+    ) -> Optional[str]:
+        """Infer the most likely locale for a collection of numeric strings using Babel.
+
+        Returns the locale with the highest parse success count.
+        """
+        if not self.use_babel:
+            return None
+        locales = candidate_locales or self.babel_candidate_locales
+        if not locales:
+            return None
+
+        # Sample to limit cost
+        data = [str(v) for v in values if isinstance(
+            v, (str, bytes)) and str(v).strip()][:sample_size]
+        if not data:
+            return None
+
+        best_locale = None
+        best_score = -1
+
+        for loc in locales:
+            score = 0
+            for v in data:
+                s = v.strip().replace('\xa0', ' ')
+                # Remove currency and percent for inference
+                if s.endswith('%'):
+                    s = s[:-1].strip()
+                for symbol in self.currency_symbols:
+                    s = s.replace(symbol, '')
+                try:
+                    babel_parse_decimal(s, locale=loc)
+                    score += 1
+                except Exception:
+                    pass
+            if score > best_score:
+                best_score = score
+                best_locale = loc
+
+        return best_locale
+
     def parse_numeric(self, text: str) -> Optional[Union[int, float]]:
         """Parse numeric value from text."""
         if pd.isna(text) or not text:
@@ -445,7 +597,12 @@ class NumericParser:
             is_negative_parentheses = True
             text = text[1:-1].strip()
 
-        # Handle percentages
+        # Try Babel-backed parsing first (handles %, currency, parentheses)
+        babel_value = self._parse_with_babel(text)
+        if babel_value is not None:
+            return babel_value
+
+        # Handle percentages (fallback path without Babel)
         if self.handle_percentages and text.endswith('%'):
             try:
                 numeric_part = text[:-1]
@@ -589,6 +746,12 @@ class DateNormalizer:
             return None
 
         date_str = str(date_str).strip()
+
+        # Normalize leading plus on years and trailing Z to +00:00
+        if date_str.startswith('+'):
+            date_str = date_str[1:]
+        if date_str.endswith('Z') and 'T' in date_str:
+            date_str = date_str[:-1] + '+00:00'
 
         # First try pandas' built-in parsing
         try:
