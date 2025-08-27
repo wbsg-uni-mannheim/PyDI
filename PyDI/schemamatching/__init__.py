@@ -7,7 +7,7 @@ duplicate-based matching strategies.
 """
 
 # Base classes and types
-from .base import BaseSchemaMatcher, SchemaMapping
+from .base import BaseSchemaMatcher, SchemaMapping, get_schema_columns
 
 # Matching algorithms
 from .label_based import LabelBasedSchemaMatcher
@@ -20,6 +20,7 @@ from .evaluation import SchemaMappingEvaluator
 __all__ = [
     "BaseSchemaMatcher",
     "SchemaMapping",
+    "get_schema_columns",
     "LabelBasedSchemaMatcher",
     "InstanceBasedSchemaMatcher",
     "DuplicateBasedSchemaMatcher",

@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import pandas as pd
 
-from .base import BaseSchemaMatcher, SchemaMapping
+from .base import BaseSchemaMatcher, SchemaMapping, get_schema_columns
 from ..utils import SimilarityRegistry
 
 
@@ -199,9 +199,12 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
                 logging.debug(f"Could not find records for correspondence {id1} <-> {id2}")
                 continue
             
-            # Compare all attribute pairs
-            for attr1 in df1.columns:
-                for attr2 in df2.columns:
+            # Compare all attribute pairs (excluding PyDI ID columns)
+            schema_cols_1 = get_schema_columns(df1)
+            schema_cols_2 = get_schema_columns(df2)
+            
+            for attr1 in schema_cols_1:
+                for attr2 in schema_cols_2:
                     val1 = record1[attr1]
                     val2 = record2[attr2]
                     
@@ -293,7 +296,13 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         source_name = source_dataset.attrs.get("dataset_name", "source")
         target_name = target_dataset.attrs.get("dataset_name", "target")
         
+        # Get schema columns excluding PyDI-generated ID columns  
+        source_columns = get_schema_columns(source_dataset)
+        target_columns = get_schema_columns(target_dataset)
+        
         logging.info(f"Duplicate-based matching: {source_name} -> {target_name}")
+        logging.info(f"Source columns for matching: {source_columns}")
+        logging.info(f"Target columns for matching: {target_columns}")
         
         # Collect votes from record correspondences
         votes = self._collect_votes(source_dataset, target_dataset, correspondences, preprocess)

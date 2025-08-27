@@ -74,19 +74,39 @@ class MappingTranslator(BaseTranslator):
             logging.info(f"No schema mappings found for dataset '{dataset_name}', returning unchanged DataFrame")
             return df.copy()
             
-        # Build column mapping dictionary
+        # Build column mapping dictionary, selecting best mapping by score
         mapping: Dict[str, str] = {}
+        best_scores: Dict[str, float] = {}
         unmapped_columns = []
+        
+        # Check if score column exists in the mapping
+        has_score = "score" in relevant_mappings.columns
         
         for _, row in relevant_mappings.iterrows():
             source_col = row["source_column"]
             target_col = row["target_column"]
+            score = row.get("score", 1.0) if has_score else 1.0
             
             if source_col in df.columns:
                 if source_col in mapping:
-                    logging.warning(f"Duplicate mapping for column '{source_col}' in dataset '{dataset_name}', "
-                                  f"using '{target_col}' (was '{mapping[source_col]}')")
-                mapping[source_col] = target_col
+                    # Compare scores and keep the better mapping
+                    if has_score and score > best_scores[source_col]:
+                        logging.info(f"Better mapping found for column '{source_col}' in dataset '{dataset_name}': "
+                                   f"'{target_col}' (score={score:.4f}) replacing '{mapping[source_col]}' "
+                                   f"(score={best_scores[source_col]:.4f})")
+                        mapping[source_col] = target_col
+                        best_scores[source_col] = score
+                    elif not has_score:
+                        logging.warning(f"Duplicate mapping for column '{source_col}' in dataset '{dataset_name}', "
+                                      f"using '{target_col}' (was '{mapping[source_col]}') - no scores available")
+                        mapping[source_col] = target_col
+                    else:
+                        logging.debug(f"Keeping existing mapping for column '{source_col}': "
+                                    f"'{mapping[source_col]}' (score={best_scores[source_col]:.4f}) over "
+                                    f"'{target_col}' (score={score:.4f})")
+                else:
+                    mapping[source_col] = target_col
+                    best_scores[source_col] = score
             else:
                 unmapped_columns.append(source_col)
                 
@@ -127,6 +147,9 @@ class MappingTranslator(BaseTranslator):
         # Initialize or extend provenance list
         if "provenance" not in translated_df.attrs:
             translated_df.attrs["provenance"] = []
+        elif not isinstance(translated_df.attrs["provenance"], list):
+            # Convert existing provenance to list format if it's not already
+            translated_df.attrs["provenance"] = [translated_df.attrs["provenance"]]
         translated_df.attrs["provenance"].append(provenance_entry)
         
         # Restore column-level attributes and add provenance for renamed columns
@@ -142,6 +165,9 @@ class MappingTranslator(BaseTranslator):
                 # Add column-level provenance
                 if "provenance" not in translated_df[target_col].attrs:
                     translated_df[target_col].attrs["provenance"] = []
+                elif not isinstance(translated_df[target_col].attrs["provenance"], list):
+                    # Convert existing provenance to list format if it's not already
+                    translated_df[target_col].attrs["provenance"] = [translated_df[target_col].attrs["provenance"]]
                 
                 column_provenance = {
                     "op": "schema_transform",

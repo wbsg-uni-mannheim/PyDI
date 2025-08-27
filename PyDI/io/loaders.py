@@ -343,6 +343,70 @@ def load_csv(
     )
 
 
+def load_fwf(
+    filepath_or_buffer: Union[str, os.PathLike],
+    *,
+    name: Optional[str] = None,
+    provenance: Optional[Mapping[str, Any]] = None,
+    add_index: bool = True,
+    index_column_name: Optional[str] = None,
+    id_prefix: Optional[str] = None,
+    include_provenance_columns: bool = False,
+    **kwargs: Any,
+) -> pd.DataFrame:
+    """Read a fixed-width formatted file with a provenance-aware wrapper.
+
+    This function wraps pandas.read_fwf() and adds provenance metadata and
+    optional unique identifier columns to the resulting DataFrame.
+
+    Parameters
+    ----------
+    filepath_or_buffer : str or path-like
+        Any valid string path or file-like object.
+    name : str, optional
+        Dataset name for provenance tracking. If not provided, will be
+        inferred from the file path.
+    provenance : dict, optional
+        Additional provenance metadata to include.
+    add_index : bool, default True
+        Whether to add a unique identifier column.
+    index_column_name : str, optional
+        Name for the unique identifier column. If not provided, defaults
+        to ``{name}_id``.
+    id_prefix : str, optional
+        Prefix for unique identifiers. If not provided, defaults to ``{name}-``.
+    include_provenance_columns : bool, default False
+        Whether to include provenance information as DataFrame columns.
+    **kwargs
+        Additional keyword arguments passed to pandas.read_fwf().
+
+    Returns
+    -------
+    pandas.DataFrame
+        A DataFrame with provenance metadata and optional identifier column.
+
+    Examples
+    --------
+    >>> df = load_fwf("data/actors.txt", name="actors")
+    >>> df.attrs["dataset_name"]
+    'actors'
+    >>> df.attrs["provenance"]["reader"]
+    'read_fwf'
+    """
+    return load_with_provenance(
+        pd.read_fwf,
+        filepath_or_buffer,
+        name=name,
+        provenance=provenance,
+        add_index=add_index,
+        index_column_name=index_column_name,
+        id_prefix=id_prefix,
+        include_provenance_columns=include_provenance_columns,
+        reader_name="read_fwf",
+        **kwargs,
+    )
+
+
 def load_json(
     path_or_buf: Union[str, os.PathLike],
     *,
