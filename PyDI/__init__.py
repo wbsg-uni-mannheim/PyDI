@@ -32,18 +32,8 @@ See the documentation in `docs/high_level_design.md` for detailed design
 guidelines and the high‑level API.
 """
 
-from . import (
-    profiling,
-    schemamatching,
-    entitymatching,
-    datatranslation,
-    informationextraction,
-    normalization,
-    fusion,
-    utils,
-)
-
 __all__ = [
+    "io",
     "profiling",
     "schemamatching",
     "entitymatching",

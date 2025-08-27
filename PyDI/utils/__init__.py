@@ -3,8 +3,7 @@ Utility functions for PyDI.
 
 This module exposes generic helper functions that can be reused across
 modules, such as tokenizers and comparators for string similarity, date
-proximity functions, simple normalisation helpers, and a comprehensive
-similarity registry for textdistance metrics.
+proximity functions, normalization utilities, and a similarity registry for textdistance metrics.
 """
 
 from __future__ import annotations
@@ -14,6 +13,28 @@ from datetime import datetime
 from typing import Callable, Optional, Set
 
 import pandas as pd
+
+# Import normalization utilities for convenient access
+from .normalization import (
+    apply_boolean_normalization,
+    apply_currency_parsing,
+    apply_encoding_fixes,
+    apply_html_removal,
+    apply_phone_normalization,
+    apply_text_cleaning,
+    clean_text,
+    extract_numeric,
+    fix_encoding,
+    normalize_boolean,
+    normalize_phone_number,
+    normalize_whitespace,
+    parse_currency,
+    parse_percentage,
+    remove_accents,
+    remove_html_tags,
+    standardize_case,
+    standardize_country_name,
+)
 
 
 def _tokenize(text: str) -> Set[str]:
