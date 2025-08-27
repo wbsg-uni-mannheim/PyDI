@@ -158,19 +158,42 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
             # Try to find matching records
             id_cols_1_extended = id_cols_1 + ([df1.index.name] if df1.index.name else [])
             for id_col in id_cols_1_extended:
-                if id_col and id_col in df1.columns:
-                    matching_rows = df1[df1[id_col] == id1]
-                    if not matching_rows.empty:
-                        record1 = matching_rows.iloc[0]
-                        break
+                if id_col:
+                    if id_col in df1.columns:
+                        matching_rows = df1[df1[id_col] == id1]
+                        if not matching_rows.empty:
+                            record1 = matching_rows.iloc[0]
+                            break
+                    elif df1.index.name == id_col:
+                        # Match using the index
+                        try:
+                            # For MultiIndex, get_level_values
+                            matching_idx = df1.index.get_level_values(id_col) == id1
+                        except (KeyError, AttributeError, TypeError):
+                            # For single index or unnamed index
+                            matching_idx = df1.index == id1
+                        matching_rows = df1[matching_idx]
+                        if not matching_rows.empty:
+                            record1 = matching_rows.iloc[0]
+                            break
             
             id_cols_2_extended = id_cols_2 + ([df2.index.name] if df2.index.name else [])
             for id_col in id_cols_2_extended:
-                if id_col and id_col in df2.columns:
-                    matching_rows = df2[df2[id_col] == id2]
-                    if not matching_rows.empty:
-                        record2 = matching_rows.iloc[0]
-                        break
+                if id_col:
+                    if id_col in df2.columns:
+                        matching_rows = df2[df2[id_col] == id2]
+                        if not matching_rows.empty:
+                            record2 = matching_rows.iloc[0]
+                            break
+                    elif df2.index.name == id_col:
+                        try:
+                            matching_idx = df2.index.get_level_values(id_col) == id2
+                        except (KeyError, AttributeError, TypeError):
+                            matching_idx = df2.index == id2
+                        matching_rows = df2[matching_idx]
+                        if not matching_rows.empty:
+                            record2 = matching_rows.iloc[0]
+                            break
             
             if record1 is None or record2 is None:
                 logging.debug(f"Could not find records for correspondence {id1} <-> {id2}")
