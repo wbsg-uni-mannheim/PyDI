@@ -387,11 +387,16 @@ def load_fwf(
 
     Examples
     --------
-    >>> df = load_fwf("data/actors.txt", name="actors")
+    >>> # Load with explicit column specifications
+    >>> df = load_fwf("data/actors.txt", name="actors", 
+    ...                colspecs=[(0, 10), (10, 20), (20, 30)])
     >>> df.attrs["dataset_name"]
     'actors'
     >>> df.attrs["provenance"]["reader"]
     'read_fwf'
+    >>> 
+    >>> # Or with column widths
+    >>> df = load_fwf("data/actors.txt", name="actors", widths=[10, 10, 10])
     """
     return load_with_provenance(
         pd.read_fwf,

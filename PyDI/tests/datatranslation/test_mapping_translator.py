@@ -207,9 +207,9 @@ class TestMappingTranslator:
         translator = MappingTranslator()
         result = translator.translate(movies_df_for_translation, mapping)
         
-        # Should use the last mapping (title -> title)
-        assert "title" in result.columns
-        assert "name" not in result.columns
+        # Should use the best mapping by score (title -> name, score 0.9)
+        assert "name" in result.columns  
+        assert "title" not in result.columns
     
     def test_multiple_datasets_in_mapping(self, movies_df_for_translation, films_df_for_translation, sample_schema_mapping):
         """Test translation works correctly when mapping contains multiple datasets."""

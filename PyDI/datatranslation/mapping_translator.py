@@ -90,10 +90,16 @@ class MappingTranslator(BaseTranslator):
             if source_col in df.columns:
                 if source_col in mapping:
                     # Compare scores and keep the better mapping
-                    if has_score and score > best_scores[source_col]:
+                    if has_score and source_col in best_scores and score > best_scores[source_col]:
                         logging.info(f"Better mapping found for column '{source_col}' in dataset '{dataset_name}': "
                                    f"'{target_col}' (score={score:.4f}) replacing '{mapping[source_col]}' "
                                    f"(score={best_scores[source_col]:.4f})")
+                        mapping[source_col] = target_col
+                        best_scores[source_col] = score
+                    elif has_score and source_col not in best_scores:
+                        # First time seeing this column with score, replace no-score mapping
+                        logging.info(f"Adding score to mapping for column '{source_col}' in dataset '{dataset_name}': "
+                                   f"'{target_col}' (score={score:.4f}) replacing '{mapping[source_col]}'")
                         mapping[source_col] = target_col
                         best_scores[source_col] = score
                     elif not has_score:
@@ -106,7 +112,8 @@ class MappingTranslator(BaseTranslator):
                                     f"'{target_col}' (score={score:.4f})")
                 else:
                     mapping[source_col] = target_col
-                    best_scores[source_col] = score
+                    if has_score:
+                        best_scores[source_col] = score
             else:
                 unmapped_columns.append(source_col)
                 
