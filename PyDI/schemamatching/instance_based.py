@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from .base import BaseSchemaMatcher, SchemaMapping
+from .base import BaseSchemaMatcher, SchemaMapping, get_schema_columns
 from ..utils import SimilarityRegistry
 
 
@@ -239,13 +239,19 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         source_name = source_dataset.attrs.get("dataset_name", "source")
         target_name = target_dataset.attrs.get("dataset_name", "target")
         
+        # Get schema columns excluding PyDI-generated ID columns
+        source_columns = get_schema_columns(source_dataset)
+        target_columns = get_schema_columns(target_dataset)
+        
         logging.info(f"Instance-based matching: {source_name} -> {target_name}")
+        logging.info(f"Source columns for matching: {source_columns}")
+        logging.info(f"Target columns for matching: {target_columns}")
         
         # Extract values for all columns in both datasets
         all_column_values = {}
         
         # Source dataset columns
-        for col in source_dataset.columns:
+        for col in source_columns:
             values = self._extract_column_values(source_dataset, col, preprocess)
             non_null_ratio = len(values) / len(source_dataset) if len(source_dataset) > 0 else 0
             
@@ -253,7 +259,7 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
                 all_column_values[f"{source_name}.{col}"] = values
         
         # Target dataset columns  
-        for col in target_dataset.columns:
+        for col in target_columns:
             values = self._extract_column_values(target_dataset, col, preprocess)
             non_null_ratio = len(values) / len(target_dataset) if len(target_dataset) > 0 else 0
             
@@ -272,12 +278,12 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
                     vectors[col_key] = self._create_binary_vector(values)
         
         # Compare columns between datasets
-        for source_col in source_dataset.columns:
+        for source_col in source_columns:
             source_key = f"{source_name}.{source_col}"
             if source_key not in vectors:
                 continue
                 
-            for target_col in target_dataset.columns:
+            for target_col in target_columns:
                 target_key = f"{target_name}.{target_col}"
                 if target_key not in vectors:
                     continue

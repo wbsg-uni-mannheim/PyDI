@@ -10,7 +10,7 @@ from typing import Callable, List, Optional, Union
 
 import pandas as pd
 
-from .base import BaseSchemaMatcher, SchemaMapping
+from .base import BaseSchemaMatcher, SchemaMapping, get_schema_columns
 from ..utils import SimilarityRegistry
 
 
@@ -108,10 +108,16 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
         source_name = source_dataset.attrs.get("dataset_name", "source")
         target_name = target_dataset.attrs.get("dataset_name", "target")
         
-        logging.info(f"Matching schemas: {source_name} -> {target_name}")
+        # Get schema columns excluding PyDI-generated ID columns
+        source_columns = get_schema_columns(source_dataset)
+        target_columns = get_schema_columns(target_dataset)
         
-        for source_col in source_dataset.columns:
-            for target_col in target_dataset.columns:
+        logging.info(f"Matching schemas: {source_name} -> {target_name}")
+        logging.info(f"Source columns for matching: {source_columns}")
+        logging.info(f"Target columns for matching: {target_columns}")
+        
+        for source_col in source_columns:
+            for target_col in target_columns:
                 # Prepare strings for comparison
                 source_str = self._prepare_string(source_col)
                 target_str = self._prepare_string(target_col)
