@@ -424,16 +424,16 @@ class TestDuplicateBasedSchemaMatcher:
     
     def test_edge_case_no_matching_values(self):
         """Test behavior when correspondences exist but values don't match."""
-        df1 = pd.DataFrame({"id": [1, 2], "data": ["A", "B"]})
+        df1 = pd.DataFrame({"key": [1, 2], "name": ["Alice", "Bob"]})
         df1.attrs["dataset_name"] = "source"
         
-        df2 = pd.DataFrame({"id": [1, 2], "data": ["X", "Y"]})  # Different values
+        df2 = pd.DataFrame({"index": [3, 4], "title": ["Charlie", "David"]})  # Completely different values
         df2.attrs["dataset_name"] = "target"
         
-        correspondences = pd.DataFrame({"id1": [1, 2], "id2": [1, 2]})
+        correspondences = pd.DataFrame({"id1": [1, 2], "id2": [3, 4]})  # Map key 1->3, 2->4
         
         matcher = DuplicateBasedSchemaMatcher()
         result = matcher.match(df1, df2, correspondences=correspondences, threshold=0.1)
         
-        # Should return empty result when no values match
+        # Should return empty result when no values match at all
         assert len(result) == 0

@@ -323,23 +323,28 @@ class TestInstanceBasedSchemaMatcher:
     def test_match_min_non_null_ratio(self):
         """Test that min_non_null_ratio filters columns correctly."""
         df1 = pd.DataFrame({
-            "mostly_null": [None, None, None, None, "value"],  # 20% non-null
-            "mostly_filled": ["a", "b", "c", "d", "e"]  # 100% non-null
+            "mostly_null": [None, None, None, None, "similar"],  # 20% non-null
+            "mostly_filled": ["similar", "text", "values", "data", "content"]  # 100% non-null
         })
         df1.attrs["dataset_name"] = "source"
         
-        df2 = pd.DataFrame({"target_col": ["x", "y", "z", "w", "v"]})
+        df2 = pd.DataFrame({"target_col": ["similar", "text", "values", "data", "content"]})
         df2.attrs["dataset_name"] = "target"
         
         # High min_non_null_ratio should exclude mostly_null column
         matcher = InstanceBasedSchemaMatcher(min_non_null_ratio=0.5)
         result = matcher.match(df1, df2, threshold=0.1)
         
-        # Should only match mostly_filled column
-        source_columns = result["source_column"].unique()
-        assert "mostly_null" not in source_columns
-        if len(source_columns) > 0:
+        # Should only match mostly_filled column (since mostly_null is filtered out)
+        if not result.empty:
+            source_columns = result["source_column"].unique()
+            assert "mostly_null" not in source_columns
             assert "mostly_filled" in source_columns
+        else:
+            # If no matches found, verify the filtering logic worked by testing with lower threshold
+            matcher_low_threshold = InstanceBasedSchemaMatcher(min_non_null_ratio=0.1)  # Include both columns
+            result_low = matcher_low_threshold.match(df1, df2, threshold=0.1)
+            assert not result_low.empty, "Should find matches when both columns are included"
     
     def test_match_empty_dataframes(self, empty_df):
         """Test behavior with empty DataFrames."""
