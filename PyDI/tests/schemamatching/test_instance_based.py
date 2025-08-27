@@ -39,7 +39,7 @@ class TestInstanceBasedSchemaMatcher:
     
     def test_unsupported_similarity_function(self):
         """Test that unsupported similarity functions raise ValueError."""
-        with pytest.raises(ValueError, match="Unsupported similarity function"):
+        with pytest.raises(ValueError, match="Unknown similarity function"):
             InstanceBasedSchemaMatcher(similarity_function="invalid_function")
     
     def test_extract_column_values_basic(self):
@@ -295,7 +295,7 @@ class TestInstanceBasedSchemaMatcher:
         df2 = pd.DataFrame({"col2": ["word1", "word3"]})
         df2.attrs["dataset_name"] = "target"
         
-        functions = ["cosine", "jaccard", "containment"]
+        functions = ["cosine", "jaccard", "overlap"]
         
         for func in functions:
             matcher = InstanceBasedSchemaMatcher(similarity_function=func)
@@ -417,7 +417,7 @@ class TestInstanceBasedSchemaMatcher:
             assert result.iloc[0]["target_dataset"] == "custom_target"
     
     @pytest.mark.parametrize("vector_method", ["term_frequencies", "binary_occurrence", "tfidf"])
-    @pytest.mark.parametrize("similarity_func", ["cosine", "jaccard", "containment"])
+    @pytest.mark.parametrize("similarity_func", ["cosine", "jaccard", "overlap"])
     def test_all_method_combinations(self, vector_method, similarity_func):
         """Test all combinations of vector methods and similarity functions."""
         df1 = pd.DataFrame({"col1": ["apple pie", "banana split"]})

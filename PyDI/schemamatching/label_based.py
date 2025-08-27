@@ -9,9 +9,9 @@ import re
 from typing import Callable, List, Optional, Union
 
 import pandas as pd
-import textdistance
 
 from .base import BaseSchemaMatcher, SchemaMapping
+from ..utils import SimilarityRegistry
 
 
 class LabelBasedSchemaMatcher(BaseSchemaMatcher):
@@ -34,8 +34,9 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
         Parameters
         ----------
         similarity_function : str, optional
-            Similarity function to use. Options: "jaccard", "levenshtein", 
-            "jaro_winkler", "cosine", "overlap". Default is "jaccard".
+            Similarity function to use. Any function from SimilarityRegistry.
+            Recommended: "jaccard", "levenshtein", "jaro_winkler", "cosine", "overlap".
+            Default is "jaccard".
         preprocess : callable, optional
             Function to preprocess column names before comparison.
         tokenize : bool, optional
@@ -45,19 +46,12 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
         self.preprocess = preprocess
         self.tokenize = tokenize
         
-        # Initialize similarity function
-        if similarity_function == "jaccard":
-            self._sim_func = textdistance.jaccard
-        elif similarity_function == "levenshtein":
-            self._sim_func = textdistance.levenshtein.normalized_similarity
-        elif similarity_function == "jaro_winkler":
-            self._sim_func = textdistance.jaro_winkler
-        elif similarity_function == "cosine":
-            self._sim_func = textdistance.cosine
-        elif similarity_function == "overlap":
-            self._sim_func = textdistance.overlap.normalized_similarity
-        else:
-            raise ValueError(f"Unsupported similarity function: {similarity_function}")
+        # Get similarity function from registry
+        try:
+            self._sim_func = SimilarityRegistry.get_function(similarity_function)
+        except ValueError as e:
+            available_funcs = SimilarityRegistry.get_recommended_functions("schema_matching", "label")
+            raise ValueError(f"{e}. Recommended functions for label-based matching: {available_funcs}")
     
     def _prepare_string(self, text: str) -> Union[str, List[str]]:
         """Prepare string for similarity calculation."""

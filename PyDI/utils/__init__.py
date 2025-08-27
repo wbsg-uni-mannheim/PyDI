@@ -3,7 +3,8 @@ Utility functions for PyDI.
 
 This module exposes generic helper functions that can be reused across
 modules, such as tokenizers and comparators for string similarity, date
-proximity functions, and simple normalisation helpers.
+proximity functions, simple normalisation helpers, and a comprehensive
+similarity registry for textdistance metrics.
 """
 
 from __future__ import annotations
@@ -104,3 +105,18 @@ def remove_punctuation(text: str) -> str:
     if not isinstance(text, str):
         return None
     return text.translate(str.maketrans("", "", string.punctuation))
+
+
+# Import similarity registry utilities
+from .similarity_registry import SimilarityRegistry, get_similarity_function, list_similarity_functions
+
+__all__ = [
+    "jaccard",
+    "date_within_years", 
+    "lowercase",
+    "strip",
+    "remove_punctuation",
+    "SimilarityRegistry",
+    "get_similarity_function",
+    "list_similarity_functions",
+]

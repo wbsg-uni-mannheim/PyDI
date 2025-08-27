@@ -31,7 +31,7 @@ class TestLabelBasedSchemaMatcher:
     
     def test_unsupported_similarity_function(self):
         """Test that unsupported similarity functions raise ValueError."""
-        with pytest.raises(ValueError, match="Unsupported similarity function"):
+        with pytest.raises(ValueError, match="Unknown similarity function"):
             LabelBasedSchemaMatcher(similarity_function="invalid_function")
     
     def test_supported_similarity_functions(self):

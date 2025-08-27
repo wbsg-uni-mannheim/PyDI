@@ -9,9 +9,9 @@ from collections import defaultdict
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import pandas as pd
-import textdistance
 
 from .base import BaseSchemaMatcher, SchemaMapping
+from ..utils import SimilarityRegistry
 
 
 class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
@@ -51,7 +51,8 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
             Whether to ignore zero or empty values when voting.
         similarity_function : str, optional
             Similarity function for fuzzy matching when value_comparison="fuzzy".
-            Options: "levenshtein", "jaro_winkler", "jaccard". Default is None (exact matching).
+            Any function from SimilarityRegistry. Recommended: "levenshtein", "jaro_winkler", "jaccard".
+            Default is None (exact matching).
         similarity_threshold : float, optional
             Minimum similarity score for fuzzy matching. Default is 0.8.
         """
@@ -71,16 +72,13 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         if value_comparison == "fuzzy" and similarity_function is None:
             raise ValueError("similarity_function must be specified when using fuzzy value comparison")
             
-        if similarity_function and similarity_function not in ["levenshtein", "jaro_winkler", "jaccard"]:
-            raise ValueError(f"Unsupported similarity function: {similarity_function}")
-            
         # Initialize similarity function for fuzzy matching
-        if similarity_function == "levenshtein":
-            self._sim_func = textdistance.levenshtein.normalized_similarity
-        elif similarity_function == "jaro_winkler":
-            self._sim_func = textdistance.jaro_winkler
-        elif similarity_function == "jaccard":
-            self._sim_func = textdistance.jaccard
+        if similarity_function:
+            try:
+                self._sim_func = SimilarityRegistry.get_function(similarity_function)
+            except ValueError as e:
+                available_funcs = SimilarityRegistry.get_recommended_functions("schema_matching", "duplicate")
+                raise ValueError(f"{e}. Recommended functions for duplicate-based matching: {available_funcs}")
         else:
             self._sim_func = None
     

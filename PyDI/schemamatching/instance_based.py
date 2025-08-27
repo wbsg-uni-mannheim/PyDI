@@ -10,11 +10,11 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 import numpy as np
 import pandas as pd
-import textdistance
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from .base import BaseSchemaMatcher, SchemaMapping
+from ..utils import SimilarityRegistry
 
 
 class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
@@ -45,8 +45,8 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
             Method for creating vectors. Options: "term_frequencies", 
             "binary_occurrence", "tfidf". Default is "term_frequencies".
         similarity_function : str, optional
-            Similarity function for vectors. Options: "cosine", "jaccard",
-            "containment". Default is "cosine".
+            Similarity function for vectors. Any function from SimilarityRegistry.
+            Recommended: "cosine", "jaccard", "overlap". Default is "cosine".
         max_sample_size : int, optional
             Maximum number of values to sample from each column for analysis.
         min_non_null_ratio : float, optional
@@ -60,8 +60,12 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         if vector_creation_method not in ["term_frequencies", "binary_occurrence", "tfidf"]:
             raise ValueError(f"Unsupported vector creation method: {vector_creation_method}")
         
-        if similarity_function not in ["cosine", "jaccard", "containment"]:
-            raise ValueError(f"Unsupported similarity function: {similarity_function}")
+        # Validate similarity function exists in registry
+        try:
+            SimilarityRegistry.get_function(similarity_function)
+        except ValueError as e:
+            available_funcs = SimilarityRegistry.get_recommended_functions("schema_matching", "instance")
+            raise ValueError(f"{e}. Recommended functions for instance-based matching: {available_funcs}")
     
     def _extract_column_values(self, df: pd.DataFrame, column: str, preprocess: Optional[Callable[[str], str]] = None) -> List[str]:
         """Extract and preprocess values from a column."""
@@ -161,9 +165,10 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         if not vec1 or not vec2:
             return 0.0
         
-        # For binary vectors (all values are 1.0), use textdistance
+        # For binary vectors (all values are 1.0), use similarity registry
         if all(val == 1.0 for val in vec1.values()) and all(val == 1.0 for val in vec2.values()):
-            return float(textdistance.cosine(vec1.keys(), vec2.keys()))
+            cosine_func = SimilarityRegistry.get_function("cosine")
+            return float(cosine_func(vec1.keys(), vec2.keys()))
         
         # For weighted vectors, use original implementation
         # Get common terms
@@ -187,16 +192,18 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         if not vec1 or not vec2:
             return 0.0
         
-        # Use textdistance for all Jaccard calculations
-        return float(textdistance.jaccard(vec1.keys(), vec2.keys()))
+        # Use similarity registry for Jaccard calculations
+        jaccard_func = SimilarityRegistry.get_function("jaccard")
+        return float(jaccard_func(vec1.keys(), vec2.keys()))
     
     def _calculate_containment_similarity(self, vec1: Dict[str, float], vec2: Dict[str, float]) -> float:
         """Calculate containment similarity using textdistance overlap function."""
         if not vec1 or not vec2:
             return 0.0
         
-        # Use textdistance overlap which implements containment similarity
-        return float(textdistance.overlap(vec1.keys(), vec2.keys()))
+        # Use similarity registry overlap function
+        overlap_func = SimilarityRegistry.get_function("overlap")
+        return float(overlap_func(vec1.keys(), vec2.keys()))
     
     def match(
         self,
@@ -280,8 +287,17 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
                     similarity = self._calculate_cosine_similarity(vectors[source_key], vectors[target_key])
                 elif self.similarity_function == "jaccard":
                     similarity = self._calculate_jaccard_similarity(vectors[source_key], vectors[target_key])
-                elif self.similarity_function == "containment":
+                elif self.similarity_function == "overlap":
                     similarity = self._calculate_containment_similarity(vectors[source_key], vectors[target_key])
+                else:
+                    # For any other similarity function from registry
+                    sim_func = SimilarityRegistry.get_function(self.similarity_function)
+                    if all(val == 1.0 for val in vectors[source_key].values()) and all(val == 1.0 for val in vectors[target_key].values()):
+                        # Binary vectors - use function directly on keys
+                        similarity = float(sim_func(vectors[source_key].keys(), vectors[target_key].keys()))
+                    else:
+                        # Weighted vectors - fall back to cosine for non-supported functions
+                        similarity = self._calculate_cosine_similarity(vectors[source_key], vectors[target_key])
                 
                 if similarity >= threshold:
                     results.append({
