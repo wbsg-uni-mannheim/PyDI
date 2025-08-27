@@ -59,7 +59,7 @@ class LabelBasedSchemaMatcher(BaseSchemaMatcher):
             text = self.preprocess(text)
         
         if self.tokenize:
-            # Tokenize on non-alphabetic characters (including underscores, numbers, etc.)
+            # Tokenize by extracting alphabetic sequences (i.e., contiguous letters)
             tokens = re.findall(r'[a-zA-Z]+', text.lower())
             return tokens
         return text
