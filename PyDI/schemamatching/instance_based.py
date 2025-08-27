@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 import numpy as np
 import pandas as pd
+import textdistance
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -21,7 +22,12 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
     
     This matcher analyzes the actual values in columns to determine
     correspondences. It creates vector representations of columns based
-    on their value distributions and uses vector space similarity measures.
+    on their value distributions and uses similarity measures from the
+    textdistance package for improved performance and consistency.
+    
+    For binary vectors, textdistance functions are used directly.
+    For weighted vectors (term frequencies, TF-IDF), custom implementations
+    are retained for accuracy with weighted calculations.
     """
     
     def __init__(
@@ -147,10 +153,19 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         return vectors
     
     def _calculate_cosine_similarity(self, vec1: Dict[str, float], vec2: Dict[str, float]) -> float:
-        """Calculate cosine similarity between two vectors."""
+        """Calculate cosine similarity between two vectors.
+        
+        For binary vectors, uses textdistance.cosine for efficiency.
+        For weighted vectors, uses custom implementation for accuracy.
+        """
         if not vec1 or not vec2:
             return 0.0
         
+        # For binary vectors (all values are 1.0), use textdistance
+        if all(val == 1.0 for val in vec1.values()) and all(val == 1.0 for val in vec2.values()):
+            return float(textdistance.cosine(vec1.keys(), vec2.keys()))
+        
+        # For weighted vectors, use original implementation
         # Get common terms
         common_terms = set(vec1.keys()) & set(vec2.keys())
         if not common_terms:
@@ -168,34 +183,20 @@ class InstanceBasedSchemaMatcher(BaseSchemaMatcher):
         return dot_product / (magnitude1 * magnitude2)
     
     def _calculate_jaccard_similarity(self, vec1: Dict[str, float], vec2: Dict[str, float]) -> float:
-        """Calculate Jaccard similarity between two vectors."""
+        """Calculate Jaccard similarity between two vectors using textdistance."""
         if not vec1 or not vec2:
             return 0.0
         
-        terms1 = set(vec1.keys())
-        terms2 = set(vec2.keys())
-        
-        intersection = len(terms1 & terms2)
-        union = len(terms1 | terms2)
-        
-        return intersection / union if union > 0 else 0.0
+        # Use textdistance for all Jaccard calculations
+        return float(textdistance.jaccard(vec1.keys(), vec2.keys()))
     
     def _calculate_containment_similarity(self, vec1: Dict[str, float], vec2: Dict[str, float]) -> float:
-        """Calculate containment similarity (maximum of containment in both directions)."""
+        """Calculate containment similarity using textdistance overlap function."""
         if not vec1 or not vec2:
             return 0.0
         
-        terms1 = set(vec1.keys())
-        terms2 = set(vec2.keys())
-        
-        if not terms1 or not terms2:
-            return 0.0
-        
-        # Calculate containment in both directions
-        containment_1_in_2 = len(terms1 & terms2) / len(terms1)
-        containment_2_in_1 = len(terms1 & terms2) / len(terms2)
-        
-        return max(containment_1_in_2, containment_2_in_1)
+        # Use textdistance overlap which implements containment similarity
+        return float(textdistance.overlap(vec1.keys(), vec2.keys()))
     
     def match(
         self,

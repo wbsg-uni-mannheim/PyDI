@@ -9,6 +9,7 @@ from collections import defaultdict
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import pandas as pd
+import textdistance
 
 from .base import BaseSchemaMatcher, SchemaMapping
 
@@ -20,6 +21,9 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
     to determine schema correspondences. For each pair of duplicate records,
     it compares attribute values and aggregates votes to determine which
     attributes correspond across schemas.
+    
+    Supports both exact and fuzzy string matching using the textdistance package,
+    enabling more flexible matching of similar but not identical values.
     """
     
     def __init__(
@@ -28,6 +32,8 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
         value_comparison: str = "exact",
         min_votes: int = 1,
         ignore_zero_values: bool = True,
+        similarity_function: Optional[str] = None,
+        similarity_threshold: float = 0.8,
     ) -> None:
         """Initialize the duplicate-based schema matcher.
         
@@ -37,23 +43,46 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
             Method for aggregating votes. Options: "majority", "weighted".
             Default is "majority".
         value_comparison : str, optional
-            Method for comparing values. Options: "exact", "normalized".
+            Method for comparing values. Options: "exact", "normalized", "fuzzy".
             Default is "exact".
         min_votes : int, optional
             Minimum number of votes required for a correspondence.
         ignore_zero_values : bool, optional
             Whether to ignore zero or empty values when voting.
+        similarity_function : str, optional
+            Similarity function for fuzzy matching when value_comparison="fuzzy".
+            Options: "levenshtein", "jaro_winkler", "jaccard". Default is None (exact matching).
+        similarity_threshold : float, optional
+            Minimum similarity score for fuzzy matching. Default is 0.8.
         """
         self.vote_aggregation = vote_aggregation
         self.value_comparison = value_comparison
         self.min_votes = min_votes
         self.ignore_zero_values = ignore_zero_values
+        self.similarity_function = similarity_function
+        self.similarity_threshold = similarity_threshold
         
         if vote_aggregation not in ["majority", "weighted"]:
             raise ValueError(f"Unsupported vote aggregation: {vote_aggregation}")
         
-        if value_comparison not in ["exact", "normalized"]:
+        if value_comparison not in ["exact", "normalized", "fuzzy"]:
             raise ValueError(f"Unsupported value comparison: {value_comparison}")
+            
+        if value_comparison == "fuzzy" and similarity_function is None:
+            raise ValueError("similarity_function must be specified when using fuzzy value comparison")
+            
+        if similarity_function and similarity_function not in ["levenshtein", "jaro_winkler", "jaccard"]:
+            raise ValueError(f"Unsupported similarity function: {similarity_function}")
+            
+        # Initialize similarity function for fuzzy matching
+        if similarity_function == "levenshtein":
+            self._sim_func = textdistance.levenshtein.normalized_similarity
+        elif similarity_function == "jaro_winkler":
+            self._sim_func = textdistance.jaro_winkler
+        elif similarity_function == "jaccard":
+            self._sim_func = textdistance.jaccard
+        else:
+            self._sim_func = None
     
     def _normalize_value(self, value: Any, preprocess: Optional[Callable[[str], str]] = None) -> str:
         """Normalize a value for comparison."""
@@ -86,7 +115,18 @@ class DuplicateBasedSchemaMatcher(BaseSchemaMatcher):
             if norm_val2 in ["", "0", "0.0", "nan", "null", "none"]:
                 return False
         
-        return norm_val1 == norm_val2
+        # Exact matching (original behavior)
+        if self.value_comparison in ["exact", "normalized"]:
+            return norm_val1 == norm_val2
+        
+        # Fuzzy matching using textdistance
+        elif self.value_comparison == "fuzzy":
+            if not norm_val1 or not norm_val2:
+                return False
+            similarity = self._sim_func(norm_val1, norm_val2)
+            return similarity >= self.similarity_threshold
+        
+        return False
     
     def _collect_votes(
         self,

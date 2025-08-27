@@ -31,6 +31,18 @@ class TestDuplicateBasedSchemaMatcher:
         assert matcher.value_comparison == "normalized"
         assert matcher.min_votes == 3
         assert matcher.ignore_zero_values is False
+        
+    def test_initialization_fuzzy_matching(self):
+        """Test initialization with fuzzy matching parameters."""
+        matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy",
+            similarity_function="jaro_winkler",
+            similarity_threshold=0.7
+        )
+        assert matcher.value_comparison == "fuzzy"
+        assert matcher.similarity_function == "jaro_winkler"
+        assert matcher.similarity_threshold == 0.7
+        assert matcher._sim_func is not None
     
     def test_unsupported_vote_aggregation(self):
         """Test that unsupported vote aggregation methods raise ValueError."""
@@ -41,6 +53,19 @@ class TestDuplicateBasedSchemaMatcher:
         """Test that unsupported value comparison methods raise ValueError."""
         with pytest.raises(ValueError, match="Unsupported value comparison"):
             DuplicateBasedSchemaMatcher(value_comparison="invalid_method")
+            
+    def test_fuzzy_matching_requires_similarity_function(self):
+        """Test that fuzzy matching requires a similarity function."""
+        with pytest.raises(ValueError, match="similarity_function must be specified when using fuzzy value comparison"):
+            DuplicateBasedSchemaMatcher(value_comparison="fuzzy")
+            
+    def test_unsupported_similarity_function(self):
+        """Test that unsupported similarity functions raise ValueError."""
+        with pytest.raises(ValueError, match="Unsupported similarity function"):
+            DuplicateBasedSchemaMatcher(
+                value_comparison="fuzzy",
+                similarity_function="invalid_function"
+            )
     
     def test_normalize_value_basic(self):
         """Test basic value normalization."""
@@ -113,6 +138,78 @@ class TestDuplicateBasedSchemaMatcher:
         # Should match zero/empty values
         assert matcher._values_match("0", "0") is True
         assert matcher._values_match("", "") is True
+        
+    def test_values_match_fuzzy_jaro_winkler(self):
+        """Test fuzzy value matching with Jaro-Winkler similarity."""
+        matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy",
+            similarity_function="jaro_winkler",
+            similarity_threshold=0.8
+        )
+        
+        # Similar strings should match
+        assert matcher._values_match("Apple Inc.", "Apple Incorporated") is True
+        assert matcher._values_match("Microsoft Corp", "Microsoft Corporation") is True
+        
+        # Dissimilar strings should not match
+        assert matcher._values_match("Apple", "Google") is False
+        
+        # Empty strings should not match
+        assert matcher._values_match("", "anything") is False
+        assert matcher._values_match("something", "") is False
+        
+    def test_values_match_fuzzy_levenshtein(self):
+        """Test fuzzy value matching with Levenshtein similarity."""
+        matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy", 
+            similarity_function="levenshtein",
+            similarity_threshold=0.7
+        )
+        
+        # Similar strings should match
+        assert matcher._values_match("color", "colour") is True
+        assert matcher._values_match("theater", "theatre") is True
+        
+        # Very different strings should not match
+        assert matcher._values_match("cat", "elephant") is False
+        
+    def test_values_match_fuzzy_jaccard(self):
+        """Test fuzzy value matching with Jaccard similarity."""
+        matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy",
+            similarity_function="jaccard", 
+            similarity_threshold=0.5
+        )
+        
+        # Strings with common tokens should match
+        assert matcher._values_match("New York City", "New York") is True
+        assert matcher._values_match("data science", "science data") is True
+        
+        # Strings with no common tokens should not match
+        assert matcher._values_match("hello", "world") is False
+        
+    def test_values_match_fuzzy_threshold_filtering(self):
+        """Test that fuzzy matching respects similarity thresholds."""
+        # High threshold - strict matching
+        strict_matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy",
+            similarity_function="jaro_winkler",
+            similarity_threshold=0.9
+        )
+        
+        # Low threshold - lenient matching  
+        lenient_matcher = DuplicateBasedSchemaMatcher(
+            value_comparison="fuzzy",
+            similarity_function="jaro_winkler", 
+            similarity_threshold=0.5
+        )
+        
+        # This pair should match with lenient but not strict threshold
+        test_str1 = "Apple Inc"
+        test_str2 = "Apple Corporation"
+        
+        assert lenient_matcher._values_match(test_str1, test_str2) is True
+        assert strict_matcher._values_match(test_str1, test_str2) is False
     
     def test_collect_votes_basic(self, sample_movies_df, sample_films_df, sample_correspondences_df):
         """Test basic vote collection from correspondences."""
@@ -312,6 +409,54 @@ class TestDuplicateBasedSchemaMatcher:
             
             # Should not raise errors
             assert isinstance(result, pd.DataFrame)
+    
+    def test_match_fuzzy_value_comparison(self):
+        """Test matching with fuzzy value comparison methods."""
+        # Create test data with similar but not identical company names
+        df1 = pd.DataFrame({
+            "company_id": [1, 2, 3], 
+            "company_name": ["Apple Inc.", "Microsoft Corp", "Google LLC"],
+            "revenue": [100000, 200000, 300000]
+        })
+        df1.attrs["dataset_name"] = "companies1"
+        
+        df2 = pd.DataFrame({
+            "org_id": [1, 2, 3],
+            "organization_name": ["Apple Incorporated", "Microsoft Corporation", "Alphabet Inc."],
+            "total_revenue": [100000, 200000, 300000]
+        })
+        df2.attrs["dataset_name"] = "companies2"
+        
+        correspondences = pd.DataFrame({"id1": [1, 2, 3], "id2": [1, 2, 3]})
+        
+        # Test different fuzzy similarity functions
+        fuzzy_methods = [
+            ("jaro_winkler", 0.7),
+            ("levenshtein", 0.6), 
+            ("jaccard", 0.3)
+        ]
+        
+        for similarity_func, threshold in fuzzy_methods:
+            matcher = DuplicateBasedSchemaMatcher(
+                value_comparison="fuzzy",
+                similarity_function=similarity_func,
+                similarity_threshold=threshold
+            )
+            result = matcher.match(df1, df2, correspondences=correspondences, threshold=0.1)
+            
+            # Should find at least some matches with fuzzy matching
+            assert isinstance(result, pd.DataFrame)
+            
+            # Should find more matches than exact matching would
+            exact_matcher = DuplicateBasedSchemaMatcher(value_comparison="exact")
+            exact_result = exact_matcher.match(df1, df2, correspondences=correspondences, threshold=0.1)
+            
+            # Fuzzy should find at least as many matches as exact (likely more)
+            assert len(result) >= len(exact_result)
+            
+            # Check that results have correct structure  
+            expected_columns = ["source_dataset", "source_column", "target_dataset", "target_column", "score", "notes"]
+            assert all(col in result.columns for col in expected_columns)
     
     def test_match_threshold_filtering(self):
         """Test that threshold parameter filters results correctly."""
