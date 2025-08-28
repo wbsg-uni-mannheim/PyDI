@@ -45,6 +45,13 @@ def ensure_record_ids(df: pd.DataFrame) -> pd.DataFrame:
         
         # Update provenance
         provenance = df.attrs.get("provenance", [])
+        
+        # Handle case where provenance might be a dict (from older loaders)
+        if isinstance(provenance, dict):
+            provenance = [provenance]
+        elif not isinstance(provenance, list):
+            provenance = []
+            
         provenance.append({
             "op": "ensure_record_ids",
             "params": {"dataset_name": dataset_name},
