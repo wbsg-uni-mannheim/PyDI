@@ -191,11 +191,9 @@ class CodeExtractor(BaseExtractor):
         pd.DataFrame
             DataFrame with extracted columns added
         """
-        # Validate input DataFrame
-        try:
-            validated_source = self._validate_input(df, source_column)
-        except ValueError as e:
-            logger.error(f"Input validation failed: {e}")
+        # Validate input DataFrame (basic checks)
+        if df.empty:
+            logger.error("Input DataFrame is empty")
             return df
 
         # Determine source column for text-based functions

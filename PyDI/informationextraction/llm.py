@@ -106,7 +106,7 @@ class LLMExtractor(BaseExtractor):
         super().__init__(out_dir=out_dir, debug=debug)
 
         self.chat_model = chat_model
-        self.source_column = source_column
+        self.default_source = source_column
         self.system_prompt = system_prompt
         self.schema = schema
         self.few_shots = few_shots or []
@@ -334,7 +334,7 @@ class LLMExtractor(BaseExtractor):
             return df
 
         # Determine source column
-        extraction_source = source_column or self.source_column
+        extraction_source = source_column or self.default_source
 
         if extraction_source not in df.columns:
             logger.error(

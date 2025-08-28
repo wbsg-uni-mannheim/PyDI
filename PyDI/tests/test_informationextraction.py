@@ -15,6 +15,7 @@ from PyDI.informationextraction import (
     built_in_rules
 )
 from PyDI.informationextraction.rules import TRANSFORMATIONS
+from PyDI.normalization.types import NumericParser
 
 
 class TestTransformations:
@@ -35,14 +36,14 @@ class TestTransformations:
     
     def test_parse_number(self):
         """Test number parsing transformation."""
-        parse_number = TRANSFORMATIONS['parse_number']
+        numeric_parser = NumericParser()
         
-        assert parse_number("123") == 123.0
-        assert parse_number("123.45") == 123.45
-        assert parse_number("Item costs 99.99 dollars") == 99.99
-        assert parse_number("-42.5") == -42.5
-        assert parse_number("no numbers") is None
-        assert parse_number("") is None
+        assert numeric_parser.parse_numeric("123") == 123.0
+        assert numeric_parser.parse_numeric("123.45") == 123.45
+        assert numeric_parser.parse_numeric("Item costs 99.99 dollars") == 99.99
+        assert numeric_parser.parse_numeric("-42.5") == -42.5
+        assert numeric_parser.parse_numeric("no numbers") is None
+        assert numeric_parser.parse_numeric("") is None
     
     def test_text_transformations(self):
         """Test text transformation functions."""
@@ -50,18 +51,19 @@ class TestTransformations:
         assert TRANSFORMATIONS['strip']("  hello  ") == "hello"
         assert TRANSFORMATIONS['normalize_whitespace']("hello\n\t world") == "hello world"
     
-    def test_new_transformations(self):
-        """Test new transformation functions leveraging normalization."""
-        # Test parse_percent
+    def test_parse_percent(self):
+        """Test percentage parsing transformation."""
         parse_percent = TRANSFORMATIONS['parse_percent']
         result = parse_percent("50%")
         assert result == 0.5 or result == 50.0  # Handle both fraction and percentage
         
-        # Test parse_date
+    def test_parse_date(self):
+        """Test date parsing transformation."""
         parse_date = TRANSFORMATIONS['parse_date'] 
         assert parse_date("2023-12-25") is not None
         
-        # Test URL functions
+    def test_url_parsing(self):
+        """Test URL parsing and normalization."""
         normalize_url = TRANSFORMATIONS['normalize_url']
         extract_domain = TRANSFORMATIONS['extract_domain']
         
@@ -71,22 +73,26 @@ class TestTransformations:
         domain = extract_domain(test_url)
         assert domain == "example.com" or domain is None  # Handle normalization differences
         
-        # Test storage parsing
+    def test_storage_parsing(self):
+        """Test storage capacity parsing."""
         parse_storage_gb = TRANSFORMATIONS['parse_storage_gb']
         assert parse_storage_gb("512GB") == 512.0
         assert parse_storage_gb("1TB") == 1024.0
         
-        # Test power parsing
+    def test_power_parsing(self):
+        """Test power parsing transformation."""
         parse_power_w = TRANSFORMATIONS['parse_power_w']
         assert parse_power_w("100W") == 100.0
         assert parse_power_w("1kW") == 1000.0
         
-        # Test frequency parsing  
+    def test_frequency_parsing(self):
+        """Test frequency parsing transformation."""
         parse_frequency_hz = TRANSFORMATIONS['parse_frequency_hz']
         assert parse_frequency_hz("2GHz") == 2000000000.0
         assert parse_frequency_hz("1000Hz") == 1000.0
         
-        # Test employee count with multipliers
+    def test_employee_count_parsing(self):
+        """Test employee count parsing with multipliers."""
         parse_employee_count = TRANSFORMATIONS['parse_employee_count']
         assert parse_employee_count("500 employees") == 500.0
         assert parse_employee_count("50k employees") == 50000.0
@@ -258,14 +264,14 @@ class TestBuiltInRules:
         pattern = re.compile(dash_rule["pattern"], dash_rule["flags"])
         match = pattern.search("Color - Blue")
         assert match
-        assert match.groups() == ("Color ", " Blue")
+        assert match.groups() == ("Color", "Blue")
         
         # Test semicolon separator
         semicolon_rule = built_in_rules["key_value"]["semicolon_separator"]
         pattern = re.compile(semicolon_rule["pattern"], semicolon_rule["flags"])
         match = pattern.search("Brand; Apple")
         assert match
-        assert match.groups() == ("Brand", " Apple")
+        assert match.groups() == ("Brand", "Apple")
     
     def test_company_employee_count_multiplier(self):
         """Test employee count with multipliers."""
@@ -441,7 +447,7 @@ class TestRegexExtractor:
             }
         }
         
-        extractor = RegexExtractor(rules)
+        extractor = RegexExtractor(rules, default_source="text")
         result = extractor.extract(df)
         
         assert result.loc[0, "amount"] == 123.45

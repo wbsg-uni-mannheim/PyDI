@@ -133,6 +133,7 @@ def parse_power_w(text: str) -> Optional[float]:
             elif unit == 'W':
                 return value
             elif unit == 'MW':
+
                 return value / 1000
         
         return None
@@ -570,7 +571,7 @@ built_in_rules: Dict[str, Dict[str, Dict[str, Union[str, List[str], int, Callabl
             "postprocess": "strip",
         },
         "dash_separator": {
-            "pattern": r"([^-\n]+?)\s*-\s*([^\n]+)",
+            "pattern": r"([^-\n]+)-\s*([^\n]+)",
             "flags": 0,
             "group": (1, 2),
             "postprocess": "strip",

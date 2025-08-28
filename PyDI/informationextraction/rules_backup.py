@@ -145,20 +145,23 @@ def parse_frequency_hz(text: str) -> Optional[float]:
     if not text or not isinstance(text, str):
         return None
     try:
+        normalized = normalize_units(text)
+        if not normalized:
+            return None
+        
         # Extract frequency value and convert to Hz
-        match = re.search(r'(\d+(?:\.\d+)?)\s*(GHz|MHz|kHz|Hz)\b', text, re.IGNORECASE)
+        match = re.search(r'(\d+(?:\.\d+)?)\s*(GHz|MHz|kHz|Hz)', normalized.upper())
         if match:
             value, unit = match.groups()
             value = float(value)
-            unit = unit.upper()
             
-            if unit == 'GHZ':
+            if unit == 'GHz':
                 return value * 1000000000
-            elif unit == 'MHZ':
+            elif unit == 'MHz':
                 return value * 1000000
-            elif unit == 'KHZ':
+            elif unit == 'kHz':
                 return value * 1000
-            elif unit == 'HZ':
+            elif unit == 'Hz':
                 return value
         
         return None
@@ -570,7 +573,7 @@ built_in_rules: Dict[str, Dict[str, Dict[str, Union[str, List[str], int, Callabl
             "postprocess": "strip",
         },
         "dash_separator": {
-            "pattern": r"([^-\n]+?)\s*-\s*([^\n]+)",
+            "pattern": r"([^-\n]+)-\s*([^\n]+)",
             "flags": 0,
             "group": (1, 2),
             "postprocess": "strip",

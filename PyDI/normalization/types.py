@@ -641,8 +641,35 @@ class NumericParser:
             self.simple_integer_pattern
         ]
 
+        # First try to match the entire text exactly (for full numeric strings)
         for pattern in patterns:
             match = pattern.fullmatch(text)
+            if match:
+                try:
+                    value_str = match.group()
+                    # Remove configured thousands separator and common alternates
+                    value_str = value_str.replace(self.thousands_separator, '')
+                    for sep in self.extra_thousands_separators:
+                        value_str = value_str.replace(sep, '')
+                    # Convert configured decimal separator to '.'
+                    if self.decimal_separator != '.':
+                        value_str = value_str.replace(
+                            self.decimal_separator, '.')
+                    # Try integer first, then float
+                    try:
+                        if '.' not in value_str and 'e' not in value_str.lower():
+                            val = int(value_str)
+                        else:
+                            val = float(value_str)
+                        return -val if is_negative_parentheses else val
+                    except ValueError:
+                        continue
+                except Exception:
+                    continue
+
+        # If no full match found, try to find embedded numbers using search
+        for pattern in patterns:
+            match = pattern.search(text)
             if match:
                 try:
                     value_str = match.group()
