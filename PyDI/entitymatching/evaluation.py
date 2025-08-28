@@ -563,3 +563,96 @@ class EntityMatchingEvaluator:
             json.dump(summary, f, indent=2)
         
         logging.info(f"Cluster report written to {out_dir}")
+    
+    @staticmethod
+    def create_cluster_size_distribution(
+        correspondences: CorrespondenceSet,
+        *,
+        out_dir: Optional[str] = None,
+    ) -> pd.DataFrame:
+        """Create cluster size distribution from correspondences.
+        
+        Analyzes the distribution of cluster sizes by creating connected components
+        from the correspondences and counting the frequency of each cluster size.
+        This follows the Winter framework approach for cluster size analysis.
+        
+        Parameters
+        ----------
+        correspondences : CorrespondenceSet
+            DataFrame with id1, id2, score, notes columns containing
+            entity correspondences to analyze.
+        out_dir : str, optional
+            Directory to write cluster size distribution. If provided, saves
+            the distribution as a CSV file.
+            
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with cluster size distribution containing columns:
+            - cluster_size: int, size of the cluster (number of entities)
+            - frequency: int, number of clusters with this size
+            - percentage: float, percentage of total clusters with this size
+            
+        Raises
+        ------
+        ValueError
+            If correspondence set is empty or missing required columns.
+        """
+        if correspondences.empty:
+            raise ValueError("Empty correspondence set provided")
+            
+        required_cols = ["id1", "id2", "score"]
+        for col in required_cols:
+            if col not in correspondences.columns:
+                raise ValueError(f"Correspondences missing required column: {col}")
+        
+        # Create graph from correspondences to find connected components
+        G = nx.Graph()
+        
+        # Add edges (no weights needed for clustering analysis)
+        for _, row in correspondences.iterrows():
+            G.add_edge(row["id1"], row["id2"])
+        
+        # Find connected components (clusters)
+        clusters = list(nx.connected_components(G))
+        
+        # Count cluster sizes
+        size_distribution = {}
+        for cluster in clusters:
+            cluster_size = len(cluster)
+            size_distribution[cluster_size] = size_distribution.get(cluster_size, 0) + 1
+        
+        # Create distribution DataFrame
+        distribution_data = []
+        total_clusters = len(clusters)
+        
+        for cluster_size in sorted(size_distribution.keys()):
+            frequency = size_distribution[cluster_size]
+            percentage = (frequency / total_clusters * 100) if total_clusters > 0 else 0.0
+            distribution_data.append({
+                "cluster_size": cluster_size,
+                "frequency": frequency,
+                "percentage": percentage
+            })
+        
+        distribution_df = pd.DataFrame(distribution_data)
+        
+        # Log distribution to console
+        logging.info(f"Cluster Size Distribution of {total_clusters} clusters:")
+        logging.info("\tCluster Size\t| Frequency\t| Percentage")
+        logging.info("\t" + "─" * 50)
+        
+        for _, row in distribution_df.iterrows():
+            size_str = f"{int(row['cluster_size'])}"
+            freq_str = f"{int(row['frequency'])}"
+            perc_str = f"{row['percentage']:.2f}%"
+            logging.info(f"\t\t{size_str}\t|\t{freq_str}\t|\t{perc_str}")
+        
+        # Write to file if output directory provided
+        if out_dir is not None:
+            os.makedirs(out_dir, exist_ok=True)
+            output_path = os.path.join(out_dir, "cluster_size_distribution.csv")
+            distribution_df.to_csv(output_path, index=False)
+            logging.info(f"Cluster size distribution written to {output_path}")
+        
+        return distribution_df

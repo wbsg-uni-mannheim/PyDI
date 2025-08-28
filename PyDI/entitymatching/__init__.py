@@ -11,6 +11,10 @@ from .base import BaseMatcher, BaseComparator, CorrespondenceSet, ensure_record_
 
 # Matching algorithms
 from .rule_based import RuleBasedMatcher
+from .ml_based import MLBasedMatcher
+
+# Feature extraction
+from .feature_extraction import FeatureExtractor, VectorFeatureExtractor
 
 # Comparators
 from .comparators import StringComparator, NumericComparator, DateComparator
@@ -24,6 +28,9 @@ __all__ = [
     "CorrespondenceSet",
     "ensure_record_ids",
     "RuleBasedMatcher",
+    "MLBasedMatcher",
+    "FeatureExtractor",
+    "VectorFeatureExtractor",
     "StringComparator",
     "NumericComparator",
     "DateComparator",
