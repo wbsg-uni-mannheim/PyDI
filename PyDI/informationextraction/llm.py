@@ -25,6 +25,7 @@ except ImportError:
     FewShotChatMessagePromptTemplate = None
 
 from .base import BaseExtractor
+from ..utils.llm import LLMCallLogger
 
 
 logger = logging.getLogger(__name__)
@@ -113,6 +114,9 @@ class LLMExtractor(BaseExtractor):
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.retries = retries
+
+        # Unified LLM logger for blocking calls
+        self._llm_logger = LLMCallLogger()
 
         # Determine schema mode
         self.open_schema = schema is None
@@ -243,8 +247,10 @@ class LLMExtractor(BaseExtractor):
                         artifacts.append((error_path, str(prompt_err)))
                         self._write_artifact(error_path, str(prompt_err))
 
-                # Call LLM
+                # Call LLM with timing
+                start_time = time.time()
                 response = self.chat_model.invoke(messages)
+                duration_ms = (time.time() - start_time) * 1000.0
 
                 # Extract response content
                 response_text = response.content if hasattr(
@@ -268,6 +274,18 @@ class LLMExtractor(BaseExtractor):
                     # Write immediately as well
                     self._write_artifact(response_path, response_data)
                     self._write_artifact(response_txt_path, response_text)
+
+                # Unified per-call log record (always emit via logger; artifacts written on flush)
+                self._llm_logger.record_call(
+                    chat_model=self.chat_model,
+                    messages=messages,
+                    response=response,
+                    row_index=row_idx,
+                    attempt=attempt,
+                    duration_ms=duration_ms,
+                    temperature=self.temperature,
+                    max_tokens=self.max_tokens,
+                )
 
                 # Parse JSON
                 parsed_data = self._extract_json_from_response(response_text)
@@ -436,6 +454,9 @@ class LLMExtractor(BaseExtractor):
                 f for f in self.schema_fields if f in result_df.columns]
         )
         self._log_extraction_stats(df, result_df, extracted_columns)
+
+        # Flush unified LLM logs to artifacts (in debug mode, writer persists; in non-debug it is a no-op)
+        self._llm_logger.flush(self._write_artifact)
 
         logger.info(f"LLM extraction completed. Added {len(extracted_columns)} columns. "
                     f"Validation errors: {len(validation_errors)}")
