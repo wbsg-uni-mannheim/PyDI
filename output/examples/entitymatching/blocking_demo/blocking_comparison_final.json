@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-29T11:51:10.412346",
+    "datasets": {
+      "academy_awards": {
+        "path": "/Users/aaronsteiner/Documents/GitHub/PyDI/input/movies/entitymatching/data/academy_awards.xml",
+        "shape": [
+          4592,
+          7
+        ],
+        "columns": [
+          "_id",
+          "id",
+          "title",
+          "actor_name",
+          "date",
+          "director_name",
+          "oscar"
+        ]
+      },
+      "actors": {
+        "path": "/Users/aaronsteiner/Documents/GitHub/PyDI/input/movies/entitymatching/data/actors.xml",
+        "shape": [
+          149,
+          7
+        ],
+        "columns": [
+          "_id",
+          "id",
+          "title",
+          "actor_name",
+          "actors_actor_birthday",
+          "actors_actor_birthplace",
+          "date"
+        ]
+      }
+    },
+    "max_possible_pairs": 684208,
+    "common_columns": [
+      "date",
+      "title",
+      "actor_name",
+      "id"
+    ]
+  },
+  "blocking_results": [
+    {
+      "strategy": "StandardBlocking(on=[title])",
+      "estimated_pairs": 138,
+      "actual_pairs": 138,
+      "batches_processed": null,
+      "candidate_recall": 0.723404255319149,
+      "reduction_ratio": 0.00020169305240511656,
+      "processing_time_seconds": null
+    },
+    {
+      "strategy": "SortedNeighbourhood(key=title, window=5)",
+      "estimated_pairs": 11852,
+      "actual_pairs": 1456,
+      "batches_processed": 2,
+      "candidate_recall": 0.9787234042553191,
+      "reduction_ratio": 0.002128007857259781,
+      "processing_time_seconds": null
+    },
+    {
+      "strategy": "TokenBlocking(column=title)",
+      "estimated_pairs": 80850,
+      "actual_pairs": 75242,
+      "batches_processed": 50,
+      "candidate_recall": 1.0,
+      "reduction_ratio": 0.10996948296424479,
+      "processing_time_seconds": null
+    },
+    {
+      "strategy": "EmbeddingBlocking(text_cols=['title', 'actor_name'])",
+      "estimated_pairs": 794,
+      "actual_pairs": 762,
+      "batches_processed": 1,
+      "candidate_recall": 1.0,
+      "reduction_ratio": 0.0011136964198021654,
+      "processing_time_seconds": 1.599513053894043
+    }
+  ]
+}

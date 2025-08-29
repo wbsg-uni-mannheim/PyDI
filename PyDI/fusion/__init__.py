@@ -77,9 +77,11 @@ class DataFuser:
                     else:
                         strategy = rule.strategy
                         if strategy == "longest":
-                            fused[col] = max(values, key=lambda x: len(str(x))) if values else None
+                            fused[col] = max(values, key=lambda x: len(
+                                str(x))) if values else None
                         elif strategy == "shortest":
-                            fused[col] = min(values, key=lambda x: len(str(x))) if values else None
+                            fused[col] = min(values, key=lambda x: len(
+                                str(x))) if values else None
                         elif strategy == "most_recent":
                             # assumes values are comparable (e.g., datetime or sortable strings)
                             fused[col] = max(values) if values else None
@@ -88,7 +90,8 @@ class DataFuser:
                         elif strategy == "majority":
                             from collections import Counter
 
-                            fused[col] = Counter(values).most_common(1)[0][0] if values else None
+                            fused[col] = Counter(values).most_common(1)[
+                                0][0] if values else None
                         else:
                             fused[col] = values[0] if values else None
                 else:

@@ -9,6 +9,9 @@ comparators for computing entity correspondences.
 # Base classes and types
 from .base import BaseMatcher, BaseComparator, CorrespondenceSet, ensure_record_ids
 
+# Blocking strategies (subpackage)
+from .blocking import BaseBlocker, NoBlocking, StandardBlocking, SortedNeighbourhood, TokenBlocking, EmbeddingBlocking
+
 # Matching algorithms
 from .rule_based import RuleBasedMatcher
 from .ml_based import MLBasedMatcher
@@ -21,12 +24,19 @@ from .comparators import StringComparator, NumericComparator, DateComparator
 
 # Evaluation tools
 from .evaluation import EntityMatchingEvaluator
+from .blocking.blocking_evaluation import BlockingEvaluator
 
 __all__ = [
     "BaseMatcher",
-    "BaseComparator", 
+    "BaseComparator",
     "CorrespondenceSet",
     "ensure_record_ids",
+    "BaseBlocker",
+    "NoBlocking",
+    "StandardBlocking",
+    "SortedNeighbourhood",
+    "TokenBlocking",
+    "EmbeddingBlocking",
     "RuleBasedMatcher",
     "MLBasedMatcher",
     "FeatureExtractor",
@@ -35,4 +45,5 @@ __all__ = [
     "NumericComparator",
     "DateComparator",
     "EntityMatchingEvaluator",
+    "BlockingEvaluator",
 ]
