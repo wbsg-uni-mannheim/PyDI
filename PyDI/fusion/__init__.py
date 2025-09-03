@@ -1,10 +1,14 @@
 """
 Data fusion tools for PyDI.
 
-This module defines classes and utilities for merging multiple datasets
-based on record correspondences and conflict resolution rules. The
-provided implementation is simplistic and intended as a template for
-more sophisticated fusion strategies.
+This module provides comprehensive data fusion capabilities including:
+- Record grouping from correspondences
+- Attribute-level conflict resolution
+- Strategy-based fusion management
+- Quality evaluation and reporting
+- Provenance tracking
+
+The implementation is designed to be pandas-first, modular, and extensible.
 """
 
 from __future__ import annotations
@@ -14,10 +18,70 @@ from typing import Any, Callable, Dict, List, Optional
 
 import pandas as pd
 
+# New fusion framework components
+from .base import (
+    ConflictResolutionFunction,
+    AttributeValueFuser, 
+    FusionContext,
+    FusionResult,
+    RecordGroup,
+)
+from .strategy import DataFusionStrategy, EvaluationRule
+from .engine import DataFusionEngine, build_record_groups_from_correspondences
+from .evaluation import DataFusionEvaluator, FusionQualityMetrics
+from .reporting import FusionReport
+from .provenance import ProvenanceTracker, ProvenanceInfo
+
+# Import built-in conflict resolution rules (class-based)
+from .rules import (
+    # String rules
+    LongestString, ShortestString,
+    # Numeric rules
+    Average, Median, Maximum, Minimum,
+    # Date rules
+    MostRecent, Earliest,
+    # List rules
+    Union, Intersection, IntersectionKSources,
+    # General rules
+    Voting, FavourSources, RandomValue,
+)
+
+# Import function-based fusion rules
+from .fusion_rules import (
+    # String rules  
+    longest_string, shortest_string, most_complete,
+    # Numeric rules
+    average, median, maximum, minimum, sum_values,
+    # Date rules
+    most_recent, earliest,
+    # List rules
+    union, intersection, intersection_k_sources,
+    # Meta rules
+    voting, favour_sources, random_value, weighted_voting,
+    # Convenient aliases
+    LONGEST, SHORTEST, MOST_COMPLETE,
+    AVG, AVERAGE, MEDIAN, MAX, MAXIMUM, MIN, MINIMUM, SUM,
+    LATEST, MOST_RECENT, EARLIEST,
+    UNION, INTERSECTION, INTERSECTION_K,
+    VOTE, VOTING, FAVOUR, RANDOM, WEIGHTED_VOTE,
+    # Utility functions
+    create_function_resolver,
+)
+
+# Import analysis utilities
+from .analysis import (
+    analyze_attribute_coverage,
+    compare_dataset_schemas,
+    detect_attribute_conflicts,
+    AttributeCoverageAnalyzer,
+)
+
+
+# Backward compatibility: maintain legacy DataFuser and FusionRule classes
 
 @dataclass
 class FusionRule:
-    """Represent a fusion rule for a single attribute.
+    """Represent a fusion rule for a single attribute (legacy interface).
 
     Parameters
     ----------
@@ -26,6 +90,11 @@ class FusionRule:
     function : callable, optional
         A custom function that takes a list of values and returns a fused
         value. If provided, it overrides ``strategy``.
+    
+    Notes
+    -----
+    This class is maintained for backward compatibility. New code should
+    use the DataFusionStrategy and ConflictResolutionFunction framework.
     """
 
     strategy: str
@@ -33,19 +102,22 @@ class FusionRule:
 
 
 class DataFuser:
-    """Fuse multiple datasets into a single DataFrame using correspondences.
+    """Fuse multiple datasets into a single DataFrame (legacy interface).
 
     The current implementation is deliberately simple: it merges rows
     specified in the correspondences and applies fusion rules per
-    attribute. Rows without correspondences are appended as‑is. Users
-    should extend this class to handle more complex conflict resolution
-    logic and provenance tracking.
+    attribute. Rows without correspondences are appended as‑is. 
+    
+    Notes
+    -----
+    This class is maintained for backward compatibility. New code should
+    use the DataFusionEngine with DataFusionStrategy framework.
     """
 
     def fuse(
         self,
         datasets: List[pd.DataFrame],
-        correspondences: "CorrespondenceSet",
+        correspondences: pd.DataFrame,
         *,
         rules: Dict[str, FusionRule],
     ) -> pd.DataFrame:
@@ -102,3 +174,63 @@ class DataFuser:
             if id_ not in used_ids:
                 fused_records.append(row.to_dict())
         return pd.DataFrame(fused_records)
+
+
+# Convenience functions for creating strategies
+
+def create_empty_strategy(name: str = "empty") -> DataFusionStrategy:
+    """Create an empty fusion strategy.
+    
+    Parameters
+    ----------
+    name : str
+        Name for the strategy.
+        
+    Returns
+    -------
+    DataFusionStrategy
+        An empty strategy ready for custom rule configuration.
+    """
+    return DataFusionStrategy(name)
+
+
+# Define what's available when importing * from this module
+__all__ = [
+    # New framework components
+    "DataFusionEngine", "DataFusionStrategy", "DataFusionEvaluator",
+    "ConflictResolutionFunction", "AttributeValueFuser", "EvaluationRule",
+    "FusionContext", "FusionResult", "RecordGroup", "FusionReport",
+    "ProvenanceTracker", "ProvenanceInfo", "FusionQualityMetrics",
+    "build_record_groups_from_correspondences",
+    
+    # Built-in conflict resolution rules (class-based)
+    "LongestString", "ShortestString", 
+    "Average", "Median", "Maximum", "Minimum",
+    "MostRecent", "Earliest",
+    "Union", "Intersection", "IntersectionKSources",
+    "Voting", "FavourSources", "RandomValue",
+    
+    # Function-based fusion rules
+    "longest_string", "shortest_string", "most_complete",
+    "average", "median", "maximum", "minimum", "sum_values",
+    "most_recent", "earliest",
+    "union", "intersection", "intersection_k_sources",
+    "voting", "favour_sources", "random_value", "weighted_voting",
+    
+    # Convenient function aliases
+    "LONGEST", "SHORTEST", "MOST_COMPLETE",
+    "AVG", "AVERAGE", "MEDIAN", "MAX", "MAXIMUM", "MIN", "MINIMUM", "SUM",
+    "LATEST", "MOST_RECENT", "EARLIEST",
+    "UNION", "INTERSECTION", "INTERSECTION_K",
+    "VOTE", "VOTING", "FAVOUR", "RANDOM", "WEIGHTED_VOTE",
+    
+    # Utility functions
+    "create_function_resolver", "create_empty_strategy",
+    
+    # Analysis utilities
+    "analyze_attribute_coverage", "compare_dataset_schemas", "detect_attribute_conflicts",
+    "AttributeCoverageAnalyzer",
+    
+    # Legacy components (for backward compatibility)
+    "DataFuser", "FusionRule",
+]

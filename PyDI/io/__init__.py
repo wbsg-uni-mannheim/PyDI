@@ -7,6 +7,7 @@ provenance metadata and add a unique id column.
 from .loaders import (
     load_with_provenance,
     load_csv,
+    load_fwf,
     load_json,
     load_parquet,
     load_excel,
@@ -20,6 +21,7 @@ from .loaders import (
 __all__ = [
     "load_with_provenance",
     "load_csv",
+    "load_fwf",
     "load_json",
     "load_parquet",
     "load_excel",
