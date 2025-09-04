@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Edited with Altova MapForce 2019r3sp1 -->
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="22">
+	<resources/>
+	<component name="defaultmap" uid="1" editable="1" blackbox="0">
+		<properties SelectedLanguage="builtin"/>
+		<structure>
+			<children>
+				<component name="normalize-space" library="core" uid="27" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="12"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="11"/>
+					</targets>
+					<view ltx="501" lty="357" rbx="611" rby="395"/>
+				</component>
+				<component name="actors" library="text" uid="51" kind="16">
+					<properties/>
+					<view ltx="150" lty="21" rbx="323" rby="224"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" expanded="1">
+								<entry name="document" ns="1" expanded="1">
+									<entry name="Rows" outkey="116" expanded="1">
+										<entry name="MovieYear" outkey="117"/>
+										<entry name="ActorName" outkey="92"/>
+										<entry name="Title" outkey="118"/>
+										<entry name="BirthPlace" outkey="91"/>
+										<entry name="BirthMonth" outkey="93"/>
+										<entry name="BirthDay" outkey="90"/>
+										<entry name="BirthYear" outkey="95"/>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<text type="csv" inputinstance="..\data\actors.csv" encoding="1000" byteorder="1" byteordermark="0">
+							<settings separator="	" quote="&quot;" firstrownames="false" removeempty="true">
+								<names root="actors" block="Rows">
+									<field0 name="Sex" type="string"/>
+									<field1 name="No" type="string"/>
+									<field2 name="MovieYear" type="string"/>
+									<field3 name="ActorName" type="string"/>
+									<field4 name="Title" type="string"/>
+									<field5 name="Reviews" type="string"/>
+									<field6 name="BirthPlace" type="string"/>
+									<field7 name="BirthMonth" type="string"/>
+									<field8 name="BirthDay" type="string"/>
+									<field9 name="BirthYear" type="string"/>
+								</names>
+							</settings>
+						</text>
+					</data>
+				</component>
+				<component name="target" library="xml" uid="3" kind="14">
+					<properties XSLTTargetEncoding="UTF-8" XSLTDefaultOutput="1"/>
+					<view ltx="920" lty="10" rbx="1247" rby="439"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" expanded="1">
+								<entry name="document" ns="1" expanded="1" casttotargettypemode="cast-in-subtree">
+									<entry name="movies" expanded="1">
+										<entry name="movie" inpkey="20" expanded="1">
+											<entry name="id" inpkey="62"/>
+											<entry name="title" inpkey="21"/>
+											<entry name="director" expanded="1"/>
+											<entry name="actors" expanded="1">
+												<entry name="actor" inpkey="94" expanded="1">
+													<entry name="name" inpkey="3"/>
+													<entry name="birthday" inpkey="22"/>
+													<entry name="birthplace" inpkey="23"/>
+												</entry>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<document schema="..\data\target.xsd" outputinstance="..\data\target.xml" instanceroot="{}movies"/>
+					</data>
+				</component>
+				<component name="normalize-space" library="core" uid="17" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="1"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="2"/>
+					</targets>
+					<view ltx="501" lty="264" rbx="611" rby="302"/>
+				</component>
+				<component name="Birthdate" library="user" uid="50" kind="19" visible="0" blackbox="0">
+					<view ltx="489" lty="473" rbx="611" rby="524"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="value1" inpkey="119" componentid="46"/>
+							<entry name="value3" inpkey="120" componentid="47"/>
+							<entry name="value5" inpkey="121" componentid="48"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="birthday" outkey="122" componentid="49"/>
+						</root>
+					</data>
+				</component>
+				<component name="Aggregate" library="user" uid="38" kind="19" visible="0" blackbox="0">
+					<view ltx="489" rbx="623" rby="51"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="nodesrows" inpkey="125" componentid="37"/>
+							<entry name="value1" inpkey="126" componentid="35"/>
+							<entry name="value2" inpkey="127" componentid="36"/>
+						</root>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="Movie" outkey="128" componentid="39"/>
+							<entry name="ID" outkey="129" componentid="40"/>
+						</root>
+					</data>
+				</component>
+				<component name="normalize-space" library="core" uid="29" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="64"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="63"/>
+					</targets>
+					<view ltx="442" lty="126" rbx="552" rby="164"/>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="92">
+						<edges>
+							<edge vertexkey="1"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="2">
+						<edges>
+							<edge vertexkey="3"/>
+							<edge vertexkey="94"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="91">
+						<edges>
+							<edge vertexkey="12"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="128">
+						<edges>
+							<edge vertexkey="20"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="63">
+						<edges>
+							<edge vertexkey="21"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="122">
+						<edges>
+							<edge vertexkey="22"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="11">
+						<edges>
+							<edge vertexkey="23"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="129">
+						<edges>
+							<edge vertexkey="62"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="118">
+						<edges>
+							<edge vertexkey="64"/>
+							<edge vertexkey="126"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="90">
+						<edges>
+							<edge vertexkey="119"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="93">
+						<edges>
+							<edge vertexkey="120"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="95">
+						<edges>
+							<edge vertexkey="121"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="116">
+						<edges>
+							<edge vertexkey="125"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="117">
+						<edges>
+							<edge vertexkey="127"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+	<component name="Aggregate" library="user" uid="30" inline="1" editable="1" blackbox="0">
+		<properties/>
+		<structure>
+			<children>
+				<component name="normalize-space" library="core" uid="33" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="8"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="9"/>
+					</targets>
+					<view ltx="583" lty="63" rbx="693" rby="101"/>
+				</component>
+				<component name="ID" library="core" uid="40" kind="7">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="14"/>
+					</sources>
+					<view ltx="933" lty="50" rbx="972" rby="88"/>
+					<data>
+						<output datatype="string"/>
+						<parameter usageKind="output" name="ID"/>
+					</data>
+				</component>
+				<component name="Movie" library="core" uid="39" kind="7">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="13"/>
+					</sources>
+					<view ltx="933" rbx="992" rby="38"/>
+					<data>
+						<output datatype="string"/>
+						<parameter usageKind="output" name="Movie"/>
+					</data>
+				</component>
+				<component name="group-by" library="core" uid="32" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="3"/>
+						<datapoint pos="1" key="5"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="6"/>
+						<datapoint pos="1" key="7"/>
+					</targets>
+					<view ltx="423" rbx="541" rby="54"/>
+				</component>
+				<component name="nodesrows" library="core" uid="37" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="12"/>
+					</targets>
+					<view rbx="114" rby="38"/>
+					<data>
+						<input datatype="anyType"/>
+						<parameter usageKind="input" name="nodesrows"/>
+					</data>
+				</component>
+				<component name="value2" library="core" uid="36" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="11"/>
+					</targets>
+					<view lty="100" rbx="90" rby="138"/>
+					<data>
+						<input datatype="decimal"/>
+						<parameter usageKind="input" name="value2"/>
+					</data>
+				</component>
+				<component name="value1" library="core" uid="35" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="10"/>
+					</targets>
+					<view lty="50" rbx="90" rby="88"/>
+					<data>
+						<input datatype="string"/>
+						<parameter usageKind="input" name="value1"/>
+					</data>
+				</component>
+				<component name="concat" library="core" uid="31" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="2"/>
+						<datapoint pos="1" key="1"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="4"/>
+					</targets>
+					<view ltx="250" lty="63" rbx="332" rby="119"/>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="11">
+						<edges>
+							<edge vertexkey="1"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="10">
+						<edges>
+							<edge vertexkey="2"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="12">
+						<edges>
+							<edge vertexkey="3"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="4">
+						<edges>
+							<edge vertexkey="5"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="7">
+						<edges>
+							<edge vertexkey="8"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="6">
+						<edges>
+							<edge vertexkey="13"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="9">
+						<edges>
+							<edge vertexkey="14"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+	<component name="Birthdate" library="user" uid="41" inline="1" editable="1" blackbox="0">
+		<properties/>
+		<structure>
+			<children>
+				<component name="birthday" library="core" uid="49" kind="7">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="15"/>
+					</sources>
+					<view ltx="827" rbx="898" rby="38"/>
+					<data>
+						<output datatype="date"/>
+						<parameter usageKind="output" name="birthday"/>
+					</data>
+				</component>
+				<component name="value5" library="core" uid="48" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="14"/>
+					</targets>
+					<view lty="100" rbx="90" rby="138"/>
+					<data>
+						<input datatype="decimal"/>
+						<parameter usageKind="input" name="value5"/>
+					</data>
+				</component>
+				<component name="value3" library="core" uid="47" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="13"/>
+					</targets>
+					<view lty="50" rbx="90" rby="88"/>
+					<data>
+						<input datatype="decimal"/>
+						<parameter usageKind="input" name="value3"/>
+					</data>
+				</component>
+				<component name="value1" library="core" uid="46" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="12"/>
+					</targets>
+					<view rbx="90" rby="38"/>
+					<data>
+						<input datatype="decimal"/>
+						<parameter usageKind="input" name="value1"/>
+					</data>
+				</component>
+				<component name="parse-date" library="core" uid="45" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="3"/>
+						<datapoint pos="1" key="5"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="8"/>
+					</targets>
+					<view ltx="495" lty="53" rbx="578" rby="107"/>
+				</component>
+				<component name="constant" library="core" uid="44" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="4"/>
+					</targets>
+					<view ltx="383" lty="123" rbx="472" rby="140"/>
+					<data>
+						<constant value="[D].[M].[Y]" datatype="string"/>
+					</data>
+				</component>
+				<component name="concat" library="core" uid="43" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="10"/>
+						<datapoint pos="1" key="11"/>
+						<datapoint pos="2" key="1"/>
+						<datapoint pos="3" key="7"/>
+						<datapoint pos="4" key="9"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="2"/>
+					</targets>
+					<view ltx="382" rbx="474" rby="107"/>
+				</component>
+				<component name="constant" library="core" uid="42" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="6"/>
+					</targets>
+					<view ltx="250" lty="53" rbx="295" rby="70"/>
+					<data>
+						<constant value="." datatype="string"/>
+					</data>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="13">
+						<edges>
+							<edge vertexkey="1"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="2">
+						<edges>
+							<edge vertexkey="3"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="4">
+						<edges>
+							<edge vertexkey="5"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="6">
+						<edges>
+							<edge vertexkey="7"/>
+							<edge vertexkey="11"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="14">
+						<edges>
+							<edge vertexkey="9"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="12">
+						<edges>
+							<edge vertexkey="10"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="8">
+						<edges>
+							<edge vertexkey="15"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+</mapping>

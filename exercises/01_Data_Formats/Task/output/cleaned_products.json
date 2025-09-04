@@ -1,0 +1,86 @@
+[
+  {
+    "id": 2,
+    "name": "Unknown Product",
+    "category": "clothing",
+    "price": 25.0,
+    "description": "Product with empty name"
+  },
+  {
+    "id": 3,
+    "name": "Invalid Product 3",
+    "category": "electronics",
+    "price": 1.0,
+    "description": "Product with negative price"
+  },
+  {
+    "id": 4,
+    "name": "Invalid Product 4",
+    "category": "electronics",
+    "price": 1.0,
+    "description": "Product with zero price"
+  },
+  {
+    "id": 7,
+    "name": "Invalid Product 7",
+    "category": "electronics",
+    "price": 25.99,
+    "description": "Product with string price instead of number"
+  },
+  {
+    "id": 8,
+    "name": "Invalid Product 8",
+    "category": "electronics",
+    "price": 100.0,
+    "description": "Product with additional unexpected field",
+    "unexpected_field": "This field is not allowed"
+  },
+  {
+    "id": 9,
+    "name": "Invalid Product 9",
+    "category": "electronics",
+    "price": 75.0,
+    "specifications": {
+      "weight": -50.0,
+      "dimensions": {
+        "length": 10.0,
+        "width": 8.0
+      },
+      "color": "blue"
+    },
+    "description": "Product with invalid nested data (negative weight, missing height)"
+  },
+  {
+    "id": 10,
+    "name": "Invalid Product 10",
+    "category": "electronics",
+    "price": 60.0,
+    "tags": [
+      "electronics",
+      "gadget",
+      "electronics"
+    ],
+    "description": "Product with duplicate tags (not unique)"
+  },
+  {
+    "id": 11,
+    "name": "Invalid Product 11",
+    "category": "electronics",
+    "price": 80.0,
+    "supplier": {
+      "name": "Bad Supplier",
+      "contact": {
+        "email": "not-a-valid-email",
+        "phone": "123"
+      }
+    },
+    "description": "Product with invalid supplier contact info"
+  },
+  {
+    "id": 12,
+    "name": "Invalid Product 12",
+    "category": "electronics",
+    "price": 45.99,
+    "description": "Product with price containing currency symbol"
+  }
+]
