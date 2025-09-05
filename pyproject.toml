@@ -66,6 +66,16 @@ test = [
 llm = [
   "langchain-openai>=0.1.0,<0.3.0",
 ]
+embedding = [
+  "sentence-transformers>=2.2.0,<3.0.0",
+  "torch>=2.0.0,<3.0.0",
+]
+faiss = [
+  "faiss-cpu>=1.7.4,<2.0.0",
+]
+hnsw = [
+  "hnswlib>=0.8.0,<1.0.0",
+]
 
 [build-system]
 requires = ["setuptools>=63", "wheel"]
