@@ -5,7 +5,7 @@ Rule-based entity matching using weighted linear combination of comparators.
 from __future__ import annotations
 
 import logging
-from typing import Callable, Dict, Iterable, List, Optional, Union
+from typing import Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import pandas as pd
 
@@ -44,8 +44,9 @@ class RuleBasedMatcher(BaseMatcher):
         comparators: List[Union[BaseComparator, Callable, Dict[str, Union[Callable, float]]]],
         weights: Optional[List[float]] = None,
         threshold: float = 0.0,
+        debug: bool = False,
         **kwargs,
-    ) -> CorrespondenceSet:
+    ) -> Union[CorrespondenceSet, Tuple[CorrespondenceSet, pd.DataFrame]]:
         """Find entity correspondences using rule-based matching.
         
         Parameters
@@ -65,13 +66,18 @@ class RuleBasedMatcher(BaseMatcher):
             equal weights are used. Ignored if comparators contain weights.
         threshold : float, optional
             Minimum similarity score to include. Default is 0.0.
+        debug : bool, optional
+            If True, captures detailed comparator results for debugging.
+            Returns tuple of (correspondences, debug_results). Default is False.
         **kwargs
             Additional arguments (ignored).
             
         Returns
         -------
-        CorrespondenceSet
-            DataFrame with columns id1, id2, score, notes.
+        CorrespondenceSet or Tuple[CorrespondenceSet, pandas.DataFrame]
+            If debug=False: DataFrame with columns id1, id2, score, notes.
+            If debug=True: Tuple of (correspondences, debug_results) where
+            debug_results contains detailed comparator information.
         """
         # Validate inputs
         self._validate_inputs(df_left, df_right)
@@ -94,6 +100,7 @@ class RuleBasedMatcher(BaseMatcher):
         right_lookup = df_right.set_index("_id")
         
         results = []
+        debug_results = [] if debug else None
         total_pairs_processed = 0
         
         # Process candidate batches
@@ -101,9 +108,16 @@ class RuleBasedMatcher(BaseMatcher):
             if batch.empty:
                 continue
                 
-            batch_results = self._process_batch(
-                batch, left_lookup, right_lookup, parsed_comparators, threshold
-            )
+            if debug:
+                batch_results, batch_debug = self._process_batch(
+                    batch, left_lookup, right_lookup, parsed_comparators, threshold, debug=True
+                )
+                debug_results.extend(batch_debug)
+            else:
+                batch_results = self._process_batch(
+                    batch, left_lookup, right_lookup, parsed_comparators, threshold, debug=False
+                )
+            
             results.extend(batch_results)
             total_pairs_processed += len(batch)
         
@@ -111,10 +125,16 @@ class RuleBasedMatcher(BaseMatcher):
                     f"found {len(results)} matches above threshold {threshold}")
         
         # Create correspondence set
-        if results:
-            return pd.DataFrame(results)
+        correspondences = pd.DataFrame(results) if results else pd.DataFrame(columns=["id1", "id2", "score", "notes"])
+        
+        if debug:
+            debug_df = pd.DataFrame(debug_results) if debug_results else pd.DataFrame(columns=[
+                "id1", "id2", "comparator_name", "record1_value", "record2_value",
+                "record1_preprocessed", "record2_preprocessed", "similarity", "postprocessed_similarity"
+            ])
+            return correspondences, debug_df
         else:
-            return pd.DataFrame(columns=["id1", "id2", "score", "notes"])
+            return correspondences
     
     def _parse_comparators(
         self,
@@ -176,7 +196,8 @@ class RuleBasedMatcher(BaseMatcher):
         right_lookup: pd.DataFrame,
         comparators: List[Dict[str, Union[Callable, float]]],
         threshold: float,
-    ) -> List[Dict[str, Union[str, float]]]:
+        debug: bool = False,
+    ) -> Union[List[Dict[str, Union[str, float]]], Tuple[List[Dict[str, Union[str, float]]], List[Dict]]]:
         """Process a batch of candidate pairs.
         
         Parameters
@@ -191,13 +212,17 @@ class RuleBasedMatcher(BaseMatcher):
             Parsed comparators with weights.
         threshold : float
             Minimum similarity threshold.
+        debug : bool, optional
+            If True, captures detailed comparator results.
             
         Returns
         -------
-        List[Dict]
-            List of correspondence dictionaries.
+        List[Dict] or Tuple[List[Dict], List[Dict]]
+            If debug=False: List of correspondence dictionaries.
+            If debug=True: Tuple of (correspondence_list, debug_results_list).
         """
         results = []
+        debug_results = [] if debug else None
         
         for _, row in batch.iterrows():
             id1, id2 = row["id1"], row["id2"]
@@ -211,7 +236,13 @@ class RuleBasedMatcher(BaseMatcher):
                 continue
             
             # Compute similarity
-            similarity = self._compute_similarity(record1, record2, comparators)
+            if debug:
+                similarity, pair_debug_results = self._compute_similarity_with_debug(
+                    record1, record2, comparators, id1, id2
+                )
+                debug_results.extend(pair_debug_results)
+            else:
+                similarity = self._compute_similarity(record1, record2, comparators)
             
             # Add to results if above threshold
             if similarity >= threshold:
@@ -222,7 +253,10 @@ class RuleBasedMatcher(BaseMatcher):
                     "notes": f"comparators={len(comparators)}",
                 })
         
-        return results
+        if debug:
+            return results, debug_results
+        else:
+            return results
     
     def _compute_similarity(
         self, 
@@ -262,6 +296,87 @@ class RuleBasedMatcher(BaseMatcher):
             weighted_sum += similarity * weight
         
         return weighted_sum
+    
+    def _compute_similarity_with_debug(
+        self,
+        record1: pd.Series,
+        record2: pd.Series,
+        comparators: List[Dict[str, Union[Callable, float]]],
+        id1: str,
+        id2: str,
+    ) -> Tuple[float, List[Dict]]:
+        """Compute weighted similarity with detailed debug information.
+        
+        Parameters
+        ----------
+        record1 : pandas.Series
+            First record.
+        record2 : pandas.Series
+            Second record.
+        comparators : List[Dict]
+            Parsed comparators with weights.
+        id1, id2 : str
+            Record identifiers for debug output.
+            
+        Returns
+        -------
+        Tuple[float, List[Dict]]
+            Tuple of (weighted_similarity, debug_results_list).
+        """
+        weighted_sum = 0.0
+        debug_results = []
+        
+        for comp_info in comparators:
+            comparator = comp_info["comparator"]
+            weight = comp_info["weight"]
+            
+            # Get comparator name
+            if isinstance(comparator, BaseComparator):
+                comparator_name = comparator.name
+            elif hasattr(comparator, '__name__'):
+                comparator_name = comparator.__name__
+            else:
+                comparator_name = str(comparator)
+            
+            # For debug, we need to capture the values being compared
+            # This is a simplified approach - in reality, comparators might use
+            # different attributes, but for now we'll capture what we can
+            
+            # Try to extract relevant values (this will depend on how comparators work)
+            # For now, we'll use a generic approach
+            record1_value = str(record1.get(comparator_name, ""))
+            record2_value = str(record2.get(comparator_name, ""))
+            
+            # For preprocessing, we'll assume minimal preprocessing for now
+            record1_preprocessed = record1_value
+            record2_preprocessed = record2_value
+            
+            # Compute similarity using comparator
+            if isinstance(comparator, BaseComparator):
+                similarity = comparator.compare(record1, record2)
+            else:
+                # Assume it's a callable
+                similarity = comparator(record1, record2)
+            
+            # For now, postprocessed similarity is the same as raw similarity
+            postprocessed_similarity = similarity
+            
+            # Store debug information
+            debug_results.append({
+                "id1": id1,
+                "id2": id2,
+                "comparator_name": comparator_name,
+                "record1_value": record1_value,
+                "record2_value": record2_value,
+                "record1_preprocessed": record1_preprocessed,
+                "record2_preprocessed": record2_preprocessed,
+                "similarity": similarity,
+                "postprocessed_similarity": postprocessed_similarity,
+            })
+            
+            weighted_sum += similarity * weight
+        
+        return weighted_sum, debug_results
     
     def __repr__(self) -> str:
         return f"RuleBasedMatcher()"

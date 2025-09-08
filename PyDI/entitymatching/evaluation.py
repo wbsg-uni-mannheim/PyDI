@@ -155,6 +155,12 @@ class EntityMatchingEvaluator:
             )
             results["output_files"] = output_files
             
+        # Print blocking information directly to console
+        print(f"  Pair Completeness: {pair_completeness:.3f}")
+        print(f"  Pair Quality:      {pair_quality:.3f}")  
+        print(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        print(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
+        
         logging.info(f"Blocking evaluation complete: Completeness={pair_completeness:.4f} Quality={pair_quality:.4f} Reduction={reduction_ratio:.4f}")
         return results
     
@@ -308,6 +314,19 @@ class EntityMatchingEvaluator:
                 results, corr_filtered, test_pairs, positive_set, predicted_set, out_dir
             )
             results["output_files"] = output_files
+        
+        # Print performance metrics directly to console
+        print(f"Performance Metrics:")
+        print(f"  Accuracy:  {accuracy:.3f}" if accuracy is not None else "  Accuracy:  N/A")
+        print(f"  Precision: {precision:.3f}")
+        print(f"  Recall:    {recall:.3f}")
+        print(f"  F1-Score:  {f1:.3f}")
+
+        print(f"Confusion Matrix:")
+        print(f"  True Positives:  {true_positives}")
+        print(f"  True Negatives:  {true_negatives}")
+        print(f"  False Positives: {false_positives}")
+        print(f"  False Negatives: {false_negatives}")
             
         logging.info(f"Matching evaluation complete: P={precision:.4f} R={recall:.4f} F1={f1:.4f}")
         return results
@@ -833,3 +852,375 @@ class EntityMatchingEvaluator:
             logging.info(f"Cluster size distribution written to {output_path}")
         
         return distribution_df
+    
+    @staticmethod
+    def write_cluster_details(
+        correspondences: CorrespondenceSet,
+        out_path: str,
+    ) -> str:
+        """Write detailed cluster information with all records for debugging purposes.
+        
+        Exports all clusters found in the correspondences along with the complete
+        list of entity records contained in each cluster. This is useful for
+        debugging matching results and manually inspecting cluster composition.
+        
+        Parameters
+        ----------
+        correspondences : CorrespondenceSet
+            DataFrame with id1, id2, score, notes columns containing
+            entity correspondences to analyze.
+        out_path : str
+            Full path to output JSON file where cluster details will be written.
+            
+        Returns
+        -------
+        str
+            Path to the written JSON file.
+            
+        Raises
+        ------
+        ValueError
+            If correspondence set is empty or missing required columns.
+        """
+        if correspondences.empty:
+            raise ValueError("Empty correspondence set provided")
+            
+        required_cols = ["id1", "id2", "score"]
+        for col in required_cols:
+            if col not in correspondences.columns:
+                raise ValueError(f"Correspondences missing required column: {col}")
+        
+        # Create output directory if needed
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        
+        # Create graph from correspondences to find connected components
+        G = nx.Graph()
+        
+        # Add edges with metadata
+        edge_metadata = {}
+        for _, row in correspondences.iterrows():
+            edge_key = tuple(sorted([row["id1"], row["id2"]]))
+            G.add_edge(row["id1"], row["id2"])
+            
+            # Store correspondence details for this edge
+            if edge_key not in edge_metadata:
+                edge_metadata[edge_key] = []
+            edge_metadata[edge_key].append({
+                "score": float(row["score"]),
+                "notes": str(row.get("notes", "")) if "notes" in correspondences.columns else ""
+            })
+        
+        # Find connected components (clusters)
+        clusters = list(nx.connected_components(G))
+        
+        # Build cluster details
+        cluster_details = []
+        
+        for i, cluster in enumerate(clusters):
+            cluster_entities = sorted(list(cluster))
+            cluster_size = len(cluster_entities)
+            
+            # Get all correspondences within this cluster
+            cluster_correspondences = []
+            for j, entity1 in enumerate(cluster_entities):
+                for entity2 in cluster_entities[j+1:]:  # Avoid duplicates
+                    edge_key = tuple(sorted([entity1, entity2]))
+                    if edge_key in edge_metadata:
+                        for corr_data in edge_metadata[edge_key]:
+                            cluster_correspondences.append({
+                                "entity1": entity1,
+                                "entity2": entity2,
+                                "score": corr_data["score"],
+                                "notes": corr_data["notes"]
+                            })
+            
+            # Calculate cluster statistics
+            if cluster_correspondences:
+                scores = [corr["score"] for corr in cluster_correspondences]
+                avg_score = sum(scores) / len(scores)
+                min_score = min(scores)
+                max_score = max(scores)
+            else:
+                avg_score = min_score = max_score = 0.0
+            
+            cluster_info = {
+                "cluster_id": i,
+                "cluster_size": cluster_size,
+                "entities": cluster_entities,
+                "correspondences_count": len(cluster_correspondences),
+                "correspondences": cluster_correspondences,
+                "statistics": {
+                    "avg_score": avg_score,
+                    "min_score": min_score,
+                    "max_score": max_score
+                }
+            }
+            cluster_details.append(cluster_info)
+        
+        # Sort clusters by size (largest first) for easier debugging
+        cluster_details.sort(key=lambda x: x["cluster_size"], reverse=True)
+        
+        # Create output structure
+        output_data = {
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "total_correspondences": len(correspondences),
+                "total_clusters": len(cluster_details),
+                "total_entities": sum(cluster["cluster_size"] for cluster in cluster_details),
+            },
+            "clusters": cluster_details
+        }
+        
+        # Write JSON file
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+        
+        logging.info(f"Cluster details written to {out_path}")
+        logging.info(f"Exported {len(cluster_details)} clusters with detailed record information")
+        
+        return out_path
+    
+    @staticmethod
+    def write_debug_results(
+        correspondences: CorrespondenceSet,
+        debug_results: pd.DataFrame,
+        *,
+        out_dir: str,
+        matcher_instance: Optional[object] = None,
+    ) -> Tuple[str, str]:
+        """Write debug results in Winter format for detailed matching analysis.
+        
+        Creates detailed debug output files matching the Winter framework format,
+        including both full comparator matrix and simplified per-comparator results.
+        These files are essential for debugging matching rules and understanding
+        why specific pairs were matched or rejected.
+        
+        The matching rule name is automatically determined from the matcher instance
+        class name or correspondence metadata.
+        
+        Parameters
+        ----------
+        correspondences : CorrespondenceSet
+            DataFrame with id1, id2, score, notes columns containing
+            entity correspondences from matching process.
+        debug_results : pandas.DataFrame
+            DataFrame with detailed comparator results from matcher debug mode.
+            Expected columns: id1, id2, comparator_name, record1_value,
+            record2_value, record1_preprocessed, record2_preprocessed,
+            similarity, postprocessed_similarity.
+        out_dir : str
+            Directory to write debug result files.
+        matcher_instance : object, optional
+            The matcher instance used to generate the correspondences.
+            Used to automatically determine the matching rule name.
+            
+        Returns
+        -------
+        Tuple[str, str]
+            Paths to the written debug files: (full_debug_path, short_debug_path)
+            
+        Raises
+        ------
+        ValueError
+            If required columns are missing from input DataFrames.
+        """
+        # Input validation
+        if correspondences.empty:
+            raise ValueError("Empty correspondence set provided")
+            
+        if debug_results.empty:
+            raise ValueError("Empty debug results provided")
+        
+        # Validate correspondence columns
+        corr_required = ["id1", "id2", "score"]
+        for col in corr_required:
+            if col not in correspondences.columns:
+                raise ValueError(f"Correspondences missing required column: {col}")
+        
+        # Validate debug results columns
+        debug_required = [
+            "id1", "id2", "comparator_name", "record1_value", "record2_value",
+            "record1_preprocessed", "record2_preprocessed", "similarity", "postprocessed_similarity"
+        ]
+        for col in debug_required:
+            if col not in debug_results.columns:
+                raise ValueError(f"Debug results missing required column: {col}")
+        
+        # Automatically determine matching rule name
+        matching_rule_name = EntityMatchingEvaluator._determine_matching_rule_name(
+            correspondences, matcher_instance
+        )
+        
+        os.makedirs(out_dir, exist_ok=True)
+        
+        # Create full debug results file (debugResultsMatchingRule.csv format)
+        full_debug_path = os.path.join(out_dir, "debugResultsMatchingRule.csv")
+        EntityMatchingEvaluator._write_full_debug_results(
+            correspondences, debug_results, full_debug_path, matching_rule_name
+        )
+        
+        # Create short debug results file (debugResultsMatchingRule.csv_short format)
+        short_debug_path = os.path.join(out_dir, "debugResultsMatchingRule.csv_short")
+        EntityMatchingEvaluator._write_short_debug_results(
+            correspondences, debug_results, short_debug_path, matching_rule_name
+        )
+        
+        logging.info(f"Debug results written to {full_debug_path} and {short_debug_path}")
+        return full_debug_path, short_debug_path
+    
+    @staticmethod
+    def _determine_matching_rule_name(
+        correspondences: CorrespondenceSet,
+        matcher_instance: Optional[object] = None,
+    ) -> str:
+        """Automatically determine matching rule name from matcher or correspondences metadata."""
+        # First try to get from matcher instance
+        if matcher_instance is not None:
+            class_name = matcher_instance.__class__.__name__
+            # Convert PyDI class names to Winter-style names
+            if class_name == "RuleBasedMatcher":
+                return "WekaMatchingRule"  # Winter equivalent
+            elif class_name == "MLBasedMatcher":
+                return "WekaMatchingRule"  # Winter equivalent
+            elif class_name == "LLMBasedMatcher":
+                return "LLMMatchingRule"
+            else:
+                return class_name
+        
+        # Try to get from correspondence metadata
+        if hasattr(correspondences, 'attrs') and correspondences.attrs:
+            matcher_name = correspondences.attrs.get("matcher_name")
+            if matcher_name:
+                return matcher_name
+            
+            # Check provenance for matcher info
+            provenance = correspondences.attrs.get("provenance", [])
+            if isinstance(provenance, list):
+                for step in provenance:
+                    if isinstance(step, dict) and "operation" in step:
+                        if "match" in step["operation"].lower():
+                            return step.get("method", "UnknownMatchingRule")
+        
+        # Default fallback
+        return "WekaMatchingRule"
+    
+    @staticmethod
+    def _write_full_debug_results(
+        correspondences: pd.DataFrame,
+        debug_results: pd.DataFrame,
+        out_path: str,
+        matching_rule_name: str,
+    ) -> None:
+        """Write full debug results in Winter format with comparator matrix."""
+        # Get unique comparators and pairs
+        unique_comparators = sorted(debug_results["comparator_name"].unique())
+        
+        # Build header with dynamic comparator columns
+        header_cols = ["MatchingRule", "Record1Identifier", "Record2Identifier", "TotalSimilarity", "IsMatch"]
+        
+        for i, comp_name in enumerate(unique_comparators):
+            base_name = f"[{i}] {comp_name}"
+            header_cols.extend([
+                f"{base_name} record1Value",
+                f"{base_name} record2Value", 
+                f"{base_name} record1PreprocessedValue",
+                f"{base_name} record2PreprocessedValue",
+                f"{base_name} similarity",
+                f"{base_name} postproccesedSimilarity"
+            ])
+        
+        # Create rows for each correspondence
+        output_rows = []
+        
+        for _, corr_row in correspondences.iterrows():
+            pair_id1, pair_id2 = corr_row["id1"], corr_row["id2"]
+            total_similarity = corr_row["score"]
+            
+            # Determine if this is a match (could be based on threshold or other criteria)
+            is_match = "1" if total_similarity >= 0.5 else "0"  # Default threshold
+            if total_similarity < 1e-6:  # Very low similarity
+                is_match = "0"
+            elif pd.isna(total_similarity):
+                is_match = ""
+            
+            # Start row with basic info
+            row_data = [matching_rule_name, pair_id1, pair_id2, str(total_similarity), is_match]
+            
+            # Add comparator results for this pair
+            pair_results = debug_results[
+                (debug_results["id1"] == pair_id1) & 
+                (debug_results["id2"] == pair_id2)
+            ]
+            
+            for comp_name in unique_comparators:
+                comp_data = pair_results[pair_results["comparator_name"] == comp_name]
+                
+                if len(comp_data) > 0:
+                    comp_row = comp_data.iloc[0]
+                    row_data.extend([
+                        str(comp_row["record1_value"]) if pd.notna(comp_row["record1_value"]) else "",
+                        str(comp_row["record2_value"]) if pd.notna(comp_row["record2_value"]) else "",
+                        str(comp_row["record1_preprocessed"]) if pd.notna(comp_row["record1_preprocessed"]) else "",
+                        str(comp_row["record2_preprocessed"]) if pd.notna(comp_row["record2_preprocessed"]) else "",
+                        str(comp_row["similarity"]) if pd.notna(comp_row["similarity"]) else "0.0",
+                        str(comp_row["postprocessed_similarity"]) if pd.notna(comp_row["postprocessed_similarity"]) else "0.0"
+                    ])
+                else:
+                    # No data for this comparator and pair
+                    row_data.extend(["", "", "", "", "0.0", "0.0"])
+            
+            output_rows.append(row_data)
+        
+        # Write to CSV file
+        with open(out_path, 'w', newline='', encoding='utf-8') as f:
+            # Write header
+            header_line = ','.join(f'"{col}"' for col in header_cols)
+            f.write(header_line + '\n')
+            
+            # Write data rows
+            for row in output_rows:
+                data_line = ','.join(f'"{val}"' for val in row)
+                f.write(data_line + '\n')
+    
+    @staticmethod
+    def _write_short_debug_results(
+        correspondences: pd.DataFrame,
+        debug_results: pd.DataFrame,
+        out_path: str,
+        matching_rule_name: str,
+    ) -> None:
+        """Write short debug results in Winter format with one row per comparator result."""
+        header_cols = [
+            "MatchingRule", "Record1Identifier", "Record2Identifier", "comparatorName",
+            "record1Value", "record2Value", "record1PreprocessedValue", 
+            "record2PreprocessedValue", "similarity", "postproccesedSimilarity"
+        ]
+        
+        output_rows = []
+        
+        # Create one row per comparator result
+        for _, debug_row in debug_results.iterrows():
+            row_data = [
+                matching_rule_name,
+                str(debug_row["id1"]),
+                str(debug_row["id2"]),
+                str(debug_row["comparator_name"]),
+                str(debug_row["record1_value"]) if pd.notna(debug_row["record1_value"]) else "",
+                str(debug_row["record2_value"]) if pd.notna(debug_row["record2_value"]) else "",
+                str(debug_row["record1_preprocessed"]) if pd.notna(debug_row["record1_preprocessed"]) else "",
+                str(debug_row["record2_preprocessed"]) if pd.notna(debug_row["record2_preprocessed"]) else "",
+                str(debug_row["similarity"]) if pd.notna(debug_row["similarity"]) else "0.0",
+                str(debug_row["postprocessed_similarity"]) if pd.notna(debug_row["postprocessed_similarity"]) else "0.0"
+            ]
+            output_rows.append(row_data)
+        
+        # Write to CSV file
+        with open(out_path, 'w', newline='', encoding='utf-8') as f:
+            # Write header
+            header_line = ','.join(f'"{col}"' for col in header_cols)
+            f.write(header_line + '\n')
+            
+            # Write data rows
+            for row in output_rows:
+                data_line = ','.join(f'"{val}"' for val in row)
+                f.write(data_line + '\n')
