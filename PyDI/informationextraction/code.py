@@ -1,7 +1,7 @@
 """Code-based information extraction using custom functions."""
 
 import logging
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 import pandas as pd
 
@@ -20,15 +20,16 @@ class CodeExtractor(BaseExtractor):
 
     Parameters
     ----------
-    functions : Dict[str, Callable]
-        Extraction functions mapping field names to callables.
-        Functions should accept either:
-        - str -> Any (for text-based extraction)  
-        - pd.Series -> Any (for row-based extraction)
+    functions : Dict[str, Union[Callable, Dict[str, Any]]]
+        Extraction functions mapping field names to either:
+        - Callable: Function that accepts pd.Series (row-based extraction)
+        - Dict with keys:
+            - 'function': Callable that accepts str (text-based extraction)
+            - 'source_column': str, column name to extract from
     vectorize : bool, optional
         Whether to vectorize string functions using pandas, by default True
     default_source : str, optional
-        Default source column for text-based functions
+        Default source column for text-based functions (deprecated, use explicit config)
     out_dir : str, optional
         Output directory for artifacts, by default "output/informationextraction"
     debug : bool, optional
@@ -46,16 +47,16 @@ class CodeExtractor(BaseExtractor):
     ...     return 'Other'
     ...
     >>> functions = {
-    ...     'price': extract_price,
-    ...     'category': extract_category
+    ...     'price': {'function': extract_price, 'source_column': 'description'},
+    ...     'category': extract_category  # row-based function
     ... }
-    >>> extractor = CodeExtractor(functions, default_source="description")
+    >>> extractor = CodeExtractor(functions)
     >>> result_df = extractor.extract(df)
     """
 
     def __init__(
         self,
-        functions: Dict[str, Callable],
+        functions: Dict[str, Union[Callable, Dict[str, Any]]],
         *,
         vectorize: bool = True,
         default_source: Optional[str] = None,
@@ -66,56 +67,56 @@ class CodeExtractor(BaseExtractor):
         self.functions = functions
         self.vectorize = vectorize
         self.default_source = default_source
-        self._analyze_functions()
+        self._process_function_configs()
 
-    def _analyze_functions(self) -> None:
-        """Analyze function signatures to determine how to call them."""
-        import inspect
-
+    def _process_function_configs(self) -> None:
+        """Process function configurations into normalized format."""
         self.function_info = {}
 
-        for field_name, func in self.functions.items():
+        for field_name, config in self.functions.items():
             try:
-                sig = inspect.signature(func)
-                params = list(sig.parameters.values())
-
-                if len(params) == 0:
-                    logger.warning(
-                        f"Function '{field_name}' takes no parameters, skipping")
-                    continue
-                elif len(params) == 1:
-                    param_name = params[0].name
-                    # Try to infer if it expects text or row based on parameter name
-                    if param_name.lower() in ['row', 'series', 'record']:
-                        func_type = 'row'
-                    else:
-                        func_type = 'text'
+                if callable(config):
+                    # Simple callable - assume row-based function
+                    self.function_info[field_name] = {
+                        'function': config,
+                        'type': 'row',
+                        'source_column': None
+                    }
+                elif isinstance(config, dict):
+                    # Dictionary config with explicit settings
+                    func = config.get('function')
+                    source_column = config.get('source_column')
+                    
+                    if not callable(func):
+                        logger.error(f"Function config '{field_name}' missing or invalid 'function' key")
+                        continue
+                    
+                    self.function_info[field_name] = {
+                        'function': func,
+                        'type': 'text' if source_column else 'row',
+                        'source_column': source_column
+                    }
                 else:
-                    # Multiple parameters - assume row-based
-                    func_type = 'row'
-
-                self.function_info[field_name] = {
-                    'function': func,
-                    'type': func_type,
-                    'signature': str(sig)
-                }
+                    logger.error(f"Invalid function config for '{field_name}': expected callable or dict")
+                    continue
 
                 logger.debug(
-                    f"Function '{field_name}' classified as '{func_type}' with signature: {sig}")
+                    f"Function '{field_name}' configured as '{self.function_info[field_name]['type']}' "
+                    f"with source_column: {self.function_info[field_name]['source_column']}")
 
             except Exception as e:
-                logger.error(f"Failed to analyze function '{field_name}': {e}")
+                logger.error(f"Failed to process function config '{field_name}': {e}")
                 continue
 
     def _apply_text_function(
         self,
         df: pd.DataFrame,
         field_name: str,
-        func_info: Dict[str, Any],
-        source_column: str
+        func_info: Dict[str, Any]
     ) -> pd.Series:
         """Apply a text-based function to a column."""
         func = func_info['function']
+        source_column = func_info['source_column']
 
         if self.vectorize:
             try:
@@ -208,18 +209,23 @@ class CodeExtractor(BaseExtractor):
 
             try:
                 if func_info['type'] == 'text':
-                    if not text_source:
+                    source_col = func_info['source_column'] or text_source
+                    if not source_col:
                         logger.error(
                             f"No source column specified for text function '{field_name}'")
                         continue
 
-                    if text_source not in result_df.columns:
+                    if source_col not in result_df.columns:
                         logger.error(
-                            f"Source column '{text_source}' not found for function '{field_name}'")
+                            f"Source column '{source_col}' not found for function '{field_name}'")
                         continue
 
+                    # Update func_info with the resolved source column
+                    func_info_copy = func_info.copy()
+                    func_info_copy['source_column'] = source_col
+                    
                     extracted_series = self._apply_text_function(
-                        result_df, field_name, func_info, text_source
+                        result_df, field_name, func_info_copy
                     )
 
                 else:  # row-based function
@@ -237,7 +243,7 @@ class CodeExtractor(BaseExtractor):
 
                 extraction_stats[field_name] = {
                     'function_type': func_info['type'],
-                    'source_column': text_source if func_info['type'] == 'text' else 'row-based',
+                    'source_column': func_info['source_column'] if func_info['type'] == 'text' else 'row-based',
                     'total_rows': len(result_df),
                     'successful_extractions': int(non_null_count),
                     'success_rate': success_rate
@@ -262,11 +268,11 @@ class CodeExtractor(BaseExtractor):
             # Write extraction stats
             self._write_artifact("function_stats.json", extraction_stats)
 
-            # Write function info (signatures only)
+            # Write function info
             function_summary = {
                 field_name: {
                     'type': info['type'],
-                    'signature': info['signature']
+                    'source_column': info['source_column']
                 }
                 for field_name, info in self.function_info.items()
             }
