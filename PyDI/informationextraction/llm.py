@@ -455,8 +455,8 @@ class LLMExtractor(BaseExtractor):
         )
         self._log_extraction_stats(df, result_df, extracted_columns)
 
-        # Flush unified LLM logs to artifacts (in debug mode, writer persists; in non-debug it is a no-op)
-        self._llm_logger.flush(self._write_artifact)
+        # Always flush LLM logs to artifacts (writes llm_calls.json and llm_usage_summary.json)
+        self._llm_logger.flush(self._write_artifact_always)
 
         logger.info(f"LLM extraction completed. Added {len(extracted_columns)} columns. "
                     f"Validation errors: {len(validation_errors)}")

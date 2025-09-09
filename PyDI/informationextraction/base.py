@@ -142,6 +142,42 @@ class BaseExtractor(ABC):
         logger.debug(f"Wrote artifact: {filepath}")
         return filepath
 
+    def _write_artifact_always(self, filename: str, data: Any) -> Path:
+        """Write artifact to output directory, always writing regardless of debug mode.
+        
+        Used for critical artifacts like LLM logs that should always be persisted.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the file to write
+        data : Any
+            Data to write (dict/list for JSON, str for text, DataFrame for CSV)
+
+        Returns
+        -------
+        Path
+            Path to written file
+        """
+        filepath = self.run_dir / filename
+        # Ensure nested directories exist for artifacts like "errors/", "prompts/", etc.
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+
+        if isinstance(data, (dict, list)):
+            with open(filepath, 'w') as f:
+                json.dump(data, f, indent=2, default=str)
+        elif isinstance(data, str):
+            with open(filepath, 'w') as f:
+                f.write(data)
+        elif isinstance(data, pd.DataFrame):
+            data.to_csv(filepath, index=False)
+        else:
+            raise ValueError(
+                f"Unsupported data type for artifact: {type(data)}")
+
+        logger.debug(f"Wrote artifact: {filepath}")
+        return filepath
+
     def _log_extraction_stats(self, df_in: pd.DataFrame, df_out: pd.DataFrame,
                               extracted_columns: List[str]) -> None:
         """Log extraction statistics.
