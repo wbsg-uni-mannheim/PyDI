@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Set, Union, Tuple
 from dataclasses import dataclass, field
 import logging
+from functools import partial as _partial
 
 import pandas as pd
 import numpy as np
@@ -104,9 +105,35 @@ class FusionResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
+def get_callable_name(fn: Any) -> str:
+    """Return a readable name for a callable.
+
+    Handles simple functions, functools.partial, objects with 'name', and
+    callable instances by falling back to their type name.
+    """
+    try:
+        # Custom 'name' attribute takes precedence
+        name = getattr(fn, "name", None)
+        if isinstance(name, str) and name:
+            return name
+
+        # Unwrap functools.partial to the underlying function
+        if isinstance(fn, _partial):
+            return get_callable_name(fn.func)
+
+        # Regular functions and callables
+        if hasattr(fn, "__name__"):
+            return getattr(fn, "__name__")  # type: ignore[no-any-return]
+
+        # Callable instances: use class name
+        return type(fn).__name__
+    except Exception:
+        return "unknown"
+
+
 # Type alias for conflict resolution functions
-# Function should accept (values, **kwargs) and return (resolved_value, confidence, metadata)
-ConflictResolutionFunction = Callable[[List[Any]], Tuple[Any, float, Dict[str, Any]]]
+# Accepts variable args to support optional kwargs in call sites.
+ConflictResolutionFunction = Callable[..., Tuple[Any, float, Dict[str, Any]]]
 
 
 class AttributeValueFuser:
@@ -195,7 +222,7 @@ class AttributeValueFuser:
             The fusion result.
         """
         logger = logging.getLogger(__name__)
-        resolver_name = getattr(self.resolver, 'name', self.resolver.__name__ if hasattr(self.resolver, '__name__') else 'unknown')
+        resolver_name = get_callable_name(self.resolver)
         
         logger.debug(f"Fusion invocation: group_id={context.group_id}, attribute={context.attribute}, rule={resolver_name}")
         
@@ -244,7 +271,7 @@ class AttributeValueFuser:
                 value=resolved_value,
                 sources={item[1] for item in values_with_sources},
                 confidence=confidence,
-                rule_used=self.resolver.__name__,
+                rule_used=resolver_name,
                 metadata=metadata
             )
             logger.debug(f"  Output: value={repr(resolved_value)}, confidence={confidence:.3f}, sources={result.sources}, metadata={metadata}")

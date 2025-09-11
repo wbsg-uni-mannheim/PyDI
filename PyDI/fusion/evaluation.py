@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 import logging
 
-from .base import FusionContext
+from .base import FusionContext, get_callable_name
 from .strategy import DataFusionStrategy
 from ..utils.similarity_registry import SimilarityRegistry
 
@@ -417,33 +417,13 @@ class DataFusionEvaluator:
             "accuracy": accuracy,
             "correct_count": correct_count,
             "total_count": total_count,
-            "rule_used": getattr(eval_function, '__name__', 'unknown'),
+            "rule_used": get_callable_name(eval_function),
         }
 
     @staticmethod
     def _is_missing(value: Any) -> bool:
-        """Return True if the value should be treated as missing.
-
-        Handles scalars, numpy arrays, pandas NA, and Python sequences.
-        """
-        try:
-            # Pandas/NumPy aware check
-            if pd.isna(value):
-                return True
-        except Exception:
-            pass
-
-        # Handle sequences (e.g., lists/arrays): consider missing if empty
-        if isinstance(value, (list, tuple, set)):
-            return len(value) == 0
-        try:
-            import numpy as np  # already imported at top but guard anyway
-            if isinstance(value, np.ndarray):
-                return value.size == 0 or np.all(pd.isna(value))
-        except Exception:
-            pass
-
-        return False
+        """Delegate to the module-level missing-value check."""
+        return _is_missing(value)
 
 
 def calculate_consistency_metrics(fused_df: pd.DataFrame) -> Dict[str, float]:

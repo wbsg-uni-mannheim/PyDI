@@ -11,7 +11,7 @@ from typing import Dict, Optional, Set, Callable, Any
 import logging
 from functools import partial
 
-from .base import AttributeValueFuser, ConflictResolutionFunction, FusionContext
+from .base import AttributeValueFuser, ConflictResolutionFunction, FusionContext, get_callable_name
 
 
 # Type alias for evaluation functions
@@ -70,11 +70,7 @@ class DataFusionStrategy:
             self._evaluation_rules[attribute] = evaluation_function
 
         # Be robust to both class-based and function-based resolvers
-        resolver_name = getattr(
-            fuser.resolver,
-            'name',
-            getattr(fuser.resolver, '__name__', type(fuser.resolver).__name__),
-        )
+        resolver_name = get_callable_name(fuser.resolver)
         self._logger.info(
             f"Registered fuser for attribute '{attribute}' using rule '{resolver_name}'"
         )

@@ -5,15 +5,11 @@ import pandas as pd
 from collections import Counter
 
 from ..base import _is_valid_value
+from .utils import _filter_valid_values
 
 
 # Type alias for fusion rule result
 FusionResult = Tuple[Any, float, Dict[str, Any]]
-
-
-def _filter_valid_values(values: List[Any]) -> List[Any]:
-    """Filter out None, NaN, and empty list values."""
-    return [v for v in values if _is_valid_value(v)]
 
 
 def union(values: List[Any], separator: str = None, **kwargs) -> FusionResult:
