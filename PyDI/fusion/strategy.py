@@ -7,87 +7,17 @@ attribute-level fusers and evaluation rules.
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, Callable, Any
 import logging
+from functools import partial
 
 from .base import AttributeValueFuser, ConflictResolutionFunction, FusionContext
 
 
-class EvaluationRule:
-    """Base class for evaluation rules used to assess fusion quality.
-
-    Parameters
-    ----------
-    name : str
-        Name of this evaluation rule.
-    """
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def evaluate(self, fused_value, gold_value, context: FusionContext) -> bool:
-        """Evaluate if a fused value matches the gold standard.
-
-        Parameters
-        ----------
-        fused_value : Any
-            The fused value to evaluate.
-        gold_value : Any
-            The gold standard value.
-        context : FusionContext
-            Context information.
-
-        Returns
-        -------
-        bool
-            True if the fused value is considered correct.
-        """
-        # Default: exact equality
-        return fused_value == gold_value
-
-
-class StringEqualityRule(EvaluationRule):
-    """Evaluation rule for exact string equality."""
-
-    def __init__(self):
-        super().__init__("string_equality")
-
-
-class NumericToleranceRule(EvaluationRule):
-    """Evaluation rule for numeric values with tolerance.
-
-    Parameters
-    ----------
-    tolerance : float
-        Absolute tolerance for numeric comparison.
-    """
-
-    def __init__(self, tolerance: float = 0.01):
-        super().__init__("numeric_tolerance")
-        self.tolerance = tolerance
-
-    def evaluate(self, fused_value, gold_value, context: FusionContext) -> bool:
-        """Evaluate with numeric tolerance."""
-        try:
-            return abs(float(fused_value) - float(gold_value)) <= self.tolerance
-        except (ValueError, TypeError):
-            return fused_value == gold_value
-
-
-class SetEqualityRule(EvaluationRule):
-    """Evaluation rule for set equality (order-independent)."""
-
-    def __init__(self):
-        super().__init__("set_equality")
-
-    def evaluate(self, fused_value, gold_value, context: FusionContext) -> bool:
-        """Evaluate as sets (order-independent)."""
-        try:
-            if isinstance(fused_value, (list, tuple, set)) and isinstance(gold_value, (list, tuple, set)):
-                return set(fused_value) == set(gold_value)
-            return fused_value == gold_value
-        except (TypeError, ValueError):
-            return fused_value == gold_value
+# Type alias for evaluation functions
+# Functions should return bool and typically accept (fused_value, gold_value),
+# but may also accept additional keyword parameters (e.g., threshold).
+EvaluationFunction = Callable[..., bool]
 
 
 class DataFusionStrategy:
@@ -107,29 +37,37 @@ class DataFusionStrategy:
         """
         self.name = name
         self._attribute_fusers: Dict[str, AttributeValueFuser] = {}
-        self._evaluation_rules: Dict[str, EvaluationRule] = {}
+        self._evaluation_rules: Dict[str, EvaluationFunction] = {}
         self._logger = logging.getLogger(__name__)
 
     def add_attribute_fuser(
         self,
         attribute: str,
         fuser: AttributeValueFuser,
-        evaluation_rule: Optional[EvaluationRule] = None,
+        evaluation_function: Optional[EvaluationFunction] = None,
     ) -> None:
-        """Register an attribute fuser for a specific attribute.
+        """Register an attribute fuser for a specific attribute (advanced API).
+
+        Use this method when you need advanced features like custom value extractors.
+        For simple cases, consider using add_resolver() instead.
 
         Parameters
         ----------
         attribute : str
             Name of the attribute to fuse.
         fuser : AttributeValueFuser
-            The fuser to use for this attribute.
-        evaluation_rule : Optional[EvaluationRule]
+            The fuser to use for this attribute. Use AttributeValueFuser when you need
+            custom accessor functions, required flags, or other advanced features.
+        evaluation_function : Optional[EvaluationFunction]
             Optional evaluation rule for quality assessment.
+            
+        See Also
+        --------
+        add_resolver : Simplified API for registering functions directly
         """
         self._attribute_fusers[attribute] = fuser
-        if evaluation_rule:
-            self._evaluation_rules[attribute] = evaluation_rule
+        if evaluation_function:
+            self._evaluation_rules[attribute] = evaluation_function
 
         # Be robust to both class-based and function-based resolvers
         resolver_name = getattr(
@@ -145,7 +83,7 @@ class DataFusionStrategy:
         self,
         attribute: str,
         resolver: ConflictResolutionFunction,
-        evaluation_rule: Optional[EvaluationRule] = None,
+        evaluation_function: Optional[EvaluationFunction] = None,
         **fuser_kwargs,
     ) -> None:
         """Register an attribute fuser from a conflict resolution function.
@@ -156,13 +94,46 @@ class DataFusionStrategy:
             Name of the attribute to fuse.
         resolver : ConflictResolutionFunction
             The conflict resolution function to use.
-        evaluation_rule : Optional[EvaluationRule]
+        evaluation_function : Optional[EvaluationFunction]
             Optional evaluation rule for quality assessment.
         **fuser_kwargs
             Additional keyword arguments for AttributeValueFuser.
         """
         fuser = AttributeValueFuser(resolver, **fuser_kwargs)
-        self.add_attribute_fuser(attribute, fuser, evaluation_rule)
+        self.add_attribute_fuser(attribute, fuser, evaluation_function)
+
+    def add_resolver(
+        self,
+        attribute: str,
+        resolver_function,
+        evaluation_function: Optional[EvaluationFunction] = None,
+        **resolver_kwargs,
+    ) -> None:
+        """Register a conflict resolution function for an attribute (simplified API).
+        
+        This is a simplified alternative to add_attribute_fuser() for common cases
+        where you just want to register a function without custom accessor logic.
+
+        Parameters
+        ----------
+        attribute : str
+            Name of the attribute to fuse.
+        resolver_function : callable
+            The conflict resolution function to use. Should accept (values, **kwargs)
+            and return (resolved_value, confidence, metadata).
+        evaluation_function : Optional[EvaluationFunction]
+            Optional evaluation rule for quality assessment.
+        **resolver_kwargs
+            Additional keyword arguments to pass to the resolver function.
+
+        Examples
+        --------
+        >>> strategy.add_resolver("title", longest_string)
+        >>> strategy.add_resolver("directors", union, separator=", ")
+        >>> strategy.add_resolver("year", average)
+        """
+        fuser = AttributeValueFuser(resolver_function, **resolver_kwargs)
+        self.add_attribute_fuser(attribute, fuser, evaluation_function)
 
     def get_attribute_fuser(self, attribute: str) -> Optional[AttributeValueFuser]:
         """Get the fuser registered for a specific attribute.
@@ -179,7 +150,7 @@ class DataFusionStrategy:
         """
         return self._attribute_fusers.get(attribute)
 
-    def get_evaluation_rule(self, attribute: str) -> Optional[EvaluationRule]:
+    def get_evaluation_function(self, attribute: str) -> Optional[EvaluationFunction]:
         """Get the evaluation rule registered for a specific attribute.
 
         Parameters
@@ -189,10 +160,50 @@ class DataFusionStrategy:
 
         Returns
         -------
-        Optional[EvaluationRule]
-            The registered evaluation rule, or None if not found.
+        Optional[EvaluationFunction]
+            The registered evaluation function, or None if not found.
         """
         return self._evaluation_rules.get(attribute)
+
+    def add_evaluation_function(
+        self,
+        attribute: str,
+        evaluation_function: EvaluationFunction,
+        **kwargs: Any,
+    ) -> None:
+        """Register an evaluation function for an attribute.
+
+        Supports optional keyword parameters which will be bound to the
+        function using ``functools.partial``.
+        
+        Parameters
+        ----------
+        attribute : str
+            Name of the attribute.
+        evaluation_function : EvaluationFunction
+            Function to evaluate fusion results for this attribute. Typically
+            has signature ``(fused_value, gold_value, **params) -> bool``.
+        **kwargs : Any
+            Optional parameters to bind to the evaluation function (e.g.,
+            ``threshold=0.7``).
+
+        Examples
+        --------
+        Register without parameters (exact signature):
+        >>> strategy.add_evaluation_function("title", tokenized_match)
+
+        Register with parameters using keyword args (will be bound via partial):
+        >>> strategy.add_evaluation_function("director_name", tokenized_match, threshold=0.7)
+        >>> strategy.add_evaluation_function("actors", tokenized_match, threshold=0.5)
+        """
+        bound_function: EvaluationFunction = (
+            partial(evaluation_function, **kwargs) if kwargs else evaluation_function
+        )
+        self._evaluation_rules[attribute] = bound_function
+        self._logger.info(
+            f"Registered evaluation function for attribute '{attribute}'"
+            + (f" with params {kwargs}" if kwargs else "")
+        )
 
     def get_registered_attributes(self) -> Set[str]:
         """Get all attributes that have registered fusers.

@@ -8,12 +8,50 @@ fusion contexts.
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Set, Union, Tuple
 from dataclasses import dataclass, field
 import logging
 
 import pandas as pd
+import numpy as np
+
+
+def _is_valid_value(value: Any) -> bool:
+    """Check if a value is valid (not None, not NA, not empty list).
+    
+    This helper function properly handles both scalar values and lists/arrays
+    that may be returned from loaders with aggregate mode.
+    
+    Parameters
+    ----------
+    value : Any
+        The value to check.
+        
+    Returns
+    -------
+    bool
+        True if the value is valid and usable for fusion.
+    """
+    if value is None:
+        return False
+    
+    # Handle lists/arrays - consider empty lists as invalid
+    if isinstance(value, (list, tuple)):
+        return len(value) > 0
+    
+    # Handle numpy arrays
+    try:
+        if isinstance(value, np.ndarray):
+            return value.size > 0
+    except Exception:
+        pass
+    
+    # For scalars, check with pd.isna (inverse of pd.notna)
+    try:
+        return not pd.isna(value)
+    except Exception:
+        # If pd.isna fails (e.g., complex objects), assume valid
+        return True
 
 
 @dataclass
@@ -66,36 +104,9 @@ class FusionResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
-class ConflictResolutionFunction(ABC):
-    """Abstract base class for conflict resolution functions.
-    
-    A conflict resolution function takes a list of values and resolves
-    conflicts to produce a single fused value.
-    """
-    
-    @abstractmethod
-    def resolve(self, values: List[Any], context: FusionContext) -> FusionResult:
-        """Resolve conflicts between multiple values.
-        
-        Parameters
-        ----------
-        values : List[Any]
-            List of values to resolve conflicts for.
-        context : FusionContext
-            Context information for the fusion operation.
-            
-        Returns
-        -------
-        FusionResult
-            The resolved fusion result.
-        """
-        pass
-    
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        """Name of this conflict resolution function."""
-        pass
+# Type alias for conflict resolution functions
+# Function should accept (values, **kwargs) and return (resolved_value, confidence, metadata)
+ConflictResolutionFunction = Callable[[List[Any]], Tuple[Any, float, Dict[str, Any]]]
 
 
 class AttributeValueFuser:
@@ -103,22 +114,21 @@ class AttributeValueFuser:
     
     Parameters
     ----------
-    resolver : Union[ConflictResolutionFunction, Callable]
-        The conflict resolution function to use. Can be either a class-based
-        ConflictResolutionFunction or a simple function that returns 
-        (value, confidence, metadata).
+    resolver : Callable
+        The conflict resolution function to use. Should accept (values, **kwargs)
+        and return (resolved_value, confidence, metadata).
     accessor : Optional[Callable]
         Function to extract values from records. If None, uses direct
         attribute access.
     required : bool
         Whether this attribute is required for fusion.
     resolver_kwargs : Dict[str, Any]
-        Additional keyword arguments to pass to function-based resolvers.
+        Additional keyword arguments to pass to the resolver function.
     """
     
     def __init__(
         self,
-        resolver: Union[ConflictResolutionFunction, Callable],
+        resolver: Callable,
         accessor: Optional[Callable[[pd.Series], Any]] = None,
         required: bool = False,
         **resolver_kwargs
@@ -127,9 +137,6 @@ class AttributeValueFuser:
         self.accessor = accessor
         self.required = required
         self.resolver_kwargs = resolver_kwargs
-        
-        # Check if resolver is a function or class
-        self._is_function_resolver = callable(resolver) and not isinstance(resolver, ConflictResolutionFunction)
     
     def has_value(self, record: pd.Series, context: FusionContext) -> bool:
         """Check if a record has a value for this attribute.
@@ -148,7 +155,7 @@ class AttributeValueFuser:
         """
         try:
             value = self.accessor(record) if self.accessor else record.get(context.attribute)
-            return value is not None and pd.notna(value)
+            return _is_valid_value(value)
         except (KeyError, AttributeError):
             return False
     
@@ -187,6 +194,11 @@ class AttributeValueFuser:
         FusionResult
             The fusion result.
         """
+        logger = logging.getLogger(__name__)
+        resolver_name = getattr(self.resolver, 'name', self.resolver.__name__ if hasattr(self.resolver, '__name__') else 'unknown')
+        
+        logger.debug(f"Fusion invocation: group_id={context.group_id}, attribute={context.attribute}, rule={resolver_name}")
+        
         # Extract values that are present
         values_with_sources = []
         for record in records:
@@ -194,58 +206,58 @@ class AttributeValueFuser:
                 value = self.get_value(record, context)
                 record_id = record.get("_id", "unknown")
                 values_with_sources.append((value, record_id))
+                logger.debug(f"  Input: record_id={record_id}, value={repr(value)}")
         
         if not values_with_sources:
+            logger.debug(f"  No values available for attribute '{context.attribute}'")
             # No values available
-            resolver_name = getattr(self.resolver, 'name', self.resolver.__name__ if hasattr(self.resolver, '__name__') else 'unknown')
-            return FusionResult(
+            result = FusionResult(
                 value=None,
                 sources=set(),
                 confidence=0.0,
                 rule_used=resolver_name,
                 metadata={"reason": "no_values"}
             )
+            logger.debug(f"  Output: value=None, confidence=0.0, rule={resolver_name}")
+            return result
         
         # Extract just the values for conflict resolution
         values = [item[0] for item in values_with_sources]
+        logger.debug(f"  Extracted values for fusion: {repr(values)}")
         
-        # Resolve conflicts based on resolver type
-        if self._is_function_resolver:
-            # Function-based resolver
-            try:
-                # Prepare context kwargs for function
-                context_kwargs = {
-                    'sources': [item[1] for item in values_with_sources],
-                    'group_id': context.group_id,
-                    'attribute': context.attribute,
-                    'source_datasets': context.source_datasets,
-                    **self.resolver_kwargs
-                }
-                
-                # Call function resolver
-                resolved_value, confidence, metadata = self.resolver(values, **context_kwargs)
-                
-                result = FusionResult(
-                    value=resolved_value,
-                    sources={item[1] for item in values_with_sources},
-                    confidence=confidence,
-                    rule_used=self.resolver.__name__,
-                    metadata=metadata
-                )
-            except Exception as e:
-                logging.warning(f"Function resolver {self.resolver.__name__} failed: {e}")
-                result = FusionResult(
-                    value=values[0] if values else None,
-                    sources={item[1] for item in values_with_sources},
-                    confidence=0.1,
-                    rule_used=self.resolver.__name__,
-                    metadata={"error": str(e), "fallback": "first_value"}
-                )
-        else:
-            # Class-based resolver
-            result = self.resolver.resolve(values, context)
-            # Add source information
-            result.sources = {item[1] for item in values_with_sources}
+        # Call function resolver
+        try:
+            # Prepare context kwargs for function
+            context_kwargs = {
+                'sources': [item[1] for item in values_with_sources],
+                'group_id': context.group_id,
+                'attribute': context.attribute,
+                'source_datasets': context.source_datasets,
+                **self.resolver_kwargs
+            }
+            logger.debug(f"  Calling resolver with context: {context_kwargs}")
+            
+            # Call function resolver
+            resolved_value, confidence, metadata = self.resolver(values, **context_kwargs)
+            
+            result = FusionResult(
+                value=resolved_value,
+                sources={item[1] for item in values_with_sources},
+                confidence=confidence,
+                rule_used=self.resolver.__name__,
+                metadata=metadata
+            )
+            logger.debug(f"  Output: value={repr(resolved_value)}, confidence={confidence:.3f}, sources={result.sources}, metadata={metadata}")
+        except Exception as e:
+            logger.warning(f"Function resolver {resolver_name} failed: {e}")
+            logger.debug(f"  Falling back to first value: {repr(values[0]) if values else None}")
+            result = FusionResult(
+                value=values[0] if values else None,
+                sources={item[1] for item in values_with_sources},
+                confidence=0.1,
+                rule_used=resolver_name,
+                metadata={"error": str(e), "fallback": "first_value"}
+            )
         
         return result
 

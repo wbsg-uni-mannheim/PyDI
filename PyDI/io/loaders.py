@@ -81,6 +81,31 @@ def _compute_file_metadata(path: Optional[Union[str, os.PathLike]]) -> Dict[str,
     return metadata
 
 
+def _convert_lists_to_strings(df: pd.DataFrame, separator: str = ", ") -> pd.DataFrame:
+    """Convert list/array columns to comma-separated strings.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame to process.
+    separator : str, default ", "
+        Separator to use when joining list elements.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame with list columns converted to strings.
+    """
+    df = df.copy()
+    for col in df.columns:
+        # Check if column contains lists/arrays
+        if df[col].apply(lambda x: isinstance(x, (list, tuple))).any():
+            df[col] = df[col].apply(
+                lambda x: separator.join(str(item) for item in x) if isinstance(x, (list, tuple)) else x
+            )
+    return df
+
+
 def _derive_dataset_name(
     name: Optional[str],
     path_or_buf: Optional[Union[str, os.PathLike]],
@@ -421,13 +446,49 @@ def load_json(
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
+    nested_handling: str = "preserve",
+    separator: str = ", ",
     **kwargs: Any,
 ) -> pd.DataFrame:
     """Read a JSON file with a provenance-aware wrapper.
 
-    See ``load_with_provenance`` for parameter details.
+    Parameters
+    ----------
+    path_or_buf : str or os.PathLike
+        Path to JSON file to read.
+    name : str, optional
+        Dataset name for provenance tracking.
+    provenance : Mapping[str, Any], optional
+        Additional provenance metadata.
+    add_index : bool, default True
+        Whether to add a unique identifier column.
+    index_column_name : str, optional
+        Name for the unique identifier column.
+    id_prefix : str, optional
+        Prefix for unique identifiers.
+    include_provenance_columns : bool, default False
+        Whether to include provenance information as DataFrame columns.
+    nested_handling : str, default "preserve"
+        How to handle nested/list values:
+        - "preserve": Keep lists/arrays as Python objects (default)
+        - "aggregate": Keep lists as Python objects (same as preserve for JSON)
+    separator : str, default ", "
+        Separator string (unused for JSON, kept for backward compatibility).
+    **kwargs
+        Additional arguments passed to pandas.read_json.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with provenance metadata and optional identifier column.
     """
-    return load_with_provenance(
+    # Validate nested_handling parameter
+    valid_modes = {"preserve", "aggregate"}
+    if nested_handling not in valid_modes:
+        raise ValueError(f"nested_handling must be one of {valid_modes}, got: {nested_handling}")
+    
+    # Load the JSON normally
+    result_df = load_with_provenance(
         pd.read_json,
         path_or_buf,
         name=name,
@@ -439,6 +500,10 @@ def load_json(
         reader_name="read_json",
         **kwargs,
     )
+    
+    # Note: In aggregate mode, we preserve lists as lists (no conversion to strings)
+    # This allows for better downstream processing with fusion and evaluation
+    return result_df
 
 
 def load_parquet(
@@ -510,21 +575,102 @@ def load_xml(
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
-    flatten: bool = True,
+    nested_handling: str = "explode",
+    separator: str = ", ",
     record_tag: Optional[str] = None,
+    flatten: Optional[bool] = None,
     **kwargs: Any,
 ) -> pd.DataFrame:
     """Read an XML file with a provenance-aware wrapper.
 
-    If ``flatten`` is True (default), nested structures are flattened into rows
-    (e.g., repeated ``actor`` elements create multiple rows with duplicated
-    parent fields and a column like ``actor_name``).
+    Parameters
+    ----------
+    path_or_buffer : str or os.PathLike
+        Path to XML file to read.
+    name : str, optional
+        Dataset name for provenance tracking.
+    provenance : Mapping[str, Any], optional
+        Additional provenance metadata.
+    add_index : bool, default True
+        Whether to add a unique identifier column.
+    index_column_name : str, optional
+        Name for the unique identifier column.
+    id_prefix : str, optional
+        Prefix for unique identifiers.
+    include_provenance_columns : bool, default False
+        Whether to include provenance information as DataFrame columns.
+    nested_handling : str, default "explode"
+        How to handle nested/repeated XML elements:
+        - "explode": Create multiple rows for repeated elements (default)
+        - "aggregate": Collect nested values as lists in single row
+        - "raw": Use pandas.read_xml directly without custom processing
+    separator : str, default ", "
+        Separator string (unused in current implementation, kept for backward compatibility).
+    record_tag : str, optional
+        XML tag to use as record boundary. Auto-detected if not provided.
+    flatten : bool, optional
+        Deprecated. Use nested_handling instead.
+        If provided, maps to nested_handling: True="explode", False="raw".
+    **kwargs
+        Additional arguments passed to pandas.read_xml.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with provenance metadata and optional identifier column.
     """
-    # If a real path is provided and flattening requested, use custom flattener
-    if flatten and isinstance(path_or_buffer, (str, os.PathLike)):
+    # Handle backward compatibility
+    if flatten is not None:
+        try:
+            import warnings
+            warnings.warn(
+                "The 'flatten' parameter is deprecated. Use 'nested_handling' instead. "
+                "flatten=True maps to nested_handling='explode', flatten=False maps to nested_handling='raw'.",
+                DeprecationWarning,
+                stacklevel=2
+            )
+        except Exception:
+            pass
+        # Map old parameter to new one if nested_handling wasn't explicitly set
+        if nested_handling == "explode":  # default value, assume user didn't set it
+            nested_handling = "explode" if flatten else "raw"
+    
+    # Validate nested_handling parameter
+    valid_modes = {"explode", "aggregate", "raw"}
+    if nested_handling not in valid_modes:
+        raise ValueError(f"nested_handling must be one of {valid_modes}, got: {nested_handling}")
+
+    # Handle "raw" mode - use pandas directly
+    if nested_handling == "raw":
+        if "parser" not in kwargs:
+            try:
+                import lxml  # type: ignore # noqa: F401
+                kwargs["parser"] = "lxml"
+            except Exception:
+                kwargs["parser"] = "etree"
+        return load_with_provenance(
+            pd.read_xml,
+            path_or_buffer,
+            name=name,
+            provenance=provenance,
+            add_index=add_index,
+            index_column_name=index_column_name,
+            id_prefix=id_prefix,
+            include_provenance_columns=include_provenance_columns,
+            reader_name="read_xml",
+            **kwargs,
+        )
+    
+    # Handle custom processing modes ("explode" and "aggregate")
+    if isinstance(path_or_buffer, (str, os.PathLike)):
         try:
             df = _read_and_flatten_xml(
-                Path(path_or_buffer), record_tag=record_tag)
+                Path(path_or_buffer), 
+                record_tag=record_tag,
+                nested_handling=nested_handling,
+                separator=separator
+            )
+            reader_suffix = "_exploded" if nested_handling == "explode" else "_aggregated"
             return load_with_provenance(
                 lambda _p, **_k: df,  # already loaded
                 path_or_buffer,
@@ -534,17 +680,17 @@ def load_xml(
                 index_column_name=index_column_name,
                 id_prefix=id_prefix,
                 include_provenance_columns=include_provenance_columns,
-                reader_name="read_xml_flattened",
+                reader_name=f"read_xml{reader_suffix}",
             )
         except Exception as e:
             # Fallback to pandas if custom parsing fails
             try:
                 logger.info(
-                    "XML flattening failed (%s), falling back to pandas.read_xml", e)
+                    "Custom XML processing failed (%s), falling back to pandas.read_xml", e)
             except Exception:
                 pass
-
-    # Otherwise, use pandas.read_xml with a parser fallback selection
+    
+    # Final fallback to pandas.read_xml
     if "parser" not in kwargs:
         try:
             import lxml  # type: ignore # noqa: F401
@@ -565,12 +711,36 @@ def load_xml(
     )
 
 
-def _read_and_flatten_xml(file_path: Path, record_tag: Optional[str] = None) -> pd.DataFrame:
-    """Parse XML and flatten nested structures into rows.
+def _read_and_flatten_xml(
+    file_path: Path, 
+    record_tag: Optional[str] = None, 
+    nested_handling: str = "explode",
+    separator: str = ", "
+) -> pd.DataFrame:
+    """Parse XML and flatten nested structures.
 
+    Parameters
+    ----------
+    file_path : Path
+        Path to the XML file.
+    record_tag : str, optional
+        XML tag to use as record boundary. Auto-detected if not provided.
+    nested_handling : str, default "explode"
+        How to handle nested elements: "explode" for multiple rows, "aggregate" for joined strings.
+    separator : str, default ", "
+        Separator for aggregating nested values when nested_handling="aggregate".
+
+    Returns
+    -------
+    pd.DataFrame
+        Flattened DataFrame.
+
+    Notes
+    -----
     Heuristics:
     - Auto-detect record tag as the most frequent child of the root when not provided
-    - Repeated child tags (e.g., ``actor``) produce multiple rows
+    - With "explode": repeated child tags (e.g., ``actor``) produce multiple rows
+    - With "aggregate": repeated child tags are collected as lists in single row
     - Scalar children merge into the parent row
     - Attributes and text content are captured when present
     """
@@ -588,8 +758,9 @@ def _read_and_flatten_xml(file_path: Path, record_tag: Optional[str] = None) -> 
         return pd.DataFrame()
 
     all_rows: List[Dict[str, Any]] = []
+
     for rec in records:
-        rows = _flatten_xml_element(rec)
+        rows = _flatten_xml_element(rec, nested_handling=nested_handling, separator=separator)
         all_rows.extend(rows)
 
     if not all_rows:
@@ -597,9 +768,15 @@ def _read_and_flatten_xml(file_path: Path, record_tag: Optional[str] = None) -> 
 
     df = pd.DataFrame(all_rows)
     df.columns = [_clean_column_name(col) for col in df.columns]
-    # Explode delimited multi-values for director names
-    if "director_name" in df.columns:
-        df = _explode_delimited_column(df, "director_name")
+    
+    # Only explode delimited values in explode mode
+    if nested_handling == "explode":
+        # Look for any columns that might contain delimited values and explode them
+        for col in df.columns:
+            if df[col].dtype == object:  # Only check string/object columns
+                if df[col].apply(lambda v: isinstance(v, str) and re.search(r"\s*(?:and|,|;)\s*", v)).any():
+                    df = _explode_delimited_column(df, col)
+    
     return df
 
 
@@ -613,7 +790,12 @@ def _detect_xml_record_tag(root: ET.Element) -> str:
     return max(tag_counts.items(), key=lambda kv: kv[1])[0]
 
 
-def _flatten_xml_element(element: ET.Element, prefix: str = "") -> List[Dict[str, Any]]:
+def _flatten_xml_element(
+    element: ET.Element, 
+    prefix: str = "",
+    nested_handling: str = "explode",
+    separator: str = ", "
+) -> List[Dict[str, Any]]:
     base_data: Dict[str, Any] = {}
     list_children: Dict[str, List[Dict[str, Any]]] = {}
 
@@ -637,25 +819,56 @@ def _flatten_xml_element(element: ET.Element, prefix: str = "") -> List[Dict[str
             # list-like child
             if child.tag not in list_children:
                 list_children[child.tag] = []
-            child_rows = _flatten_xml_element(child, child_prefix)
+            child_rows = _flatten_xml_element(child, child_prefix, nested_handling, separator)
             list_children[child.tag].extend(child_rows)
         else:
             # scalar child; merge its flattened dict into base
-            child_rows = _flatten_xml_element(child, child_prefix)
+            child_rows = _flatten_xml_element(child, child_prefix, nested_handling, separator)
             if child_rows:
-                base_data.update(child_rows[0])
+                # If scalar child returns multiple rows, treat it as list-like
+                if len(child_rows) > 1:
+                    if child.tag not in list_children:
+                        list_children[child.tag] = []
+                    list_children[child.tag].extend(child_rows)
+                else:
+                    base_data.update(child_rows[0])
 
     if list_children:
-        # Full cartesian product across list-like children to fully explode
-        keys = list(list_children.keys())
-        lists: List[List[Dict[str, Any]]] = [list_children[k] for k in keys]
-        rows: List[Dict[str, Any]] = []
-        for combo in itertools.product(*lists):
+        if nested_handling == "aggregate":
+            # Aggregate mode: keep repeated elements as lists
             row = dict(base_data)
-            for part in combo:
-                row.update(part)
-            rows.append(row)
-        return rows
+            
+            # Collect all values from all child rows by field
+            field_values: Dict[str, List[str]] = {}
+            
+            for tag, child_rows in list_children.items():
+                for child_row in child_rows:
+                    for key, value in child_row.items():
+                        if isinstance(value, str) and value.strip():
+                            if key not in field_values:
+                                field_values[key] = []
+                            field_values[key].append(value)
+            
+            # Keep all collected values as lists
+            for field, values in field_values.items():
+                if values:
+                    # If only one value, keep as single item for consistency
+                    row[field] = values[0] if len(values) == 1 else values
+                else:
+                    row[field] = None
+            
+            return [row] if row else []
+        else:
+            # Explode mode: full cartesian product across list-like children 
+            keys = list(list_children.keys())
+            lists: List[List[Dict[str, Any]]] = [list_children[k] for k in keys]
+            rows: List[Dict[str, Any]] = []
+            for combo in itertools.product(*lists):
+                row = dict(base_data)
+                for part in combo:
+                    row.update(part)
+                rows.append(row)
+            return rows
     else:
         return [base_data] if base_data else []
 
@@ -664,11 +877,14 @@ def _clean_column_name(name: str) -> str:
     if name.endswith("_text"):
         name = name[:-5]
     name = name.rstrip("_")
-    # Rename common nested keys for readability
-    if name == "actors_actor_name":
-        name = "actor_name"
-    if name == "directors_director_name":
-        name = "director_name"
+    
+    # Generic cleanup for repeated nested patterns
+    # Convert patterns like "parent_child_child" to "parent_child"  
+    parts = name.split("_")
+    if len(parts) >= 3 and parts[-2] == parts[-1]:
+        # Remove the duplicate last part
+        name = "_".join(parts[:-1])
+    
     return name
 
 

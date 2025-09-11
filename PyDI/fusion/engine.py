@@ -13,7 +13,7 @@ import logging
 import time
 import pandas as pd
 
-from .base import RecordGroup, FusionContext, FusionResult
+from .base import RecordGroup, FusionContext, FusionResult, _is_valid_value
 from .strategy import DataFusionStrategy
 
 
@@ -384,7 +384,7 @@ class DataFusionEngine:
             f"Fusion complete: {len(result)} records from {len(groups)} groups")
         self._logger.info(
             f"Fusion time: {time.time() - start_time:.2f} seconds")
-        return result, time.time() - start_time
+        return result
 
     def _fuse_group(self, group: RecordGroup) -> Optional[Dict]:
         """Fuse a single record group.
@@ -444,27 +444,32 @@ class DataFusionEngine:
 
             if fuser:
                 # Use registered fuser
+                self._logger.debug(f"Fusing attribute '{attribute}' for group '{group.group_id}' using fuser: {fuser.resolver.__name__}")
                 result = fuser.fuse(group.records, context)
                 fused_record[attribute] = result.value
                 attribute_confidences.append(result.confidence)
                 fusion_metadata[f"{attribute}_rule"] = result.rule_used
                 fusion_metadata[f"{attribute}_sources"] = list(result.sources)
+                self._logger.debug(f"  Fused '{attribute}': {repr(result.value)} (confidence: {result.confidence:.3f})")
             else:
                 # Default fusion: prefer non-null values, first available
+                self._logger.debug(f"Fusing attribute '{attribute}' for group '{group.group_id}' using default (first_non_null)")
                 values = []
                 for record in group.records:
                     value = record.get(attribute)
-                    if value is not None and pd.notna(value):
+                    if _is_valid_value(value):
                         values.append(value)
 
                 if values:
                     fused_record[attribute] = values[0]  # Take first non-null
                     attribute_confidences.append(0.5)  # Default confidence
                     fusion_metadata[f"{attribute}_rule"] = "first_non_null"
+                    self._logger.debug(f"  Fused '{attribute}': {repr(values[0])} (default, confidence: 0.5)")
                 else:
                     fused_record[attribute] = None
                     attribute_confidences.append(0.0)
                     fusion_metadata[f"{attribute}_rule"] = "no_value"
+                    self._logger.debug(f"  Fused '{attribute}': None (no values available)")
 
         # Calculate overall confidence
         if attribute_confidences:

@@ -1,0 +1,130 @@
+{
+  "schemas": {
+    "academy_awards": {
+      "columns": "{'id', 'actors_actor_name', 'date', 'oscar', 'academy_awards_id', 'director_name', 'title'}",
+      "dtypes": {
+        "academy_awards_id": "string",
+        "id": "object",
+        "title": "object",
+        "actors_actor_name": "object",
+        "date": "object",
+        "director_name": "object",
+        "oscar": "object"
+      },
+      "shape": [
+        4580,
+        7
+      ],
+      "null_counts": {
+        "academy_awards_id": 0,
+        "id": 0,
+        "title": 12,
+        "actors_actor_name": 3531,
+        "date": 0,
+        "director_name": 4172,
+        "oscar": 3313
+      }
+    },
+    "actors": {
+      "columns": "{'actors_actor_birthday', 'id', 'actors_id', 'actors_actor_name', 'date', 'actors_actor_birthplace', 'title'}",
+      "dtypes": {
+        "actors_id": "string",
+        "id": "object",
+        "title": "object",
+        "actors_actor_name": "object",
+        "actors_actor_birthday": "object",
+        "actors_actor_birthplace": "object",
+        "date": "object"
+      },
+      "shape": [
+        151,
+        7
+      ],
+      "null_counts": {
+        "actors_id": 0,
+        "id": 0,
+        "title": 0,
+        "actors_actor_name": 0,
+        "actors_actor_birthday": 0,
+        "actors_actor_birthplace": 0,
+        "date": 0
+      }
+    },
+    "golden_globes": {
+      "columns": "{'golden_globes_id', 'id', 'actors_actor_name', 'date', 'director_name', 'title', 'globe'}",
+      "dtypes": {
+        "golden_globes_id": "string",
+        "id": "object",
+        "title": "object",
+        "actors_actor_name": "object",
+        "date": "object",
+        "director_name": "object",
+        "globe": "object"
+      },
+      "shape": [
+        2279,
+        7
+      ],
+      "null_counts": {
+        "golden_globes_id": 0,
+        "id": 0,
+        "title": 0,
+        "actors_actor_name": 54,
+        "date": 0,
+        "director_name": 1966,
+        "globe": 1657
+      }
+    }
+  },
+  "all_columns": [
+    "actors_actor_birthday",
+    "golden_globes_id",
+    "id",
+    "actors_id",
+    "actors_actor_name",
+    "date",
+    "oscar",
+    "academy_awards_id",
+    "actors_actor_birthplace",
+    "director_name",
+    "title",
+    "globe"
+  ],
+  "common_columns": [
+    "date",
+    "actors_actor_name",
+    "id",
+    "title"
+  ],
+  "unique_columns": {
+    "academy_awards": [
+      "id",
+      "actors_actor_name",
+      "date",
+      "oscar",
+      "director_name",
+      "title",
+      "academy_awards_id"
+    ],
+    "actors": [
+      "actors_actor_birthday",
+      "id",
+      "actors_id",
+      "actors_actor_name",
+      "date",
+      "actors_actor_birthplace",
+      "title"
+    ],
+    "golden_globes": [
+      "golden_globes_id",
+      "id",
+      "actors_actor_name",
+      "date",
+      "director_name",
+      "title",
+      "globe"
+    ]
+  },
+  "schema_overlap_matrix": "                academy_awards  actors  golden_globes\nacademy_awards        1.000000     0.4       0.555556\nactors                0.400000     1.0       0.400000\ngolden_globes         0.555556     0.4       1.000000",
+  "dtype_conflicts": {}
+}
