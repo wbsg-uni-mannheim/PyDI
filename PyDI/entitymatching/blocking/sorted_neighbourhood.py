@@ -4,7 +4,10 @@ Sorted neighbourhood blocking with a sliding window over a sort key.
 
 from __future__ import annotations
 
+import logging
+import os
 from typing import Iterator, List, Tuple
+from collections import Counter
 
 import pandas as pd
 
@@ -36,10 +39,18 @@ class SortedNeighbourhood(BaseBlocker):
         self.key = key
         self.window = int(window)
 
+        # Setup logging
+        self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
+        
+        # Log DEBUG: Creating sort keys
+        self.logger.debug(f"Creating sort keys for dataset1: {len(self.df_left)} records")
         left_tmp = self.df_left[["_id", key]].copy()
         left_tmp["__side"] = "L"
+        
+        self.logger.debug(f"Creating sort keys for dataset2: {len(self.df_right)} records")
         right_tmp = self.df_right[["_id", key]].copy()
         right_tmp["__side"] = "R"
+        
         combined = pd.concat([left_tmp, right_tmp], ignore_index=True)
 
         if pd.api.types.is_string_dtype(combined[key]):
@@ -48,14 +59,52 @@ class SortedNeighbourhood(BaseBlocker):
         else:
             combined["__sort_key"] = combined[key]
 
+        self.logger.debug(f"Sorting combined dataset with {len(combined)} records")
         self._combined_sorted = combined.sort_values(
             "__sort_key", kind="mergesort").reset_index(drop=True)
+        
+        # Log INFO: sorted neighbourhood setup
+        self.logger.info(f"created sorted neighbourhood with window size {self.window}")
+        self.logger.info(f"created 1 sorted sequence from {len(combined)} records")
+        
+        # Write debug CSV file (like Winter framework)
+        self._write_debug_file()
 
     def estimate_pairs(self) -> int | None:  # heuristic
         n = len(self._combined_sorted)
         return max(0, (n * min(self.window, max(0, n - 1))) // 2)
 
+    def _write_debug_file(self) -> None:
+        """Write debug CSV file with sort key prefixes and frequencies like Winter framework."""
+        if self._combined_sorted.empty:
+            return
+            
+        # Create output directory if it doesn't exist
+        os.makedirs("output", exist_ok=True)
+        
+        # Extract sort key prefixes (first 6 characters like Winter seems to do)
+        sort_keys = self._combined_sorted["__sort_key"].astype(str)
+        prefixes = sort_keys.str[:6].str.upper()  # Convert to uppercase like Winter
+        
+        # Count frequencies of each prefix
+        prefix_counts = prefixes.value_counts()
+        
+        # Prepare debug data
+        debug_data = []
+        for prefix, freq in prefix_counts.items():
+            debug_data.append({"Blocking Key Value": prefix, "Frequency": freq})
+        
+        # Write to CSV file
+        debug_file = "output/debugResultsBlocking_SortedNeighbourhood.csv"
+        debug_df = pd.DataFrame(debug_data)
+        debug_df.to_csv(debug_file, index=False)
+        
+        self.logger.info(f"Debug results written to file: {debug_file}")
+
     def _iter_batches(self) -> Iterator[CandidateBatch]:
+        # Log DEBUG: Creating candidate pairs 
+        self.logger.debug(f"Creating candidate record pairs from sorted neighbourhood with window {self.window}")
+        
         ids = self._combined_sorted["_id"].to_list()
         sides = self._combined_sorted["__side"].to_list()
         batch: List[Tuple[str, str]] = []

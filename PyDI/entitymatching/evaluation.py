@@ -165,6 +165,164 @@ class EntityMatchingEvaluator:
         return results
     
     @staticmethod
+    def evaluate_blocking_batched(
+        blocker,
+        test_pairs: pd.DataFrame,
+        total_possible_pairs: int,
+        *,
+        out_dir: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Evaluate blocking strategy performance using batch processing.
+        
+        Memory-efficient version that processes candidate pairs in batches
+        without materializing all pairs at once. Suitable for large datasets
+        that exceed memory limits.
+        
+        Parameters
+        ----------
+        blocker : BaseBlocker
+            Blocker instance that yields candidate pair batches.
+            Must implement the BaseBlocker interface with __iter__ method.
+        test_pairs : pandas.DataFrame
+            Ground truth test pairs. Should have columns id1, id2, and
+            optionally a label column (1 for positive, 0 for negative).
+            If no label column, assumes all pairs are positive matches.
+        total_possible_pairs : int
+            Total number of possible pairs in the Cartesian product
+            (typically len(dataset_a) * len(dataset_b)).
+        out_dir : str, optional
+            Directory to write blocking evaluation results.
+            
+        Returns
+        -------
+        Dict[str, Any]
+            Dictionary containing blocking evaluation metrics:
+            - pair_completeness: float, fraction of true matches found in candidates (blocking recall)
+            - pair_quality: float, fraction of candidates that are true matches (blocking precision)  
+            - reduction_ratio: float, reduction from total possible pairs (1 - candidates/total)
+            - total_candidates: int, number of candidate pairs generated
+            - total_possible_pairs: int, total possible pairs in search space
+            - true_positives_found: int, number of true matches in candidate set
+            - total_true_pairs: int, total number of true matches in test set
+            - batches_processed: int, number of batches processed
+            - evaluation_timestamp: str, ISO timestamp of evaluation
+            
+        Raises
+        ------
+        ValueError
+            If required columns are missing or data formats are invalid.
+        """
+        # Input validation
+        if test_pairs.empty:
+            raise ValueError("Empty test_pairs DataFrame provided")
+            
+        if total_possible_pairs <= 0:
+            raise ValueError("total_possible_pairs must be positive")
+            
+        # Validate required columns
+        test_required = ["id1", "id2"] 
+        for col in test_required:
+            if col not in test_pairs.columns:
+                raise ValueError(f"Test pairs missing required column: {col}")
+        
+        # Process test pairs - check for label column
+        has_labels = "label" in test_pairs.columns
+        if has_labels:
+            positive_pairs = EntityMatchingEvaluator._normalize_pairs(
+                test_pairs[test_pairs["label"] == 1][["id1", "id2"]]
+            )
+        else:
+            # Assume all test pairs are positive
+            positive_pairs = EntityMatchingEvaluator._normalize_pairs(
+                test_pairs[["id1", "id2"]]
+            )
+            
+        positive_set = set(positive_pairs)
+        
+        # Initialize counters for batch processing
+        total_candidates = 0
+        true_positives_found = 0
+        batches_processed = 0
+        candidate_set = set()  # Keep track of seen candidates for detailed output
+        
+        logging.info("Starting batched blocking evaluation...")
+        
+        # Process candidate pairs in batches
+        for batch in blocker:
+            if batch.empty:
+                continue
+                
+            batches_processed += 1
+            
+            # Validate batch columns
+            batch_required = ["id1", "id2"]
+            for col in batch_required:
+                if col not in batch.columns:
+                    raise ValueError(f"Candidate batch missing required column: {col}")
+            
+            # Normalize pairs in this batch
+            batch_pairs_norm = EntityMatchingEvaluator._normalize_pairs(
+                batch[["id1", "id2"]]
+            )
+            batch_set = set(batch_pairs_norm)
+            
+            # Update counters
+            total_candidates += len(batch_set)
+            batch_true_positives = len(positive_set & batch_set)
+            true_positives_found += batch_true_positives
+            
+            # Track candidates for detailed output
+            if out_dir is not None:
+                candidate_set.update(batch_set)
+            
+            # Log progress periodically
+            if batches_processed % 10 == 0:
+                logging.info(f"Processed {batches_processed} batches, {total_candidates} pairs, {true_positives_found} true matches")
+        
+        total_true_pairs = len(positive_set)
+        
+        # Compute blocking metrics
+        pair_completeness = true_positives_found / max(total_true_pairs, 1)
+        pair_quality = true_positives_found / max(total_candidates, 1)
+        reduction_ratio = 1.0 - (total_candidates / max(total_possible_pairs, 1))
+        
+        # Build results dictionary
+        results = {
+            "pair_completeness": pair_completeness,
+            "pair_quality": pair_quality, 
+            "reduction_ratio": reduction_ratio,
+            "total_candidates": total_candidates,
+            "total_possible_pairs": total_possible_pairs,
+            "true_positives_found": true_positives_found,
+            "total_true_pairs": total_true_pairs,
+            "batches_processed": batches_processed,
+            "evaluation_timestamp": datetime.now().isoformat(),
+        }
+        
+        # Write results to files if output directory provided
+        output_files = []
+        if out_dir is not None:
+            # Create a dummy candidate pairs DataFrame for compatibility
+            candidate_pairs_for_output = pd.DataFrame([
+                {"id1": pair[0], "id2": pair[1]} for pair in candidate_set
+            ])
+            
+            output_files = EntityMatchingEvaluator._write_blocking_results(
+                results, candidate_pairs_for_output, test_pairs, positive_set, candidate_set, out_dir
+            )
+            results["output_files"] = output_files
+            
+        # Print blocking information directly to console
+        print(f"  Pair Completeness: {pair_completeness:.3f}")
+        print(f"  Pair Quality:      {pair_quality:.3f}")  
+        print(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        print(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
+        print(f"  Batches Processed:  {batches_processed}")
+        
+        logging.info(f"Batched blocking evaluation complete: Completeness={pair_completeness:.4f} Quality={pair_quality:.4f} Reduction={reduction_ratio:.4f} Batches={batches_processed}")
+        return results
+    
+    @staticmethod
     def evaluate_matching(
         correspondences: CorrespondenceSet,
         test_pairs: pd.DataFrame,

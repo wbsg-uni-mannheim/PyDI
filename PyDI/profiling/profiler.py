@@ -95,12 +95,14 @@ class DataProfiler:
             ) from exc
         name_a = df_a.attrs.get("dataset_name", "A")
         name_b = df_b.attrs.get("dataset_name", "B")
-        report = sv.compare(df_a, df_b, name_a, name_b)
+        report = sv.compare((df_a, name_a), (df_b, name_b))
         out_path = os.path.join(out_dir, f"{name_a}_vs_{name_b}_compare.html")
         report.show_html(out_path)
         return out_path
 
-    def summary(self, df: pd.DataFrame, print_summary: bool = True) -> Dict[str, object]:
+    def summary(
+        self, df: pd.DataFrame, print_summary: bool = True
+    ) -> Dict[str, object]:
         """Return a dictionary of basic dataset statistics and optionally print them.
 
         Parameters
@@ -123,25 +125,29 @@ class DataProfiler:
             "nulls_per_column": df.isnull().sum().to_dict(),
             "dtypes": df.dtypes.apply(lambda x: x.name).to_dict(),
         }
-        
+
         if print_summary:
             dataset_name = df.attrs.get("dataset_name", "Dataset")
             print(f"{dataset_name}:")
             print(f"  Rows: {summary_data['rows']:,}")
             print(f"  Columns: {summary_data['columns']}")
             print(f"  Total nulls: {summary_data['nulls_total']:,}")
-            print(f"  Null percentage: {(summary_data['nulls_total'] / (summary_data['rows'] * summary_data['columns']) * 100):.1f}%")
-            
+            print(
+                f"  Null percentage: {(summary_data['nulls_total'] / (summary_data['rows'] * summary_data['columns']) * 100):.1f}%"
+            )
+
             # Show null counts per column
-            nulls_per_col = summary_data['nulls_per_column']
+            nulls_per_col = summary_data["nulls_per_column"]
             if any(nulls_per_col.values()):
                 print("  Null counts per column:")
                 for col, null_count in nulls_per_col.items():
                     if null_count > 0:
-                        print(f"    {col}: {null_count:,} ({null_count/summary_data['rows']*100:.1f}%)")
-            
+                        print(
+                            f"    {col}: {null_count:,} ({null_count/summary_data['rows']*100:.1f}%)"
+                        )
+
             print()
-        
+
         return summary_data
 
     def analyze_coverage(
@@ -150,7 +156,7 @@ class DataProfiler:
         dataset_names: Optional[List[str]] = None,
         include_samples: bool = True,
         max_sample_length: int = 50,
-        sample_count: int = 2
+        sample_count: int = 2,
     ) -> pd.DataFrame:
         """Analyze attribute coverage across multiple datasets.
 
@@ -201,5 +207,5 @@ class DataProfiler:
             dataset_names=dataset_names,
             include_samples=include_samples,
             max_sample_length=max_sample_length,
-            sample_count=sample_count
+            sample_count=sample_count,
         )

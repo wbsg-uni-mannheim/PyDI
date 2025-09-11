@@ -10,7 +10,14 @@ comparators for computing entity correspondences.
 from .base import BaseMatcher, BaseComparator, CorrespondenceSet, ensure_record_ids
 
 # Blocking strategies (subpackage)
-from .blocking import BaseBlocker, NoBlocking, StandardBlocking, SortedNeighbourhood, TokenBlocking, EmbeddingBlocking
+from .blocking import (
+    BaseBlocker,
+    NoBlocking,
+    StandardBlocking,
+    SortedNeighbourhood,
+    TokenBlocking,
+    EmbeddingBlocking,
+)
 
 # Matching algorithms
 from .rule_based import RuleBasedMatcher

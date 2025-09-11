@@ -5,6 +5,7 @@ Base interfaces and utils for streaming candidate generators (blockers).
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+import logging
 from typing import Iterator, List, Optional
 
 import pandas as pd
@@ -48,6 +49,9 @@ class BaseBlocker(ABC):
         self.df_left = ensure_record_ids(df_left)
         self.df_right = ensure_record_ids(df_right)
         self.batch_size = int(batch_size)
+        
+        # Setup logging
+        self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
 
         # Cached indexes for faster lookup in some strategies
         self._left_indexed = _ensure_id_index(self.df_left)
@@ -55,6 +59,7 @@ class BaseBlocker(ABC):
 
         self._pairs_emitted = 0
         self._batches_emitted = 0
+        
 
     def __iter__(self) -> Iterator[CandidateBatch]:  # pragma: no cover - interface
         return self._iter_batches()
@@ -94,5 +99,3 @@ __all__ = [
     "BaseBlocker",
     "CandidateBatch",
 ]
-
-

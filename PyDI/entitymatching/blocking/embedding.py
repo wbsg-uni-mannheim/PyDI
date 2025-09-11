@@ -6,6 +6,7 @@ text embeddings and performing nearest neighbor search to find similar records.
 """
 
 import logging
+import os
 from typing import Iterator, Optional, Union, Callable, Literal
 import warnings
 
@@ -78,7 +79,10 @@ class EmbeddingBlocking(BaseBlocker):
         right_embeddings: Optional[np.ndarray] = None,
         device: Optional[str] = None,
     ):
-        super().__init__(df_left, df_right)
+        super().__init__(df_left, df_right, batch_size=batch_size)
+        
+        # Setup logging (consistent with other blockers)
+        self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
         
         # Validate parameters
         self._validate_params(text_cols, index_backend, metric, top_k, threshold, 
@@ -104,8 +108,10 @@ class EmbeddingBlocking(BaseBlocker):
         self._sentence_transformer = None
         self._nn_index = None
         
-        logger.info(f"Initialized EmbeddingBlocking with {index_backend} backend, "
-                   f"top_k={top_k}, threshold={threshold}")
+        self.logger.info(f"Initialized EmbeddingBlocking with {index_backend} backend, "
+                        f"top_k={top_k}, threshold={threshold}")
+        
+        # Write debug file will be called during iteration when embeddings are ready
     
     def _validate_params(
         self,
@@ -173,7 +179,7 @@ class EmbeddingBlocking(BaseBlocker):
                 )
             
             self._sentence_transformer = SentenceTransformer(self.model, device=self.device)
-            logger.info(f"Loaded sentence transformer model: {self.model}")
+            self.logger.info(f"Loaded sentence transformer model: {self.model}")
             
         return self._sentence_transformer
     
@@ -229,15 +235,17 @@ class EmbeddingBlocking(BaseBlocker):
     def _ensure_embeddings(self) -> tuple[np.ndarray, np.ndarray]:
         """Ensure both left and right embeddings are computed."""
         if self.left_embeddings is None or self.right_embeddings is None:
-            logger.info("Computing embeddings for datasets...")
+            self.logger.debug("Computing embeddings for datasets...")
             
             if self.left_embeddings is None:
-                logger.info(f"Computing embeddings for left dataset ({len(self.df_left)} records)")
+                self.logger.debug(f"Creating embeddings for dataset1: {len(self.df_left)} records")
                 self.left_embeddings = self._compute_embeddings(self.df_left)
+                self.logger.info(f"created {self.left_embeddings.shape[1]}d embeddings for first dataset")
                 
             if self.right_embeddings is None:
-                logger.info(f"Computing embeddings for right dataset ({len(self.df_right)} records)")
+                self.logger.debug(f"Creating embeddings for dataset2: {len(self.df_right)} records")
                 self.right_embeddings = self._compute_embeddings(self.df_right)
+                self.logger.info(f"created {self.right_embeddings.shape[1]}d embeddings for second dataset")
                 
         return self.left_embeddings, self.right_embeddings
     
@@ -269,7 +277,7 @@ class EmbeddingBlocking(BaseBlocker):
         )
         index.fit(embeddings)
         
-        logger.info(f"Built sklearn index with {len(embeddings)} vectors, metric={sklearn_metric}")
+        self.logger.info(f"created similarity index with {len(embeddings)} vectors, metric={sklearn_metric}")
         return index
     
     def _build_faiss_index(self, embeddings: np.ndarray):
@@ -293,7 +301,7 @@ class EmbeddingBlocking(BaseBlocker):
             
         index.add(embeddings)
         
-        logger.info(f"Built FAISS index with {len(embeddings)} vectors, metric={self.metric}")
+        self.logger.info(f"created similarity index with {len(embeddings)} vectors, metric={self.metric}")
         return index
     
     def _build_hnsw_index(self, embeddings: np.ndarray):
@@ -314,7 +322,7 @@ class EmbeddingBlocking(BaseBlocker):
         index.add_items(embeddings, np.arange(len(embeddings)))
         index.set_ef(50)  # Controls recall/speed tradeoff
         
-        logger.info(f"Built HNSW index with {len(embeddings)} vectors, space={space}")
+        self.logger.info(f"created similarity index with {len(embeddings)} vectors, space={space}")
         return index
     
     def _query_nn_index(self, query_embeddings: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -368,16 +376,64 @@ class EmbeddingBlocking(BaseBlocker):
         
         return np.array(all_indices), np.array(all_similarities)
     
+    def _write_debug_file(self, left_embeddings: np.ndarray, right_embeddings: np.ndarray) -> None:
+        """Write debug CSV file with embedding similarity statistics like Winter framework."""
+        # Create output directory if it doesn't exist
+        os.makedirs("output", exist_ok=True)
+        
+        # Sample a subset for debug analysis to avoid expensive computation
+        sample_size = min(100, len(left_embeddings))
+        sample_indices = np.random.choice(len(left_embeddings), size=sample_size, replace=False)
+        sample_embeddings = left_embeddings[sample_indices]
+        
+        # Query for similarity distribution
+        neighbor_indices, similarities = self._query_nn_index(sample_embeddings)
+        
+        # Create debug data with similarity ranges
+        debug_data = []
+        
+        # Analyze similarity distribution in bins
+        all_sims = similarities.flatten()
+        valid_sims = all_sims[all_sims >= self.threshold]
+        
+        if len(valid_sims) > 0:
+            # Create similarity bins
+            sim_bins = [0.0, 0.3, 0.5, 0.7, 0.8, 0.9, 0.95, 1.0]
+            for i in range(len(sim_bins) - 1):
+                low, high = sim_bins[i], sim_bins[i + 1]
+                count = np.sum((valid_sims >= low) & (valid_sims < high))
+                if count > 0:
+                    range_str = f"{low:.2f}-{high:.2f}"
+                    debug_data.append({"Blocking Key Value": range_str, "Frequency": int(count)})
+        
+        if not debug_data:
+            debug_data.append({"Blocking Key Value": "no_similarities", "Frequency": 0})
+        
+        # Sort by similarity range (approximate ordering)
+        debug_data.sort(key=lambda x: -x["Frequency"])
+        
+        # Write to CSV file
+        debug_file = "output/debugResultsBlocking_EmbeddingBlocking.csv"
+        debug_df = pd.DataFrame(debug_data)
+        debug_df.to_csv(debug_file, index=False)
+        
+        self.logger.info(f"Debug results written to file: {debug_file}")
+    
     def _iter_batches(self) -> Iterator[CandidateBatch]:
         """Generate batches of candidate pairs."""
-        logger.info("Starting embedding-based blocking...")
-        
         # Ensure embeddings are computed
         left_embeddings, right_embeddings = self._ensure_embeddings()
         
         # Build NN index on right embeddings
         if self._nn_index is None:
+            self.logger.debug(f"Building similarity index for {len(right_embeddings)} vectors")
             self._nn_index = self._build_nn_index(right_embeddings)
+            
+            # Write debug file after embeddings and index are ready
+            self._write_debug_file(left_embeddings, right_embeddings)
+        
+        # Log DEBUG: Creating candidate pairs
+        self.logger.debug(f"Creating candidate record pairs from embedding similarity with threshold {self.threshold}")
         
         # Accumulator for candidate pairs
         pairs_accumulator = []
@@ -416,7 +472,6 @@ class EmbeddingBlocking(BaseBlocker):
             batch_df = pd.DataFrame(pairs_accumulator, columns=["id1", "id2"])
             yield self._emit_batch(batch_df)
         
-        logger.info("Completed embedding-based blocking")
     
     def estimate_pairs(self) -> Optional[int]:
         """Estimate number of candidate pairs using sampling."""
@@ -450,5 +505,5 @@ class EmbeddingBlocking(BaseBlocker):
         avg_neighbors_per_query = total_valid_neighbors / sample_size
         estimated_pairs = int(avg_neighbors_per_query * len(self.df_left))
         
-        logger.info(f"Estimated {estimated_pairs} candidate pairs from {sample_size} samples")
+        self.logger.debug(f"Estimated {estimated_pairs} candidate pairs from {sample_size} samples")
         return estimated_pairs

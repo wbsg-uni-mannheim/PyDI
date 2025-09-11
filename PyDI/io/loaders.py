@@ -53,7 +53,8 @@ def _compute_file_metadata(path: Optional[Union[str, os.PathLike]]) -> Dict[str,
         stat = p.stat()
         metadata["file_size_bytes"] = stat.st_size
         metadata["modified_time_utc_iso"] = datetime.fromtimestamp(
-            stat.st_mtime, tz=timezone.utc).isoformat()
+            stat.st_mtime, tz=timezone.utc
+        ).isoformat()
     except OSError:
         pass
 
@@ -135,14 +136,15 @@ def _inject_unique_id_column(
         # Do not overwrite existing column; assume it's already a unique index
         return df, column_name
 
-    prefix = id_prefix if isinstance(
-        id_prefix, str) and id_prefix else dataset_name
+    prefix = id_prefix if isinstance(id_prefix, str) and id_prefix else dataset_name
     # Use a numeric sequence to ensure uniqueness within this DataFrame
     row_count = len(df)
     # Zero-pad width based on magnitude for stable sorting
     pad_width = max(4, len(str(max(row_count - 1, 0))))
     series = pd.Series(
-        (f"{prefix}-{i:0{pad_width}d}" for i in range(row_count)), index=df.index, dtype="string"
+        (f"{prefix}-{i:0{pad_width}d}" for i in range(row_count)),
+        index=df.index,
+        dtype="string",
     )
     df = df.copy()
     df.insert(0, column_name, series)
@@ -256,34 +258,26 @@ def load_with_provenance(
     """
     result = reader_fn(path_or_buf, **reader_kwargs)
 
-    def _process_single(df: pd.DataFrame, ds_name: str, extra: Optional[Dict[str, Any]] = None) -> pd.DataFrame:
+    def _process_single(
+        df: pd.DataFrame, ds_name: str, extra: Optional[Dict[str, Any]] = None
+    ) -> pd.DataFrame:
         out = df
         if add_index:
             out, used_col = _inject_unique_id_column(
-                out, ds_name, index_column_name, id_prefix)
+                out, ds_name, index_column_name, id_prefix
+            )
             # include the id column name in provenance extras
             extra = dict(extra or {})
             extra["id_column_name"] = used_col
         out = _attach_provenance(
             out,
             dataset_name=ds_name,
-            reader_name=reader_name or getattr(
-                reader_fn, "__name__", "reader"),
+            reader_name=reader_name or getattr(reader_fn, "__name__", "reader"),
             source_path_or_buf=path_or_buf,
             user_provenance=provenance,
             extra=extra,
         )
-        try:
-            logger.info(
-                "Loaded dataset '%s' via %s: shape=%s, source=%s",
-                ds_name,
-                reader_name or getattr(reader_fn, "__name__", "reader"),
-                tuple(out.shape),
-                str(path_or_buf) if path_or_buf is not None else "<buffer>",
-            )
-        except Exception:
-            # Logging must never break data loading
-            pass
+
         return out
 
     if handle_multi_output and isinstance(result, list):
@@ -292,8 +286,7 @@ def load_with_provenance(
         for idx, df in enumerate(result):
             sheet_name = str(idx)
             ds_name = f"{base_name}_{sheet_name}"
-            processed.append(_process_single(
-                df, ds_name, {"sub_table": sheet_name}))
+            processed.append(_process_single(df, ds_name, {"sub_table": sheet_name}))
         return processed
 
     if handle_multi_output and isinstance(result, dict):
@@ -303,7 +296,8 @@ def load_with_provenance(
             sheet_name = str(key)
             ds_name = f"{base_name}_{sheet_name}"
             processed_dict[key] = _process_single(
-                df, ds_name, {"sub_table": sheet_name})
+                df, ds_name, {"sub_table": sheet_name}
+            )
         return processed_dict
 
     # Single DataFrame
@@ -388,13 +382,13 @@ def load_fwf(
     Examples
     --------
     >>> # Load with explicit column specifications
-    >>> df = load_fwf("data/actors.txt", name="actors", 
+    >>> df = load_fwf("data/actors.txt", name="actors",
     ...                colspecs=[(0, 10), (10, 20), (20, 30)])
     >>> df.attrs["dataset_name"]
     'actors'
     >>> df.attrs["provenance"]["reader"]
     'read_fwf'
-    >>> 
+    >>>
     >>> # Or with column widths
     >>> df = load_fwf("data/actors.txt", name="actors", widths=[10, 10, 10])
     """
@@ -523,8 +517,7 @@ def load_xml(
     # If a real path is provided and flattening requested, use custom flattener
     if flatten and isinstance(path_or_buffer, (str, os.PathLike)):
         try:
-            df = _read_and_flatten_xml(
-                Path(path_or_buffer), record_tag=record_tag)
+            df = _read_and_flatten_xml(Path(path_or_buffer), record_tag=record_tag)
             return load_with_provenance(
                 lambda _p, **_k: df,  # already loaded
                 path_or_buffer,
@@ -540,7 +533,8 @@ def load_xml(
             # Fallback to pandas if custom parsing fails
             try:
                 logger.info(
-                    "XML flattening failed (%s), falling back to pandas.read_xml", e)
+                    "XML flattening failed (%s), falling back to pandas.read_xml", e
+                )
             except Exception:
                 pass
 
@@ -548,6 +542,7 @@ def load_xml(
     if "parser" not in kwargs:
         try:
             import lxml  # type: ignore # noqa: F401
+
             kwargs["parser"] = "lxml"
         except Exception:
             kwargs["parser"] = "etree"
@@ -565,7 +560,9 @@ def load_xml(
     )
 
 
-def _read_and_flatten_xml(file_path: Path, record_tag: Optional[str] = None) -> pd.DataFrame:
+def _read_and_flatten_xml(
+    file_path: Path, record_tag: Optional[str] = None
+) -> pd.DataFrame:
     """Parse XML and flatten nested structures into rows.
 
     Heuristics:
@@ -690,8 +687,9 @@ def _explode_delimited_column(
     """
     if column not in df.columns:
         return df
-    mask = df[column].apply(lambda v: isinstance(
-        v, str) and re.search(pattern, v) is not None)
+    mask = df[column].apply(
+        lambda v: isinstance(v, str) and re.search(pattern, v) is not None
+    )
     if not mask.any():
         return df
     rows: List[Dict[str, Any]] = []
@@ -756,8 +754,7 @@ def load_pickle(
     """
     df = pd.read_pickle(path, **kwargs)
     if not isinstance(df, pd.DataFrame):
-        raise TypeError(
-            "load_pickle expected a pandas DataFrame in the pickle file")
+        raise TypeError("load_pickle expected a pandas DataFrame in the pickle file")
     return load_with_provenance(
         lambda _p, **_k: df,  # already loaded
         path,
@@ -842,5 +839,5 @@ __all__ = [
     "load_feather",
     "load_pickle",
     "load_html",
-    "load_table"
+    "load_table",
 ]
