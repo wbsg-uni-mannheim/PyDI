@@ -9,6 +9,7 @@ from .base import BaseExtractor, ExtractorPipeline
 from .code import CodeExtractor
 from .regex import RegexExtractor
 from .rules import built_in_rules
+from .evaluation import InformationExtractionEvaluator
 
 try:
     from .llm import LLMExtractor
@@ -23,7 +24,8 @@ __all__ = [
     'CodeExtractor',
     'RuleDiscovery',
     'discover_fields',
-    'built_in_rules'
+    'built_in_rules',
+    'InformationExtractionEvaluator'
 ]
 
 if _llm_available:

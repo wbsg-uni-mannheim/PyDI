@@ -1,0 +1,71 @@
+[
+  {
+    "id": "gpu-x01",
+    "name": "NVIDIA GeForce RTX 9999 Ti",  
+    "brand": "NVIDIA",
+    "model": "RTX 9999 Ti",
+    "chipset": "AD999",
+    "memory_gb": 0,  
+    "memory_type": "GDDR6X",
+    "clock_speed_mhz": 2300,
+    "tdp_w": 300,
+    "launch_date": "2023-13-01",  
+    "price_usd": 1299.0,
+    "description": "Invalid month in date and zero memory"
+  },
+  {
+    "id": "gpu-x02",
+    "name": "AMD Radeon RX 7700 XT",
+    "brand": "AMD",
+    "model": "RX 7700 XT",
+    "chipset": "Navi 32",
+    "memory_gb": 12,
+    "memory_type": "GDDR5",  
+    "clock_speed_mhz": 2150,
+    "tdp_w": 245,
+    "launch_date": "2023-09-06",
+    "price_usd": -50,  
+    "description": "Unsupported memory type and negative price"
+  },
+  {
+    "id": "gpu-x03",
+    "name": "Generic GPU Without Brand And Model",
+    "chipset": "Unknown",
+    "memory_gb": 8,
+    "memory_type": "GDDR6",
+    "clock_speed_mhz": 2000,
+    "tdp_w": 150,
+    "launch_date": "2024-02-01",
+    "price_usd": 299.0,
+    "description": "Missing required fields brand/model"
+  },
+  {
+    "id": "gpu-x04",
+    "name": "Intel Arc A770 Special",
+    "brand": "Intel",
+    "model": 770,  
+    "chipset": "ACM-G10",
+    "memory_gb": 16,
+    "memory_type": "HBM3",
+    "clock_speed_mhz": "2400",  
+    "tdp_w": 225,
+    "launch_date": "2023-10-12",
+    "price_usd": 349.99,
+    "description": "Wrong types for model/clock"
+  },
+  {
+    "id": "gpu-x05",
+    "name": "Some Brandless GPU",
+    "brand": "Other",
+    "model": "Model X",
+    "chipset": "X-100",
+    "memory_gb": 10,
+    "memory_type": "HBM2",
+    "clock_speed_mhz": 0,  
+    "tdp_w": 0,  
+    "launch_date": "not-a-date",  
+    "price_usd": 0,
+    "description": "Multiple invalid numeric and date values"
+  }
+]
+
