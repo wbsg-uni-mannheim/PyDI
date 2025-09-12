@@ -7,12 +7,10 @@ against gold standard data.
 
 from __future__ import annotations
 
-from typing import Dict, Any, List, Optional, Tuple, Union
+from typing import Dict, Any, List, Optional, Tuple
 import pandas as pd
 import numpy as np
 import logging
-from pathlib import Path
-import json
 
 from .base import FusionContext, get_callable_name
 from .strategy import DataFusionStrategy
@@ -21,7 +19,7 @@ from ..utils.similarity_registry import SimilarityRegistry
 
 def _is_missing_value(value) -> bool:
     """Helper function to check if a value should be treated as missing.
-    
+
     Handles scalars, numpy arrays, pandas NA, and Python sequences.
     """
     try:
@@ -51,11 +49,11 @@ def exact_match(fused_value, gold_value) -> bool:
 
 def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
     """Evaluation function using tokenized comparison with similarity threshold.
-    
+
     For lists: Uses Jaccard similarity between lists (order doesn't matter).
     For strings: Tokenizes and uses Jaccard similarity between token sets.
     Useful for actor lists and titles where order and partial matches matter.
-    
+
     Parameters
     ----------
     fused_value : Any
@@ -65,7 +63,7 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
     threshold : float, default 1.0
         Minimum similarity threshold (0.0 to 1.0). 
         1.0 requires exact match, lower values allow partial matches.
-        
+
     Returns
     -------
     bool
@@ -76,27 +74,29 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
-    
+
     # Get Jaccard similarity function from registry
     jaccard_sim = SimilarityRegistry.get_function('jaccard')
-    
+
     # Handle lists of strings - use Jaccard similarity
     if isinstance(fused_value, list) and isinstance(gold_value, list):
         # Use Jaccard similarity between sets (order doesn't matter)
         similarity = jaccard_sim(set(fused_value), set(gold_value))
         return similarity >= threshold
-    
+
     # Handle mixed list/string by converting both to lists
     if isinstance(fused_value, list) or isinstance(gold_value, list):
         # Convert both to lists, then use Jaccard similarity
-        fused_list = fused_value if isinstance(fused_value, list) else [str(fused_value)]
-        gold_list = gold_value if isinstance(gold_value, list) else [str(gold_value)]
+        fused_list = fused_value if isinstance(
+            fused_value, list) else [str(fused_value)]
+        gold_list = gold_value if isinstance(
+            gold_value, list) else [str(gold_value)]
         similarity = jaccard_sim(set(fused_list), set(gold_list))
         return similarity >= threshold
-    
+
     # String tokenization logic - clean and use Jaccard similarity
     import string
-    
+
     def clean_tokens(text):
         # Split into words and remove punctuation
         words = str(text).lower().split()
@@ -107,34 +107,34 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
             if cleaned:  # Only keep non-empty words
                 clean_words.append(cleaned)
         return set(clean_words)
-    
+
     fused_tokens = clean_tokens(fused_value)
     gold_tokens = clean_tokens(gold_value)
-    
+
     # Use Jaccard similarity between token sets
     if len(fused_tokens) == 0 and len(gold_tokens) == 0:
         return True  # Both empty
     if len(fused_tokens) == 0 or len(gold_tokens) == 0:
         return False  # One empty, one not
-    
+
     similarity = jaccard_sim(fused_tokens, gold_tokens)
     return similarity >= threshold
 
 
 def year_only_match(fused_value, gold_value) -> bool:
     """Evaluation function comparing only the year part of dates.
-    
+
     Useful for dates where "2010-01-01" should match "2010-12-31".
     """
     if _is_missing_value(fused_value) and _is_missing_value(gold_value):
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
-    
+
     # Extract year from date strings (first 4 characters)
     fused_year = str(fused_value)[:4] if len(str(fused_value)) >= 4 else None
     gold_year = str(gold_value)[:4] if len(str(gold_value)) >= 4 else None
-    
+
     return fused_year == gold_year and fused_year is not None
 
 
@@ -144,7 +144,7 @@ def numeric_tolerance_match(fused_value, gold_value, tolerance: float = 0.01) ->
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
-    
+
     try:
         return abs(float(fused_value) - float(gold_value)) <= tolerance
     except (ValueError, TypeError):
@@ -153,14 +153,14 @@ def numeric_tolerance_match(fused_value, gold_value, tolerance: float = 0.01) ->
 
 def set_equality_match(fused_value, gold_value) -> bool:
     """Evaluation function for set equality (order-independent).
-    
+
     Useful for lists where order doesn't matter.
     """
     if _is_missing_value(fused_value) and _is_missing_value(gold_value):
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
-    
+
     try:
         if isinstance(fused_value, (list, tuple, set)) and isinstance(gold_value, (list, tuple, set)):
             return set(fused_value) == set(gold_value)
@@ -171,7 +171,7 @@ def set_equality_match(fused_value, gold_value) -> bool:
 
 def boolean_match(fused_value, gold_value) -> bool:
     """Evaluation function for boolean values with flexible interpretation.
-    
+
     Handles various boolean representations:
     - True/False, true/false, yes/no, 1/0, "true"/"false", etc.
     """
@@ -179,19 +179,19 @@ def boolean_match(fused_value, gold_value) -> bool:
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
-    
+
     def normalize_boolean(value):
         """Convert various boolean representations to True/False."""
         if isinstance(value, bool):
             return value
-        
+
         # Convert to string and normalize
         str_val = str(value).lower().strip()
-        
+
         # True values
         if str_val in ['true', 'yes', '1', 'y', 't']:
             return True
-        # False values  
+        # False values
         elif str_val in ['false', 'no', '0', 'n', 'f', '']:
             return False
         # Handle None/null values
@@ -203,15 +203,15 @@ def boolean_match(fused_value, gold_value) -> bool:
                 return bool(value)
             except:
                 return None
-    
+
     # Normalize both values
     fused_bool = normalize_boolean(fused_value)
     gold_bool = normalize_boolean(gold_value)
-    
+
     # If either couldn't be normalized, fall back to string comparison
     if fused_bool is None or gold_bool is None:
         return str(fused_value).strip().lower() == str(gold_value).strip().lower()
-    
+
     return fused_bool == gold_bool
 
 
@@ -234,12 +234,6 @@ class DataFusionEvaluator:
         fused_id_column: str,
         gold_df: pd.DataFrame,
         gold_id_column: str,
-        *,
-        debug_mismatches: bool = False,
-        debug_file: Optional[Union[Path, str]] = None,
-        debug_format: str = "text",
-        fusion_debug_source: Optional[Union[Path, str]] = None,
-        fusion_debug_source_format: str = "json",
     ) -> Dict[str, float]:
         """Evaluate fused results against gold standard.
 
@@ -260,67 +254,6 @@ class DataFusionEvaluator:
             Dictionary of evaluation metrics.
         """
         self._logger.info("Starting fusion evaluation")
-
-        # Setup mismatch debug logging if requested
-        debug_enabled = bool(debug_mismatches)
-        debug_fmt = debug_format if debug_format in {"text", "json"} else "text"
-        debug_path: Optional[Path] = None
-        if debug_enabled:
-            default_name = "fusion_eval_mismatches.jsonl" if debug_fmt == "json" else "fusion_eval_mismatches.log"
-            debug_path = Path(debug_file) if debug_file is not None else Path(default_name)
-            try:
-                debug_path.parent.mkdir(parents=True, exist_ok=True)
-                with debug_path.open("w", encoding="utf-8") as f:
-                    ts = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-                    if debug_fmt == "text":
-                        f.write("=== Fusion Evaluation Mismatches ===\n")
-                        f.write(f"Timestamp: {ts}\n")
-                        f.write(f"Strategy: {self.strategy.name}\n")
-                        f.write("\n")
-                    else:
-                        header = {"type": "header", "timestamp": ts, "strategy": self.strategy.name, "format": "jsonl"}
-                        f.write(json.dumps(header, ensure_ascii=False) + "\n")
-            except Exception as e:
-                self._logger.warning(f"Could not initialize evaluation mismatch log '{debug_path}': {e}")
-                debug_path = None
-
-        def emit_mismatch(entry: Dict[str, Any]) -> None:
-            if not debug_enabled or debug_path is None:
-                return
-            try:
-                with debug_path.open("a", encoding="utf-8") as f:
-                    if debug_fmt == "json":
-                        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-                    else:
-                        f.write(self._format_mismatch_block(entry))
-            except Exception:
-                pass
-
-        # Optionally load fusion debug entries (used to enrich mismatch logs)
-        fusion_debug_index: Dict[Tuple[str, str], Dict[str, Any]] = {}
-        if fusion_debug_source is not None and fusion_debug_source_format == "json":
-            try:
-                src_path = Path(fusion_debug_source)
-                if src_path.exists():
-                    with src_path.open("r", encoding="utf-8") as f:
-                        for line in f:
-                            line = line.strip()
-                            if not line:
-                                continue
-                            try:
-                                obj = json.loads(line)
-                            except Exception:
-                                continue
-                            if isinstance(obj, dict) and obj.get("type") == "header":
-                                continue
-                            gid = obj.get("group_id")
-                            attr = obj.get("attribute")
-                            if isinstance(gid, str) and isinstance(attr, str):
-                                fusion_debug_index[(gid, attr)] = obj
-                else:
-                    self._logger.warning(f"Fusion debug source '{src_path}' not found; mismatch logs will be minimal.")
-            except Exception as e:
-                self._logger.warning(f"Failed to load fusion debug source: {e}")
 
         # Align datasets by their respective ID columns
         aligned_fused, aligned_gold = self._align_datasets_two_ids(
@@ -347,11 +280,7 @@ class DataFusionEvaluator:
 
         for attribute in attributes:
             results = self._evaluate_attribute(
-                aligned_fused, aligned_gold, attribute,
-                fused_id_column=fused_id_column,
-                gold_id_column=gold_id_column,
-                debug_emit=emit_mismatch,
-                fusion_debug_index=fusion_debug_index,
+                aligned_fused, aligned_gold, attribute
             )
             attribute_results[attribute] = results
             total_correct += results["correct_count"]
@@ -480,10 +409,9 @@ class DataFusionEvaluator:
             total_count += 1
 
             # Evaluate using the function
-            passed = eval_function(fused_value, gold_value)
-            if passed:
+            if eval_function(fused_value, gold_value):
                 correct_count += 1
-  
+
         # Calculate accuracy
         accuracy = correct_count / total_count if total_count > 0 else 0.0
 
@@ -497,37 +425,8 @@ class DataFusionEvaluator:
     @staticmethod
     def _is_missing(value: Any) -> bool:
         """Delegate to the module-level missing-value check."""
+        # Use the module-level helper defined above
         return _is_missing_value(value)
-
-    @staticmethod
-    def _format_value(val: Any, max_len: int = 200) -> str:
-        try:
-            s = repr(val)
-        except Exception:
-            s = str(val)
-        if len(s) > max_len:
-            return s[: max_len - 3] + "..."
-        return s
-
-    def _format_mismatch_block(self, entry: Dict[str, Any]) -> str:
-        rid = entry.get("record_id", "?")
-        gid = entry.get("gold_record_id", "?")
-        attr = entry.get("attribute", "?")
-        crf = entry.get("conflict_resolution_function", "?")
-        evf = entry.get("evaluation_function", "?")
-        fused = self._format_value(entry.get("fused_value"))
-        gold = self._format_value(entry.get("gold_value"))
-        sources = entry.get("sources")
-        lines = []
-        lines.append(f"--- Mismatch Record {rid} (gold {gid}) | Attribute '{attr}' ---\n")
-        lines.append(f"Conflict resolution function: {crf}\n")
-        lines.append(f"Evaluation function: {evf}\n")
-        if sources:
-            lines.append(f"Sources: {sources}\n")
-        lines.append(f"Fused value: {fused}\n")
-        lines.append(f"Gold value:  {gold}\n")
-        lines.append("\n")
-        return "".join(lines)
 
 
 def calculate_consistency_metrics(fused_df: pd.DataFrame) -> Dict[str, float]:
