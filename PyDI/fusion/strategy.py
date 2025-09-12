@@ -7,7 +7,7 @@ attribute-level fusers and evaluation rules.
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Set, Callable, Any
+from typing import Dict, Optional, Set, Callable, Any, Union
 import logging
 from functools import partial
 
@@ -43,93 +43,45 @@ class DataFusionStrategy:
     def add_attribute_fuser(
         self,
         attribute: str,
-        fuser: AttributeValueFuser,
+        fuser_or_resolver: Union[AttributeValueFuser, ConflictResolutionFunction],
         evaluation_function: Optional[EvaluationFunction] = None,
+        **fuser_kwargs: Any,
     ) -> None:
-        """Register an attribute fuser for a specific attribute (advanced API).
+        """Register how to fuse an attribute (unified API).
 
-        Use this method when you need advanced features like custom value extractors.
-        For simple cases, consider using add_resolver() instead.
+        Accepts either a pre-built AttributeValueFuser (advanced usage) or a
+        resolver function (simple usage). When a resolver function is provided,
+        it is wrapped into an AttributeValueFuser with any extra keyword args
+        supplied via ``fuser_kwargs`` (e.g., accessor=..., required=True).
 
         Parameters
         ----------
         attribute : str
             Name of the attribute to fuse.
-        fuser : AttributeValueFuser
-            The fuser to use for this attribute. Use AttributeValueFuser when you need
-            custom accessor functions, required flags, or other advanced features.
+        fuser_or_resolver : Union[AttributeValueFuser, ConflictResolutionFunction]
+            Either an AttributeValueFuser instance or a resolver function that
+            resolves conflicts and returns (value, confidence, metadata).
         evaluation_function : Optional[EvaluationFunction]
             Optional evaluation rule for quality assessment.
-            
-        See Also
-        --------
-        add_resolver : Simplified API for registering functions directly
+        **fuser_kwargs : Any
+            Extra options used when a resolver function is provided, passed to
+            AttributeValueFuser (e.g., accessor=callable, required=True).
         """
+        if isinstance(fuser_or_resolver, AttributeValueFuser):
+            fuser = fuser_or_resolver
+        else:
+            # Assume callable resolver and wrap it
+            fuser = AttributeValueFuser(fuser_or_resolver, **fuser_kwargs)
+
         self._attribute_fusers[attribute] = fuser
         if evaluation_function:
             self._evaluation_rules[attribute] = evaluation_function
 
-        # Be robust to both class-based and function-based resolvers
         resolver_name = get_callable_name(fuser.resolver)
         self._logger.info(
             f"Registered fuser for attribute '{attribute}' using rule '{resolver_name}'"
         )
 
-    def add_attribute_fuser_from_resolver(
-        self,
-        attribute: str,
-        resolver: ConflictResolutionFunction,
-        evaluation_function: Optional[EvaluationFunction] = None,
-        **fuser_kwargs,
-    ) -> None:
-        """Register an attribute fuser from a conflict resolution function.
-
-        Parameters
-        ----------
-        attribute : str
-            Name of the attribute to fuse.
-        resolver : ConflictResolutionFunction
-            The conflict resolution function to use.
-        evaluation_function : Optional[EvaluationFunction]
-            Optional evaluation rule for quality assessment.
-        **fuser_kwargs
-            Additional keyword arguments for AttributeValueFuser.
-        """
-        fuser = AttributeValueFuser(resolver, **fuser_kwargs)
-        self.add_attribute_fuser(attribute, fuser, evaluation_function)
-
-    def add_resolver(
-        self,
-        attribute: str,
-        resolver_function,
-        evaluation_function: Optional[EvaluationFunction] = None,
-        **resolver_kwargs,
-    ) -> None:
-        """Register a conflict resolution function for an attribute (simplified API).
-        
-        This is a simplified alternative to add_attribute_fuser() for common cases
-        where you just want to register a function without custom accessor logic.
-
-        Parameters
-        ----------
-        attribute : str
-            Name of the attribute to fuse.
-        resolver_function : callable
-            The conflict resolution function to use. Should accept (values, **kwargs)
-            and return (resolved_value, confidence, metadata).
-        evaluation_function : Optional[EvaluationFunction]
-            Optional evaluation rule for quality assessment.
-        **resolver_kwargs
-            Additional keyword arguments to pass to the resolver function.
-
-        Examples
-        --------
-        >>> strategy.add_resolver("title", longest_string)
-        >>> strategy.add_resolver("directors", union, separator=", ")
-        >>> strategy.add_resolver("year", average)
-        """
-        fuser = AttributeValueFuser(resolver_function, **resolver_kwargs)
-        self.add_attribute_fuser(attribute, fuser, evaluation_function)
 
     def get_attribute_fuser(self, attribute: str) -> Optional[AttributeValueFuser]:
         """Get the fuser registered for a specific attribute.

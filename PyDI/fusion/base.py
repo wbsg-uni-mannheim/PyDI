@@ -78,6 +78,10 @@ class FusionContext:
     source_datasets: Dict[str, str] = field(default_factory=dict)
     timestamp: Optional[pd.Timestamp] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+    # Debugging controls
+    debug: bool = False
+    # Callable to emit a structured debug record for this attribute fusion
+    debug_emit: Optional[Callable[[Dict[str, Any]], None]] = None
 
 
 @dataclass
@@ -227,7 +231,7 @@ class AttributeValueFuser:
         logger.debug(f"Fusion invocation: group_id={context.group_id}, attribute={context.attribute}, rule={resolver_name}")
         
         # Extract values that are present
-        values_with_sources = []
+        values_with_sources: List[Tuple[Any, str]] = []
         for record in records:
             if self.has_value(record, context):
                 value = self.get_value(record, context)
@@ -251,7 +255,7 @@ class AttributeValueFuser:
         # Extract just the values for conflict resolution
         values = [item[0] for item in values_with_sources]
         logger.debug(f"  Extracted values for fusion: {repr(values)}")
-        
+
         # Call function resolver
         try:
             # Prepare context kwargs for function
@@ -275,6 +279,32 @@ class AttributeValueFuser:
                 metadata=metadata
             )
             logger.debug(f"  Output: value={repr(resolved_value)}, confidence={confidence:.3f}, sources={result.sources}, metadata={metadata}")
+            # Emit structured debug record if requested
+            if context.debug and context.debug_emit is not None:
+                try:
+                    context.debug_emit({
+                        "group_id": context.group_id,
+                        "attribute": context.attribute,
+                        "conflict_resolution_function": resolver_name,
+                        "inputs": [
+                            {
+                                "record_id": rid,
+                                "dataset": context.source_datasets.get(rid, "unknown"),
+                                "value": val,
+                            }
+                            for (val, rid) in values_with_sources
+                        ],
+                        "resolver_kwargs": dict(self.resolver_kwargs),
+                        "output": {
+                            "value": resolved_value,
+                            "confidence": confidence,
+                            "metadata": metadata,
+                        },
+                        "error": None,
+                    })
+                except Exception:
+                    # Ensure debug emission never breaks fusion
+                    pass
         except Exception as e:
             logger.warning(f"Function resolver {resolver_name} failed: {e}")
             logger.debug(f"  Falling back to first value: {repr(values[0]) if values else None}")
@@ -285,6 +315,31 @@ class AttributeValueFuser:
                 rule_used=resolver_name,
                 metadata={"error": str(e), "fallback": "first_value"}
             )
+            # Emit structured debug record including error if requested
+            if context.debug and context.debug_emit is not None:
+                try:
+                    context.debug_emit({
+                        "group_id": context.group_id,
+                        "attribute": context.attribute,
+                        "conflict_resolution_function": resolver_name,
+                        "inputs": [
+                            {
+                                "record_id": rid,
+                                "dataset": context.source_datasets.get(rid, "unknown"),
+                                "value": val,
+                            }
+                            for (val, rid) in values_with_sources
+                        ],
+                        "resolver_kwargs": dict(self.resolver_kwargs),
+                        "output": {
+                            "value": result.value,
+                            "confidence": result.confidence,
+                            "metadata": result.metadata,
+                        },
+                        "error": str(e),
+                    })
+                except Exception:
+                    pass
         
         return result
 
