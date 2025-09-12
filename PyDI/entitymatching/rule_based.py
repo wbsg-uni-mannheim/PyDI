@@ -5,6 +5,7 @@ Rule-based entity matching using weighted linear combination of comparators.
 from __future__ import annotations
 
 import logging
+import time
 from typing import Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import pandas as pd
@@ -40,7 +41,7 @@ class RuleBasedMatcher(BaseMatcher):
         self,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
-        candidates: Iterable[pd.DataFrame],
+        candidates: Union[pd.DataFrame, Iterable[pd.DataFrame]],
         comparators: List[Union[BaseComparator, Callable, Dict[str, Union[Callable, float]]]],
         weights: Optional[List[float]] = None,
         threshold: float = 0.0,
@@ -55,8 +56,8 @@ class RuleBasedMatcher(BaseMatcher):
             Left dataset with _id column.
         df_right : pandas.DataFrame
             Right dataset with _id column.
-        candidates : Iterable[pandas.DataFrame]
-            Candidate pair batches with id1, id2 columns.
+        candidates : pandas.DataFrame or Iterable[pandas.DataFrame]
+            Single DataFrame or iterable of candidate pair batches with id1, id2 columns.
         comparators : List[callable] or List[dict]
             List of comparator functions/objects, or list of dicts with
             'comparator' and 'weight' keys. Each comparator should accept
@@ -79,6 +80,13 @@ class RuleBasedMatcher(BaseMatcher):
             If debug=True: Tuple of (correspondences, debug_results) where
             debug_results contains detailed comparator information.
         """
+        # Setup logger
+        logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
+        
+        # Log start of identity resolution
+        logger.info("Starting Identity Resolution")
+        start_time = time.time()
+        
         # Validate inputs
         self._validate_inputs(df_left, df_right)
         
@@ -92,19 +100,37 @@ class RuleBasedMatcher(BaseMatcher):
         df_left = ensure_record_ids(df_left)
         df_right = ensure_record_ids(df_right)
         
-        # Log matching info
-        self._log_matching_info(df_left, df_right, candidates)
+        # Normalize candidates to iterable of DataFrames
+        if isinstance(candidates, pd.DataFrame):
+            candidate_batches = [candidates]
+        else:
+            candidate_batches = candidates
+        
+        # Log blocking info (similar to Winter's blocking log)
+        logger.info(f"Blocking {len(df_left)} x {len(df_right)} elements")
         
         # Create lookup dictionaries for fast record access
         left_lookup = df_left.set_index("_id")
         right_lookup = df_right.set_index("_id")
         
+        # Count total candidate pairs for reduction ratio calculation
+        total_pairs_processed = sum(len(batch) for batch in candidate_batches if not batch.empty)
+        total_possible_pairs = len(df_left) * len(df_right)
+        reduction_ratio = 1 - (total_pairs_processed / total_possible_pairs) if total_possible_pairs > 0 else 0
+        
+        # Calculate elapsed time for blocking phase
+        blocking_time = time.time() - start_time
+        blocking_time_str = f"{blocking_time:.3f}"
+        
+        # Log matching phase info with reduction ratio
+        logger.info(f"Matching {len(df_left)} x {len(df_right)} elements after 0:00:{blocking_time_str}; "
+                   f"{total_pairs_processed} blocked pairs (reduction ratio: {reduction_ratio})")
+        
         results = []
         debug_results = [] if debug else None
-        total_pairs_processed = 0
         
         # Process candidate batches
-        for batch in candidates:
+        for batch in candidate_batches:
             if batch.empty:
                 continue
                 
@@ -119,10 +145,13 @@ class RuleBasedMatcher(BaseMatcher):
                 )
             
             results.extend(batch_results)
-            total_pairs_processed += len(batch)
         
-        logging.info(f"Processed {total_pairs_processed} candidate pairs, "
-                    f"found {len(results)} matches above threshold {threshold}")
+        # Calculate total elapsed time
+        total_time = time.time() - start_time
+        total_time_str = f"{total_time:.3f}"
+        
+        # Log completion info
+        logger.info(f"Identity Resolution finished after 0:00:{total_time_str}; found {len(results)} correspondences.")
         
         # Create correspondence set
         correspondences = pd.DataFrame(results) if results else pd.DataFrame(columns=["id1", "id2", "score", "notes"])
