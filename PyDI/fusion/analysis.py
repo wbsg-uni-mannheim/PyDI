@@ -14,6 +14,8 @@ import numpy as np
 import logging
 from pathlib import Path
 
+from .base import _is_valid_value
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,7 +56,6 @@ def analyze_attribute_coverage(
     ...     [df1, df2, df3],
     ...     dataset_names=['Source A', 'Source B', 'Source C']
     ... )
-    >>> print(coverage_df)
     """
     if not datasets:
         raise ValueError("At least one dataset must be provided")
@@ -264,6 +265,315 @@ def detect_attribute_conflicts(
             conflicts[attr] = attr_conflicts
 
     return conflicts
+
+
+def analyze_conflicts_preview(
+    datasets: List[pd.DataFrame],
+    correspondences: pd.DataFrame,
+    sample_size: int = 5,
+    conflict_attrs: Optional[List[str]] = None,
+    include_samples: bool = True,
+    id_columns: Union[str, List[str]] = '_id'
+) -> Dict[str, Any]:
+    """
+    Preview potential conflicts in matched records from correspondences.
+    
+    This function examines specific matched record pairs to identify concrete
+    conflicts that will need to be resolved during fusion. Unlike statistical
+    conflict analysis, this provides specific examples of conflicting values.
+    
+    Parameters
+    ----------
+    datasets : List[pd.DataFrame]
+        List of datasets containing the records.
+    correspondences : pd.DataFrame
+        DataFrame with matched record pairs. Must have columns: id1, id2, score.
+    sample_size : int, default 5
+        Number of correspondences to analyze for conflicts.
+    conflict_attrs : Optional[List[str]]
+        Specific attributes to check for conflicts. If None, checks all common attributes.
+    include_samples : bool, default True
+        Whether to include sample records in the output.
+    id_columns : Union[str, List[str]], default '_id'
+        ID column name(s). Can be a single string (same for all datasets) or 
+        a list of strings (one per dataset).
+        
+    Returns
+    -------
+    Dict[str, Any]
+        Dictionary containing:
+        - 'conflict_examples': List of dictionaries with conflict details
+        - 'conflict_summary': Statistics about conflicts found
+        - 'attribute_conflicts': Per-attribute conflict counts
+        
+    Examples
+    --------
+    >>> conflict_preview = analyze_conflicts_preview(
+    ...     datasets=[df1, df2], 
+    ...     correspondences=corr_df,
+    ...     sample_size=10,
+    ...     id_columns=['id1', 'id2']  # Different ID columns per dataset
+    ... )
+    >>> print(f"Found {len(conflict_preview['conflict_examples'])} conflicts")
+    """
+    if not datasets:
+        raise ValueError("At least one dataset must be provided")
+    
+    if correspondences.empty:
+        logger.warning("No correspondences provided for conflict analysis")
+        return {
+            'conflict_examples': [],
+            'conflict_summary': {'total_matches': 0, 'matches_with_conflicts': 0},
+            'attribute_conflicts': {}
+        }
+    
+    # Validate and prepare ID columns
+    if isinstance(id_columns, str):
+        # Single string - use for all datasets
+        dataset_id_columns = [id_columns] * len(datasets)
+    elif isinstance(id_columns, list):
+        # List - must match dataset count
+        if len(id_columns) != len(datasets):
+            raise ValueError(f"Length of id_columns ({len(id_columns)}) must match number of datasets ({len(datasets)})")
+        dataset_id_columns = id_columns
+    else:
+        raise ValueError("id_columns must be a string or list of strings")
+    
+    # Build lookup tables
+    id_to_record = {}
+    id_to_dataset = {}
+    
+    for i, df in enumerate(datasets):
+        dataset_name = df.attrs.get('dataset_name', f'dataset_{i}')
+        id_column = dataset_id_columns[i]
+        
+        if id_column not in df.columns:
+            raise ValueError(f"ID column '{id_column}' not found in dataset '{dataset_name}' (columns: {list(df.columns)})")
+        
+        for _, record in df.iterrows():
+            record_id = record.get(id_column)
+            if record_id is not None:
+                id_to_record[record_id] = record
+                id_to_dataset[record_id] = dataset_name
+    
+    # Sample correspondences for analysis
+    sample_corr = correspondences.head(sample_size)
+    
+    conflict_examples = []
+    attribute_conflict_counts = {}
+    matches_with_conflicts = 0
+    
+    # Diagnostic counters for debugging
+    records_not_found = 0
+    no_common_attributes = 0
+    identical_values = 0
+    total_comparisons = 0
+    
+    logger.info(f"Analyzing conflicts in {len(sample_corr)} correspondence pairs")
+    
+    # Debug logging if enabled
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(f"Built lookup table with {len(id_to_record)} records")
+        logger.debug(f"Sample dataset IDs: {list(id_to_record.keys())[:10]}")
+        logger.debug(f"Sample correspondence IDs: id1={sample_corr['id1'].head(5).tolist()}, id2={sample_corr['id2'].head(5).tolist()}")
+    
+    for i, (_, corr) in enumerate(sample_corr.iterrows(), 1):
+        id1, id2 = corr['id1'], corr['id2']
+        score = corr.get('score', 'N/A')
+        
+        record1 = id_to_record.get(id1)
+        record2 = id_to_record.get(id2)
+        
+        if record1 is None or record2 is None:
+            records_not_found += 1
+            if logger.isEnabledFor(logging.DEBUG):
+                missing_ids = [id1 if record1 is None else None, id2 if record2 is None else None]
+                logger.debug(f"Missing record(s) for correspondence {i}: {[id for id in missing_ids if id is not None]}")
+            continue
+            
+        dataset1 = id_to_dataset[id1]
+        dataset2 = id_to_dataset[id2]
+        
+        # Determine attributes to check
+        common_attrs = set(record1.index) & set(record2.index)
+        if conflict_attrs is not None:
+            check_attrs = [attr for attr in conflict_attrs if attr in common_attrs]
+        else:
+            check_attrs = list(common_attrs)
+        
+        # Track cases with no common attributes
+        if not check_attrs:
+            no_common_attributes += 1
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f"No common attributes for correspondence {i}: {dataset1} cols={list(record1.index)[:5]}, {dataset2} cols={list(record2.index)[:5]}")
+            continue
+        
+        # Find conflicts
+        conflicts = []
+        for attr in check_attrs:
+            if attr.startswith('_'):  # Skip internal attributes
+                continue
+                
+            val1, val2 = record1.get(attr), record2.get(attr)
+            
+            # Count all comparisons
+            if _is_valid_value(val1) and _is_valid_value(val2):
+                total_comparisons += 1
+                
+                # Check if values are different
+                if str(val1).strip() != str(val2).strip():
+                    conflicts.append({
+                        'attribute': attr,
+                        'value1': val1,
+                        'value2': val2,
+                        'dataset1': dataset1,
+                        'dataset2': dataset2
+                    })
+                    
+                    # Count attribute-level conflicts
+                    attribute_conflict_counts[attr] = attribute_conflict_counts.get(attr, 0) + 1
+                else:
+                    # Values are identical
+                    identical_values += 1
+        
+        if conflicts:
+            matches_with_conflicts += 1
+        
+        # Build example record
+        example = {
+            'match_id': i,
+            'id1': id1,
+            'id2': id2,
+            'dataset1': dataset1,
+            'dataset2': dataset2,
+            'score': score,
+            'conflicts': conflicts,
+            'has_conflicts': len(conflicts) > 0
+        }
+        
+        if include_samples:
+            # Add sample record data (first few attributes for brevity)
+            sample_attrs = ['title', 'name', 'director', 'author', 'date', 'year']
+            example['record1_sample'] = {
+                attr: record1.get(attr, 'N/A') 
+                for attr in sample_attrs if attr in record1.index
+            }
+            example['record2_sample'] = {
+                attr: record2.get(attr, 'N/A') 
+                for attr in sample_attrs if attr in record2.index
+            }
+        
+        conflict_examples.append(example)
+    
+    # Compile results
+    results = {
+        'conflict_examples': conflict_examples,
+        'conflict_summary': {
+            'total_matches': len(sample_corr),
+            'matches_with_conflicts': matches_with_conflicts,
+            'conflict_rate': matches_with_conflicts / len(sample_corr) if len(sample_corr) > 0 else 0.0,
+            'total_attribute_conflicts': sum(attribute_conflict_counts.values())
+        },
+        'attribute_conflicts': attribute_conflict_counts,
+        'diagnostics': {
+            'records_not_found': records_not_found,
+            'no_common_attributes': no_common_attributes,
+            'identical_values': identical_values,
+            'total_comparisons': total_comparisons,
+            'lookup_table_size': len(id_to_record),
+            'processed_pairs': len(sample_corr) - records_not_found - no_common_attributes
+        }
+    }
+    
+    logger.info(
+        f"Found conflicts in {matches_with_conflicts}/{len(sample_corr)} matches "
+        f"({results['conflict_summary']['conflict_rate']:.1%})"
+    )
+    
+    # Detailed diagnostic logging if debug is enabled
+    if logger.isEnabledFor(logging.DEBUG):
+        diagnostics = results['diagnostics']
+        logger.debug(f"Conflict analysis diagnostics:")
+        logger.debug(f"  Records not found: {diagnostics['records_not_found']}")
+        logger.debug(f"  No common attributes: {diagnostics['no_common_attributes']}")
+        logger.debug(f"  Identical values: {diagnostics['identical_values']}")
+        logger.debug(f"  Total comparisons: {diagnostics['total_comparisons']}")
+        logger.debug(f"  Processed pairs: {diagnostics['processed_pairs']}")
+        
+        if diagnostics['records_not_found'] > 0:
+            logger.debug(f"TIP: {diagnostics['records_not_found']} records not found - check if correspondence IDs match dataset ID columns")
+        if diagnostics['no_common_attributes'] > 0:
+            logger.debug(f"TIP: {diagnostics['no_common_attributes']} pairs have no common attributes - check column names between datasets")
+        if diagnostics['identical_values'] > diagnostics['total_comparisons'] * 0.8:
+            logger.debug(f"TIP: Most values ({diagnostics['identical_values']}/{diagnostics['total_comparisons']}) are identical - datasets may already be standardized")
+    
+    return results
+
+
+def print_conflict_preview(
+    datasets: List[pd.DataFrame],
+    correspondences: pd.DataFrame,
+    sample_size: int = 5,
+    conflict_attrs: Optional[List[str]] = None,
+    id_columns: Union[str, List[str]] = '_id'
+) -> None:
+    """
+    Print a formatted preview of conflicts in matched records.
+    
+    This is a convenience function that calls analyze_conflicts_preview()
+    and prints the results in a human-readable format.
+    
+    Parameters
+    ----------
+    datasets : List[pd.DataFrame]
+        List of datasets containing the records.
+    correspondences : pd.DataFrame
+        DataFrame with matched record pairs.
+    sample_size : int, default 5
+        Number of correspondences to analyze.
+    conflict_attrs : Optional[List[str]]
+        Specific attributes to check for conflicts.
+    id_columns : Union[str, List[str]], default '_id'
+        ID column name(s). Can be a single string (same for all datasets) or 
+        a list of strings (one per dataset).
+    """
+    results = analyze_conflicts_preview(
+        datasets, correspondences, sample_size, conflict_attrs, include_samples=True, id_columns=id_columns
+    )
+    
+    print(f"Conflict Analysis Preview (First {sample_size} matches):")
+    print("=" * 80)
+    
+    summary = results['conflict_summary']
+    print(f"Summary: {summary['matches_with_conflicts']}/{summary['total_matches']} matches have conflicts ({summary['conflict_rate']:.1%})")
+    
+    if results['attribute_conflicts']:
+        print(f"Most conflicted attributes: {dict(sorted(results['attribute_conflicts'].items(), key=lambda x: x[1], reverse=True))}")
+    
+    print("\nDetailed Examples:")
+    print("-" * 40)
+    
+    for example in results['conflict_examples']:
+        dataset1, dataset2 = example['dataset1'], example['dataset2']
+        score = example['score']
+        
+        print(f"\nMatch {example['match_id']}: {dataset1} ↔ {dataset2} (score: {score})")
+        
+        # Show sample record data
+        if 'record1_sample' in example:
+            record1_display = " | ".join([f"{v}" for v in example['record1_sample'].values()])
+            record2_display = " | ".join([f"{v}" for v in example['record2_sample'].values()])
+            print(f"  {dataset1}: {record1_display}")
+            print(f"  {dataset2}: {record2_display}")
+        
+        # Show conflicts
+        if example['has_conflicts']:
+            conflict_strs = []
+            for conflict in example['conflicts']:
+                conflict_strs.append(f"{conflict['attribute']}: '{conflict['value1']}' vs '{conflict['value2']}'")
+            print(f"  Conflicts: {'; '.join(conflict_strs)}")
+        else:
+            print(f"  No obvious conflicts")
 
 
 class AttributeCoverageAnalyzer:
