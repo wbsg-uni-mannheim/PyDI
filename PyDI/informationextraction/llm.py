@@ -11,6 +11,7 @@ import pandas as pd
 
 try:
     import pydantic
+    from pydantic import create_model
     from langchain_core.language_models.chat_models import BaseChatModel
     from langchain_core.messages import HumanMessage, SystemMessage
     from langchain_core.output_parsers import PydanticOutputParser
@@ -110,6 +111,8 @@ class LLMExtractor(BaseExtractor):
         self.default_source = source_column
         self.system_prompt = system_prompt
         self.schema = schema
+        self._json_schema: Optional[Dict[str, Any]] = None
+        self._pyd_model: Optional[Type[pydantic.BaseModel]] = None
         self.few_shots = few_shots or []
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -120,9 +123,11 @@ class LLMExtractor(BaseExtractor):
 
         # Determine schema mode
         self.open_schema = schema is None
+        # Determine if Pydantic model was provided directly
         self.is_pydantic = (
             not self.open_schema and
             hasattr(schema, '__bases__') and
+            pydantic is not None and
             pydantic.BaseModel in getattr(schema, '__bases__', [])
         )
 
@@ -131,12 +136,44 @@ class LLMExtractor(BaseExtractor):
             self.output_parser = None
             self.schema_fields = ['extracted']
         elif self.is_pydantic:
+            # Pydantic model provided directly
+            self._pyd_model = schema  # type: ignore[assignment]
             self.output_parser = PydanticOutputParser(pydantic_object=schema)
-            self.schema_fields = list(schema.__annotations__.keys())
+            # Prefer __annotations__ when available; fallback to model_fields for Pydantic v2
+            try:
+                self.schema_fields = list(schema.__annotations__.keys())  # type: ignore[union-attr]
+            except Exception:
+                self.schema_fields = list(getattr(schema, 'model_fields', {}).keys())  # type: ignore[arg-type]
         else:
+            # Dict schema provided; try to detect JSON Schema and convert to Pydantic
             self.output_parser = None
-            self.schema_fields = list(
-                schema.keys()) if isinstance(schema, dict) else []
+            self.schema_fields: List[str] = []
+            if isinstance(schema, dict) and schema:
+                # JSON Schema detection (simple heuristic)
+                if 'properties' in schema or schema.get('$schema'):
+                    self._json_schema = schema
+                    if pydantic is not None:
+                        try:
+                            self._pyd_model = self._build_pydantic_from_json_schema(schema)
+                            if self._pyd_model is not None:
+                                self.output_parser = PydanticOutputParser(pydantic_object=self._pyd_model)
+                                # Collect fields from model
+                                try:
+                                    self.schema_fields = list(self._pyd_model.__annotations__.keys())  # type: ignore[union-attr]
+                                except Exception:
+                                    self.schema_fields = list(getattr(self._pyd_model, 'model_fields', {}).keys())  # type: ignore[arg-type]
+                                # Treat as pydantic downstream
+                                self.is_pydantic = True
+                        except Exception as conv_err:
+                            logger.warning(f"Failed to convert JSON Schema to Pydantic model: {conv_err}")
+                    # If conversion failed, fall back to property names only
+                    if not self.schema_fields:
+                        props = schema.get('properties', {})
+                        if isinstance(props, dict):
+                            self.schema_fields = list(props.keys())
+                else:
+                    # Plain dict of fields (fallback)
+                    self.schema_fields = list(schema.keys())
 
         logger.info(
             f"Initialized LLMExtractor with {len(self.schema_fields)} schema fields")
@@ -148,6 +185,16 @@ class LLMExtractor(BaseExtractor):
         safe_system_prompt = self.system_prompt.replace(
             "{", "{{").replace("}", "}}")
         messages = [("system", safe_system_prompt)]
+
+        # Add format instructions if a structured output parser is available
+        if self.output_parser is not None:
+            try:
+                fmt_instructions = self.output_parser.get_format_instructions()
+                # Escape braces so ChatPromptTemplate doesn't treat them as variables
+                safe_fmt = fmt_instructions.replace("{", "{{").replace("}", "}}")
+                messages.append(("system", f"Follow these output format instructions strictly:\n{safe_fmt}"))
+            except Exception:
+                pass
 
         # Add few-shot examples if provided
         if self.few_shots:
@@ -168,20 +215,58 @@ class LLMExtractor(BaseExtractor):
 
         return ChatPromptTemplate.from_messages(messages)
 
-    def _extract_json_from_response(self, response_text: str) -> Optional[Dict[str, Any]]:
-        """Extract JSON from LLM response with fallback parsing."""
+    def _normalize_response_content(self, response: Any) -> str:
+        """Normalize a LangChain response content to plain text.
+
+        Handles string content, and list-of-blocks content such as
+        [{"type":"text", "text":"..."}, ...].
+        """
+        # If it's a standard message with 'content'
+        content = getattr(response, "content", response)
+        # If content is already a string
+        if isinstance(content, str):
+            return content
+        # If content is a list of blocks (e.g., langchain 0.2 content blocks)
+        if isinstance(content, list):
+            parts: List[str] = []
+            for block in content:
+                try:
+                    if isinstance(block, dict) and "text" in block:
+                        parts.append(str(block.get("text", "")))
+                    else:
+                        # Fallback: string representation
+                        parts.append(str(block))
+                except Exception:
+                    continue
+            return "\n".join(p.strip() for p in parts if p)
+        # Fallback to string cast
+        try:
+            return str(content)
+        except Exception:
+            return ""
+
+    def _extract_json_from_response(self, response_content: Any) -> Optional[Dict[str, Any]]:
+        """Extract JSON from LLM response with robust fallback parsing."""
+        text = self._normalize_response_content(response_content)
+
+        # Remove common code fences
+        fence_match = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL | re.IGNORECASE)
+        if fence_match:
+            text = fence_match.group(1).strip()
+
         # First try direct JSON parsing
         try:
-            return json.loads(response_text.strip())
-        except json.JSONDecodeError:
+            return json.loads(text.strip())
+        except Exception:
             pass
 
         # Try to find JSON within the response (trim to outermost braces)
-        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        json_match = re.search(r"\{[\s\S]*\}", text, re.DOTALL)
         if json_match:
+            candidate = json_match.group(0)
             try:
-                return json.loads(json_match.group(0))
-            except json.JSONDecodeError:
+                return json.loads(candidate)
+            except Exception:
                 pass
 
         logger.warning("Failed to parse JSON from LLM response")
@@ -189,17 +274,75 @@ class LLMExtractor(BaseExtractor):
 
     def _validate_and_coerce(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate and coerce data using Pydantic schema if available."""
-        if not self.is_pydantic or not data:
-            return data or {}
+        if not data:
+            return {}
 
-        try:
-            # Create instance to validate and coerce types
-            instance = self.schema(**data)
-            return instance.model_dump()
-        except Exception as e:
-            logger.warning(f"Pydantic validation failed: {e}")
-            # Return None values for all schema fields
-            return {field: None for field in self.schema_fields}
+        # Prefer Pydantic validation when model is available
+        if self.is_pydantic and self._pyd_model is not None:
+            try:
+                instance = self._pyd_model(**data)
+                return instance.model_dump()
+            except Exception as e:
+                logger.warning(f"Pydantic validation failed: {e}")
+                return {field: None for field in self.schema_fields}
+
+        # Optional: validate against JSON Schema if provided
+        if self._json_schema is not None:
+            try:
+                import jsonschema  # optional dependency
+                jsonschema.validate(instance=data, schema=self._json_schema)
+            except Exception as e:
+                logger.warning(f"JSON Schema validation failed: {e}")
+                return {field: None for field in self.schema_fields}
+
+        # No validation applied; return data constrained to known fields
+        return {k: data.get(k) for k in self.schema_fields}
+
+    def _build_pydantic_from_json_schema(self, schema: Dict[str, Any]) -> Optional[Type[pydantic.BaseModel]]:
+        """Create a Pydantic model from a simple JSON Schema object.
+
+        Supports basic 'type' mappings for properties and 'required' fields.
+        """
+        if pydantic is None:
+            return None
+
+        props = schema.get('properties', {})
+        if not isinstance(props, dict):
+            return None
+
+        required = set(schema.get('required', []) or [])
+
+        type_map = {
+            'string': (str, ...),
+            'number': (float, ...),
+            'integer': (int, ...),
+            'boolean': (bool, ...),
+            'array': (list, ...),
+            'object': (dict, ...),
+        }
+
+        fields: Dict[str, tuple] = {}
+        for name, spec in props.items():
+            if not isinstance(spec, dict):
+                continue
+            t = spec.get('type')
+            # Handle enum as string
+            if 'enum' in spec and not t:
+                t = 'string'
+
+            base = type_map.get(t, (str, ...))
+
+            # Optional if not required
+            default = None if name not in required else ...
+            annotated_type = base[0]
+            if default is None:
+                from typing import Optional as TypingOptional
+                annotated_type = TypingOptional[annotated_type]  # type: ignore[assignment]
+
+            fields[name] = (annotated_type, default)
+
+        model = create_model('DynamicExtractionSchema', **fields)  # type: ignore[arg-type]
+        return model  # type: ignore[return-value]
 
     def _extract_from_text_with_retry(
         self,
@@ -253,8 +396,7 @@ class LLMExtractor(BaseExtractor):
                 duration_ms = (time.time() - start_time) * 1000.0
 
                 # Extract response content
-                response_text = response.content if hasattr(
-                    response, 'content') else str(response)
+                response_text = self._normalize_response_content(response)
 
                 # Save response artifact if debug mode
                 if self.debug:

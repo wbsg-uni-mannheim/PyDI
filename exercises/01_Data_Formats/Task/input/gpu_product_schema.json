@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/gpu_product.schema.json",
+  "title": "GPUProduct",
+  "description": "Schema for a single discrete graphics card (GPU) product entry used in Exercise 02/03. Includes identification, specs, pricing and a free‑text description.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique identifier for this product record (e.g., 'gpu-001')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human‑readable product title as seen on listings (e.g., 'NVIDIA GeForce RTX 4070 Ti')."
+    },
+    "brand": {
+      "type": "string",
+      "enum": ["NVIDIA", "AMD", "Intel", "Other"],
+      "description": "GPU vendor/brand name."
+    },
+    "model": {
+      "type": "string",
+      "description": "Product model designation used in marketing (e.g., 'RTX 4070 Ti', 'RX 7800 XT')."
+    },
+    "chipset": {
+      "type": "string",
+      "description": "GPU die/codename or family identifier (e.g., 'AD104', 'Navi 32')."
+    },
+    "memory_gb": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "On‑board graphics memory capacity in gigabytes (GB)."
+    },
+    "memory_type": {
+      "type": "string",
+      "enum": ["GDDR6", "GDDR6X", "HBM2", "HBM3"],
+      "description": "Type of graphics memory technology."
+    },
+    "clock_speed_mhz": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Nominal boost or advertised GPU clock speed in megahertz (MHz)."
+    },
+    "tdp_w": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Typical board power (TDP/TBP) in watts (W)."
+    },
+    "launch_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Public launch or availability date in ISO format (YYYY‑MM‑DD)."
+    },
+    "price_usd": {
+      "type": "number",
+      "minimum": 0,
+      "description": "MSRP or typical retail price in US dollars (USD)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free‑text product description used for information extraction demos."
+    }
+  },
+  "required": ["id", "name", "brand", "model", "description"],
+  "additionalProperties": true
+}
