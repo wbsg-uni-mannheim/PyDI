@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 import pandas as pd
 
-from .detectors import DataType, NullDetector, TypeDetectionResult, OutlierDetector, TypeDetector
+from .detectors import DataType, NullDetector, TypeDetectionResult, OutlierDetector
 from .units import UnitCategory, UnitDetector, UnitRegistry, parse_unit_from_header
 from .values import AdvancedValueNormalizer
 
@@ -479,33 +479,14 @@ class ColumnTypeInference:
 
 
 # Convenience functions for column analysis
-def detect_column_types(df: pd.DataFrame, advanced: bool = False) -> Dict[str, str]:
-    """
-    Detect types for all columns in DataFrame.
+def detect_column_types(df: pd.DataFrame) -> Dict[str, str]:
+    """Detect types for all columns using AdvancedTypeDetector.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame to analyze.
-    advanced : bool, default False
-        Whether to use advanced type detection.
-
-    Returns
-    -------
-    Dict[str, str]
-        Dictionary mapping column names to detected types.
+    Returns mapping of column name to detected type string.
     """
-    if advanced:
-        detector = AdvancedTypeDetector()
-        results = detector.detect_dataframe_types(df)
-        return {col: result.data_type.value for col, result in results.items()}
-    else:
-        detector = TypeDetector()
-        results = {}
-        for col in df.columns:
-            result = detector.detect_column_type(df[col])
-            results[col] = result.data_type.value
-        return results
+    detector = AdvancedTypeDetector()
+    results = detector.detect_dataframe_types(df)
+    return {col: result.data_type.value for col, result in results.items()}
 
 
 def detect_dataframe_types(

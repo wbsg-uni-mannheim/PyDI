@@ -30,8 +30,6 @@ DatasetNormalizer
 
 Type Detection and Conversion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TypeDetector
-    Enhanced automatic detection of column data types using comprehensive patterns.
 DataType
     Enumeration of supported data types.
 TypeDetectionResult
@@ -147,8 +145,8 @@ Unit normalization:
 >>> normalized_value, unit = unit_normalizer.normalize_value("5.2 km")
 
 Type detection:
->>> from PyDI.normalization import TypeDetector
->>> detector = TypeDetector()
+>>> from PyDI.normalization import AdvancedTypeDetector
+>>> detector = AdvancedTypeDetector()
 >>> types = detector.detect_dataframe_types(df)
 
 Data quality assessment:
@@ -220,26 +218,19 @@ from .types import (
 
 # Value-level normalization
 from .values import (
-    ValueNormalizer,
     AdvancedValueNormalizer,
-    ListValueProcessor,
     NullValueHandler,
     # Convenience functions
-    normalize_value,
     normalize_numeric,
     normalize_date,
     normalize_boolean,
-    normalize_list,
-    normalize_coordinate,
     clean_nulls,
-    advanced_normalize_value
 )
 
 # Column analysis and type detection
 from .columns import (
     DataTypeExtended,
     ValueDetectionType,
-    TypeDetector,
     AdvancedTypeDetector,
     ColumnTypeInference,
     # Convenience functions
@@ -319,15 +310,12 @@ __all__ = [
     'TypeConverter',
 
     # Value-level normalization
-    'ValueNormalizer',
     'AdvancedValueNormalizer',
-    'ListValueProcessor',
     'NullValueHandler',
 
     # Column analysis and type detection
     'DataTypeExtended',
     'ValueDetectionType',
-    'TypeDetector',
     'AdvancedTypeDetector',
     'ColumnTypeInference',
 
@@ -350,14 +338,10 @@ __all__ = [
     'parse_number',
 
     # Convenience functions - Value normalization
-    'normalize_value',
     'normalize_numeric',
     'normalize_date',
     'normalize_boolean',
-    'normalize_list',
-    'normalize_coordinate',
     'clean_nulls',
-    'advanced_normalize_value',
 
     # Convenience functions - Column analysis
     'detect_column_types',

@@ -14,92 +14,10 @@ from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
 
-from .text import TextNormalizer
 from .types import TypeConverter, BooleanParser, NumericParser, DateNormalizer
 from .units import UnitNormalizer, UnitRegistry, QuantityModifier, UnitCategory
 
 logger = logging.getLogger(__name__)
-
-
-class ValueNormalizer:
-    """
-    Simple value normalizer for basic normalization tasks.
-    
-    Provides straightforward value normalization without complex
-    type detection or unit conversion.
-    """
-    
-    def __init__(
-        self,
-        text_normalizer: Optional[TextNormalizer] = None,
-        numeric_parser: Optional[NumericParser] = None,
-        boolean_parser: Optional[BooleanParser] = None,
-        date_normalizer: Optional[DateNormalizer] = None
-    ):
-        self.text_normalizer = text_normalizer or TextNormalizer()
-        self.numeric_parser = numeric_parser or NumericParser()
-        self.boolean_parser = boolean_parser or BooleanParser()
-        self.date_normalizer = date_normalizer or DateNormalizer()
-    
-    def normalize_value(self, value: Any, target_type: str = 'auto') -> Any:
-        """
-        Normalize a single value.
-        
-        Parameters
-        ----------
-        value : Any
-            Value to normalize.
-        target_type : str, default 'auto'
-            Target type: 'text', 'numeric', 'boolean', 'date', or 'auto'.
-            
-        Returns
-        -------
-        Any
-            Normalized value.
-        """
-        if pd.isna(value):
-            return value
-        
-        if target_type == 'auto':
-            # Auto-detect and normalize
-            return self._auto_normalize(value)
-        elif target_type == 'text':
-            return self.text_normalizer.clean_text(str(value))
-        elif target_type == 'numeric':
-            return self.numeric_parser.parse_numeric(str(value))
-        elif target_type == 'boolean':
-            return self.boolean_parser.parse_boolean(value)
-        elif target_type == 'date':
-            return self.date_normalizer.normalize_date(value)
-        else:
-            logger.warning(f"Unknown target type: {target_type}")
-            return value
-    
-    def _auto_normalize(self, value: Any) -> Any:
-        """Auto-detect type and normalize accordingly."""
-        value_str = str(value).strip()
-        
-        # Try numeric first
-        numeric_result = self.numeric_parser.parse_numeric(value_str)
-        if numeric_result is not None:
-            return numeric_result
-        
-        # Try boolean
-        boolean_result = self.boolean_parser.parse_boolean(value)
-        if boolean_result is not None:
-            return boolean_result
-        
-        # Try date
-        date_result = self.date_normalizer.normalize_date(value)
-        if date_result is not None:
-            return date_result
-        
-        # Default to text normalization
-        return self.text_normalizer.clean_text(value_str)
-    
-    def normalize_column(self, series: pd.Series, target_type: str = 'auto') -> pd.Series:
-        """Normalize entire column."""
-        return series.apply(lambda x: self.normalize_value(x, target_type))
 
 
 class AdvancedValueNormalizer:
@@ -265,51 +183,6 @@ class AdvancedValueNormalizer:
         return text_normalizer.clean_text(value)
 
 
-class ListValueProcessor:
-    """
-    Specialized processor for list-format values.
-    
-    Handles Winter's list format: {value1|value2|value3}
-    """
-    
-    def __init__(self, item_normalizer: Optional[ValueNormalizer] = None):
-        self.item_normalizer = item_normalizer or ValueNormalizer()
-        self.list_pattern = re.compile(r'^\{([^}]+)\}$')
-    
-    def is_list_format(self, value: str) -> bool:
-        """Check if value is in list format."""
-        if pd.isna(value) or not value:
-            return False
-        return bool(self.list_pattern.match(str(value).strip()))
-    
-    def parse_list(self, value: str) -> List[str]:
-        """Parse list value into individual items."""
-        if not self.is_list_format(value):
-            return [value]
-        
-        match = self.list_pattern.match(value.strip())
-        if match:
-            items = match.group(1).split('|')
-            return [item.strip() for item in items if item.strip()]
-        return []
-    
-    def normalize_list_items(self, items: List[str], target_type: str = 'auto') -> List[Any]:
-        """Normalize individual list items."""
-        normalized_items = []
-        for item in items:
-            normalized = self.item_normalizer.normalize_value(item, target_type)
-            normalized_items.append(normalized)
-        return normalized_items
-    
-    def process_list_value(self, value: str, target_type: str = 'auto') -> Union[List[Any], Any]:
-        """Process list value or return single normalized value."""
-        if self.is_list_format(value):
-            items = self.parse_list(value)
-            return self.normalize_list_items(items, target_type)
-        else:
-            return self.item_normalizer.normalize_value(value, target_type)
-
-
 class NullValueHandler:
     """
     Handler for various null value representations.
@@ -356,27 +229,6 @@ class NullValueHandler:
         return series.apply(self.normalize_nulls)
 
 
-# Convenience functions for value normalization
-def normalize_value(value: Any, target_type: str = 'auto') -> Any:
-    """
-    Quick value normalization with auto-detection.
-    
-    Parameters
-    ----------
-    value : Any
-        Value to normalize.
-    target_type : str, default 'auto'
-        Target type for normalization.
-        
-    Returns
-    -------
-    Any
-        Normalized value.
-    """
-    normalizer = ValueNormalizer()
-    return normalizer.normalize_value(value, target_type)
-
-
 def normalize_numeric(value: str) -> Optional[Union[int, float]]:
     """Normalize numeric value."""
     parser = NumericParser()
@@ -395,51 +247,10 @@ def normalize_boolean(value: Any) -> Optional[bool]:
     return parser.parse_boolean(value)
 
 
-def normalize_list(value: str) -> Union[List[Any], Any]:
-    """Normalize list-format value."""
-    processor = ListValueProcessor()
-    return processor.process_list_value(value)
-
-
-def normalize_coordinate(value: str) -> Optional[str]:
-    """Normalize coordinate value."""
-    from .types import parse_coordinate
-    parsed = parse_coordinate(value)
-    if parsed:
-        return f"{parsed[0]:.6f}, {parsed[1]:.6f}"
-    return None
-
-
 def clean_nulls(series: pd.Series, replacement: Any = None) -> pd.Series:
     """Clean null values in a series."""
     handler = NullValueHandler(replacement)
     return handler.normalize_column_nulls(series)
 
 
-def advanced_normalize_value(
-    value: Any, 
-    data_type: str, 
-    unit_category: Optional[str] = None,
-    specific_unit: Optional[str] = None
-) -> Any:
-    """
-    Advanced value normalization with type-specific handling.
     
-    Parameters
-    ----------
-    value : Any
-        Value to normalize.
-    data_type : str
-        Detected data type.
-    unit_category : str, optional
-        Unit category if applicable.
-    specific_unit : str, optional
-        Specific unit if detected.
-        
-    Returns
-    -------
-    Any
-        Normalized value.
-    """
-    normalizer = AdvancedValueNormalizer()
-    return normalizer.normalize_value(value, data_type, unit_category, specific_unit)
