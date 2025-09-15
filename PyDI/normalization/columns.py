@@ -88,161 +88,6 @@ class ValueDetectionType:
         return f"ValueDetectionType({', '.join(parts)})"
 
 
-class TypeDetector:
-    """
-    Basic type detector for simple type detection needs.
-
-    Provides straightforward pattern-based type detection.
-    """
-
-    def __init__(self, null_detector: Optional[NullDetector] = None):
-        self.null_detector = null_detector or NullDetector()
-        self._initialize_patterns()
-
-    def _initialize_patterns(self):
-        """Initialize basic detection patterns."""
-        # Email pattern
-        self.email_pattern = re.compile(
-            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        )
-
-        # URL pattern
-        self.url_pattern = re.compile(
-            r'^https?://[^\s/$.?#].[^\s]*$|^www\.[^\s/$.?#].[^\s]*$',
-            re.IGNORECASE
-        )
-
-        # Phone pattern
-        self.phone_pattern = re.compile(
-            r'^[\+]?[1-9]?[\d\s\-\(\)\.]{7,15}$'
-        )
-
-        # Date patterns
-        self.date_patterns = [
-            re.compile(r'^\d{4}-\d{1,2}-\d{1,2}$'),  # ISO
-            re.compile(r'^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$'),  # US/European
-            re.compile(r'^\d{4}\d{2}\d{2}$'),  # YYYYMMDD
-        ]
-
-        # Numeric patterns
-        self.numeric_patterns = [
-            re.compile(r'^[-+]?\d*\.?\d+[eE][-+]?\d+$'),  # Scientific
-            # With separators
-            re.compile(r'^[-+]?\d{1,3}(?:,\d{3})*(?:\.\d+)?$'),
-            re.compile(r'^[-+]?\d*\.\d+$'),  # Decimals
-            re.compile(r'^[-+]?\d+$'),  # Integers
-        ]
-
-        # Boolean pattern
-        self.boolean_pattern = re.compile(
-            r'^(true|false|yes|no|y|n|t|f|1|0)$',
-            re.IGNORECASE
-        )
-
-        # Coordinate pattern
-        self.coordinate_pattern = re.compile(
-            r'^[-+]?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)[,\s]+[-+]?(180(?:\.0+)?|(?:1[0-7]\d|[1-9]?\d)(?:\.\d+)?)$'
-        )
-
-        # Percentage pattern
-        self.percentage_pattern = re.compile(r'^\d+(?:\.\d+)?%$')
-
-    def detect_column_type(self, series: pd.Series) -> TypeDetectionResult:
-        """
-        Detect type for a pandas Series.
-
-        Parameters
-        ----------
-        series : pd.Series
-            Series to analyze.
-
-        Returns
-        -------
-        TypeDetectionResult
-            Basic type detection result.
-        """
-        # Get non-null values
-        non_null_values = series.dropna()
-        if len(non_null_values) == 0:
-            return TypeDetectionResult(
-                data_type=DataType.UNKNOWN,
-                confidence=0.0,
-                patterns={},
-                sample_values=[],
-                null_count=len(series),
-                total_count=len(series)
-            )
-
-        # Sample values for analysis
-        sample_size = min(100, len(non_null_values))
-        sample_values = non_null_values.sample(n=sample_size, random_state=42)
-
-        # Count type matches
-        type_counts = {}
-
-        for value in sample_values:
-            value_str = str(value).strip()
-            detected_type = self._detect_single_value(value_str)
-            type_counts[detected_type] = type_counts.get(detected_type, 0) + 1
-
-        # Find most common type
-        if type_counts:
-            best_type = max(type_counts.keys(), key=lambda k: type_counts[k])
-            confidence = type_counts[best_type] / len(sample_values)
-        else:
-            best_type = DataType.STRING
-            confidence = 1.0
-
-        return TypeDetectionResult(
-            data_type=best_type,
-            confidence=confidence,
-            patterns={dt.value: count for dt, count in type_counts.items()},
-            sample_values=list(sample_values.astype(str))[:10],
-            null_count=len(series) - len(non_null_values),
-            total_count=len(series)
-        )
-
-    def _detect_single_value(self, value: str) -> DataType:
-        """Detect type for single value."""
-        if not value:
-            return DataType.STRING
-
-        # Email check
-        if self.email_pattern.match(value):
-            return DataType.EMAIL
-
-        # URL check
-        if self.url_pattern.match(value):
-            return DataType.URL
-
-        # Phone check
-        if self.phone_pattern.match(value):
-            return DataType.PHONE
-
-        # Boolean check
-        if self.boolean_pattern.match(value):
-            return DataType.BOOLEAN
-
-        # Coordinate check
-        if self.coordinate_pattern.match(value):
-            return DataType.COORDINATE
-
-        # Percentage check
-        if self.percentage_pattern.match(value):
-            return DataType.PERCENTAGE
-
-        # Date checks
-        for pattern in self.date_patterns:
-            if pattern.match(value):
-                return DataType.DATE
-
-        # Numeric checks
-        for pattern in self.numeric_patterns:
-            if pattern.match(value):
-                return DataType.FLOAT if '.' in value else DataType.INTEGER
-
-        # Default to string
-        return DataType.STRING
 
 
 class AdvancedTypeDetector:
@@ -634,33 +479,14 @@ class ColumnTypeInference:
 
 
 # Convenience functions for column analysis
-def detect_column_types(df: pd.DataFrame, advanced: bool = False) -> Dict[str, str]:
-    """
-    Detect types for all columns in DataFrame.
+def detect_column_types(df: pd.DataFrame) -> Dict[str, str]:
+    """Detect types for all columns using AdvancedTypeDetector.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame to analyze.
-    advanced : bool, default False
-        Whether to use advanced type detection.
-
-    Returns
-    -------
-    Dict[str, str]
-        Dictionary mapping column names to detected types.
+    Returns mapping of column name to detected type string.
     """
-    if advanced:
-        detector = AdvancedTypeDetector()
-        results = detector.detect_dataframe_types(df)
-        return {col: result.data_type.value for col, result in results.items()}
-    else:
-        detector = TypeDetector()
-        results = {}
-        for col in df.columns:
-            result = detector.detect_column_type(df[col])
-            results[col] = result.data_type.value
-        return results
+    detector = AdvancedTypeDetector()
+    results = detector.detect_dataframe_types(df)
+    return {col: result.data_type.value for col, result in results.items()}
 
 
 def detect_dataframe_types(
