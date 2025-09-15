@@ -28,12 +28,14 @@ class StandardBlocking(BaseBlocker):
         on: List[str],
         *,
         batch_size: int = 100_000,
+        output_dir: str = "output",
     ) -> None:
         super().__init__(df_left, df_right, batch_size=batch_size)
         if not on:
             raise ValueError(
                 "StandardBlocking requires at least one column in 'on'")
         self.on = list(on)
+        self.output_dir = output_dir
 
         # Setup logging (same as BaseBlocker pattern)
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -77,8 +79,8 @@ class StandardBlocking(BaseBlocker):
             if col not in df.columns:
                 raise ValueError(f"Column '{col}' not found for blocking")
 
-        # Create a block key column tuple; cast to string to avoid NaN issues
-        key_series = df[cols].astype(str).agg("||".join, axis=1)
+        # Create a block key column tuple; cast to string and lowercase to avoid NaN issues
+        key_series = df[cols].astype(str).apply(lambda x: x.str.lower()).agg("||".join, axis=1)
         blocks: dict[str, List[str]] = {}
         for _id, key in zip(df["_id"], key_series):
             if key not in blocks:
@@ -125,7 +127,7 @@ class StandardBlocking(BaseBlocker):
             return
             
         # Create output directory if it doesn't exist
-        os.makedirs("output", exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
         
         # Calculate frequencies for each blocking key
         debug_data = []
@@ -137,7 +139,7 @@ class StandardBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = "output/debugResultsBlocking_StandardBlocking.csv"
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_StandardBlocking.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         

@@ -422,11 +422,14 @@ class EntityMatchingEvaluator:
         *,
         threshold: Optional[float] = None,
         out_dir: Optional[str] = None,
+        debug_info: Optional[pd.DataFrame] = None,
+        matcher_instance: Optional[object] = None,
     ) -> Dict[str, Any]:
         """Evaluate entity matching correspondences against ground truth.
 
         Computes classification metrics (precision, recall, F1) for entity
         matching results, with optional similarity threshold filtering.
+        Can optionally write debug results if debug information is provided.
 
         Parameters
         ----------
@@ -442,6 +445,15 @@ class EntityMatchingEvaluator:
             uses all correspondences regardless of score.
         out_dir : str, optional
             Directory to write matching evaluation results.
+        debug_info : pandas.DataFrame, optional
+            DataFrame with detailed comparator results from matcher debug mode.
+            If provided, debug results will be written to out_dir.
+            Expected columns: id1, id2, comparator_name, record1_value,
+            record2_value, record1_preprocessed, record2_preprocessed,
+            similarity, postprocessed_similarity.
+        matcher_instance : object, optional
+            The matcher instance used to generate the correspondences.
+            Used to automatically determine the matching rule name for debug output.
 
         Returns
         -------
@@ -459,6 +471,7 @@ class EntityMatchingEvaluator:
             - total_correspondences: int, total correspondences before threshold
             - filtered_correspondences: int, correspondences after threshold
             - evaluation_timestamp: str, ISO timestamp of evaluation
+            - debug_files: Tuple[str, str], paths to debug files (if debug_info provided)
 
         Raises
         ------
@@ -578,6 +591,21 @@ class EntityMatchingEvaluator:
                 results, corr_filtered, test_pairs, positive_set, predicted_set, out_dir
             )
             results["output_files"] = output_files
+
+        # Write debug results if debug_info provided
+        if debug_info is not None and out_dir is not None:
+            try:
+                full_debug_path, short_debug_path = EntityMatchingEvaluator.write_debug_results(
+                    correspondences=correspondences,
+                    debug_results=debug_info,
+                    out_dir=out_dir,
+                    matcher_instance=matcher_instance,
+                )
+                results["debug_files"] = (full_debug_path, short_debug_path)
+                logging.info(f"Debug results written to {full_debug_path} and {short_debug_path}")
+            except Exception as e:
+                logging.warning(f"Failed to write debug results: {e}")
+                results["debug_files"] = None
 
         # Log performance metrics
         logging.info(f"Performance Metrics:")

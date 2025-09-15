@@ -78,6 +78,7 @@ class EmbeddingBlocking(BaseBlocker):
         left_embeddings: Optional[np.ndarray] = None,
         right_embeddings: Optional[np.ndarray] = None,
         device: Optional[str] = None,
+        output_dir: str = "output",
     ):
         super().__init__(df_left, df_right, batch_size=batch_size)
         
@@ -99,6 +100,7 @@ class EmbeddingBlocking(BaseBlocker):
         self.query_batch_size = query_batch_size
         self.embedder = embedder
         self.device = device
+        self.output_dir = output_dir
         
         # Initialize embeddings
         self.left_embeddings = left_embeddings
@@ -379,7 +381,7 @@ class EmbeddingBlocking(BaseBlocker):
     def _write_debug_file(self, left_embeddings: np.ndarray, right_embeddings: np.ndarray) -> None:
         """Write debug CSV file with embedding similarity statistics like Winter framework."""
         # Create output directory if it doesn't exist
-        os.makedirs("output", exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
         
         # Sample a subset for debug analysis to avoid expensive computation
         sample_size = min(100, len(left_embeddings))
@@ -413,7 +415,7 @@ class EmbeddingBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = "output/debugResultsBlocking_EmbeddingBlocking.csv"
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_EmbeddingBlocking.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         

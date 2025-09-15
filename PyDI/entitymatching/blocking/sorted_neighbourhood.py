@@ -30,6 +30,7 @@ class SortedNeighbourhood(BaseBlocker):
         window: int,
         *,
         batch_size: int = 100_000,
+        output_dir: str = "output",
     ) -> None:
         super().__init__(df_left, df_right, batch_size=batch_size)
         if key not in self.df_left.columns or key not in self.df_right.columns:
@@ -38,6 +39,7 @@ class SortedNeighbourhood(BaseBlocker):
             raise ValueError("window must be >= 1")
         self.key = key
         self.window = int(window)
+        self.output_dir = output_dir
 
         # Setup logging
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -80,7 +82,7 @@ class SortedNeighbourhood(BaseBlocker):
             return
             
         # Create output directory if it doesn't exist
-        os.makedirs("output", exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
         
         # Extract sort key prefixes (first 6 characters like Winter seems to do)
         sort_keys = self._combined_sorted["__sort_key"].astype(str)
@@ -95,7 +97,7 @@ class SortedNeighbourhood(BaseBlocker):
             debug_data.append({"Blocking Key Value": prefix, "Frequency": freq})
         
         # Write to CSV file
-        debug_file = "output/debugResultsBlocking_SortedNeighbourhood.csv"
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_SortedNeighbourhood.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         

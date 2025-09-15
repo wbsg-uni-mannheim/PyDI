@@ -31,6 +31,7 @@ class TokenBlocking(BaseBlocker):
         *,
         batch_size: int = 100_000,
         min_token_len: int = 2,
+        output_dir: str = "output",
     ) -> None:
         super().__init__(df_left, df_right, batch_size=batch_size)
         if column not in self.df_left.columns or column not in self.df_right.columns:
@@ -38,6 +39,7 @@ class TokenBlocking(BaseBlocker):
         self.column = column
         self.tokenizer = tokenizer or self._default_tokenizer
         self.min_token_len = int(min_token_len)
+        self.output_dir = output_dir
 
         # Setup logging
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -143,7 +145,7 @@ class TokenBlocking(BaseBlocker):
             return
             
         # Create output directory if it doesn't exist
-        os.makedirs("output", exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
         
         # Calculate frequencies for each token
         debug_data = []
@@ -155,7 +157,7 @@ class TokenBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = "output/debugResultsBlocking_TokenBlocking.csv"
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_TokenBlocking.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         
