@@ -10,21 +10,8 @@ from typing import Iterator, List, Optional
 
 import pandas as pd
 
-from ..base import ensure_record_ids
-
 
 CandidateBatch = pd.DataFrame
-
-
-def _ensure_id_index(df: pd.DataFrame) -> pd.DataFrame:
-    """Return a copy indexed by `_id` if not already indexed so.
-
-    Leaves original DataFrame unchanged. Ensures `_id` column exists.
-    """
-    df = ensure_record_ids(df)
-    if df.index.name == "_id":
-        return df
-    return df.set_index("_id", drop=False)
 
 
 class BaseBlocker(ABC):
@@ -43,19 +30,27 @@ class BaseBlocker(ABC):
         self,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
+        id_column: str,
         *,
         batch_size: int = 100_000,
     ) -> None:
-        self.df_left = ensure_record_ids(df_left)
-        self.df_right = ensure_record_ids(df_right)
+        # Validate that ID column exists in both DataFrames
+        if id_column not in df_left.columns:
+            raise ValueError(f"ID column '{id_column}' not found in left DataFrame")
+        if id_column not in df_right.columns:
+            raise ValueError(f"ID column '{id_column}' not found in right DataFrame")
+
+        self.df_left = df_left
+        self.df_right = df_right
+        self.id_column = id_column
         self.batch_size = int(batch_size)
-        
+
         # Setup logging
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
 
         # Cached indexes for faster lookup in some strategies
-        self._left_indexed = _ensure_id_index(self.df_left)
-        self._right_indexed = _ensure_id_index(self.df_right)
+        self._left_indexed = df_left.set_index(id_column, drop=False)
+        self._right_indexed = df_right.set_index(id_column, drop=False)
 
         self._pairs_emitted = 0
         self._batches_emitted = 0

@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from .base import BaseComparator, ensure_record_ids
+from .base import BaseComparator
 
 
 class FeatureExtractor:
@@ -93,24 +93,27 @@ class FeatureExtractor:
                 raise ValueError(f"Feature function at index {i} must be callable, BaseComparator, or dict")
         
         return parsed
-    
+
     def create_features(
         self,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         pairs: pd.DataFrame,
+        id_column: str,
         labels: Optional[pd.Series] = None,
     ) -> pd.DataFrame:
         """Create feature matrix from entity pairs.
-        
+
         Parameters
         ----------
         df_left : pandas.DataFrame
-            Left dataset with _id column and dataset_name in attrs.
+            Left dataset with specified ID column.
         df_right : pandas.DataFrame
-            Right dataset with _id column and dataset_name in attrs.
+            Right dataset with specified ID column.
         pairs : pandas.DataFrame
             DataFrame with id1, id2 columns representing entity pairs.
+        id_column : str
+            Name of the column containing record identifiers.
         labels : pandas.Series, optional
             Binary labels for pairs (1 for match, 0 for non-match).
             If provided, adds 'label' column to output.
@@ -140,13 +143,15 @@ class FeatureExtractor:
         if labels is not None and len(labels) != len(pairs):
             raise ValueError(f"Labels length ({len(labels)}) doesn't match pairs length ({len(pairs)})")
         
-        # Ensure record IDs
-        df_left = ensure_record_ids(df_left)
-        df_right = ensure_record_ids(df_right)
-        
+        # Validate that ID column exists
+        if id_column not in df_left.columns:
+            raise ValueError(f"Left dataset missing ID column: {id_column}")
+        if id_column not in df_right.columns:
+            raise ValueError(f"Right dataset missing ID column: {id_column}")
+
         # Create lookup dictionaries for fast record access
-        left_lookup = df_left.set_index("_id")
-        right_lookup = df_right.set_index("_id")
+        left_lookup = df_left.set_index(id_column)
+        right_lookup = df_right.set_index(id_column)
         
         logging.info(f"Extracting features from {len(pairs)} pairs using {len(self.feature_functions)} functions")
         
@@ -160,6 +165,13 @@ class FeatureExtractor:
             try:
                 record1 = left_lookup.loc[id1]
                 record2 = right_lookup.loc[id2]
+                
+                # Handle case where .loc returns DataFrame due to duplicate indices
+                if isinstance(record1, pd.DataFrame):
+                    record1 = record1.iloc[0]
+                if isinstance(record2, pd.DataFrame):
+                    record2 = record2.iloc[0]
+                    
             except KeyError as e:
                 logging.warning(f"Record not found: {e}")
                 continue
@@ -340,16 +352,17 @@ class VectorFeatureExtractor:
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         pairs: pd.DataFrame,
+        id_column: str,
         labels: Optional[pd.Series] = None,
     ) -> pd.DataFrame:
         """Create vector-based features from entity pairs.
-        
+
         Parameters
         ----------
         df_left : pandas.DataFrame
-            Left dataset with _id column.
+            Left dataset with specified ID column.
         df_right : pandas.DataFrame
-            Right dataset with _id column.
+            Right dataset with specified ID column.
         pairs : pandas.DataFrame
             DataFrame with id1, id2 columns.
         labels : pandas.Series, optional
@@ -371,13 +384,15 @@ class VectorFeatureExtractor:
             if col not in df_right.columns:
                 raise ValueError(f"Column '{col}' not found in right dataset")
         
-        # Ensure record IDs
-        df_left = ensure_record_ids(df_left)
-        df_right = ensure_record_ids(df_right)
-        
+        # Validate that ID column exists
+        if id_column not in df_left.columns:
+            raise ValueError(f"Left dataset missing ID column: {id_column}")
+        if id_column not in df_right.columns:
+            raise ValueError(f"Right dataset missing ID column: {id_column}")
+
         # Create lookup dictionaries
-        left_lookup = df_left.set_index("_id")
-        right_lookup = df_right.set_index("_id")
+        left_lookup = df_left.set_index(id_column)
+        right_lookup = df_right.set_index(id_column)
         
         logging.info(f"Computing vector features for {len(pairs)} pairs")
         

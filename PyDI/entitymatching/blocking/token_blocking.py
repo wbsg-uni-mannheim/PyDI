@@ -27,13 +27,14 @@ class TokenBlocking(BaseBlocker):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         column: str,
+        id_column: str,
         tokenizer: Optional[Callable[[str], List[str]]] = None,
         *,
         batch_size: int = 100_000,
         min_token_len: int = 2,
         output_dir: str = "output",
     ) -> None:
-        super().__init__(df_left, df_right, batch_size=batch_size)
+        super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if column not in self.df_left.columns or column not in self.df_right.columns:
             raise ValueError(f"Column '{column}' must exist in both datasets")
         self.column = column
@@ -46,11 +47,11 @@ class TokenBlocking(BaseBlocker):
         
         # Log DEBUG: Creating token index
         self.logger.debug(f"Creating token index for dataset1: {len(self.df_left)} records")
-        self._left_tokens = self._build_token_index(self.df_left, self.column)
-        
+        self._left_tokens = self._build_token_index(self.df_left, self.column, self.id_column)
+
         self.logger.debug(f"Creating token index for dataset2: {len(self.df_right)} records")
         self._right_tokens = self._build_token_index(
-            self.df_right, self.column)
+            self.df_right, self.column, self.id_column)
             
         # Log INFO: token counts
         self.logger.info(f"created {len(self._left_tokens)} token keys for first dataset")
@@ -95,15 +96,15 @@ class TokenBlocking(BaseBlocker):
                 uniq.append(t)
         return uniq
 
-    def _build_token_index(self, df: pd.DataFrame, column: str) -> dict:
+    def _build_token_index(self, df: pd.DataFrame, column: str, id_column: str) -> dict:
         index: dict[str, List[str]] = {}
-        for _id, val in zip(df["_id"], df[column]):
+        for record_id, val in zip(df[id_column], df[column]):
             for tok in self.tokenizer(val):
                 if len(tok) < self.min_token_len:
                     continue
                 if tok not in index:
                     index[tok] = []
-                index[tok].append(_id)
+                index[tok].append(record_id)
         return index
 
     def _log_token_statistics(self) -> None:

@@ -9,65 +9,9 @@ from typing import Iterable, Optional
 import logging
 
 import pandas as pd
-from ..io.loaders import _inject_unique_id_column
 
 # Core data structures
 CorrespondenceSet = pd.DataFrame
-
-
-def ensure_record_ids(df: pd.DataFrame) -> pd.DataFrame:
-    """Ensure DataFrame has global record IDs in _id column.
-
-    PyDI requires global record IDs in the format {dataset_name}_{i}
-    for entity matching operations.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        DataFrame to check for record IDs.
-
-    Returns
-    -------
-    pandas.DataFrame
-        DataFrame with _id column ensured.
-
-    Raises
-    ------
-    ValueError
-        If dataset_name is not set in df.attrs when _id column is missing.
-    """
-    if "_id" not in df.columns:
-        dataset_name = df.attrs.get("dataset_name")
-        if not dataset_name:
-            raise ValueError(
-                "DataFrame must have 'dataset_name' in df.attrs to generate IDs"
-            )
-
-        # Use _inject_unique_id_column to create the _id column
-        df_with_id, _ = _inject_unique_id_column(
-            df, dataset_name=dataset_name, index_column_name="_id"
-        )
-
-        # Update provenance
-        provenance = df_with_id.attrs.get("provenance", [])
-
-        # Handle case where provenance might be a dict (from older loaders)
-        if isinstance(provenance, dict):
-            provenance = [provenance]
-        elif not isinstance(provenance, list):
-            provenance = []
-
-        provenance.append(
-            {
-                "op": "ensure_record_ids",
-                "params": {"dataset_name": dataset_name},
-            }
-        )
-        df_with_id.attrs["provenance"] = provenance
-
-        return df_with_id
-
-    return df
 
 
 class BaseMatcher(ABC):
@@ -83,6 +27,7 @@ class BaseMatcher(ABC):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         candidates: Iterable[pd.DataFrame],
+        id_column: str,
         threshold: float = 0.0,
         **kwargs,
     ) -> CorrespondenceSet:
@@ -91,12 +36,14 @@ class BaseMatcher(ABC):
         Parameters
         ----------
         df_left : pandas.DataFrame
-            Left dataset with _id column. Must have dataset_name in attrs.
+            Left dataset with specified ID column.
         df_right : pandas.DataFrame
-            Right dataset with _id column. Must have dataset_name in attrs.
+            Right dataset with specified ID column.
         candidates : Iterable[pandas.DataFrame]
             Iterable of candidate pair batches. Each batch should have
             columns id1, id2 representing candidate pairs to compare.
+        id_column : str
+            Name of the column containing record identifiers.
         threshold : float, optional
             Minimum similarity score to include in results. Default is 0.0.
         **kwargs
@@ -114,6 +61,7 @@ class BaseMatcher(ABC):
         self,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
+        id_column: str,
     ) -> None:
         """Validate input DataFrames.
 
@@ -123,29 +71,17 @@ class BaseMatcher(ABC):
             Left dataset.
         df_right : pandas.DataFrame
             Right dataset.
+        id_column : str
+            Name of the ID column.
 
         Raises
         ------
         ValueError
-            If required columns or metadata are missing.
+            If required columns are missing.
         """
         for name, df in [("left", df_left), ("right", df_right)]:
-            if "_id" not in df.columns:
-                raise ValueError(f"{name} dataset must have '_id' column")
-
-            dataset_name = df.attrs.get("dataset_name")
-            if not dataset_name:
-                raise ValueError(f"{name} dataset must have 'dataset_name' in df.attrs")
-
-        # Check for ID format consistency
-        left_dataset = df_left.attrs["dataset_name"]
-        right_dataset = df_right.attrs["dataset_name"]
-
-        if left_dataset == right_dataset:
-            logging.warning(
-                f"Both datasets have the same dataset_name '{left_dataset}'. "
-                "This may cause issues in correspondence tracking."
-            )
+            if id_column not in df.columns:
+                raise ValueError(f"{name} dataset must have '{id_column}' column")
 
     def _log_matching_info(
         self,

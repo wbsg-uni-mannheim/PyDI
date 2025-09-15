@@ -26,11 +26,12 @@ class StandardBlocking(BaseBlocker):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         on: List[str],
+        id_column: str,
         *,
         batch_size: int = 100_000,
         output_dir: str = "output",
     ) -> None:
-        super().__init__(df_left, df_right, batch_size=batch_size)
+        super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if not on:
             raise ValueError(
                 "StandardBlocking requires at least one column in 'on'")
@@ -42,10 +43,10 @@ class StandardBlocking(BaseBlocker):
         
         # Log DEBUG: Creating blocking key values
         self.logger.debug(f"Creating blocking key values for dataset1: {len(self.df_left)} records")
-        self._left_blocks = self._build_blocks(self.df_left, self.on)
-        
+        self._left_blocks = self._build_blocks(self.df_left, self.on, self.id_column)
+
         self.logger.debug(f"Creating blocking key values for dataset2: {len(self.df_right)} records")
-        self._right_blocks = self._build_blocks(self.df_right, self.on)
+        self._right_blocks = self._build_blocks(self.df_right, self.on, self.id_column)
         
         # Log INFO: blocking key counts
         self.logger.info(f"created {len(self._left_blocks)} blocking keys for first dataset")
@@ -74,7 +75,7 @@ class StandardBlocking(BaseBlocker):
         return est
 
     @staticmethod
-    def _build_blocks(df: pd.DataFrame, cols: List[str]) -> dict:
+    def _build_blocks(df: pd.DataFrame, cols: List[str], id_column: str) -> dict:
         for col in cols:
             if col not in df.columns:
                 raise ValueError(f"Column '{col}' not found for blocking")
@@ -82,10 +83,10 @@ class StandardBlocking(BaseBlocker):
         # Create a block key column tuple; cast to string and lowercase to avoid NaN issues
         key_series = df[cols].astype(str).apply(lambda x: x.str.lower()).agg("||".join, axis=1)
         blocks: dict[str, List[str]] = {}
-        for _id, key in zip(df["_id"], key_series):
+        for record_id, key in zip(df[id_column], key_series):
             if key not in blocks:
                 blocks[key] = []
-            blocks[key].append(_id)
+            blocks[key].append(record_id)
         return blocks
 
     def _log_block_statistics(self) -> None:

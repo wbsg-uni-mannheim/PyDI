@@ -26,8 +26,8 @@ class NoBlocking(BaseBlocker):
         if self.df_left.empty or self.df_right.empty:
             return
 
-        left_ids = self.df_left["_id"].to_numpy()
-        right_ids = self.df_right["_id"].to_numpy()
+        left_ids = self.df_left[self.id_column].to_numpy()
+        right_ids = self.df_right[self.id_column].to_numpy()
 
         if len(right_ids) == 0 or len(left_ids) == 0:
             return

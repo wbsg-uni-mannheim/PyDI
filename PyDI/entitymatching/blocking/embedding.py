@@ -65,6 +65,7 @@ class EmbeddingBlocking(BaseBlocker):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         text_cols: list[str],
+        id_column: str,
         *,
         model: str = "sentence-transformers/all-MiniLM-L6-v2",
         index_backend: Literal["sklearn", "faiss", "hnsw"] = "sklearn",
@@ -80,7 +81,7 @@ class EmbeddingBlocking(BaseBlocker):
         device: Optional[str] = None,
         output_dir: str = "output",
     ):
-        super().__init__(df_left, df_right, batch_size=batch_size)
+        super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         
         # Setup logging (consistent with other blockers)
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -451,7 +452,7 @@ class EmbeddingBlocking(BaseBlocker):
             # Process results
             for i, (neighbors, sims) in enumerate(zip(neighbor_indices, similarities)):
                 left_idx = start_idx + i
-                left_id = self._left_indexed.iloc[left_idx]["_id"]
+                left_id = self._left_indexed.iloc[left_idx][self.id_column]
                 
                 # Filter by threshold
                 valid_mask = sims >= self.threshold
@@ -460,7 +461,7 @@ class EmbeddingBlocking(BaseBlocker):
                 # Add valid pairs to accumulator
                 for right_idx in valid_neighbors:
                     if 0 <= right_idx < len(self._right_indexed):  # Safety check
-                        right_id = self._right_indexed.iloc[right_idx]["_id"]
+                        right_id = self._right_indexed.iloc[right_idx][self.id_column]
                         pairs_accumulator.append((left_id, right_id))
                         
                         # Emit batch if we've accumulated enough pairs

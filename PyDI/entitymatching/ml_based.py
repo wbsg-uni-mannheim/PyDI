@@ -14,7 +14,7 @@ from typing import Any, Iterable, Optional, Union
 import numpy as np
 import pandas as pd
 
-from .base import BaseMatcher, CorrespondenceSet, ensure_record_ids
+from .base import BaseMatcher, CorrespondenceSet
 from .feature_extraction import FeatureExtractor, VectorFeatureExtractor
 
 
@@ -85,6 +85,7 @@ class MLBasedMatcher(BaseMatcher):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         candidates: Iterable[pd.DataFrame],
+        id_column: str,
         trained_classifier: Any,
         threshold: float = 0.5,
         use_probabilities: bool = False,
@@ -132,7 +133,7 @@ class MLBasedMatcher(BaseMatcher):
         start_time = time.time()
         
         # Validate inputs
-        self._validate_inputs(df_left, df_right)
+        self._validate_inputs(df_left, df_right, id_column)
 
         if trained_classifier is None:
             raise ValueError("trained_classifier cannot be None")
@@ -145,10 +146,6 @@ class MLBasedMatcher(BaseMatcher):
             raise ValueError(
                 "trained_classifier must have predict_proba() method when use_probabilities=True"
             )
-
-        # Ensure record IDs
-        df_left = ensure_record_ids(df_left)
-        df_right = ensure_record_ids(df_right)
 
         # Log blocking info (similar to Winter's blocking log)
         logger.info(f"Blocking {len(df_left)} x {len(df_right)} elements")
@@ -183,6 +180,7 @@ class MLBasedMatcher(BaseMatcher):
                 batch,
                 df_left,
                 df_right,
+                id_column,
                 trained_classifier,
                 threshold,
                 use_probabilities,
@@ -218,6 +216,7 @@ class MLBasedMatcher(BaseMatcher):
         batch: pd.DataFrame,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
+        id_column: str,
         trained_classifier: Any,
         threshold: float,
         use_probabilities: bool,
@@ -247,7 +246,7 @@ class MLBasedMatcher(BaseMatcher):
         try:
             # Extract features for this batch
             feature_df = self.feature_extractor.create_features(
-                df_left, df_right, batch, labels=None
+                df_left, df_right, batch, id_column, labels=None
             )
 
             if feature_df.empty:
