@@ -240,7 +240,7 @@ def load_with_provenance(
     path_or_buf: Optional[Union[str, os.PathLike]] = None,
     *,
     name: Optional[str] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
@@ -259,7 +259,7 @@ def load_with_provenance(
         Path or buffer to read from.
     name : str, optional
         Explicit dataset name. Defaults to the filename stem if available.
-    add_index : bool, default True
+    add_index : bool, default False
         If True, insert a unique id column as the first column.
     index_column_name : str, optional
         Explicit name for the id column.
@@ -338,7 +338,7 @@ def load_csv(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -367,7 +367,7 @@ def load_fwf(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -387,7 +387,7 @@ def load_fwf(
         inferred from the file path.
     provenance : dict, optional
         Additional provenance metadata to include.
-    add_index : bool, default True
+    add_index : bool, default False
         Whether to add a unique identifier column.
     index_column_name : str, optional
         Name for the unique identifier column. If not provided, defaults
@@ -436,7 +436,7 @@ def load_json(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -454,7 +454,7 @@ def load_json(
         Dataset name for provenance tracking.
     provenance : Mapping[str, Any], optional
         Additional provenance metadata.
-    add_index : bool, default True
+    add_index : bool, default False
         Whether to add a unique identifier column.
     index_column_name : str, optional
         Name for the unique identifier column.
@@ -505,7 +505,7 @@ def load_parquet(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -534,7 +534,7 @@ def load_excel(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -565,7 +565,7 @@ def load_xml(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -585,7 +585,7 @@ def load_xml(
         Dataset name for provenance tracking.
     provenance : Mapping[str, Any], optional
         Additional provenance metadata.
-    add_index : bool, default True
+    add_index : bool, default False
         Whether to add a unique identifier column.
     index_column_name : str, optional
         Name for the unique identifier column.
@@ -927,7 +927,7 @@ def load_feather(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -956,7 +956,7 @@ def load_pickle(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -987,7 +987,7 @@ def load_html(
     *,
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
@@ -1018,7 +1018,7 @@ def load_table(
     sep: str = "\t",
     name: Optional[str] = None,
     provenance: Optional[Mapping[str, Any]] = None,
-    add_index: bool = True,
+    add_index: bool = False,
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
