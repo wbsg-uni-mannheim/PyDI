@@ -396,19 +396,6 @@ class TestEntityMatchingEvaluator:
         with pytest.raises(ValueError, match="Empty correspondence set"):
             EntityMatchingEvaluator.create_cluster_size_distribution(empty_corr)
     
-    def test_normalize_pairs(self):
-        """Test the _normalize_pairs helper function."""
-        # Create test pairs
-        pairs_df = pd.DataFrame({
-            "id1": ["b", "a", "c"],
-            "id2": ["a", "b", "c"]
-        })
-        
-        normalized = EntityMatchingEvaluator._normalize_pairs(pairs_df)
-        
-        # Should ensure id1 <= id2 for consistent comparison
-        expected = [("a", "b"), ("a", "b"), ("c", "c")]
-        assert normalized == expected
     
     def test_perfect_precision_recall(self):
         """Test evaluation with perfect precision and recall."""

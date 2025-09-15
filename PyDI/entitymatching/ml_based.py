@@ -8,6 +8,7 @@ full ecosystem while maintaining compatibility with PyDI's design principles.
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any, Iterable, Optional, Union
 
 import numpy as np
@@ -123,6 +124,13 @@ class MLBasedMatcher(BaseMatcher):
         ValueError
             If classifier doesn't have required methods or inputs are invalid.
         """
+        # Setup logger
+        logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
+        
+        # Log start of identity resolution
+        logger.info("Starting Identity Resolution")
+        start_time = time.time()
+        
         # Validate inputs
         self._validate_inputs(df_left, df_right)
 
@@ -142,14 +150,32 @@ class MLBasedMatcher(BaseMatcher):
         df_left = ensure_record_ids(df_left)
         df_right = ensure_record_ids(df_right)
 
-        # Log matching info
-        self._log_matching_info(df_left, df_right, candidates)
+        # Log blocking info (similar to Winter's blocking log)
+        logger.info(f"Blocking {len(df_left)} x {len(df_right)} elements")
 
+        # Convert candidates to list to count total pairs
+        if hasattr(candidates, '__iter__') and not isinstance(candidates, pd.DataFrame):
+            candidate_list = list(candidates)
+        else:
+            candidate_list = [candidates] if isinstance(candidates, pd.DataFrame) else []
+        
+        # Count total candidate pairs for reduction ratio calculation
+        total_pairs_processed = sum(len(batch) for batch in candidate_list if not batch.empty)
+        total_possible_pairs = len(df_left) * len(df_right)
+        reduction_ratio = 1 - (total_pairs_processed / total_possible_pairs) if total_possible_pairs > 0 else 0
+        
+        # Calculate elapsed time for blocking phase
+        blocking_time = time.time() - start_time
+        blocking_time_str = f"{blocking_time:.3f}"
+        
+        # Log matching phase info with reduction ratio
+        logger.info(f"Matching {len(df_left)} x {len(df_right)} elements after 0:00:{blocking_time_str}; "
+                   f"{total_pairs_processed} blocked pairs (reduction ratio: {reduction_ratio})")
+        
         results = []
-        total_pairs_processed = 0
 
         # Process candidate batches
-        for batch in candidates:
+        for batch in candidate_list:
             if batch.empty:
                 continue
 
@@ -162,12 +188,13 @@ class MLBasedMatcher(BaseMatcher):
                 use_probabilities,
             )
             results.extend(batch_results)
-            total_pairs_processed += len(batch)
 
-        logging.info(
-            f"ML matching complete: processed {total_pairs_processed} pairs, "
-            f"found {len(results)} matches above threshold {threshold}"
-        )
+        # Calculate total elapsed time
+        total_time = time.time() - start_time
+        total_time_str = f"{total_time:.3f}"
+        
+        # Log completion info
+        logger.info(f"Identity Resolution finished after 0:00:{total_time_str}; found {len(results)} correspondences.")
 
         # Create correspondence set
         if results:

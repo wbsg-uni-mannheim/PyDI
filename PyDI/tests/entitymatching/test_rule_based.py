@@ -378,6 +378,27 @@ class TestRuleBasedMatcher:
         assert isinstance(matches, pd.DataFrame)
         assert len(matches) == 0
     
+    def test_match_single_dataframe_candidates(self, sample_movies_left, sample_movies_right, sample_comparator_functions):
+        """Test that match accepts a single DataFrame as candidates."""
+        matcher = RuleBasedMatcher()
+        df_left, df_right = sample_movies_left, sample_movies_right
+        comparators, _ = sample_comparator_functions
+        
+        # Create candidate pairs as a single DataFrame (not wrapped in a list)
+        candidates = pd.DataFrame({
+            "id1": ["academy_awards_000000", "academy_awards_000001"],
+            "id2": ["actors_000000", "actors_000001"]
+        })
+        
+        # This should work without wrapping candidates in a list
+        result = matcher.match(df_left, df_right, candidates, comparators, threshold=0.0)
+        
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) == 2
+        assert "id1" in result.columns
+        assert "id2" in result.columns
+        assert "score" in result.columns
+
     def test_repr(self):
         """Test string representation."""
         matcher = RuleBasedMatcher()
