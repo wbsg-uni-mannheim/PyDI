@@ -371,26 +371,89 @@ class RuleBasedMatcher(BaseMatcher):
             comparator = comp_info["comparator"]
             weight = comp_info["weight"]
             
-            # Get comparator name
+            # Get comparator name - only show list_strategy if lists were actually processed
             if isinstance(comparator, BaseComparator):
-                comparator_name = comparator.name
+                # Create a cleaner name by conditionally including list_strategy
+                if hasattr(comparator, 'column'):
+                    class_name = comparator.__class__.__name__
+                    column = comparator.column
+                    
+                    # Check if this comparator actually processed lists
+                    list_was_used = False
+                    if hasattr(comparator, 'list_strategy'):
+                        try:
+                            # Check if either record has a list for this column
+                            val1 = record1.get(column)
+                            val2 = record2.get(column)
+                            list_was_used = self._is_actual_list(val1) or self._is_actual_list(val2)
+                        except:
+                            list_was_used = False
+                    
+                    # Build the name based on comparator type and whether lists were used
+                    if hasattr(comparator, 'similarity_function'):
+                        # StringComparator
+                        if list_was_used:
+                            comparator_name = f"{class_name}({column}, {comparator.similarity_function}, list_strategy={comparator.list_strategy})"
+                        else:
+                            comparator_name = f"{class_name}({column}, {comparator.similarity_function})"
+                    elif hasattr(comparator, 'method'):
+                        # NumericComparator
+                        if list_was_used:
+                            comparator_name = f"{class_name}({column}, {comparator.method}, list_strategy={comparator.list_strategy})"
+                        else:
+                            comparator_name = f"{class_name}({column}, {comparator.method})"
+                    else:
+                        # Other comparators like DateComparator
+                        if list_was_used:
+                            comparator_name = f"{class_name}({column}, list_strategy={comparator.list_strategy})"
+                        else:
+                            comparator_name = f"{class_name}({column})"
+                else:
+                    # Fallback to original name
+                    comparator_name = comparator.name
             elif hasattr(comparator, '__name__'):
                 comparator_name = comparator.__name__
             else:
                 comparator_name = str(comparator)
             
-            # For debug, we need to capture the values being compared
-            # This is a simplified approach - in reality, comparators might use
-            # different attributes, but for now we'll capture what we can
+            # Extract the values being compared by the comparator
+            record1_value = ""
+            record2_value = ""
+            record1_preprocessed = ""
+            record2_preprocessed = ""
             
-            # Try to extract relevant values (this will depend on how comparators work)
-            # For now, we'll use a generic approach
-            record1_value = str(record1.get(comparator_name, ""))
-            record2_value = str(record2.get(comparator_name, ""))
-            
-            # For preprocessing, we'll assume minimal preprocessing for now
-            record1_preprocessed = record1_value
-            record2_preprocessed = record2_value
+            # Try to extract the actual column values that the comparator uses
+            if isinstance(comparator, BaseComparator) and hasattr(comparator, 'column'):
+                # Most PyDI comparators have a 'column' attribute
+                column_name = comparator.column
+                try:
+                    raw_val1 = record1.get(column_name, "")
+                    raw_val2 = record2.get(column_name, "")
+                    record1_value = str(raw_val1) if raw_val1 is not None and not self._is_null_value(raw_val1) else ""
+                    record2_value = str(raw_val2) if raw_val2 is not None and not self._is_null_value(raw_val2) else ""
+                    
+                    # Apply preprocessing if the comparator has it
+                    if hasattr(comparator, 'preprocess') and comparator.preprocess is not None:
+                        try:
+                            record1_preprocessed = str(comparator.preprocess(raw_val1)) if raw_val1 is not None and not self._is_null_value(raw_val1) else ""
+                            record2_preprocessed = str(comparator.preprocess(raw_val2)) if raw_val2 is not None and not self._is_null_value(raw_val2) else ""
+                        except:
+                            record1_preprocessed = record1_value
+                            record2_preprocessed = record2_value
+                    else:
+                        record1_preprocessed = record1_value
+                        record2_preprocessed = record2_value
+                        
+                except (KeyError, AttributeError):
+                    # Column not found, leave values empty
+                    pass
+            elif hasattr(comparator, '__name__'):
+                # For simple callable comparators, try to infer from function name
+                # This is a fallback for custom comparators
+                record1_value = str(record1)[:100] + "..." if len(str(record1)) > 100 else str(record1)
+                record2_value = str(record2)[:100] + "..." if len(str(record2)) > 100 else str(record2)
+                record1_preprocessed = record1_value
+                record2_preprocessed = record2_value
             
             # Compute similarity using comparator
             if isinstance(comparator, BaseComparator):
@@ -418,6 +481,37 @@ class RuleBasedMatcher(BaseMatcher):
             weighted_sum += similarity * weight
         
         return weighted_sum, debug_results
+    
+    def _is_null_value(self, val):
+        """Check if value is null, handling both scalars and arrays."""
+        if val is None:
+            return True
+        try:
+            # For arrays/series, check if all values are null
+            if hasattr(val, '__iter__') and not isinstance(val, str):
+                return pd.isna(val).all() if hasattr(pd.isna(val), 'all') else pd.isna(val)
+            # For scalars
+            return pd.isna(val)
+        except (TypeError, ValueError):
+            return False
+    
+    def _is_actual_list(self, val):
+        """Check if value is actually a list/array (not a scalar or string)."""
+        if val is None or pd.isna(val):
+            return False
+        
+        # Check if it's iterable but not a string
+        if not hasattr(val, '__iter__') or isinstance(val, str):
+            return False
+            
+        try:
+            # For pandas Series/arrays, check if they have multiple elements
+            if hasattr(val, '__len__'):
+                return len(val) > 1
+            # For other iterables, try to count elements (avoid consuming iterators)
+            return hasattr(val, '__getitem__')  # Has indexing, likely a list-like structure
+        except (TypeError, ValueError):
+            return False
     
     def __repr__(self) -> str:
         return f"RuleBasedMatcher()"

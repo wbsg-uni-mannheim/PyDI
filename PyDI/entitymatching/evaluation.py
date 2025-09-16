@@ -546,9 +546,35 @@ class EntityMatchingEvaluator:
         positive_set = set(positive_pairs)
         negative_set = set(negative_pairs) if has_labels else set()
 
+        # Create a set of all test pairs (both positive and negative) for debug logging
+        all_test_pairs = positive_set | negative_set
+
+        # Add DEBUG level logging for individual correspondence evaluations (only for pairs in test set)
+        logging.debug("Individual correspondence evaluations:")
+        for _, row in corr_filtered.iterrows():
+            pair = (row["id1"], row["id2"])
+            score = row["score"]
+            
+            # Only log pairs that are actually in the test set
+            if pair in all_test_pairs:
+                if pair in positive_set:
+                    classification = "correct"
+                elif pair in negative_set:
+                    classification = "wrong"
+                else:
+                    # This shouldn't happen given the logic above, but just in case
+                    continue
+                    
+                logging.debug(f"[{classification}] {row['id1']},{row['id2']},{score}")
+        
+        # Also log missing correspondences (false negatives)
+        missing_pairs = positive_set - predicted_set
+        for pair in missing_pairs:
+            logging.debug(f"[missing] {pair[0]},{pair[1]},0.0")
+
         # Compute classification metrics
         true_positives = len(predicted_set & positive_set)
-        false_positives = len(predicted_set - positive_set)
+        false_positives = len(predicted_set & negative_set)  # Only count predictions that are explicitly labeled as negative
         false_negatives = len(positive_set - predicted_set)
 
         if has_labels:
@@ -600,6 +626,7 @@ class EntityMatchingEvaluator:
                     debug_results=debug_info,
                     out_dir=out_dir,
                     matcher_instance=matcher_instance,
+                    test_pairs=test_pairs,
                 )
                 results["debug_files"] = (full_debug_path, short_debug_path)
                 logging.info(f"Debug results written to {full_debug_path} and {short_debug_path}")
@@ -1301,6 +1328,7 @@ class EntityMatchingEvaluator:
         *,
         out_dir: str,
         matcher_instance: Optional[object] = None,
+        test_pairs: Optional[pd.DataFrame] = None,
     ) -> Tuple[str, str]:
         """Write debug results in Winter format for detailed matching analysis.
 
@@ -1327,6 +1355,11 @@ class EntityMatchingEvaluator:
         matcher_instance : object, optional
             The matcher instance used to generate the correspondences.
             Used to automatically determine the matching rule name.
+        test_pairs : pandas.DataFrame, optional
+            Ground truth test pairs. Should have columns id1, id2, and
+            optionally a label column (1 for positive, 0 for negative).
+            If no label column, assumes all pairs are positive matches.
+            Used to populate IsMatch column in debug output.
 
         Returns
         -------
@@ -1377,7 +1410,7 @@ class EntityMatchingEvaluator:
         # Create full debug results file (debugResultsMatchingRule.csv format)
         full_debug_path = os.path.join(out_dir, "debugResultsMatchingRule.csv")
         EntityMatchingEvaluator._write_full_debug_results(
-            correspondences, debug_results, full_debug_path, matching_rule_name
+            correspondences, debug_results, full_debug_path, matching_rule_name, test_pairs
         )
 
         # Create short debug results file (debugResultsMatchingRule.csv_short format)
@@ -1400,15 +1433,8 @@ class EntityMatchingEvaluator:
         # First try to get from matcher instance
         if matcher_instance is not None:
             class_name = matcher_instance.__class__.__name__
-            # Convert PyDI class names to Winter-style names
-            if class_name == "RuleBasedMatcher":
-                return "WekaMatchingRule"  # Winter equivalent
-            elif class_name == "MLBasedMatcher":
-                return "WekaMatchingRule"  # Winter equivalent
-            elif class_name == "LLMBasedMatcher":
-                return "LLMMatchingRule"
-            else:
-                return class_name
+            # Return actual PyDI class names instead of Winter equivalents
+            return class_name
 
         # Try to get from correspondence metadata
         if hasattr(correspondences, "attrs") and correspondences.attrs:
@@ -1425,7 +1451,7 @@ class EntityMatchingEvaluator:
                             return step.get("method", "UnknownMatchingRule")
 
         # Default fallback
-        return "WekaMatchingRule"
+        return "RuleBasedMatcher"
 
     @staticmethod
     def _write_full_debug_results(
@@ -1433,8 +1459,36 @@ class EntityMatchingEvaluator:
         debug_results: pd.DataFrame,
         out_path: str,
         matching_rule_name: str,
+        test_pairs: Optional[pd.DataFrame] = None,
     ) -> None:
         """Write full debug results in Winter format with comparator matrix."""
+        # Process test pairs for IsMatch column if available
+        positive_set = set()
+        negative_set = set()
+        
+        if test_pairs is not None and not test_pairs.empty:
+            # Use the same label normalization logic as in other methods
+            positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(test_pairs)
+            
+            if "label" in test_pairs.columns:
+                positive_pairs = [
+                    (row["id1"], row["id2"])
+                    for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
+                ]
+                negative_pairs = [
+                    (row["id1"], row["id2"])
+                    for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
+                ]
+                positive_set = set(positive_pairs)
+                negative_set = set(negative_pairs)
+            else:
+                # Assume all test pairs are positive
+                positive_pairs = [
+                    (row["id1"], row["id2"])
+                    for _, row in test_pairs[["id1", "id2"]].iterrows()
+                ]
+                positive_set = set(positive_pairs)
+        
         # Get unique comparators and pairs
         unique_comparators = sorted(debug_results["comparator_name"].unique())
 
@@ -1467,12 +1521,14 @@ class EntityMatchingEvaluator:
             pair_id1, pair_id2 = corr_row["id1"], corr_row["id2"]
             total_similarity = corr_row["score"]
 
-            # Determine if this is a match (could be based on threshold or other criteria)
-            is_match = "1" if total_similarity >= 0.5 else "0"  # Default threshold
-            if total_similarity < 1e-6:  # Very low similarity
-                is_match = "0"
-            elif pd.isna(total_similarity):
-                is_match = ""
+            # Determine if this is a match based on test set ground truth
+            pair_tuple = (pair_id1, pair_id2)
+            if pair_tuple in positive_set:
+                is_match = "1"  # Ground truth positive match
+            elif pair_tuple in negative_set:
+                is_match = "0"  # Ground truth negative match
+            else:
+                is_match = ""   # Not in test set
 
             # Start row with basic info
             row_data = [
