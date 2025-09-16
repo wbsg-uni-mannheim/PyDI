@@ -24,6 +24,8 @@ def build_record_groups_from_correspondences(
     datasets: List[pd.DataFrame],
     correspondences: pd.DataFrame,
     id_column: Optional[Union[str, Dict[str, str]]] = None,
+    *,
+    pre_normalized: bool = False,
 ) -> List[RecordGroup]:
     """Build record groups from correspondences using connected components.
 
@@ -41,6 +43,11 @@ def build_record_groups_from_correspondences(
         all datasets. If a dict, it should map dataset name -> ID column for
         that dataset.
 
+    pre_normalized : bool, default False
+        When True, assume ``datasets`` already contain string ``_id`` columns and
+        ``correspondences`` already use string identifiers. Use this when inputs
+        were normalized upstream to avoid redundant copies.
+
     Returns
     -------
     List[RecordGroup]
@@ -48,50 +55,54 @@ def build_record_groups_from_correspondences(
     """
     logger = logging.getLogger(__name__)
 
-    # Normalize datasets to ensure `_id` exists and is string-typed
-    normalized_datasets: List[pd.DataFrame] = []
-    for df in datasets:
-        dataset_name = df.attrs.get("dataset_name")
-        if not dataset_name:
-            raise ValueError(
-                "Each dataset must have 'dataset_name' in df.attrs")
-
-        selected_id_col: Optional[str] = None
-        if isinstance(id_column, dict):
-            selected_id_col = id_column.get(dataset_name)
-        elif isinstance(id_column, str):
-            selected_id_col = id_column
-
-        df_copy = df.copy()
-        try:
-            df_copy.attrs = dict(df.attrs)
-        except Exception:
-            pass
-
-        if selected_id_col:
-            if selected_id_col not in df_copy.columns:
+    if pre_normalized:
+        normalized_datasets = datasets
+        normalized_correspondences = correspondences
+    else:
+        # Normalize datasets to ensure `_id` exists and is string-typed
+        normalized_datasets = []
+        for df in datasets:
+            dataset_name = df.attrs.get("dataset_name")
+            if not dataset_name:
                 raise ValueError(
-                    f"ID column '{selected_id_col}' not found in dataset '{dataset_name}'"
+                    "Each dataset must have 'dataset_name' in df.attrs")
+
+            selected_id_col: Optional[str] = None
+            if isinstance(id_column, dict):
+                selected_id_col = id_column.get(dataset_name)
+            elif isinstance(id_column, str):
+                selected_id_col = id_column
+
+            df_copy = df.copy()
+            try:
+                df_copy.attrs = dict(df.attrs)
+            except Exception:
+                pass
+
+            if selected_id_col:
+                if selected_id_col not in df_copy.columns:
+                    raise ValueError(
+                        f"ID column '{selected_id_col}' not found in dataset '{dataset_name}'"
+                    )
+                df_copy["_id"] = df_copy[selected_id_col].astype(str)
+            elif "_id" in df_copy.columns:
+                df_copy["_id"] = df_copy["_id"].astype(str)
+            elif "id" in df_copy.columns:
+                df_copy["_id"] = df_copy["id"].astype(str)
+            else:
+                raise ValueError(
+                    f"Dataset '{dataset_name}' lacks an ID column. Provide 'id_column' or include '_id'/'id'."
                 )
-            df_copy["_id"] = df_copy[selected_id_col].astype(str)
-        elif "_id" in df_copy.columns:
-            df_copy["_id"] = df_copy["_id"].astype(str)
-        elif "id" in df_copy.columns:
-            df_copy["_id"] = df_copy["id"].astype(str)
-        else:
+
+            normalized_datasets.append(df_copy)
+
+        # Normalize correspondences ID dtypes to strings
+        normalized_correspondences = correspondences.copy()
+        if "id1" not in normalized_correspondences.columns or "id2" not in normalized_correspondences.columns:
             raise ValueError(
-                f"Dataset '{dataset_name}' lacks an ID column. Provide 'id_column' or include '_id'/'id'."
-            )
-
-        normalized_datasets.append(df_copy)
-
-    # Normalize correspondences ID dtypes to strings
-    correspondences = correspondences.copy()
-    if "id1" not in correspondences.columns or "id2" not in correspondences.columns:
-        raise ValueError(
-            "Correspondences must contain 'id1' and 'id2' columns")
-    correspondences["id1"] = correspondences["id1"].astype(str)
-    correspondences["id2"] = correspondences["id2"].astype(str)
+                "Correspondences must contain 'id1' and 'id2' columns")
+        normalized_correspondences["id1"] = normalized_correspondences["id1"].astype(str)
+        normalized_correspondences["id2"] = normalized_correspondences["id2"].astype(str)
 
     # Build mapping from record ID to record and dataset name
     id_to_record: Dict[str, pd.Series] = {}
@@ -113,7 +124,7 @@ def build_record_groups_from_correspondences(
 
     # Build graph of correspondences
     graph = defaultdict(set)
-    for _, corr in correspondences.iterrows():
+    for _, corr in normalized_correspondences.iterrows():
         id1, id2 = corr["id1"], corr["id2"]
         graph[id1].add(id2)
         graph[id2].add(id1)
@@ -134,7 +145,7 @@ def build_record_groups_from_correspondences(
 
     # Process all nodes that appear in correspondences
     all_correspondence_ids = set()
-    for _, corr in correspondences.iterrows():
+    for _, corr in normalized_correspondences.iterrows():
         all_correspondence_ids.update([corr["id1"], corr["id2"]])
 
     for record_id in all_correspondence_ids:
@@ -154,15 +165,14 @@ def build_record_groups_from_correspondences(
 
     # Add singleton groups for records not in any correspondence
     all_record_ids = set(id_to_record.keys())
-    unmatched_ids = all_record_ids - all_correspondence_ids
 
-    for record_id in unmatched_ids:
+    for record_id in all_record_ids - all_correspondence_ids:
         group = RecordGroup(group_id=f"singleton_{record_id}")
         group.add_record(id_to_record[record_id], id_to_dataset[record_id])
         groups.append(group)
 
     logger.info(
-        f"Created {len(groups)} record groups from {len(correspondences)} correspondences")
+        f"Created {len(groups)} record groups from {len(normalized_correspondences)} correspondences")
     logger.info(f"Groups: {len([g for g in groups if len(g.records) > 1])} multi-record, "
                 f"{len([g for g in groups if len(g.records) == 1])} singleton")
 
@@ -435,7 +445,6 @@ class DataFusionEngine:
         corr_ids: Set[str] = set(normalized_correspondences["id1"]) | set(
             normalized_correspondences["id2"])
         matched_ids = corr_ids & known_ids
-        unmatched_ids = corr_ids - known_ids
         self._logger.info(
             f"Correspondence ID coverage: matched {len(matched_ids)} of {len(corr_ids)} unique IDs"
         )
@@ -447,7 +456,7 @@ class DataFusionEngine:
 
         # Build record groups
         groups = build_record_groups_from_correspondences(
-            normalized_datasets, normalized_correspondences)
+            normalized_datasets, normalized_correspondences, id_column=id_column, pre_normalized=True)
 
         # Optionally filter out singleton groups (unmatched records)
         if not include_singletons:
@@ -458,10 +467,18 @@ class DataFusionEngine:
             groups = apply_schema_correspondences(
                 groups, schema_correspondences)
 
+        try:
+            trust_map = extract_source_trust_scores(normalized_datasets)
+        except Exception as exc:
+            self._logger.debug(
+                "Failed to extract trust scores from datasets: %s", exc
+            )
+            trust_map = {}
+
         # Fuse each group
         fused_records = []
         for group in groups:
-            fused_record = self._fuse_group(group)
+            fused_record = self._fuse_group(group, trust_map=trust_map)
             if fused_record is not None:
                 fused_records.append(fused_record)
 
@@ -480,7 +497,12 @@ class DataFusionEngine:
             f"Fusion time: {time.time() - start_time:.2f} seconds")
         return result
 
-    def _fuse_group(self, group: RecordGroup) -> Optional[Dict]:
+    def _fuse_group(
+        self,
+        group: RecordGroup,
+        *,
+        trust_map: Optional[Dict[str, float]] = None,
+    ) -> Optional[Dict]:
         """Fuse a single record group.
 
         Parameters
@@ -509,17 +531,12 @@ class DataFusionEngine:
         all_attributes = group.get_all_attributes()
 
         # Create fusion context
-        # Build a trust map from dataset attrs/provenance so resolvers can use it
-        try:
-            trust_map = extract_source_trust_scores(normalized_datasets)
-        except Exception:
-            trust_map = {}
         context = FusionContext(
             group_id=group.group_id,
             attribute="",  # Will be set per attribute
             source_datasets=group.source_datasets,
             timestamp=pd.Timestamp.now(),
-            metadata={"trust_map": trust_map},
+            metadata={"trust_map": trust_map or {}},
             debug=self._debug_enabled,
             debug_emit=self._emit_debug,
         )
@@ -570,16 +587,15 @@ class DataFusionEngine:
                     # Emit debug block for default resolver if enabled
                     if self._debug_enabled and self._debug_file is not None:
                         try:
-                            inputs = []
-                            for rec in group.records:
-                                val = rec.get(attribute)
-                                if _is_valid_value(val):
-                                    rid = rec.get("_id", "unknown")
-                                    inputs.append({
-                                        "record_id": rid,
-                                        "dataset": group.source_datasets.get(rid, "unknown"),
-                                        "value": val,
-                                    })
+                            inputs = [
+                                {
+                                    "record_id": rec.get("_id", "unknown"),
+                                    "dataset": group.source_datasets.get(rec.get("_id", "unknown"), "unknown"),
+                                    "value": rec.get(attribute),
+                                }
+                                for rec in group.records
+                                if _is_valid_value(rec.get(attribute))
+                            ]
                             self._emit_debug({
                                 "group_id": group.group_id,
                                 "attribute": attribute,

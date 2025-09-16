@@ -236,6 +236,7 @@ def prefer_higher_trust(
     source_datasets: Dict[str, str] = None,
     trust_map: Optional[Dict[str, float]] = None,
     default_trust: float = 1.0,
+    trust_key: str = "trust",
     tie_breaker: str = "first",
     **kwargs,
 ) -> FusionResult:
@@ -254,6 +255,8 @@ def prefer_higher_trust(
         Map from dataset name to trust score/level. Higher means more trusted.
     default_trust : float, default 1.0
         Trust to assume for datasets not in ``trust_map``.
+    trust_key : str, default "trust"
+        Key name to use for the trust value in the emitted metadata.
     tie_breaker : str, default "first"
         How to break ties when multiple datasets share the highest trust.
         Options: "first" (preserve input order).
@@ -289,15 +292,15 @@ def prefer_higher_trust(
         trust = default_trust
         if trust_map and ds in trust_map:
             trust = trust_map[ds]
-        meta_rows.append({"value": val, "record_id": rid, "dataset": ds, "trust": float(trust)})
+        meta_rows.append({"value": val, "record_id": rid, "dataset": ds, trust_key: float(trust)})
         valid_values.append(val)
 
     if not meta_rows:
         return None, 0.0, {"reason": "no_valid_values"}
 
     # Find highest trust
-    max_trust = max(r["trust"] for r in meta_rows)
-    top_rows = [r for r in meta_rows if r["trust"] == max_trust]
+    max_trust = max(r[trust_key] for r in meta_rows)
+    top_rows = [r for r in meta_rows if r[trust_key] == max_trust]
 
     # Choose among top trusted candidates
     chosen = top_rows[0]
@@ -313,17 +316,21 @@ def prefer_higher_trust(
     trust_distribution = {}
     for r in meta_rows:
         ds = r["dataset"]
-        t = r["trust"]
+        t = r[trust_key]
         trust_distribution[ds] = max(trust_distribution.get(ds, t), t)
 
     metadata = {
         "rule": "prefer_higher_trust",
         "selected_dataset": chosen["dataset"],
         "selected_record_id": chosen["record_id"],
-        "selected_trust": chosen["trust"],
+        "selected_trust_field": trust_key,
+        f"selected_{trust_key}": chosen[trust_key],
+        "selected_trust": chosen[trust_key],
         "max_trust": max_trust,
+        f"max_{trust_key}": max_trust,
         "tie_count": tie_count,
         "trust_distribution": trust_distribution,
+        f"{trust_key}_distribution": trust_distribution,
         "available_sources": [r["dataset"] for r in meta_rows],
     }
 
