@@ -10,7 +10,7 @@ from typing import Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import pandas as pd
 
-from .base import BaseMatcher, BaseComparator, CorrespondenceSet, ensure_record_ids
+from .base import BaseMatcher, BaseComparator, CorrespondenceSet
 
 
 class RuleBasedMatcher(BaseMatcher):
@@ -42,6 +42,7 @@ class RuleBasedMatcher(BaseMatcher):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         candidates: Union[pd.DataFrame, Iterable[pd.DataFrame]],
+        id_column: str,
         comparators: List[Union[BaseComparator, Callable, Dict[str, Union[Callable, float]]]],
         weights: Optional[List[float]] = None,
         threshold: float = 0.0,
@@ -49,15 +50,17 @@ class RuleBasedMatcher(BaseMatcher):
         **kwargs,
     ) -> Union[CorrespondenceSet, Tuple[CorrespondenceSet, pd.DataFrame]]:
         """Find entity correspondences using rule-based matching.
-        
+
         Parameters
         ----------
         df_left : pandas.DataFrame
-            Left dataset with _id column.
+            Left dataset with specified ID column.
         df_right : pandas.DataFrame
-            Right dataset with _id column.
+            Right dataset with specified ID column.
         candidates : pandas.DataFrame or Iterable[pandas.DataFrame]
             Single DataFrame or iterable of candidate pair batches with id1, id2 columns.
+        id_column : str
+            Name of the column containing record identifiers.
         comparators : List[callable] or List[dict]
             List of comparator functions/objects, or list of dicts with
             'comparator' and 'weight' keys. Each comparator should accept
@@ -88,7 +91,7 @@ class RuleBasedMatcher(BaseMatcher):
         start_time = time.time()
         
         # Validate inputs
-        self._validate_inputs(df_left, df_right)
+        self._validate_inputs(df_left, df_right, id_column)
         
         if not comparators:
             raise ValueError("No comparators provided")
@@ -96,9 +99,11 @@ class RuleBasedMatcher(BaseMatcher):
         # Parse comparators and weights
         parsed_comparators = self._parse_comparators(comparators, weights)
         
-        # Ensure record IDs
-        df_left = ensure_record_ids(df_left)
-        df_right = ensure_record_ids(df_right)
+        # Validate that the specified ID column exists
+        if id_column not in df_left.columns:
+            raise ValueError(f"Left dataset missing required ID column: '{id_column}'")
+        if id_column not in df_right.columns:
+            raise ValueError(f"Right dataset missing required ID column: '{id_column}'")
         
         # Normalize candidates to iterable of DataFrames
         if isinstance(candidates, pd.DataFrame):
@@ -110,8 +115,8 @@ class RuleBasedMatcher(BaseMatcher):
         logger.info(f"Blocking {len(df_left)} x {len(df_right)} elements")
         
         # Create lookup dictionaries for fast record access
-        left_lookup = df_left.set_index("_id")
-        right_lookup = df_right.set_index("_id")
+        left_lookup = df_left.set_index(id_column)
+        right_lookup = df_right.set_index(id_column)
         
         # Count total candidate pairs for reduction ratio calculation
         total_pairs_processed = sum(len(batch) for batch in candidate_batches if not batch.empty)
@@ -260,6 +265,13 @@ class RuleBasedMatcher(BaseMatcher):
             try:
                 record1 = left_lookup.loc[id1]
                 record2 = right_lookup.loc[id2]
+                
+                # Handle case where .loc returns DataFrame due to duplicate indices
+                if isinstance(record1, pd.DataFrame):
+                    record1 = record1.iloc[0]
+                if isinstance(record2, pd.DataFrame):
+                    record2 = record2.iloc[0]
+                    
             except KeyError:
                 logging.warning(f"Record not found: {id1} or {id2}")
                 continue

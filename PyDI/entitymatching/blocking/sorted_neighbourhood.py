@@ -27,12 +27,13 @@ class SortedNeighbourhood(BaseBlocker):
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
         key: str,
+        id_column: str,
         window: int,
         *,
         batch_size: int = 100_000,
         output_dir: str = "output",
     ) -> None:
-        super().__init__(df_left, df_right, batch_size=batch_size)
+        super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if key not in self.df_left.columns or key not in self.df_right.columns:
             raise ValueError(f"Key '{key}' must exist in both datasets")
         if window < 1:
@@ -46,11 +47,11 @@ class SortedNeighbourhood(BaseBlocker):
         
         # Log DEBUG: Creating sort keys
         self.logger.debug(f"Creating sort keys for dataset1: {len(self.df_left)} records")
-        left_tmp = self.df_left[["_id", key]].copy()
+        left_tmp = self.df_left[[self.id_column, key]].copy()
         left_tmp["__side"] = "L"
-        
+
         self.logger.debug(f"Creating sort keys for dataset2: {len(self.df_right)} records")
-        right_tmp = self.df_right[["_id", key]].copy()
+        right_tmp = self.df_right[[self.id_column, key]].copy()
         right_tmp["__side"] = "R"
         
         combined = pd.concat([left_tmp, right_tmp], ignore_index=True)
@@ -107,7 +108,7 @@ class SortedNeighbourhood(BaseBlocker):
         # Log DEBUG: Creating candidate pairs 
         self.logger.debug(f"Creating candidate record pairs from sorted neighbourhood with window {self.window}")
         
-        ids = self._combined_sorted["_id"].to_list()
+        ids = self._combined_sorted[self.id_column].to_list()
         sides = self._combined_sorted["__side"].to_list()
         batch: List[Tuple[str, str]] = []
 

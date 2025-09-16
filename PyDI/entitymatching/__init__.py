@@ -7,7 +7,7 @@ comparators for computing entity correspondences.
 """
 
 # Base classes and types
-from .base import BaseMatcher, BaseComparator, CorrespondenceSet, ensure_record_ids
+from .base import BaseMatcher, BaseComparator, CorrespondenceSet
 
 # Blocking strategies (subpackage)
 from .blocking import (
@@ -38,7 +38,6 @@ __all__ = [
     "BaseMatcher",
     "BaseComparator",
     "CorrespondenceSet",
-    "ensure_record_ids",
     "BaseBlocker",
     "NoBlocking",
     "StandardBlocking",

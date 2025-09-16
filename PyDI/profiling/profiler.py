@@ -95,7 +95,12 @@ class DataProfiler:
             ) from exc
         name_a = df_a.attrs.get("dataset_name", "A")
         name_b = df_b.attrs.get("dataset_name", "B")
-        report = sv.compare((df_a, name_a), (df_b, name_b))
+
+        # Clean dataframes for sweetviz - convert unhashable types to strings
+        df_a_clean = self._clean_for_sweetviz(df_a, name_a)
+        df_b_clean = self._clean_for_sweetviz(df_b, name_b)
+
+        report = sv.compare((df_a_clean, name_a), (df_b_clean, name_b))
         out_path = os.path.join(out_dir, f"{name_a}_vs_{name_b}_compare.html")
         report.show_html(out_path)
         return out_path
@@ -209,3 +214,58 @@ class DataProfiler:
             max_sample_length=max_sample_length,
             sample_count=sample_count,
         )
+
+    def _clean_for_sweetviz(self, df: pd.DataFrame, dataset_name: str) -> pd.DataFrame:
+        """Clean DataFrame for sweetviz by excluding columns with unhashable types.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            The DataFrame to clean.
+        dataset_name : str
+            Name of the dataset for logging purposes.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Cleaned DataFrame with unhashable columns excluded.
+        """
+        df_clean = df.copy()
+        columns_to_drop = []
+
+        for col in df_clean.columns:
+            # Check if column contains unhashable types (lists, dicts, sets)
+            has_unhashable = False
+
+            # Check a larger sample and also check for specific types
+            sample_values = df_clean[col].dropna()
+
+            # First check if any values are obviously unhashable types
+            for value in sample_values.head(500):  # Check more samples
+                if isinstance(value, (list, dict, set)):
+                    has_unhashable = True
+                    break
+                # Try hashing
+                try:
+                    hash(value)
+                except (TypeError, ValueError):
+                    has_unhashable = True
+                    break
+
+            # Additional check: try to get unique values (this will fail on unhashable types)
+            if not has_unhashable:
+                try:
+                    _ = df_clean[col].nunique()
+                except (TypeError, ValueError):
+                    has_unhashable = True
+
+            if has_unhashable:
+                columns_to_drop.append(col)
+
+        # Drop columns with unhashable types
+        if columns_to_drop:
+            df_clean = df_clean.drop(columns=columns_to_drop)
+            print(f"WARNING: Dataset '{dataset_name}' contains unhashable data types in columns: {columns_to_drop}")
+            print(f"         These columns have been excluded from the sweetviz comparison.")
+
+        return df_clean
