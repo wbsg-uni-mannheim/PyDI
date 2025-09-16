@@ -31,7 +31,7 @@ from .feature_extraction import FeatureExtractor, VectorFeatureExtractor
 from .comparators import StringComparator, NumericComparator, DateComparator
 
 # Evaluation tools
-from .evaluation import EntityMatchingEvaluator
+from .evaluation import EntityMatchingEvaluator, year_only_match
 from .blocking.blocking_evaluation import BlockingEvaluator
 
 __all__ = [
@@ -53,5 +53,6 @@ __all__ = [
     "NumericComparator",
     "DateComparator",
     "EntityMatchingEvaluator",
+    "year_only_match",
     "BlockingEvaluator",
 ]

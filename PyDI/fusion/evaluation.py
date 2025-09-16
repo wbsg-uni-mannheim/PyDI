@@ -8,6 +8,7 @@ against gold standard data.
 from __future__ import annotations
 
 from typing import Dict, Any, List, Optional, Tuple
+from datetime import datetime, date
 import pandas as pd
 import numpy as np
 import logging
@@ -124,18 +125,52 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
 def year_only_match(fused_value, gold_value) -> bool:
     """Evaluation function comparing only the year part of dates.
 
-    Useful for dates where "2010-01-01" should match "2010-12-31".
+    If the inputs are strings, attempt to parse to dates; if they are
+    ``datetime``/``date``/timestamp-like, compare their ``year`` values.
+    On unhandled types or failed parsing, log an error and return False.
     """
     if _is_missing_value(fused_value) and _is_missing_value(gold_value):
         return True
     if _is_missing_value(fused_value) or _is_missing_value(gold_value):
         return False
 
-    # Extract year from date strings (first 4 characters)
-    fused_year = str(fused_value)[:4] if len(str(fused_value)) >= 4 else None
-    gold_year = str(gold_value)[:4] if len(str(gold_value)) >= 4 else None
+    logger = logging.getLogger(__name__)
 
-    return fused_year == gold_year and fused_year is not None
+    def _to_date(value: Any) -> Optional[date]:
+        # Native datetime/date
+        if isinstance(value, datetime):
+            return value.date()
+        if isinstance(value, date):
+            return value
+
+        # pandas / numpy timestamp-like
+        try:
+            if isinstance(value, pd.Timestamp):
+                return value.date()
+        except Exception:
+            pass
+
+        # Strings and other coercible types via pandas
+        try:
+            parsed = pd.to_datetime(value, errors="coerce")
+            if pd.isna(parsed):
+                return None
+            return parsed.date()
+        except Exception:
+            return None
+
+    d1 = _to_date(fused_value)
+    d2 = _to_date(gold_value)
+
+    if d1 is None or d2 is None:
+        logger.error(
+            "year_only_match: could not convert values to date (fused=%r, gold=%r)",
+            fused_value,
+            gold_value,
+        )
+        return False
+
+    return d1.year == d2.year
 
 
 def numeric_tolerance_match(fused_value, gold_value, tolerance: float = 0.01) -> bool:

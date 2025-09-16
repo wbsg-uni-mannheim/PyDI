@@ -381,26 +381,45 @@ def extract_source_trust_scores(datasets: List[pd.DataFrame]) -> Dict[str, float
     Dict[str, float]
         Mapping from dataset name to trust score.
     """
-    trust_scores = {}
-    
+    trust_scores: Dict[str, float] = {}
+
+    candidate_keys = ("trust", "trust_score", "trust_level", "_trust")
+
     for df in datasets:
         dataset_name = df.attrs.get("dataset_name")
-        if dataset_name:
-            # Check for trust score in various places
-            trust_score = 1.0  # Default
-            
-            # Check DataFrame attributes
-            if "_trust" in df.attrs:
-                trust_score = df.attrs["_trust"]
-            elif "trust_score" in df.attrs:
-                trust_score = df.attrs["trust_score"]
-            
-            # Check if there's a _trust column (use mean)
-            elif "_trust" in df.columns:
-                trust_values = pd.to_numeric(df["_trust"], errors="coerce").dropna()
-                if not trust_values.empty:
-                    trust_score = trust_values.mean()
-            
-            trust_scores[dataset_name] = max(0.0, min(1.0, trust_score))  # Clamp to [0,1]
-    
+        if not dataset_name:
+            continue
+
+        trust_score: Optional[float] = None
+
+        # Inspect DataFrame attrs for explicit trust hints first
+        for key in ("_trust", "trust_score", "trust", "trust_level"):
+            if key in df.attrs:
+                trust_score = df.attrs[key]
+                break
+
+        # Fall back to provenance metadata if available
+        if trust_score is None:
+            provenance = df.attrs.get("provenance") or {}
+            if isinstance(provenance, dict):
+                for key in candidate_keys:
+                    if key in provenance:
+                        trust_score = provenance[key]
+                        break
+
+        # Last resort: derive from a _trust column if present
+        if trust_score is None and "_trust" in df.columns:
+            trust_values = pd.to_numeric(df["_trust"], errors="coerce").dropna()
+            if not trust_values.empty:
+                trust_score = trust_values.mean()
+
+        # Default when nothing is provided
+        if trust_score is None:
+            trust_score = 1.0
+
+        try:
+            trust_scores[dataset_name] = float(trust_score)
+        except (TypeError, ValueError):
+            trust_scores[dataset_name] = 1.0
+
     return trust_scores

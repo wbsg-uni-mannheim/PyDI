@@ -266,6 +266,12 @@ class AttributeValueFuser:
                 'source_datasets': context.source_datasets,
                 **self.resolver_kwargs
             }
+            # Pass engine-level metadata (e.g., trust_map) when available
+            try:
+                if isinstance(context.metadata, dict) and 'trust_map' in context.metadata:
+                    context_kwargs.setdefault('trust_map', context.metadata['trust_map'])
+            except Exception:
+                pass
             logger.debug(f"  Calling resolver with context: {context_kwargs}")
             
             # Call function resolver

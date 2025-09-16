@@ -4,8 +4,8 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
 # Import normalization components
-from PyDI.normalization.types import NumericParser, LinkNormalizer
-from PyDI.normalization.values import normalize_date, normalize_coordinate
+from PyDI.normalization.types import NumericParser, LinkNormalizer, parse_coordinate as _parse_coord_tuple
+from PyDI.normalization.values import normalize_date
 from PyDI.normalization.units import normalize_units, parse_quantity
 
 
@@ -61,10 +61,14 @@ def extract_domain(text: str) -> Optional[str]:
 
 
 def parse_coordinate(text: str) -> Optional[str]:
-    """Parse coordinate using normalization module."""
+    """Parse coordinate and format as "lat, lon" string."""
     if not text or not isinstance(text, str):
         return None
-    return normalize_coordinate(text)
+    tpl = _parse_coord_tuple(text)
+    if not tpl:
+        return None
+    lat, lon = tpl
+    return f"{lat:.6f}, {lon:.6f}"
 
 
 def normalize_units_wrapper(text: str) -> Optional[str]:
