@@ -48,7 +48,7 @@ from .conflict_resolution import (
     # List functions
     union, intersection, intersection_k_sources,
     # General functions
-    voting, favour_sources, random_value, weighted_voting,
+    voting, favour_sources, random_value, weighted_voting, prefer_higher_trust,
 )
 
 # Import analysis utilities
@@ -97,7 +97,7 @@ __all__ = [
     "average", "median", "maximum", "minimum", "sum_values",
     "most_recent", "earliest",
     "union", "intersection", "intersection_k_sources",
-    "voting", "favour_sources", "random_value", "weighted_voting",
+    "voting", "favour_sources", "random_value", "weighted_voting", "prefer_higher_trust",
     
     # Analysis utilities
     "compare_dataset_schemas", "detect_attribute_conflicts",

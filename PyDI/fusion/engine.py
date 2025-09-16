@@ -16,6 +16,7 @@ from pathlib import Path
 import json
 
 from .base import RecordGroup, FusionContext, FusionResult, _is_valid_value
+from .provenance import extract_source_trust_scores
 from .strategy import DataFusionStrategy
 
 
@@ -508,11 +509,17 @@ class DataFusionEngine:
         all_attributes = group.get_all_attributes()
 
         # Create fusion context
+        # Build a trust map from dataset attrs/provenance so resolvers can use it
+        try:
+            trust_map = extract_source_trust_scores(normalized_datasets)
+        except Exception:
+            trust_map = {}
         context = FusionContext(
             group_id=group.group_id,
             attribute="",  # Will be set per attribute
             source_datasets=group.source_datasets,
             timestamp=pd.Timestamp.now(),
+            metadata={"trust_map": trust_map},
             debug=self._debug_enabled,
             debug_emit=self._emit_debug,
         )

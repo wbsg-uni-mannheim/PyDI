@@ -1,6 +1,6 @@
 """General conflict resolution functions."""
 
-from typing import Any, List, Tuple, Dict
+from typing import Any, List, Tuple, Dict, Optional
 import pandas as pd
 from collections import Counter
 import random
@@ -227,3 +227,104 @@ def weighted_voting(values: List[Any], weights: List[float] = None, **kwargs) ->
         "total_weight": total_weight,
         "weight_distribution": weighted_counts
     }
+
+
+def prefer_higher_trust(
+    values: List[Any],
+    *,
+    sources: List[str] = None,
+    source_datasets: Dict[str, str] = None,
+    trust_map: Optional[Dict[str, float]] = None,
+    default_trust: float = 1.0,
+    tie_breaker: str = "first",
+    **kwargs,
+) -> FusionResult:
+    """
+    Prefer the value coming from the dataset with the highest trust level.
+
+    Parameters
+    ----------
+    values : List[Any]
+        Candidate values for the attribute.
+    sources : List[str]
+        Record IDs corresponding 1:1 to ``values`` (provided by the engine).
+    source_datasets : Dict[str, str]
+        Map from record ID to dataset name (provided by the engine).
+    trust_map : Dict[str, float], optional
+        Map from dataset name to trust score/level. Higher means more trusted.
+    default_trust : float, default 1.0
+        Trust to assume for datasets not in ``trust_map``.
+    tie_breaker : str, default "first"
+        How to break ties when multiple datasets share the highest trust.
+        Options: "first" (preserve input order).
+
+    Returns
+    -------
+    FusionResult
+        Tuple (value, confidence, metadata).
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+
+    # Allow engine-provided trust_map via kwargs if not explicitly passed
+    if trust_map is None:
+        trust_map = kwargs.get('trust_map')
+
+    valid_values = []
+    meta_rows = []
+
+    # Validate alignment info
+    if sources is None or source_datasets is None or len(sources) != len(values):
+        # Fallback: take first valid
+        vv = _filter_valid_values(values)
+        if not vv:
+            return None, 0.0, {"reason": "no_valid_values"}
+        return vv[0], 0.5, {"rule": "prefer_higher_trust", "reason": "alignment_missing"}
+
+    # Build aligned rows with dataset and trust
+    for val, rid in zip(values, sources):
+        if not _is_valid_value(val):
+            continue
+        ds = source_datasets.get(rid, "unknown")
+        trust = default_trust
+        if trust_map and ds in trust_map:
+            trust = trust_map[ds]
+        meta_rows.append({"value": val, "record_id": rid, "dataset": ds, "trust": float(trust)})
+        valid_values.append(val)
+
+    if not meta_rows:
+        return None, 0.0, {"reason": "no_valid_values"}
+
+    # Find highest trust
+    max_trust = max(r["trust"] for r in meta_rows)
+    top_rows = [r for r in meta_rows if r["trust"] == max_trust]
+
+    # Choose among top trusted candidates
+    chosen = top_rows[0]
+    if tie_breaker != "first" and len(top_rows) > 1:
+        # Future: support other tie-breakers like longest_string, voting, most_recent
+        pass
+
+    # Confidence: unique top -> 1.0, else diluted by tie size
+    tie_count = len(top_rows)
+    confidence = 1.0 if tie_count == 1 else 1.0 / tie_count
+
+    # Prepare metadata
+    trust_distribution = {}
+    for r in meta_rows:
+        ds = r["dataset"]
+        t = r["trust"]
+        trust_distribution[ds] = max(trust_distribution.get(ds, t), t)
+
+    metadata = {
+        "rule": "prefer_higher_trust",
+        "selected_dataset": chosen["dataset"],
+        "selected_record_id": chosen["record_id"],
+        "selected_trust": chosen["trust"],
+        "max_trust": max_trust,
+        "tie_count": tie_count,
+        "trust_distribution": trust_distribution,
+        "available_sources": [r["dataset"] for r in meta_rows],
+    }
+
+    return chosen["value"], confidence, metadata
