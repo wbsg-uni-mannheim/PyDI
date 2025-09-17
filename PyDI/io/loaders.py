@@ -569,7 +569,7 @@ def load_xml(
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
-    nested_handling: str = "explode",
+    nested_handling: str = "aggregate",
     separator: str = ", ",
     record_tag: Optional[str] = None,
     flatten: Optional[bool] = None,
@@ -709,7 +709,7 @@ def load_xml(
 def _read_and_flatten_xml(
     file_path: Path, 
     record_tag: Optional[str] = None, 
-    nested_handling: str = "explode",
+    nested_handling: str = "aggregate",
     separator: str = ", "
 ) -> pd.DataFrame:
     """Parse XML and flatten nested structures.
@@ -788,7 +788,7 @@ def _detect_xml_record_tag(root: ET.Element) -> str:
 def _flatten_xml_element(
     element: ET.Element, 
     prefix: str = "",
-    nested_handling: str = "explode",
+    nested_handling: str = "aggregate",
     separator: str = ", "
 ) -> List[Dict[str, Any]]:
     base_data: Dict[str, Any] = {}
