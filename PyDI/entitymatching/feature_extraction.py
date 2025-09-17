@@ -153,7 +153,6 @@ class FeatureExtractor:
         left_lookup = df_left.set_index(id_column)
         right_lookup = df_right.set_index(id_column)
         
-        logging.info(f"Extracting features from {len(pairs)} pairs using {len(self.feature_functions)} functions")
         
         # Initialize feature matrix
         feature_data = []
@@ -206,9 +205,6 @@ class FeatureExtractor:
         if feature_df.empty:
             raise ValueError("No valid features could be extracted from the provided pairs")
         
-        # Log feature extraction summary
-        feature_columns = [f["name"] for f in self.feature_functions]
-        logging.info(f"Feature extraction complete: {len(feature_df)} pairs, {len(feature_columns)} features")
         
         if labels is not None:
             pos_labels = sum(feature_df["label"])
@@ -249,15 +245,20 @@ class VectorFeatureExtractor:
         List of distance metrics to compute. Options: 'cosine', 'euclidean', 'manhattan'.
         Default is ['cosine'].
     pooling_strategy : str, optional
-        How to combine multiple column embeddings. Options: 'concatenate', 'mean', 'max'.
+        How to combine multiple column embeddings. Options: 'concatenate', 'mean'.
         Default is 'concatenate'.
+    list_strategies : Dict[str, str], optional
+        Dictionary mapping column names to list handling strategies. Required for columns
+        containing list values. Options: 'concatenate', 'best_match', 'best_representative',
+        'mean_embeddings', 'max_embeddings'. Default is None.
         
     Examples
     --------
     >>> extractor = VectorFeatureExtractor(
     ...     embedding_model='all-MiniLM-L6-v2',
-    ...     columns=['title', 'description'],
-    ...     distance_metrics=['cosine', 'euclidean']
+    ...     columns=['title', 'actors_name'],
+    ...     distance_metrics=['cosine', 'euclidean'],
+    ...     list_strategies={'actors_name': 'concatenate'}
     ... )
     >>> features = extractor.create_features(df_left, df_right, pairs)
     """
@@ -268,6 +269,7 @@ class VectorFeatureExtractor:
         columns: List[str],
         distance_metrics: List[str] = None,
         pooling_strategy: str = "concatenate",
+        list_strategies: Optional[Dict[str, str]] = None,
     ):
         if not columns:
             raise ValueError("At least one column must be specified")
@@ -275,6 +277,7 @@ class VectorFeatureExtractor:
         self.columns = columns
         self.distance_metrics = distance_metrics or ["cosine"]
         self.pooling_strategy = pooling_strategy
+        self.list_strategies = list_strategies or {}
         
         # Initialize embedding model
         if isinstance(embedding_model, str):
@@ -295,8 +298,65 @@ class VectorFeatureExtractor:
         for metric in self.distance_metrics:
             if metric not in valid_metrics:
                 raise ValueError(f"Unsupported distance metric: {metric}. Valid options: {valid_metrics}")
+        
+        # Validate list strategies
+        valid_strategies = {"concatenate", "best_match", "best_representative", "mean_embeddings", "max_embeddings"}
+        for col, strategy in self.list_strategies.items():
+            if strategy not in valid_strategies:
+                raise ValueError(f"Unsupported list strategy '{strategy}' for column '{col}'. Valid options: {valid_strategies}")
                 
         logging.info(f"Initialized VectorFeatureExtractor with model {self.model_name}")
+    
+    def _is_null_value(self, val) -> bool:
+        """Check if value is null, handling both scalars and arrays."""
+        if val is None:
+            return True
+        try:
+            # For arrays/series, check if all values are null
+            if hasattr(val, '__iter__') and not isinstance(val, str):
+                return pd.isna(val).all() if hasattr(pd.isna(val), 'all') else pd.isna(val)
+            # For scalars
+            return pd.isna(val)
+        except (TypeError, ValueError):
+            return False
+    
+    def _is_list_value(self, val) -> bool:
+        """Check if value is a list/array (not a scalar string)."""
+        if val is None:
+            return False
+        return hasattr(val, '__iter__') and not isinstance(val, str)
+    
+    def _normalize_to_string_list(self, val) -> List[str]:
+        """Convert value to list of strings."""
+        if val is None:
+            return []
+        
+        # Handle lists/arrays
+        if hasattr(val, '__iter__') and not isinstance(val, str):
+            try:
+                return [str(item) for item in val if item is not None and not pd.isna(item)]
+            except (TypeError, ValueError):
+                return [str(val)]
+        
+        # Handle single values
+        return [str(val)]
+    
+    def _process_list_value(self, val, strategy: str) -> str:
+        """Process list values based on the specified strategy."""
+        string_list = self._normalize_to_string_list(val)
+        
+        if not string_list:
+            return ""
+        
+        if strategy == "concatenate":
+            # Join all items with spaces
+            return ' '.join(string_list)
+        elif strategy == "best_match" or strategy == "best_representative":
+            # Select the longest string as representative
+            return max(string_list, key=len)
+        else:
+            # Default to concatenate
+            return ' '.join(string_list)
     
     def _compute_embedding(self, record: pd.Series) -> np.ndarray:
         """Compute embedding for a record by combining specified columns."""
@@ -304,26 +364,109 @@ class VectorFeatureExtractor:
         texts = []
         for col in self.columns:
             value = record.get(col, "")
-            if pd.notna(value):
-                texts.append(str(value))
+            if not self._is_null_value(value):
+                # Check if this is a list value
+                if self._is_list_value(value):
+                    # Check if we have a strategy for this column
+                    if col not in self.list_strategies:
+                        raise ValueError(
+                            f"List values detected in column '{col}' but no list_strategy specified. "
+                            f"Please add '{col}': 'strategy_name' to list_strategies parameter. "
+                            f"Valid strategies: concatenate, best_match, best_representative, mean_embeddings, max_embeddings"
+                        )
+                    # Process the list value using the specified strategy
+                    processed_text = self._process_list_value(value, self.list_strategies[col])
+                    texts.append(processed_text)
+                else:
+                    texts.append(str(value))
             else:
                 texts.append("")
+        
+        # Handle advanced list strategies that require separate embedding computation
+        if any(self.list_strategies.get(col) in ["mean_embeddings", "max_embeddings"] 
+               for col in self.columns):
+            return self._compute_embedding_with_advanced_strategies(record)
         
         if self.pooling_strategy == "concatenate":
             # Concatenate all text
             combined_text = " ".join(texts)
-            return self.model.encode([combined_text])[0]
+            return self.model.encode([combined_text], show_progress_bar=False)[0]
         elif self.pooling_strategy == "mean":
             # Compute embedding for each column and average
             embeddings = []
             for text in texts:
                 if text.strip():
-                    embeddings.append(self.model.encode([text])[0])
+                    embeddings.append(self.model.encode([text], show_progress_bar=False)[0])
             if embeddings:
                 return np.mean(embeddings, axis=0)
             else:
                 # Return zero vector if no valid text
                 return np.zeros(self.model.get_sentence_embedding_dimension())
+        else:
+            raise ValueError(f"Unsupported pooling strategy: {self.pooling_strategy}")
+    
+    def _compute_embedding_with_advanced_strategies(self, record: pd.Series) -> np.ndarray:
+        """Compute embedding for records with advanced list strategies like mean_embeddings or max_embeddings."""
+        column_embeddings = []
+        
+        for col in self.columns:
+            value = record.get(col, "")
+            if not self._is_null_value(value):
+                if self._is_list_value(value):
+                    strategy = self.list_strategies.get(col, "concatenate")
+                    if strategy == "mean_embeddings":
+                        # Compute separate embeddings for each item and average
+                        string_list = self._normalize_to_string_list(value)
+                        if string_list:
+                            item_embeddings = []
+                            for item in string_list:
+                                if item.strip():
+                                    item_embeddings.append(self.model.encode([item], show_progress_bar=False)[0])
+                            if item_embeddings:
+                                col_embedding = np.mean(item_embeddings, axis=0)
+                            else:
+                                col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+                        else:
+                            col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+                    elif strategy == "max_embeddings":
+                        # Compute separate embeddings for each item and take element-wise max
+                        string_list = self._normalize_to_string_list(value)
+                        if string_list:
+                            item_embeddings = []
+                            for item in string_list:
+                                if item.strip():
+                                    item_embeddings.append(self.model.encode([item], show_progress_bar=False)[0])
+                            if item_embeddings:
+                                col_embedding = np.maximum.reduce(item_embeddings)
+                            else:
+                                col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+                        else:
+                            col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+                    else:
+                        # Use regular text processing for other strategies
+                        processed_text = self._process_list_value(value, strategy)
+                        if processed_text.strip():
+                            col_embedding = self.model.encode([processed_text], show_progress_bar=False)[0]
+                        else:
+                            col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+                else:
+                    # Single value
+                    text = str(value)
+                    if text.strip():
+                        col_embedding = self.model.encode([text], show_progress_bar=False)[0]
+                    else:
+                        col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+            else:
+                # Missing value
+                col_embedding = np.zeros(self.model.get_sentence_embedding_dimension())
+            
+            column_embeddings.append(col_embedding)
+        
+        # Apply pooling strategy across columns
+        if self.pooling_strategy == "concatenate":
+            return np.concatenate(column_embeddings)
+        elif self.pooling_strategy == "mean":
+            return np.mean(column_embeddings, axis=0)
         else:
             raise ValueError(f"Unsupported pooling strategy: {self.pooling_strategy}")
     
