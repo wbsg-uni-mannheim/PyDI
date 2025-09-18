@@ -1,26 +1,16 @@
 # Profiling
 
-Generate dataset profiles and quick summaries for exploratory analysis. Profiling helps verify schema assumptions, detect anomalies, and communicate data quality via shareable HTML.
+This module generates dataset profiles and quick summaries for exploratory analysis. Profiling helps in understanding the schemata and record values, detect anomalies, and communicate general data quality at any point in the data integration pipeline. PyDI offers methods for quick data profiling in the console as well as printing detailed HTML reports via the ydata-profiling and sweetviz libraries.
 
-When to Use
-- Before matching: check header quality, missingness, and candidate keys.
-- After translation/normalization: validate improvements in coverage and consistency.
-- During debugging: compare two datasets to understand distribution differences.
+When to Use (examples)
+- Before schema/entity-matching: understand data, check for missing values, derive insights regarding required pre-processing.
+- After data translation/normalization: validate improvements in coverage and consistency.
 
 Module: `PyDI.profiling.profiler`
-- `DataProfiler.profile(df, out_dir) -> str`: ydata‑profiling HTML
-- `DataProfiler.compare(df_a, df_b, out_dir) -> str`: Sweetviz comparison HTML
-- `DataProfiler.summary(df) -> dict`: quick stats suitable for logs
-- `DataProfiler.analyze_coverage(df, required_columns, out_dir=None) -> dict|str`: coverage for required fields
-
-How It Works
-- Cleans DataFrames for compatibility (casts list cells to strings, removes problematic dtypes for Sweetviz).
-- Generates a single, self‑contained HTML per operation that can be opened locally or shared.
-
-Performance and Practical Tips
-- Large DataFrames: consider profiling a sample for speed, then profile full data at milestones.
-- Privacy: ydata‑profiling may show example values; use sampling/redaction when needed.
-- Headless servers: HTML is fully self‑contained; no extra assets required.
+- `DataProfiler.profile()`: Generates detailed profiling information for a single dataset using ydata‑profiling. Outputs the resulting dataset profiling information as an HTML file.
+- `DataProfiler.compare()`: Compares two datasets using the Sweetviz library. Outputs the result of the comparison as an HTML file.
+- `DataProfiler.summary()`: Generates Log-style console output giving a quick overview of a dataset regarding number of rows, columns and missing values.
+- `DataProfiler.analyze_coverage()`: Gives a more detailed overview over the columns contained in one or more datasets. Returns a dataframe with information about the amount of missing values and column overlap in datasets. Helpful to determine which attributes are useful for entity matching.
 
 Example
 ```python
@@ -28,9 +18,8 @@ from PyDI.profiling import DataProfiler
 
 profiler = DataProfiler()
 html_path = profiler.profile(df, out_dir="output/movies/dataset-profiles")
-print("Profile written:", html_path)
 ```
 
 Artifacts
-- HTML reports written to `out_dir` (ydata‑profiling, Sweetviz)
-- Optional JSON summaries from `summary()` and coverage analysis
+- HTML reports written to file (`profile()`, `compare()`)
+- Console output and optional JSON objects from `summary()` and `analyze coverage()`
