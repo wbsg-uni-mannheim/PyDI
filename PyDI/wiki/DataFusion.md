@@ -1,35 +1,29 @@
 # Data Fusion
 
-Fuse matched records into a consolidated dataset using attribute‑level conflict resolution functions, with provenance tracking and rich reports. Fusion closes the loop by reconciling conflicting values and summarizing lineage.
+Data Fusion merges matched records into one consolidated dataset and then evaluates the result. Conflicts between source values are resolved by per‑attribute rules; evaluation supports exact and fuzzy comparison.
 
 Modules
-- `PyDI.fusion.base` — `AttributeValueFuser`, `FusionContext`, `RecordGroup`
-- `PyDI.fusion.engine` — fusion process over groups + rules
-- `PyDI.fusion.conflict_resolution` — numeric/list/date strategies (average, median, most_recent, union, ...)
-- `PyDI.fusion.strategy.DataFusionStrategy` — register per‑attribute fusers and evaluation functions
-- `PyDI.fusion.provenance` — provenance tracking and export
-- `PyDI.fusion.reporting.FusionReport` — HTML/JSON reports
-- `PyDI.fusion.evaluation` — density/coverage/consistency metrics
+- `PyDI.fusion.engine` — fusion with strategy rules
+- `PyDI.fusion.conflict_resolution` — built‑in resolution functions
+- `PyDI.fusion.strategy.DataFusionStrategy` — register rules and eval functions
+- `PyDI.fusion.evaluation`, `PyDI.fusion.reporting` — metrics and reports
 
-Conflict Resolution Strategies
-- Numeric: `average`, `median`, `min`, `max`, `sum` — robust to noisy numeric disagreement.
-- Date: `most_recent`, `earliest` — pick timeline extremes.
-- Lists/Text: `union`, `intersection`, `intersection_k_sources` — consolidate multi‑valued fields.
-- Custom: implement a callable returning `FusionResult` with value + metadata.
+Conflict Resolution Rules (overview)
+- Value‑based (by attribute type)
+  - Strings: `longest_string`, `shortest_string`, `most_complete`
+  - Numerics: `average`, `median`, `maximum`, `minimum`, `sum_values`
+  - Dates: `most_recent`, `earliest`
+  - Lists/Sets: `union`, `intersection`, `intersection_k_sources`
+- Source‑based (use multiple inputs)
+  - `voting` (majority), `weighted_voting` (weights), `favour_sources` (priority order), `random_value` (tie‑break)
+- Custom: any callable that returns a `FusionResult`
 
-Provenance and Trust
-- Track source datasets, per‑record lineage, and optional trust scores to bias resolution.
-- Export provenance for audit or explainability.
-
-Record Grouping and 1:1 Enforcement
-- Group using correspondences (possibly post‑processed via bipartite matching or clustering).
-- Each fused record contains the union of attributes from its group members.
-
-Reporting and Evaluation
-- `FusionReport` computes density, conflict stats, and attribute coverage; renders HTML/JSON.
-- Evaluate against a gold fused set if available for accuracy.
+Evaluation and Reporting
+- DataFusionEvaluator compares fused vs. gold by ID. It supports attribute‑specific evaluation functions, enabling fuzzy assessment beyond exact equality, e.g. `tokenized_match`, `numeric_tolerance_match`, `year_only_match`.
+- Additional outputs: consistency summaries, rule usage, record/attribute coverage, and JSON/HTML reports via FusionReport.
 
 Example
+
 ```python
 from PyDI.fusion.strategy import DataFusionStrategy
 from PyDI.fusion.engine import DataFuser
@@ -47,4 +41,4 @@ fused_df = fuser.fuse(datasets=[df_a, df_b], correspondences=matches)
 ```
 
 Artifacts
-- Fused dataset (CSV/Parquet), JSON and HTML fusion reports, provenance export under `out_dir`.
+- Fused dataset (CSV/Parquet) and JSON/HTML reports under `out_dir`.
