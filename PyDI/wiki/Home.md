@@ -1,40 +1,38 @@
 Welcome to the PyDI Wiki
 ========================
 
-PyDI (Python Data Integration) is an end‑to‑end data integration framework for loading, profiling, matching, and fusing heterogeneous datasets. It combines traditional methods (rule‑based similarity, blocking, voting) with modern approaches (machine learning, deep‑learning embeddings, and LLM‑based extraction/matching). Each component writes human‑readable artifacts and logs to `output/`, so results are understandable, shortcomings are visible, and improvements can be targeted with evidence.
+PyDI (Python Data Integration) is an end‑to‑end data integration framework for loading, profiling, matching, and fusing heterogeneous datasets. It combines traditional methods (rule‑based similarity, blocking, voting) with modern approaches (machine learning, deep‑learning embeddings, and LLM‑based extraction/matching). Each component writes out human‑readable artifacts and logs, so results are understandable and improvements can be targeted based on evidence.
 
-Design principles
-- Clear, composable modules that can be used independently or as a pipeline.
-- Data is stored in pandas DataFrames throughout the entire framework, allowing for interoperability with other solutions.
+PyDI Design Principles
+- Composable modules that can be used independently or as a pipeline.
+- Data is stored in pandas DataFrames throughout the entire framework, allowing for maximum interoperability with other packages and frameworks that are not part of PyDI.
 - Reproducible runs with optional debugging logs allow for detailed performance interpretation and analysis.
 
 End‑to‑End Data Integration Pipeline 
-1. Load data with provenance 
+1. Load data and add provenance 
 2. Profile datasets 
 3. Information extraction 
 4. Value normalization
-5. Match schemas 
-6. Translate/align data     
-7. Generate candidate pairs 
-8. Match entities 
-9. Fuse data into a consolidated dataset 
+5. Schema Mapping
+6. Data Translation   
+7. Entity Matching 
+8. Data Fusion 
 
 
 Contents (PyDI Modules)
-- [IO](IO) — load data, set IDs, record provenance
-- [Profiling](Profiling) — dataset profiles and comparisons (HTML)
-- [Information Extraction](InformationExtraction) — regex/code/LLM extraction + evaluation
-- [Normalization](Normalization) — clean headers/text, standardize values and units
-- [Schema Matching](SchemaMatching) — label/instance/duplicate‑based matching + evaluation
-- [Data Translation](DataTranslation) — apply schema mappings to align data
-- [Blocking](Blocking) — candidate generation (standard/sorted‑neighbourhood/token/embedding)
-- [Entity Matching](EntityMatching) — rule‑based, ML‑based, and LLM‑based matchers + evaluation
-- [Data Fusion](DataFusion) — conflict resolution rules and evaluation/reporting
-- [Utils](Utils) — comparators and similarity registry
-- [Tutorial](Tutorial) — end‑to‑end example (movies)
+- [IO](#io) - load data, set IDs, record provenance
+- [Profiling](#profiling) - dataset profiles and comparisons (HTML)
+- [Information Extraction](#information-extraction) - regex/code/LLM extraction + evaluation
+- [Normalization](#normalization) - clean headers/text, standardize values and units
+- [Schema Matching](#schema-matching) - label/instance/duplicate‑based matching + evaluation
+- [Data Translation](#data-translation) - apply schema mappings to align data
+- [Entity Matching](#entity-matching) - candidate generation (standard/sorted‑neighbourhood/token/embedding), rule‑based, ML‑based, and LLM‑based matchers + evaluation
+- [Data Fusion](#data-fusion) - conflict resolution rules and evaluation/reporting
+- [Utils](#utils) - comparators and similarity registry
+- [Tutorial](../tutorial/PyDI_Winter_Tutorial.ipynb) - end‑to‑end example (movie usecase)
 
 
-The sections below provide a concise, high‑level overview of PyDI’s functionality. For more detailed and interactive exploration, see the example scripts and the tutorial notebook in `PyDI/examples` and `PyDI/tutorial`.
+The sections below provide a concise, high‑level overview of PyDI’s functionality. For more detailed and interactive exploration, see the linked example notebooks and the tutorial notebook in `PyDI/examples` and `PyDI/tutorial`.
 
 
 # IO
@@ -42,20 +40,20 @@ The sections below provide a concise, high‑level overview of PyDI’s function
 The IO module loads tabular and semi‑structured data into pandas DataFrames, records provenance for each load operation in `df.attrs`, and optionally creates or preserves stable row identifiers for downstream matching and fusion. It standardizes dataset naming (`df.attrs["dataset_name"]`) and keeps source information and reader parameters available for reproducibility.
 
 Supported Formats (module `PyDI.io.loaders`)
-- `load_csv(...)`, `load_table(...)` — delimited text files
-- `load_json(...)` — JSON with optional `record_path` (flattens nested objects)
-- `load_excel(...)` — a single sheet or a dictionary of sheets
-- `load_parquet(...)`, `load_feather(...)` — columnar formats
-- `load_pickle(...)` — pre‑serialized DataFrames
-- `load_html(...)` — list of HTML tables per page
-- `load_xml(...)` — XML with record‑level flattening (explode or aggregate repeated elements)
+- `load_csv(...)`, `load_table(...)` - delimited text files
+- `load_json(...)` - JSON with optional `record_path` (flattens nested objects)
+- `load_excel(...)` - a single sheet or a dictionary of sheets
+- `load_parquet(...)`, `load_feather(...)` - columnar formats
+- `load_pickle(...)` - pre‑serialized DataFrames
+- `load_html(...)` - list of HTML tables per page
+- `load_xml(...)` - XML with record‑level flattening (explode or aggregate repeated elements)
 
-To preserve provenance (`df.attrs`) alongside the data, we currently recommend saving DataFrames as pickle files. Other formats (e.g., CSV, Parquet, Feather) typically discard custom attributes; use them only when provenance is not required or is exported separately.
+To preserve provenance (found in `df.attrs`) alongside the data, we currently recommend saving DataFrames as pickle files. Other formats (e.g., CSV, Parquet, Feather) discard `.attrs`, use them only when provenance is not required or is exported separately.
 
 
 # Profiling
 
-This module generates dataset profiles and quick summaries for exploratory analysis. Profiling helps in understanding the schemata and record values, detect anomalies, and communicate general data quality at any point in the data integration pipeline. PyDI offers methods for quick data profiling in the console as well as printing detailed HTML reports via the ydata-profiling and sweetviz libraries.
+This module generates dataset profiles and quick summaries for exploratory data analysis. Profiling helps in understanding the schemata and record values, detect anomalies, and communicate general data quality at any point in the data integration pipeline. PyDI offers methods for quick data profiling in the console as well as printing detailed HTML reports via the ydata-profiling and sweetviz libraries.
 
 When to Use (examples)
 - Exploratory analysis after data loading.
@@ -73,7 +71,7 @@ Example
 from PyDI.profiling import DataProfiler
 
 profiler = DataProfiler()
-html_path = profiler.profile(df, out_dir="output/movies/dataset-profiles")
+profiler.profile(df, out_dir="output/movies/dataset-profiles")
 ```
 
 Artifacts
@@ -125,7 +123,7 @@ Module: `PyDI.schemamatching`
 - `DuplicateBasedSchemaMatcher`: leverage known record correspondences to infer column alignments from co‑occurring values in columns of the corresponding records. Great when a labeled set of matching records between datasets exists.
 - `SchemaMappingEvaluator`: offers methods for evaluating a generated schema mapping given a labeled set of schema correspondences.
 
-Example matching
+Example schema matching
 ```python
 from PyDI.schemamatching import InstanceBasedSchemaMatcher
 
@@ -146,7 +144,7 @@ Artifacts
 
 # Data Translation
 
-Translate/align source datasets to a target schema using a schema mapping. Translation prepares datasets for matching and fusion by ensuring consistent attribute names and optionally derived values.
+Translate/align source datasets to a target schema using a schema mapping. Translation prepares datasets for matching and fusion by ensuring consistent attribute names and enabling comparison.
 
 Module: `PyDI.datatranslation`
 - `MappingTranslator`: renames dataframe columns to target names if a 1:1 mapping exists given a set of schema correspondences.
@@ -163,84 +161,49 @@ Artifacts
 - Dataframe with aligned column names according to a schema correspondence file.
 
 
-# Blocking
+# Entity Matching
 
-Generate candidate pairs efficiently before entity matching. All blockers stream batches and avoid full cross‑product materialization. Good blocking drastically reduces comparisons while preserving most true matches.
+Computes record‑level correspondences between datasets using rule‑based, ML‑based, PLM-based, or LLM‑based matchers. Matchers operate on candidate record pairs. These pairs can either be created by building all combinations between records from two datasets (cartesian product) or by using a blocking method for more efficient pair building. PyDI offers a StandardBlocker, SortedNeighborhoodBlocker, TokenBlocker and EmbeddingBlocker. Both blocking and entity matching steps can be separately evaluated and debugged using extensive debug logging capabilities. The entity matchers produce a set of record correspondences between two datasets as output.
 
-Modules
-- `PyDI.entitymatching.blocking.base.BaseBlocker`
-- `PyDI.entitymatching.blocking.standard.StandardBlocking` (keys on columns)
-- `PyDI.entitymatching.blocking.sorted_neighbourhood.SortedNeighbourhood` (sliding window on a key)
-- `PyDI.entitymatching.blocking.token_blocking.TokenBlocking` (token overlap on a text column)
-- `PyDI.entitymatching.blocking.embedding.EmbeddingBlocking` (text embeddings)
-- `PyDI.entitymatching.blocking.noblocking.NoBlocking`
-- `PyDI.entitymatching.blocking.blocking_evaluation.BlockingEvaluator`
 
-Choosing a Strategy
-- Standard: when you have reliable join keys or key composites.
-- Sorted Neighbourhood: when a sortable key exists but exact equality is too strict.
-- Token: when entity names are multi‑token and you expect partial overlaps.
-- Embedding: when textual fields vary semantically (synonyms, paraphrases).
+Module: `PyDI.entitymatching`
 
-Parameters That Matter
-- `batch_size`: memory/perf trade‑off for streaming.
-- Key selection: prefer normalized, informative attributes; combine columns if necessary.
-- Tokenization: adjust `min_token_len`/custom tokenizer to reduce noise.
+Blockers
+- `blocking.NoBlocking`: Creates all possible candidate pairs (cartesian product).
+- `blocking.StandardBlocker`: Creates candidate pairs based on defined blocking key.
+- `blocking.SortedNeighborhoodBlocker`: Creates candidate pairs based on defined blocking key combined with rolling window over neighborhood.
+- `blocking.TokenBlocker`: Blocks based on token or n-gram overlap.
+- `blocking.EmbeddingBlocker`: Embeds all records using sentence-transformers and generates candiate pairs via nearest neighbor search in the vector space.
 
-Example
+Example (Blocking without matching step)
 ```python
 from PyDI.entitymatching.blocking import StandardBlocking
 
 blocker = StandardBlocking(df_left, df_right, on=["title","year"], batch_size=100_000, out_dir="output/matching/blocking")
 for batch in blocker:  # yields DataFrames with [id1, id2, block_key]
     process(batch)
+# alternatively calling blocker.materialize() directly materializes all pairs
 ```
 
-Evaluation
+Evaluation (Blocking)
 ```python
 from PyDI.entitymatching.blocking import BlockingEvaluator
 
 report = BlockingEvaluator.evaluate(candidates=blocker, gold=test_pairs, out_dir="output/matching/blocking_eval")
 ```
 
-Reading the Metrics
-- Candidate recall: fraction of true matches present in candidates (should be high).
-- Reduction ratio: how much the cross‑product was reduced (higher is better, but not at the expense of recall).
+Matchers
+- `Comparators`: A set of attribute comparators that can be used together with the RuleBasedMatcher and FeatureExtractor. Each comparator consists of an attribute and a similarity metric for comparing two values of that attribute.
+- `RuleBasedMatcher`: Composes a set of attribute comparators (e.g., Jaccard on title, date proximity) and assigns weights to calculate record pair similarity. A manually assigned threshold for the rule allows the classification of record pairs into matches and non-matches.
+- `FeatureExtractor` and `VectorFeatureExtractor`: Used to generate features for machine-learning based matchers in PyDI. FeatureExtractor uses similarity-based metrics like Jaccard or Levenshtein. VectorFeatureExtractor generates embedding vectors (BoW and sentence-transformers).  
+- `MLBasedMatcher`: takes a trained scikit-learn model as input and uses the model to classify record pairs and create a set of correspondences between two datasets.
+- `PLMBasedMatcher`: takes an off-the-shelf or fine-tuned huggingface transformer model and performs entity matching. Returns a set of correspondences.
+- `LLMBasedMatcher`: calls external hosted LLMs (e.g. OpenAI) to perform the entity matching and return a set of correspondences.
+- `EntityMatchingEvaluator`: evaluation methods for blocking (pair completeness, pair quality, reduction ratio) and matching (Accuracy, Precision, Recall, F1). Supports writing detailed console logs and debug files.
 
-Artifacts
-- Blocking stats, debug files, and batch summaries under `out_dir`.
 
 
-# Entity Matching
-
-Computes record‑level correspondences between datasets using rule‑based, ML‑based, PLM-based, or LLM‑based matchers. Matching operates on candidate record pairs. These pairs can either be created by building all combinations between records from two datasets or by using a blocking method for more efficient pair building. PyDI offers a StandardBlocker, SortedNeighborhoodBlocker, TokenBlocker and EmbeddingBlocker. Both blocking and entity matching steps can be separately evaluated and debugged using extensive debug logging capabilities. The entity matchers produce a set of record correspondences between two datasets.
-
-Module: `PyDI.entitymatching`
-- `comparators`: contains a set of attribute comparators that can be used together with the RuleBasedMatcher and FeatureExtractor. Each comparator consists of an attribute and a similarity metric for comparing two values of that attribute.
-- `RuleBasedMatcher`: Composes a set of attribute comparators (e.g., Jaccard on title, date proximity) and assigns weights to calculate record pair similarity. Manually assignment of a similarity threshold for the rule allows the creation of record correspondences
-- `FeatureExtractor` and `VectorFeatureExtractor`: offer a method to generate features for machine-learning based matchers in PyDI. FeatureExtractor uses similarity-based metrics like Jaccard or Levenshtein. VectorFeatureExtractor generates embedding vectors (BoW and sentence-transformers).  
-- `MLBasedMatcher`: takes a trained scikit-learn model and blocker as input and uses the model to create a set of correspondences between two datasets.
-- `PyDI.entitymatching.llm_based.LLMBasedMatcher` — optional LLM calls with artifacts
-- 
-
-- `PyDI.entitymatching.evaluation` — PR/F1, clustering, threshold sweeps
-
-Rule‑Based Matching
-- Compose attribute comparators (e.g., Jaccard on title, date proximity) and assign weights.
-- Set a threshold to emit correspondences; tune via evaluation.
-
-ML‑Based Matching
-- Extract feature vectors for pairs and train a classifier (logreg, random forest, etc.).
-- Use probability scores as match scores; calibrate thresholds using validation sets.
-
-LLM‑Based Matching
-- Useful for ambiguous records with rich text; more expensive and slower.
-- Strong auditing via prompt/response artifacts; consider batching and caching.
-
-Post‑Processing
-- Deduplicate pairs, enforce 1:1 via max‑weight bipartite matching, or cluster by connected components before fusion.
-
-Example (Rule‑based)
+Example (Rule‑based Matcher)
 ```python
 from PyDI.entitymatching.rule_based import RuleBasedMatcher
 from PyDI.utils import jaccard, date_within_years
@@ -249,29 +212,20 @@ matcher = RuleBasedMatcher(comparators=[jaccard("title"), date_within_years("dat
 correspondences = matcher.match(df_left, df_right, candidates=blocker)
 ```
 
-Example (ML‑based)
-```python
-from PyDI.entitymatching.ml_based import MLBasedMatcher
-
-ml = MLBasedMatcher(model="random_forest", features=[...], out_dir="output/matching/ml")
-ml.train(pairs=train_pairs, labels=train_labels)
-correspondences = ml.match(df_left, df_right, candidates=blocker)
-```
-
-Evaluation
+Evaluation (Matching)
 ```python
 from PyDI.entitymatching.evaluation import EntityMatchingEvaluator
 
-metrics = EntityMatchingEvaluator.evaluate(corr=correspondences, test_pairs=test_pairs, threshold=0.7)
+metrics = EntityMatchingEvaluator.evaluate_matching(corr=correspondences, test_pairs=test_pairs, threshold=0.7)
 ```
 
 Artifacts
-- Candidate summaries, match scores, prompts/responses (LLM), eval reports under `out_dir`.
+- Set of pairwise record correspondences written to file. Optionally detailed debugging logs written to file.
 
 
 # Data Fusion
 
-Data Fusion merges matched records into one consolidated dataset and then evaluates the result. Conflicts between source values are resolved by per‑attribute rules; evaluation supports exact and fuzzy comparison.
+Data Fusion merges matched records into one consolidated dataset and then evaluates the result. Conflicts between source values are resolved by per‑attribute rules. Evaluation supports exact and fuzzy comparison.
 
 Modules
 
@@ -321,9 +275,10 @@ Artifacts
 
 # Utils
 
-Utils provides shared helpers used across the framework, notably a similarity metric registry and consistent logging for LLM invocations.
+Utils provides shared helpers used across the framework, notably a similarity metric registry using the `textdistance` package and consistent logging for LLM invocations.
 
-Similarity Metric Registry
+The Similarity Metric Registry
+
 `PyDI.utils.similarity_registry.SimilarityRegistry` centralizes access to similarity functions with name/category lookup and recommended sets for common use cases.
 
 Available Metrics
@@ -334,6 +289,10 @@ Available Metrics
 - Phonetic: mra
 
 LLM Invocation Logging
+
 The LLM logging helpers (`PyDI.utils.llm`) standardize how prompts, responses, token usage, and model/provider details are captured. They enable comparable debugging and usage tracking across LLM‑based extractors and matchers, and integrate with artifact writing so traces can be reviewed alongside other pipeline outputs.
 
 
+# Tutorial
+
+For a fully implemented example of a data integration workflow for integrating movie datasets from data loading, profiling, over entity matching and data fusion, refer to the [Tutorial Notebook](../tutorial/PyDI_Winter_Tutorial.ipynb)
