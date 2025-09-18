@@ -1,14 +1,15 @@
 # Entity Matching
 
-Compute record‑level correspondences between datasets using rule‑based, ML‑based, or LLM‑based matchers. Matching operates on candidate pairs from Blocking and outputs scored correspondences.
+Computes record‑level correspondences between datasets using rule‑based, ML‑based, PLM-based, or LLM‑based matchers. Matching operates on candidate record pairs. These pairs can either be created by building all combinations between records from two datasets or by using a blocking method for more efficient pair building. PyDI offers a StandardBlocker, SortedNeighborhoodBlocker, TokenBlocker and EmbeddingBlocker. Both blocking and entity matching steps can be separately evaluated and debugged using extensive debug logging capabilities. The entity matchers produce a set of record correspondences between two datasets.
 
-Modules
-- `PyDI.entitymatching.base.BaseMatcher`
-- `PyDI.entitymatching.rule_based` — weighted similarity of comparators
-- `PyDI.entitymatching.ml_based.MLBasedMatcher` — scikit‑learn models
+Module: `PyDI.entitymatching`
+- `comparators`: contains a set of attribute comparators that can be used together with the RuleBasedMatcher and FeatureExtractor. Each comparator consists of an attribute and a similarity metric for comparing two values of that attribute.
+- `RuleBasedMatcher`: Composes a set of attribute comparators (e.g., Jaccard on title, date proximity) and assigns weights to calculate record pair similarity. Manually assignment of a similarity threshold for the rule allows the creation of record correspondences
+- `FeatureExtractor` and `VectorFeatureExtractor`: offer a method to generate features for machine-learning based matchers in PyDI. FeatureExtractor uses similarity-based metrics like Jaccard or Levenshtein. VectorFeatureExtractor generates embedding vectors (BoW and sentence-transformers).  
+- `MLBasedMatcher`: takes a trained scikit-learn model and blocker as input and uses the model to create a set of correspondences between two datasets.
 - `PyDI.entitymatching.llm_based.LLMBasedMatcher` — optional LLM calls with artifacts
-- `PyDI.entitymatching.comparators` — string/numeric/date comparators
-- `PyDI.entitymatching.feature_extraction` — helpers for ML pipelines
+- 
+
 - `PyDI.entitymatching.evaluation` — PR/F1, clustering, threshold sweeps
 
 Rule‑Based Matching
