@@ -23,10 +23,10 @@ End‑to‑End Flow
 Contents (PyDI Modules)
 - [IO](IO) — loaders with provenance and ID injection
 - [Profiling](Profiling) — ydata‑profiling and Sweetviz wrappers
-- [Schema Matching](SchemaMatching) — label/instance/duplicate‑based matchers + evaluation
-- [Data Translation](DataTranslation) — apply schema mappings to align data
 - [Information Extraction](InformationExtraction) — regex/code/LLM extractors + evaluation
 - [Normalization](Normalization) — text, values, units, types, detectors, validators
+- [Schema Matching](SchemaMatching) — label/instance/duplicate‑based matchers + evaluation
+- [Data Translation](DataTranslation) — apply schema mappings to align data
 - [Blocking](Blocking) — streaming candidate generation (standard/sorted‑neighbourhood/embedding)
 - [Entity Matching](EntityMatching) — rule‑based, ML‑based, LLM‑based matchers + evaluation
 - [Data Fusion](DataFusion) — conflict resolution, provenance, strategy, reporting, evaluation
