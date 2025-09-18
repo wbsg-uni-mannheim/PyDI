@@ -1,29 +1,16 @@
 # Utils
 
-Convenience utilities for comparators, similarity functions, normalization helpers, and LLM logging. These utilities reduce boilerplate and standardize common tasks.
+Utils provides shared helpers used across the framework, notably a similarity metric registry and consistent logging for LLM invocations.
 
-Comparators (quick functions)
-- `PyDI.utils.jaccard(column)` — token Jaccard similarity over string tokens
-- `PyDI.utils.date_within_years(column, years)` — date proximity returning 1.0 if within window
+Similarity Metric Registry
+`PyDI.utils.similarity_registry.SimilarityRegistry` centralizes access to similarity functions with name/category lookup and recommended sets for common use cases.
 
-Similarity Registry
-- `PyDI.utils.similarity_registry.SimilarityRegistry`
-  - Discover and validate available similarity functions for schema/entity matching
-  - `get_function(name)`, `list_available_functions(category=None)`, `get_function_info(name)`, `get_recommended_functions(use_case, matcher_type=None)`
-- Use this to centralize comparator choice across projects and ensure reproducibility.
+Available Metrics
+- Edit‑based: hamming, levenshtein, damerau_levenshtein, jaro_winkler, jaro, strcmp95, needleman_wunsch, gotoh, smith_waterman, mlipns, editex
+- Token‑based: jaccard, sorensen_dice, tversky, overlap, tanimoto, cosine, monge_elkan, bag
+- Sequence‑based: lcsseq, lcsstr, ratcliff_obershelp
+- Simple: prefix, postfix, length, identity
+- Phonetic: mra
 
-Normalization Helpers
-- `PyDI.utils.normalization` — text cleaning, remove HTML, phone normalization, currency/percentage parsing, encoding fixes.
-- Apply these before matching to reduce noise and improve similarity scores.
-
-LLM Usage Logging
-- `PyDI.utils.llm.LLMCallLogger` — record prompts/responses/tokens and flush artifacts via callback, enabling audit trails for LLM‑based matchers/extractors.
-
-Example
-```python
-from PyDI.utils import jaccard
-from PyDI.utils.similarity_registry import list_similarity_functions
-
-sim = jaccard("title")
-print(list_similarity_functions())
-```
+LLM Invocation Logging
+The LLM logging helpers (`PyDI.utils.llm`) standardize how prompts, responses, token usage, and model/provider details are captured. They enable comparable debugging and usage tracking across LLM‑based extractors and matchers, and integrate with artifact writing so traces can be reviewed alongside other pipeline outputs.
