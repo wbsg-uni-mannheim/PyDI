@@ -1,14 +1,11 @@
 Welcome to the PyDI Wiki
 ========================
 
-PyDI (Python Data Integration) is a lightweight, pandas‑first framework for end‑to‑end data integration inspired by WInte.r. It focuses on simple, composable components with stable, type‑hinted APIs, rich docstrings, and strong observability for reproducible runs.
+PyDI (Python Data Integration) is an end‑to‑end data integration framework for loading, profiling, matching, and fusing heterogeneous datasets. It combines traditional methods (rule‑based similarity, blocking, voting) with modern approaches (machine learning, deep‑learning embeddings, and LLM‑based extraction/matching), making it a practical testbed for evaluation and experimentation. Each component writes human‑readable artifacts and logs to `output/`, so results are understandable, shortcomings are visible, and improvements can be targeted with evidence.
 
 Principles
-- Simplicity over inheritance; small classes and functions
-- DataFrames first with native metadata in `df.attrs`/`Series.attrs`
-- Deterministic behavior and stable signatures for easy tool use
-- Observability by default: each step emits artifacts to `output/`
-- Modular adoption: use a single component or the whole pipeline
+- Clear, composable components that can be used independently or as a pipeline
+- Reproducible runs with provenance and artifact outputs for inspection
 
 End‑to‑End Flow
 1. Load data with provenance (IO)
@@ -21,19 +18,17 @@ End‑to‑End Flow
 8. Evaluate and report (Evaluation)
 
 Contents (PyDI Modules)
-- [IO](IO) — loaders with provenance and ID injection
-- [Profiling](Profiling) — ydata‑profiling and Sweetviz wrappers
-- [Information Extraction](InformationExtraction) — regex/code/LLM extractors + evaluation
-- [Normalization](Normalization) — text, values, units, types, detectors, validators
-- [Schema Matching](SchemaMatching) — label/instance/duplicate‑based matchers + evaluation
+- [IO](IO) — load data, set IDs, record provenance
+- [Profiling](Profiling) — dataset profiles and comparisons (HTML)
+- [Information Extraction](InformationExtraction) — regex/code/LLM extraction + evaluation
+- [Normalization](Normalization) — clean headers/text, standardize values and units
+- [Schema Matching](SchemaMatching) — label/instance/duplicate‑based matching + evaluation
 - [Data Translation](DataTranslation) — apply schema mappings to align data
-- [Blocking](Blocking) — streaming candidate generation (standard/sorted‑neighbourhood/embedding)
-- [Entity Matching](EntityMatching) — rule‑based, ML‑based, LLM‑based matchers + evaluation
-- [Data Fusion](DataFusion) — conflict resolution, provenance, strategy, reporting, evaluation
-- [Utils](Utils) — comparators, similarity registry, helpers
-- [Tutorial](Tutorial) — movie data integration walk‑through
+- [Blocking](Blocking) — candidate generation (standard/sorted‑neighbourhood/token/embedding)
+- [Entity Matching](EntityMatching) — rule‑based, ML‑based, and LLM‑based matchers + evaluation
+- [Data Fusion](DataFusion) — conflict resolution rules and evaluation/reporting
+- [Utils](Utils) — comparators and similarity registry
+- [Tutorial](Tutorial) — end‑to‑end example (movies)
 
-Notes
-- All components are DataFrame‑first; metadata lives in `DataFrame.attrs`/`Series.attrs`.
-- Each step writes artifacts (CSV/JSON/HTML) to `output/` by default.
-- See `docs/high_level_design.md` for design goals and APIs.
+Reading Guide
+The sections below provide a concise, high‑level overview of PyDI’s functionality. For more detailed and interactive exploration, see the example scripts and the tutorial notebook in `PyDI/examples` and `PyDI/tutorial`.
