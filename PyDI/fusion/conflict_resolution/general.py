@@ -1,7 +1,6 @@
 """General conflict resolution functions."""
 
 from typing import Any, List, Tuple, Dict, Optional
-import pandas as pd
 from collections import Counter
 import random
 
@@ -29,22 +28,14 @@ def voting(values: List[Any], **kwargs) -> FusionResult:
     FusionResult
         Tuple of (resolved_value, confidence, metadata)
     """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    logger.debug(f"voting: input values={repr(values)}")
     valid_values = _filter_valid_values(values)
-    logger.debug(f"voting: valid values after filtering={repr(valid_values)}")
-    
     if not valid_values:
-        logger.debug("voting: no valid values, returning None")
         return None, 0.0, {"reason": "no_valid_values"}
-    
+
     # Count votes
     vote_counts = Counter(valid_values)
     most_common = vote_counts.most_common()
-    logger.debug(f"voting: vote counts={dict(vote_counts)}")
-    
+
     winner_value = most_common[0][0]
     winner_count = most_common[0][1]
     
@@ -52,10 +43,8 @@ def voting(values: List[Any], **kwargs) -> FusionResult:
     if len(most_common) > 1:
         second_count = most_common[1][1]
         confidence = _calculate_tie_confidence(winner_count, second_count, len(valid_values))
-        logger.debug(f"voting: winner={repr(winner_value)} ({winner_count} votes), runner-up has {second_count} votes, confidence={confidence:.3f}")
     else:
         confidence = 1.0
-        logger.debug(f"voting: unanimous winner={repr(winner_value)} ({winner_count} votes), confidence={confidence:.3f}")
     
     metadata = {
         "rule": "voting",
@@ -89,20 +78,12 @@ def favour_sources(values: List[Any], source_preferences: List[str] = None,
     FusionResult
         Tuple of (resolved_value, confidence, metadata)
     """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    logger.debug(f"favour_sources: input values={repr(values)}, preferences={source_preferences}")
     valid_values = _filter_valid_values(values)
-    logger.debug(f"favour_sources: valid values after filtering={repr(valid_values)}")
-    
     if not valid_values:
-        logger.debug("favour_sources: no valid values, returning None")
         return None, 0.0, {"reason": "no_valid_values"}
-    
+
     # If no source preferences, just return first value
     if not source_preferences:
-        logger.debug(f"favour_sources: no source preferences, using first value={repr(valid_values[0])}")
         return valid_values[0], 0.5, {
             "rule": "favour_sources",
             "reason": "no_source_preferences"
@@ -266,9 +247,6 @@ def prefer_higher_trust(
     FusionResult
         Tuple (value, confidence, metadata).
     """
-    import logging
-    logger = logging.getLogger(__name__)
-
     # Allow engine-provided trust_map via kwargs if not explicitly passed
     if trust_map is None:
         trust_map = kwargs.get('trust_map')

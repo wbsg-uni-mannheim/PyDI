@@ -1,9 +1,7 @@
 """String-based conflict resolution functions."""
 
 from typing import Any, List, Tuple, Dict
-import pandas as pd
 
-from ..base import _is_valid_value
 from .utils import _filter_valid_values
 
 
@@ -27,26 +25,16 @@ def longest_string(values: List[Any], **kwargs) -> FusionResult:
     FusionResult
         Tuple of (resolved_value, confidence, metadata)
     """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    logger.debug(f"longest_string: input values={repr(values)}")
     valid_values = _filter_valid_values(values)
-    logger.debug(f"longest_string: valid values after filtering={repr(valid_values)}")
-    
     if not valid_values:
-        logger.debug("longest_string: no valid values, returning None")
         return None, 0.0, {"reason": "no_valid_values"}
     
     # Convert to strings and calculate lengths
     string_values = [(str(v), len(str(v))) for v in valid_values]
     string_values.sort(key=lambda x: (-x[1], x[0]))  # Longest first, then alphabetical
-    lengths_display = [(v[0], v[1]) for v in string_values]
-    logger.debug(f"longest_string: string lengths={lengths_display}")
-    
     winner = string_values[0]
     winner_length = winner[1]
-    
+
     # Calculate confidence
     if len(string_values) > 1:
         second_length = string_values[1][1]
@@ -54,10 +42,8 @@ def longest_string(values: List[Any], **kwargs) -> FusionResult:
             confidence = 0.5 + (winner_length - second_length) / winner_length * 0.5
         else:
             confidence = 0.5  # Tie
-        logger.debug(f"longest_string: winner={repr(winner[0])} (len={winner_length}), runner-up len={second_length}, confidence={confidence:.3f}")
     else:
         confidence = 1.0
-        logger.debug(f"longest_string: single winner={repr(winner[0])} (len={winner_length}), confidence={confidence:.3f}")
     
     metadata = {
         "rule": "longest_string",
