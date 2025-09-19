@@ -8,7 +8,7 @@ The PyDI framework provides methods for end-to-end data integration. The framewo
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
-**Quick Start**: The section below provides an overview of the functionality of the PyDI framework. As alternatives to acquaint yourself with the framework, you can also read the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](/PyDI/wiki/)! 
+**Quick Start**: The section below provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](/PyDI/wiki/)! 
 
 ## Installing PyDI
 
