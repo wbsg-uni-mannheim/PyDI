@@ -5,7 +5,6 @@ The PyDI framework provides methods for end-to-end data integration. The framewo
 
 -   [Functionality](#functionality)
 -   [Contact](#contact)
--   [License](#license)
 -   [Acknowledgements](#acknowledgements)
 
 This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](/PyDI/wiki/)!
@@ -69,10 +68,6 @@ The PyDI framework covers all steps of the data integration process, including d
 ## Contact
 
 If you have questions or need help, please first consult the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb), the [Wiki](/PyDI/wiki/), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
-
-## License
-
-The PyDI framework can be used under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## Acknowledgements
 
