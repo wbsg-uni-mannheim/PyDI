@@ -1,5 +1,5 @@
 """
-NoBlocking: emits full Cartesian product in streaming batches.
+NoBlocker: emits full Cartesian product in streaming batches.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ import numpy as np
 from .base import BaseBlocker, CandidateBatch
 
 
-class NoBlocking(BaseBlocker):
+class NoBlocker(BaseBlocker):
     """Generate all pairs in the Cartesian product (streamed in batches).
 
     Suitable for small datasets or as a baseline. For n=|L|, m=|R|, this yields
@@ -53,4 +53,4 @@ class NoBlocking(BaseBlocker):
                     yield self._emit_batch(batch)
 
 
-__all__ = ["NoBlocking"]
+__all__ = ["NoBlocker"]

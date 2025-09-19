@@ -1,7 +1,7 @@
 """
 Embedding-based blocking for entity matching using nearest neighbor search.
 
-This module provides EmbeddingBlocking, which generates candidate pairs by computing
+This module provides EmbeddingBlocker, which generates candidate pairs by computing
 text embeddings and performing nearest neighbor search to find similar records.
 """
 
@@ -18,7 +18,7 @@ from .base import BaseBlocker, CandidateBatch
 logger = logging.getLogger(__name__)
 
 
-class EmbeddingBlocking(BaseBlocker):
+class EmbeddingBlocker(BaseBlocker):
     """
     Embedding-based blocking using nearest neighbor search over text embeddings.
     
@@ -111,7 +111,7 @@ class EmbeddingBlocking(BaseBlocker):
         self._sentence_transformer = None
         self._nn_index = None
         
-        self.logger.info(f"Initialized EmbeddingBlocking with {index_backend} backend, "
+        self.logger.info(f"Initialized EmbeddingBlocker with {index_backend} backend, "
                         f"top_k={top_k}, threshold={threshold}")
         
         # Write debug file will be called during iteration when embeddings are ready
@@ -416,7 +416,7 @@ class EmbeddingBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_EmbeddingBlocking.csv")
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_EmbeddingBlocker.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         
@@ -510,3 +510,6 @@ class EmbeddingBlocking(BaseBlocker):
         
         self.logger.debug(f"Estimated {estimated_pairs} candidate pairs from {sample_size} samples")
         return estimated_pairs
+
+
+__all__ = ["EmbeddingBlocker"]

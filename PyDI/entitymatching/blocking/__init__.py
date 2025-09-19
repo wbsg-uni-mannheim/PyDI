@@ -3,19 +3,19 @@ Blocking subpackage: base interfaces and simple blocking strategies.
 """
 
 from .base import BaseBlocker
-from .noblocking import NoBlocking
-from .standard import StandardBlocking
-from .sorted_neighbourhood import SortedNeighbourhood
-from .token_blocking import TokenBlocking
-from .embedding import EmbeddingBlocking
+from .noblocking import NoBlocker
+from .standard import StandardBlocker
+from .sorted_neighbourhood import SortedNeighbourhoodBlocker
+from .token_blocking import TokenBlocker
+from .embedding import EmbeddingBlocker
 
 __all__ = [
     "BaseBlocker",
-    "NoBlocking",
-    "StandardBlocking",
-    "SortedNeighbourhood",
-    "TokenBlocking",
-    "EmbeddingBlocking",
+    "NoBlocker",
+    "StandardBlocker",
+    "SortedNeighbourhoodBlocker",
+    "TokenBlocker",
+    "EmbeddingBlocker",
 ]
 
 

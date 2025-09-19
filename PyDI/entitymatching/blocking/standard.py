@@ -14,7 +14,7 @@ import pandas as pd
 from .base import BaseBlocker, CandidateBatch
 
 
-class StandardBlocking(BaseBlocker):
+class StandardBlocker(BaseBlocker):
     """Equality-based blocking on one or more key columns.
 
     Pairs records whose values are exactly equal across the provided columns.
@@ -34,7 +34,7 @@ class StandardBlocking(BaseBlocker):
         super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if not on:
             raise ValueError(
-                "StandardBlocking requires at least one column in 'on'")
+                "StandardBlocker requires at least one column in 'on'")
         self.on = list(on)
         self.output_dir = output_dir
 
@@ -103,7 +103,7 @@ class StandardBlocking(BaseBlocker):
         # Log block size distribution
         size_counter = Counter(block_sizes)
         self.logger.debug("Block size distribution:")
-        self.logger.debug("Frequency   Element")
+        self.logger.debug("Size Frequency")
         # Sort by frequency descending, then by element size descending
         for size, freq in sorted(size_counter.items(), key=lambda x: (-x[1], -x[0])):
             self.logger.debug(f"{freq:<11} {size}")
@@ -140,7 +140,7 @@ class StandardBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_StandardBlocking.csv")
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_StandardBlocker.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         
@@ -174,6 +174,6 @@ class StandardBlocking(BaseBlocker):
             yield self._emit_batch(pd.DataFrame(batch_pairs, columns=["id1", "id2"]))
 
 
-__all__ = ["StandardBlocking"]
+__all__ = ["StandardBlocker"]
 
 

@@ -12,11 +12,11 @@ from .base import BaseMatcher, BaseComparator, CorrespondenceSet
 # Blocking strategies (subpackage)
 from .blocking import (
     BaseBlocker,
-    NoBlocking,
-    StandardBlocking,
-    SortedNeighbourhood,
-    TokenBlocking,
-    EmbeddingBlocking,
+    NoBlocker,
+    StandardBlocker,
+    SortedNeighbourhoodBlocker,
+    TokenBlocker,
+    EmbeddingBlocker,
 )
 
 # Matching algorithms
@@ -39,11 +39,11 @@ __all__ = [
     "BaseComparator",
     "CorrespondenceSet",
     "BaseBlocker",
-    "NoBlocking",
-    "StandardBlocking",
-    "SortedNeighbourhood",
-    "TokenBlocking",
-    "EmbeddingBlocking",
+    "NoBlocker",
+    "StandardBlocker",
+    "SortedNeighbourhoodBlocker",
+    "TokenBlocker",
+    "EmbeddingBlocker",
     "RuleBasedMatcher",
     "MLBasedMatcher",
     "LLMBasedMatcher",

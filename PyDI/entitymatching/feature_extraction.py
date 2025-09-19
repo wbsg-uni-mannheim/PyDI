@@ -585,7 +585,7 @@ class VectorFeatureExtractor:
         if feature_df.empty:
             raise ValueError("No valid vector features could be extracted")
         
-        logging.info(f"Vector feature extraction complete: {len(feature_df)} pairs, {len(self.distance_metrics)} features")
+        logging.info(f"Vector feature extraction complete: {len(feature_df)} pairs embedded.")
         
         return feature_df
     

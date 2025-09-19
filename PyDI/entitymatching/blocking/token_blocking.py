@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Callable, Iterator, List, Optional, Tuple
+from typing import Callable, Iterator, List, Optional, Tuple, Literal
 from collections import Counter
 
 import pandas as pd
@@ -14,12 +14,16 @@ import pandas as pd
 from .base import BaseBlocker, CandidateBatch
 
 
-class TokenBlocking(BaseBlocker):
+class TokenBlocker(BaseBlocker):
     """Token-based blocking using token overlap on a text column.
 
     Each record is assigned to blocks by its tokens. Candidate pairs are
     generated when left/right records share at least one token. A simple
     tokenizer is used by default, but a custom callable may be provided.
+
+    Also supports character and word ngrams for more flexible blocking strategies.
+    When using ngrams, records are blocked based on overlapping character sequences
+    or word sequences of the specified size.
     """
 
     def __init__(
@@ -33,14 +37,51 @@ class TokenBlocking(BaseBlocker):
         batch_size: int = 100_000,
         min_token_len: int = 2,
         output_dir: str = "output",
+        ngram_size: Optional[int] = None,
+        ngram_type: Optional[Literal["character", "word"]] = None,
     ) -> None:
+        """Initialize TokenBlocker with optional ngram support.
+
+        Args:
+            df_left: Left dataset
+            df_right: Right dataset
+            column: Column name to use for blocking
+            id_column: Column name containing record IDs
+            tokenizer: Custom tokenizer function (overrides ngram settings if provided)
+            batch_size: Size of candidate batches
+            min_token_len: Minimum token/ngram length to consider
+            output_dir: Directory for debug output files
+            ngram_size: Size of ngrams to generate (requires ngram_type)
+            ngram_type: Type of ngrams - 'character' or 'word' (requires ngram_size)
+        """
         super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if column not in self.df_left.columns or column not in self.df_right.columns:
             raise ValueError(f"Column '{column}' must exist in both datasets")
+
+        # Validate ngram parameters
+        if ngram_size is not None and ngram_type is None:
+            raise ValueError("ngram_type must be specified when ngram_size is provided")
+        if ngram_type is not None and ngram_size is None:
+            raise ValueError("ngram_size must be specified when ngram_type is provided")
+        if ngram_size is not None and ngram_size < 1:
+            raise ValueError("ngram_size must be >= 1")
+
         self.column = column
-        self.tokenizer = tokenizer or self._default_tokenizer
+        self.ngram_size = ngram_size
+        self.ngram_type = ngram_type
         self.min_token_len = int(min_token_len)
         self.output_dir = output_dir
+
+        # Select appropriate tokenizer
+        if tokenizer is not None:
+            self.tokenizer = tokenizer
+        elif ngram_size is not None:
+            if ngram_type == "character":
+                self.tokenizer = self._character_ngram_tokenizer
+            elif ngram_type == "word":
+                self.tokenizer = self._word_ngram_tokenizer
+        else:
+            self.tokenizer = self._default_tokenizer
 
         # Setup logging
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -96,6 +137,75 @@ class TokenBlocking(BaseBlocker):
                 uniq.append(t)
         return uniq
 
+    def _character_ngram_tokenizer(self, text: str) -> List[str]:
+        """Generate character ngrams from text.
+
+        Args:
+            text: Input text to tokenize
+
+        Returns:
+            List of character ngrams of specified size
+        """
+        if text is None or self.ngram_size is None:
+            return []
+
+        s = str(text).lower()
+        # Remove non-alphanumeric for character ngrams
+        clean_text = ''.join(ch for ch in s if ch.isalnum())
+
+        if len(clean_text) < self.ngram_size:
+            return []
+
+        ngrams = []
+        for i in range(len(clean_text) - self.ngram_size + 1):
+            ngram = clean_text[i:i + self.ngram_size]
+            if len(ngram) >= self.min_token_len:
+                ngrams.append(ngram)
+
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_ngrams = []
+        for ngram in ngrams:
+            if ngram not in seen:
+                seen.add(ngram)
+                unique_ngrams.append(ngram)
+
+        return unique_ngrams
+
+    def _word_ngram_tokenizer(self, text: str) -> List[str]:
+        """Generate word ngrams from text.
+
+        Args:
+            text: Input text to tokenize
+
+        Returns:
+            List of word ngrams of specified size
+        """
+        if text is None or self.ngram_size is None:
+            return []
+
+        # First get individual tokens using the default tokenizer
+        tokens = self._default_tokenizer(text)
+
+        if len(tokens) < self.ngram_size:
+            return []
+
+        ngrams = []
+        for i in range(len(tokens) - self.ngram_size + 1):
+            ngram = ' '.join(tokens[i:i + self.ngram_size])
+            if len(ngram) >= self.min_token_len:
+                ngrams.append(ngram)
+
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_ngrams = []
+        for ngram in ngrams:
+            if ngram not in seen:
+                seen.add(ngram)
+                unique_ngrams.append(ngram)
+
+        return unique_ngrams
+
     def _build_token_index(self, df: pd.DataFrame, column: str, id_column: str) -> dict:
         index: dict[str, List[str]] = {}
         for record_id, val in zip(df[id_column], df[column]):
@@ -121,7 +231,7 @@ class TokenBlocking(BaseBlocker):
         # Log token frequency distribution
         freq_counter = Counter(token_freqs)
         self.logger.debug("Token frequency distribution:")
-        self.logger.debug("Frequency   Element")
+        self.logger.debug("Size Frequency")
         # Sort by frequency descending, then by element size descending
         for freq, count in sorted(freq_counter.items(), key=lambda x: (-x[1], -x[0])):
             self.logger.debug(f"{count:<11} {freq}")
@@ -158,7 +268,7 @@ class TokenBlocking(BaseBlocker):
         debug_data.sort(key=lambda x: -x["Frequency"])
         
         # Write to CSV file
-        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_TokenBlocking.csv")
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_TokenBlocker.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         
@@ -202,4 +312,4 @@ class TokenBlocking(BaseBlocker):
             yield self._emit_batch(pd.DataFrame(batch_pairs, columns=["id1", "id2"]))
 
 
-__all__ = ["TokenBlocking"]
+__all__ = ["TokenBlocker"]

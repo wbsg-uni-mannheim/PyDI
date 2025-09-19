@@ -14,7 +14,7 @@ import pandas as pd
 from .base import BaseBlocker, CandidateBatch
 
 
-class SortedNeighbourhood(BaseBlocker):
+class SortedNeighbourhoodBlocker(BaseBlocker):
     """Sorted neighbourhood blocking using a sliding window over a sort key.
 
     Records from both datasets are combined into a single ordering based on the
@@ -98,7 +98,7 @@ class SortedNeighbourhood(BaseBlocker):
             debug_data.append({"Blocking Key Value": prefix, "Frequency": freq})
         
         # Write to CSV file
-        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_SortedNeighbourhood.csv")
+        debug_file = os.path.join(self.output_dir, "debugResultsBlocking_SortedNeighbourhoodBlocker.csv")
         debug_df = pd.DataFrame(debug_data)
         debug_df.to_csv(debug_file, index=False)
         
@@ -127,4 +127,4 @@ class SortedNeighbourhood(BaseBlocker):
             yield self._emit_batch(pd.DataFrame(batch, columns=["id1", "id2"]))
 
 
-__all__ = ["SortedNeighbourhood"]
+__all__ = ["SortedNeighbourhoodBlocker"]

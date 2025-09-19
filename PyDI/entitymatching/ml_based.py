@@ -416,6 +416,9 @@ class MLBasedMatcher(BaseMatcher):
             {"feature": feature_names[: len(importances)], "importance": importances}
         ).sort_values("importance", ascending=False)
 
+        # Format importance values to 4 decimal places
+        importance_df["importance"] = importance_df["importance"].apply(lambda x: f"{x:.4f}")
+
         return importance_df
 
     def __repr__(self) -> str:

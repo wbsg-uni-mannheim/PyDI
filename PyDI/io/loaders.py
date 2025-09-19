@@ -440,7 +440,7 @@ def load_json(
     index_column_name: Optional[str] = None,
     id_prefix: Optional[str] = None,
     include_provenance_columns: bool = False,
-    nested_handling: str = "preserve",
+    nested_handling: str = "aggregate",
     separator: str = ", ",
     **kwargs: Any,
 ) -> pd.DataFrame:
@@ -462,10 +462,10 @@ def load_json(
         Prefix for unique identifiers.
     include_provenance_columns : bool, default False
         Whether to include provenance information as DataFrame columns.
-    nested_handling : str, default "preserve"
+    nested_handling : str, default "aggregate"
         How to handle nested/list values:
-        - "preserve": Keep lists/arrays as Python objects (default)
-        - "aggregate": Keep lists as Python objects (same as preserve for JSON)
+        - "preserve": Keep lists/arrays as Python objects
+        - "aggregate": Keep lists as Python objects (same as preserve for JSON, default)
     separator : str, default ", "
         Separator string (unused for JSON, kept for backward compatibility).
     **kwargs

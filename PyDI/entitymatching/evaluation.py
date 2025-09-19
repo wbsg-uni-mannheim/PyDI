@@ -238,9 +238,7 @@ class EntityMatchingEvaluator:
         logging.info(f"  Reduction Ratio:   {reduction_ratio:.3f}")
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
 
-        logging.info(
-            f"Blocking evaluation complete: Completeness={pair_completeness:.4f} Quality={pair_quality:.4f} Reduction={reduction_ratio:.4f}"
-        )
+        logging.info("Blocking evaluation complete!")
         return results
 
     @staticmethod
@@ -410,9 +408,7 @@ class EntityMatchingEvaluator:
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
         logging.info(f"  Batches Processed:  {batches_processed}")
 
-        logging.info(
-            f"Batched blocking evaluation complete: Completeness={pair_completeness:.4f} Quality={pair_quality:.4f} Reduction={reduction_ratio:.4f} Batches={batches_processed}"
-        )
+        logging.info("Blocking evaluation complete!")
         return results
 
     @staticmethod
@@ -565,12 +561,12 @@ class EntityMatchingEvaluator:
                     # This shouldn't happen given the logic above, but just in case
                     continue
                     
-                logging.debug(f"[{classification}] {row['id1']},{row['id2']},{score}")
+                logging.debug(f"[{classification}] {row['id1']},{row['id2']},sim:{score:.4f}")
         
         # Also log missing correspondences (false negatives)
         missing_pairs = positive_set - predicted_set
         for pair in missing_pairs:
-            logging.debug(f"[missing] {pair[0]},{pair[1]},0.0")
+            logging.debug(f"[missing] {pair[0]},{pair[1]},sim:0.0000")
 
         # Compute classification metrics
         true_positives = len(predicted_set & positive_set)
