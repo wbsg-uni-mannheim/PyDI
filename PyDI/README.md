@@ -64,11 +64,11 @@ The PyDI framework covers all steps of the data integration process, including d
 -   Evaluation of data fusion results against ground truth
 -   Reports about the fusion process
 
-**[IO](#)**: PyDI provides methods for reading standard data formats such as JSON, XML, and CSV into pandas DataFrames. All read methods can optionally add provenance metadata to the dataframes which is represented using the pandas property `DataFrame.attrs`.
+**[IO](#)**: PyDI provides methods for reading standard data formats such as JSON, XML, and CSV into pandas DataFrames. All read methods can optionally add unique identifiers and provenance metadata to the DataFrames.
 
 ## Contact
 
-If you have questions or need help, please first consult the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb), the [Wiki](/PyDI/wiki/), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**.
+If you have questions or need help, please first consult the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb), the [Wiki](/PyDI/wiki/), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
 
 ## License
 
@@ -76,4 +76,4 @@ The PyDI framework can be used under the [Apache 2.0 License](http://www.apache.
 
 ## Acknowledgements
 
-PyDI is developed at the [Data and Web Science Group](http://dws.informatik.uni-mannheim.de/) at the [University of Mannheim](http://www.uni-mannheim.de/).
+PyDI is developed by the [Web-based Systems Group](https://www.uni-mannheim.de/dws/research/focus-groups/web-based-systems-prof-bizer/) at the [University of Mannheim](http://www.uni-mannheim.de/).
