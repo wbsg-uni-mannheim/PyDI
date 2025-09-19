@@ -227,9 +227,7 @@ class AttributeValueFuser:
         """
         logger = logging.getLogger(__name__)
         resolver_name = get_callable_name(self.resolver)
-        
-        logger.debug(f"Fusion invocation: group_id={context.group_id}, attribute={context.attribute}, rule={resolver_name}")
-        
+
         # Extract values that are present
         values_with_sources: List[Tuple[Any, str]] = []
         for record in records:
@@ -237,10 +235,8 @@ class AttributeValueFuser:
                 value = self.get_value(record, context)
                 record_id = record.get("_id", "unknown")
                 values_with_sources.append((value, record_id))
-                logger.debug(f"  Input: record_id={record_id}, value={repr(value)}")
-        
+
         if not values_with_sources:
-            logger.debug(f"  No values available for attribute '{context.attribute}'")
             # No values available
             result = FusionResult(
                 value=None,
@@ -249,12 +245,27 @@ class AttributeValueFuser:
                 rule_used=resolver_name,
                 metadata={"reason": "no_values"}
             )
-            logger.debug(f"  Output: value=None, confidence=0.0, rule={resolver_name}")
+            if context.debug and context.debug_emit is not None:
+                try:
+                    context.debug_emit({
+                        "group_id": context.group_id,
+                        "attribute": context.attribute,
+                        "conflict_resolution_function": resolver_name,
+                        "inputs": [],
+                        "resolver_kwargs": dict(self.resolver_kwargs),
+                        "output": {
+                            "value": None,
+                            "confidence": 0.0,
+                            "metadata": result.metadata,
+                        },
+                        "error": None,
+                    })
+                except Exception:
+                    pass
             return result
-        
+
         # Extract just the values for conflict resolution
         values = [item[0] for item in values_with_sources]
-        logger.debug(f"  Extracted values for fusion: {repr(values)}")
 
         # Call function resolver
         try:
@@ -272,11 +283,10 @@ class AttributeValueFuser:
                     context_kwargs.setdefault('trust_map', context.metadata['trust_map'])
             except Exception:
                 pass
-            logger.debug(f"  Calling resolver with context: {context_kwargs}")
-            
+
             # Call function resolver
             resolved_value, confidence, metadata = self.resolver(values, **context_kwargs)
-            
+
             result = FusionResult(
                 value=resolved_value,
                 sources={item[1] for item in values_with_sources},
@@ -284,7 +294,6 @@ class AttributeValueFuser:
                 rule_used=resolver_name,
                 metadata=metadata
             )
-            logger.debug(f"  Output: value={repr(resolved_value)}, confidence={confidence:.3f}, sources={result.sources}, metadata={metadata}")
             # Emit structured debug record if requested
             if context.debug and context.debug_emit is not None:
                 try:
@@ -313,7 +322,6 @@ class AttributeValueFuser:
                     pass
         except Exception as e:
             logger.warning(f"Function resolver {resolver_name} failed: {e}")
-            logger.debug(f"  Falling back to first value: {repr(values[0]) if values else None}")
             result = FusionResult(
                 value=values[0] if values else None,
                 sources={item[1] for item in values_with_sources},

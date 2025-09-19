@@ -8,7 +8,7 @@ and executing fusion strategies.
 from __future__ import annotations
 
 from typing import Dict, List, Optional, Set, Tuple, Union, Any
-from collections import defaultdict
+from collections import defaultdict, Counter
 import logging
 import time
 import pandas as pd
@@ -173,8 +173,14 @@ def build_record_groups_from_correspondences(
 
     logger.info(
         f"Created {len(groups)} record groups from {len(normalized_correspondences)} correspondences")
-    logger.info(f"Groups: {len([g for g in groups if len(g.records) > 1])} multi-record, "
-                f"{len([g for g in groups if len(g.records) == 1])} singleton")
+    size_counts = Counter(len(group.records) for group in groups)
+    if size_counts:
+        distribution = ", ".join(
+            f"{size}: {count}" for size, count in sorted(size_counts.items())
+        )
+        logger.info("Group size distribution (size: count): %s", distribution)
+    else:
+        logger.info("Group size distribution: none")
 
     return groups
 
@@ -277,6 +283,10 @@ class DataFusionEngine:
                             "format": "jsonl",
                         }
                         f.write(json.dumps(header, ensure_ascii=False) + "\n")
+                self._logger.info(
+                    "Fusion debug logging enabled; refer to %s for detailed traces.",
+                    path,
+                )
             except Exception as e:
                 self._logger.warning(f"Could not initialize debug log file '{path}': {e}")
                 self._debug_file = None
@@ -563,16 +573,15 @@ class DataFusionEngine:
 
             if fuser:
                 # Use registered fuser
-                self._logger.debug(f"Fusing attribute '{attribute}' for group '{group.group_id}' using fuser: {fuser.resolver.__name__}")
                 result = fuser.fuse(group.records, context)
                 fused_record[attribute] = result.value
                 attribute_confidences.append(result.confidence)
                 fusion_metadata[f"{attribute}_rule"] = result.rule_used
                 fusion_metadata[f"{attribute}_sources"] = list(result.sources)
-                self._logger.debug(f"  Fused '{attribute}': {repr(result.value)} (confidence: {result.confidence:.3f})")
             else:
                 # Default fusion: prefer non-null values, first available
-                self._logger.debug(f"Fusing attribute '{attribute}' for group '{group.group_id}' using default (first_non_null)")
+                attr_lower = attribute.lower()
+                track_confidence = attr_lower not in {"id", "_id"}
                 values = []
                 for record in group.records:
                     value = record.get(attribute)
@@ -581,9 +590,10 @@ class DataFusionEngine:
 
                 if values:
                     fused_record[attribute] = values[0]  # Take first non-null
-                    attribute_confidences.append(0.5)  # Default confidence
                     fusion_metadata[f"{attribute}_rule"] = "first_non_null"
-                    self._logger.debug(f"  Fused '{attribute}': {repr(values[0])} (default, confidence: 0.5)")
+                    output_confidence = 0.5 if track_confidence else None
+                    if track_confidence:
+                        attribute_confidences.append(0.5)  # Default confidence
                     # Emit debug block for default resolver if enabled
                     if self._debug_enabled and self._debug_file is not None:
                         try:
@@ -604,7 +614,7 @@ class DataFusionEngine:
                                 "resolver_kwargs": {},
                                 "output": {
                                     "value": values[0],
-                                    "confidence": 0.5,
+                                    "confidence": output_confidence,
                                     "metadata": {},
                                 },
                                 "error": None,
@@ -613,9 +623,36 @@ class DataFusionEngine:
                             pass
                 else:
                     fused_record[attribute] = None
-                    attribute_confidences.append(0.0)
                     fusion_metadata[f"{attribute}_rule"] = "no_value"
-                    self._logger.debug(f"  Fused '{attribute}': None (no values available)")
+                    output_confidence = 0.0 if track_confidence else None
+                    if track_confidence:
+                        attribute_confidences.append(0.0)
+                    if self._debug_enabled and self._debug_file is not None:
+                        try:
+                            inputs = [
+                                {
+                                    "record_id": rec.get("_id", "unknown"),
+                                    "dataset": group.source_datasets.get(rec.get("_id", "unknown"), "unknown"),
+                                    "value": rec.get(attribute),
+                                }
+                                for rec in group.records
+                                if _is_valid_value(rec.get(attribute))
+                            ]
+                            self._emit_debug({
+                                "group_id": group.group_id,
+                                "attribute": attribute,
+                                "conflict_resolution_function": "first_non_null",
+                                "inputs": inputs,
+                                "resolver_kwargs": {},
+                                "output": {
+                                    "value": None,
+                                    "confidence": output_confidence,
+                                    "metadata": {},
+                                },
+                                "error": None,
+                            })
+                        except Exception:
+                            pass
 
         # Calculate overall confidence
         if attribute_confidences:

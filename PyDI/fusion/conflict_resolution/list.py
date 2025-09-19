@@ -1,10 +1,8 @@
 """List-based conflict resolution functions."""
 
 from typing import Any, List, Tuple, Dict, Union, Set
-import pandas as pd
 from collections import Counter
 
-from ..base import _is_valid_value
 from .utils import _filter_valid_values
 
 
@@ -30,15 +28,8 @@ def union(values: List[Any], separator: str = None, **kwargs) -> FusionResult:
     FusionResult
         Tuple of (resolved_value, confidence, metadata)
     """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    logger.debug(f"union: input values={repr(values)}, separator={repr(separator)}")
     valid_values = _filter_valid_values(values)
-    logger.debug(f"union: valid values after filtering={repr(valid_values)}")
-    
     if not valid_values:
-        logger.debug("union: no valid values, returning None")
         return None, 0.0, {"reason": "no_valid_values"}
     
     # Convert all values to lists
@@ -46,18 +37,14 @@ def union(values: List[Any], separator: str = None, **kwargs) -> FusionResult:
     for v in valid_values:
         if isinstance(v, (list, tuple)):
             all_items.update(v)
-            logger.debug(f"union: added list/tuple items from {repr(v)}")
         elif isinstance(v, str) and separator:
             split_items = v.split(separator)
             all_items.update(split_items)
-            logger.debug(f"union: split string {repr(v)} by {repr(separator)} -> {split_items}")
         else:
             all_items.add(v)
-            logger.debug(f"union: added single item {repr(v)}")
-    
+
     result = sorted(list(all_items))  # Sort for consistency
     confidence = 1.0  # Union is deterministic
-    logger.debug(f"union: final union result={result}, confidence={confidence:.3f}")
     
     metadata = {
         "rule": "union",
