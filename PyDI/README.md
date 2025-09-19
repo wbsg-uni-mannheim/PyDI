@@ -1,7 +1,6 @@
 # Python Data Integration Framework (PyDI)
 
-The PyDI framework provides methods for end-to-end data integration. The framework implements methods for data profiling, pre-processing, information extraction, normalization, schema matching, entity matching, data fusion, and result evaluation and reporting. The framework is designed as independent composable modules that operate on pure pandas dataframes as underlying data structure which makes its outputs fully compatible with third party packages using pandas. The methods in PyDI can be easily customized by passing building blocks such as pre-defined blockers, comparators, similarity functions, and conflict resolution functions. In addition, these building blocks can be used as a template to easily extend PyDI with additional data integration methods.
-
+The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 ## Contents
 
 -   [Functionality](#functionality)
@@ -9,7 +8,7 @@ The PyDI framework provides methods for end-to-end data integration. The framewo
 -   [License](#license)
 -   [Acknowledgements](#acknowledgements)
 
-**Quick Start**: The section below provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](/PyDI/wiki/)!
+This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](/PyDI/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](/PyDI/wiki/)!
 
 ## Installing PyDI
 
@@ -21,48 +20,52 @@ pip install uma-pydi
 
 ## Functionality
 
-The PyDI framework covers all central steps of the data integration process, including data loading, pre-processing, schema matching, entity matching, as well as data fusion. This section gives an overview of the functionality and the alternative algorithms that are provided for each of these steps.
+The PyDI framework covers all steps of the data integration process, including data loading, schema matching, data translation, entity matching, and data fusion. This section gives an overview of the functionality and the alternative algorithms that are provided for each of these steps.
 
-![Data Integration Process Example](./img/integration_overview.png)
+**[Data Loading](#)**: PyDI provides methods for reading standard data formats such as JSON, XML, and CSV into pandas DataFrames. All read methods can optionally add provenance metadata to the dataframes which is represented using the pandas property `DataFrame.attrs`.
 
-**[Data Loading](#)**: PyDI provides methods for reading standard data formats such as CSV, XML and JSON into pandas dataframes. All read methods can optionally assign a globally unique ID to each record if the dataset does not contain an ID column yet. PyDI's read methods further add optional provenance metadata to the dataframes using the `DataFrame.attrs` attribute.
-
-**[Pre-processing](#)**: During pre-processing data is prepared for the methods that are going to be applied in the integration process. Pre-processing is a necessary step at each point in the data integration pipeline to ensure quality results. PyDI provides you with specialized pre-processing methods for tabular data, such as:
-
--   Information extraction via
-    -   Regex
-    -   Python functions
-    -   Large language models
--   Value normalization
-    -   Data type detection
-    -   Text & header normalization
-    -   Unit of measurement conversion
-    -   Anomaly detection
-    -   Data validation
-
-**[Schema Matching](#)**: Schema matching methods find attributes in two schemata that have the same meaning. PyDI provides three pre-implemented schema matching algorithms which either rely on attribute labels or data values, or exploit an existing mapping of records (duplicate-based schema matching) in order to find attribute correspondences. PyDI's schema matching module offers:
+**[Schema Matching](#)**: Schema matching identifies attributes in multiple schemata that have the same meaning. PyDI provides three schema matching methods which either rely on attribute labels or data values, or exploit an existing mapping of records (duplicate-based schema matching) in order to find attribute correspondences. PyDI's schema matching module supports:
 
 -   Label-based schema matching
 -   Instance-based schema matching
 -   Duplicate-based schema matching
--   Evaluation and reporting for schema matching
+-   Evaluation of schema matching results
+-   Reports about the matching process
 
-**[Entity Matching](#)**: Entity matching methods identify records that describe the same real-world entity. The pre-implemented entity matching methods can be applied to a single dataset for duplicate detection or to multiple datasets in order to find record-level correspondences. PyDI offers a range of entity matching methods, starting from simple attribute similarity-based rules over machine-learned rules, to Pre-trained Language Models (PLMs) and Large Language Models (LLMs). Entity matching methods rely on blocking in order to reduce the number of record comparisons. PyDI provides the following pre-implemented blocking and entity matching methods:
+**[Data Translation](#)**: Translates data from a source schema into a target schema. The translation process may include value normalization and information extraction. PyDI provides the following methods for data translation, value normalization, and information extraction:
 
--   Blocking by single/multiple blocking key(s)
--   Sorted-neighbourhood blocking
--   Token-based blocking
--   Embedding-based blocking
--   Rule-based entity matching (manual or machine learning-based)
--   PLM-based entity matching
--   LLM-based entity matching
--   Evaluation and reporting for blocking and entity matching
+-   Data Translation
+	-   Mapping-based translation
+-   Value normalization
+    -   Data type detection
+    -   Value & header normalization
+    -   Unit of measurement conversion
+    -   Data validation
+-   Information extraction via
+    -   Regex
+    -   Python functions
+    -   Large language models
 
-**[Data Fusion](#)**: Data fusion methods combine data from multiple sources into a single, consolidated dataset. For this, they rely on the schema- and record-level correspondences that were discovered in the previous steps of the integration process. However, different sources may provide conflicting data values. PyDI allows you to resolve such data conflicts (decide which value to include in the final dataset) by applying different conflict resolution functions. PyDI's fusion module offers the following:
+**[Entity Matching](#)**: Entity matching methods identify records in different datasets that describe the same real-world entity. PyDI offers a range of entity matching methods, starting from simple attribute similarity-based rules over machine-learned rules, to Pre-trained Language Models (PLMs) and Large Language Models (LLMs). Entity matching methods rely on blocking in order to reduce the number of record comparisons. PyDI provides the following pre-implemented blocking and entity matching methods:
 
--   13 value-based conflict resolution functions for strings, numbers and lists
--   4 source-/provenance-based conflict resolution functions.
--   Evaluation and reporting for Data Fusion
+-	Blocking Methods
+	-   Key-based blocking
+	-   Sorted-neighbourhood blocking
+	-   Token-based blocking
+	-   Embedding-based blocking
+- Entity Matching
+	-   Rule-based entity matching (manual or machine learning-based)
+	-   PLM-based entity matching
+	-   LLM-based entity matching
+-   Evaluation of entity matching and blocking results
+-   Reports about the matching process
+
+**[Data Fusion](#)**: Data fusion combines data from multiple sources into a single, consolidated dataset. Different sources may provide conflicting data values. PyDI allows you to resolve such data conflicts (decide which value to include in the final dataset) by applying different conflict resolution functions. PyDI's fusion module offers the following:
+
+-   13 value-based conflict resolution functions for strings, numbers, and sets
+-   4 metadata-based conflict resolution functions.
+-   Evaluation of data fusion results against ground truth
+-   Reports about the fusion process
 
 ## Contact
 
