@@ -21,7 +21,7 @@ pip install uma-pydi
 ## Functionality
 The PyDI framework covers all central steps of the data integration process, including data loading, pre-processing, schema matching, entity matching, as well as data fusion. This section gives an overview of the functionality and the alternative algorithms that are provided for each of these steps.
 
-![Data Integration Process Example](/img/integration_overview.png)
+![Data Integration Process Example](./img/integration_overview.png)
 
 **[Data Loading](#)**: PyDI provides methods for reading standard data formats such as CSV, XML and JSON into pandas dataframes. All read methods can optionally assign a globally unique ID to each record if the dataset does not contain an ID column yet. PyDI's read methods further add optional provenance metadata to the dataframes using the `DataFrame.attrs` attribute.
 
