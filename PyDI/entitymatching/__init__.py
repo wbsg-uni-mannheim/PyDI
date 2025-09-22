@@ -23,9 +23,11 @@ from .blocking import (
 from .rule_based import RuleBasedMatcher
 from .ml_based import MLBasedMatcher
 from .llm_based import LLMBasedMatcher
+from .plm_based import PLMBasedMatcher
 
-# Feature extraction
+# Feature extraction and text formatting
 from .feature_extraction import FeatureExtractor, VectorFeatureExtractor
+from .text_formatting import TextFormatter
 
 # Comparators
 from .comparators import StringComparator, NumericComparator, DateComparator
@@ -47,8 +49,10 @@ __all__ = [
     "RuleBasedMatcher",
     "MLBasedMatcher",
     "LLMBasedMatcher",
+    "PLMBasedMatcher",
     "FeatureExtractor",
     "VectorFeatureExtractor",
+    "TextFormatter",
     "StringComparator",
     "NumericComparator",
     "DateComparator",
