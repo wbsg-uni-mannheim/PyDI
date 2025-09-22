@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Iterable, Optional, Union
+from typing import Any, Iterable, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -89,8 +89,9 @@ class MLBasedMatcher(BaseMatcher):
         trained_classifier: Any,
         threshold: float = 0.5,
         use_probabilities: bool = False,
+        debug: bool = False,
         **kwargs,
-    ) -> CorrespondenceSet:
+    ) -> Union[CorrespondenceSet, Tuple[CorrespondenceSet, pd.DataFrame]]:
         """Find entity correspondences using trained ML classifier.
 
         Parameters
@@ -111,14 +112,19 @@ class MLBasedMatcher(BaseMatcher):
         use_probabilities : bool, optional
             Whether to use predict_proba() for probabilistic scores (default)
             or predict() for binary decisions. Default is False.
+        debug : bool, optional
+            If True, captures detailed feature extraction and prediction results
+            for debugging. Returns tuple of (correspondences, debug_results). Default is False.
         **kwargs
             Additional arguments (ignored).
 
         Returns
         -------
-        CorrespondenceSet
-            DataFrame with columns id1, id2, score, notes containing
+        CorrespondenceSet or Tuple[CorrespondenceSet, pandas.DataFrame]
+            If debug=False: DataFrame with columns id1, id2, score, notes containing
             entity correspondences above the threshold.
+            If debug=True: Tuple of (correspondences, debug_results) where
+            debug_results contains detailed ML prediction information.
 
         Raises
         ------
@@ -170,21 +176,36 @@ class MLBasedMatcher(BaseMatcher):
                    f"{total_pairs_processed} blocked pairs (reduction ratio: {reduction_ratio})")
         
         results = []
+        debug_results = [] if debug else None
 
         # Process candidate batches
         for batch in candidate_list:
             if batch.empty:
                 continue
 
-            batch_results = self._process_batch(
-                batch,
-                df_left,
-                df_right,
-                id_column,
-                trained_classifier,
-                threshold,
-                use_probabilities,
-            )
+            if debug:
+                batch_results, batch_debug = self._process_batch(
+                    batch,
+                    df_left,
+                    df_right,
+                    id_column,
+                    trained_classifier,
+                    threshold,
+                    use_probabilities,
+                    debug=True,
+                )
+                debug_results.extend(batch_debug)
+            else:
+                batch_results = self._process_batch(
+                    batch,
+                    df_left,
+                    df_right,
+                    id_column,
+                    trained_classifier,
+                    threshold,
+                    use_probabilities,
+                    debug=False,
+                )
             results.extend(batch_results)
 
         # Calculate total elapsed time
@@ -204,12 +225,19 @@ class MLBasedMatcher(BaseMatcher):
             corr_df.attrs["use_probabilities"] = use_probabilities
             corr_df.attrs["feature_extractor"] = str(self.feature_extractor)
 
-            return corr_df
         else:
-            empty_df = pd.DataFrame(columns=["id1", "id2", "score", "notes"])
-            empty_df.attrs["classifier_type"] = type(trained_classifier).__name__
-            empty_df.attrs["threshold"] = threshold
-            return empty_df
+            corr_df = pd.DataFrame(columns=["id1", "id2", "score", "notes"])
+            corr_df.attrs["classifier_type"] = type(trained_classifier).__name__
+            corr_df.attrs["threshold"] = threshold
+
+        if debug:
+            debug_df = pd.DataFrame(debug_results) if debug_results else pd.DataFrame(columns=[
+                "id1", "id2", "feature_names", "feature_values", "prediction_score",
+                "classifier_type", "prediction_proba_positive", "prediction_proba_negative"
+            ])
+            return corr_df, debug_df
+        else:
+            return corr_df
 
     def _process_batch(
         self,
@@ -220,7 +248,8 @@ class MLBasedMatcher(BaseMatcher):
         trained_classifier: Any,
         threshold: float,
         use_probabilities: bool,
-    ) -> list:
+        debug: bool = False,
+    ) -> Union[list, Tuple[list, list]]:
         """Process a batch of candidate pairs using the trained classifier.
 
         Parameters
@@ -237,11 +266,14 @@ class MLBasedMatcher(BaseMatcher):
             Decision threshold.
         use_probabilities : bool
             Whether to use probabilistic scores.
+        debug : bool, optional
+            Whether to capture debug information. Default is False.
 
         Returns
         -------
-        list
-            List of correspondence dictionaries.
+        list or Tuple[list, list]
+            If debug=False: List of correspondence dictionaries.
+            If debug=True: Tuple of (correspondence_list, debug_results_list).
         """
         try:
             # Extract features for this batch
@@ -292,9 +324,42 @@ class MLBasedMatcher(BaseMatcher):
 
             # Filter by threshold and create results
             results = []
+            debug_results = [] if debug else None
+
             for i, score in enumerate(scores):
+                row = feature_df.iloc[i]
+
+                # Always capture debug info if requested
+                if debug:
+                    # Get feature names and values for this pair
+                    feature_names = [col for col in feature_df.columns if col not in ["id1", "id2"]]
+                    feature_values = {name: row[name] for name in feature_names}
+
+                    # Get probabilities if available
+                    proba_positive = None
+                    proba_negative = None
+                    if use_probabilities and hasattr(trained_classifier, "predict_proba"):
+                        try:
+                            proba = trained_classifier.predict_proba(X.iloc[[i]])
+                            if proba.shape[1] == 2:
+                                proba_negative = float(proba[0, 0])
+                                proba_positive = float(proba[0, 1])
+                        except:
+                            pass
+
+                    debug_results.append({
+                        "id1": row["id1"],
+                        "id2": row["id2"],
+                        "feature_names": str(feature_names),
+                        "feature_values": str(feature_values),
+                        "prediction_score": float(score),
+                        "classifier_type": type(trained_classifier).__name__,
+                        "prediction_proba_positive": proba_positive,
+                        "prediction_proba_negative": proba_negative,
+                    })
+
+                # Add to results if above threshold
                 if score >= threshold:
-                    row = feature_df.iloc[i]
                     results.append(
                         {
                             "id1": row["id1"],
@@ -304,11 +369,17 @@ class MLBasedMatcher(BaseMatcher):
                         }
                     )
 
-            return results
+            if debug:
+                return results, debug_results
+            else:
+                return results
 
         except Exception as e:
             logging.error(f"Error processing batch: {e}")
-            return []
+            if debug:
+                return [], []
+            else:
+                return []
 
     def predict_pairs(
         self,
