@@ -1,6 +1,6 @@
 [project]
 name = "uma-pydi"
-version = "0.1.0"
+version = "0.1.1"
 description = "PyDI - Python Data Integration Framework"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -15,7 +15,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache :: 2.0",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Information Analysis",
@@ -90,7 +90,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["PyDI*"]
+include = ["src/*"]
 
 [tool.black]
 line-length = 88
@@ -115,10 +115,10 @@ exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["PyDI"]
+known_first_party = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["PyDI/tests"]
+testpaths = ["src/tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
@@ -140,7 +140,7 @@ warn_unreachable = true
 strict_equality = true
 
 [tool.coverage.run]
-source = ["PyDI"]
+source = ["src"]
 omit = [
     "*/tests/*",
     "*/test_*",
