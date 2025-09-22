@@ -1,6 +1,6 @@
 [project]
 name = "uma-pydi"
-version = "0.1.1"
+version = "0.1.0"
 description = "PyDI - Python Data Integration Framework"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -24,12 +24,12 @@ classifiers = [
 
 dependencies = [
   "pandas>=2.0.0,<3.0.0",
-  "numpy>=1.24.0,<2.0.0",
+  "numpy>=2.1.0,<2.2.0",
   "scikit-learn>=1.3.0,<2.0.0",
   "networkx>=3.0,<4.0",
   "rapidfuzz>=3.0.0,<4.0.0",
   "textdistance[extras]>=4.5.0,<5.0.0",
-  "sentence-transformers>=2.2.0,<3.0.0",
+  "sentence-transformers>=5.0.0,<6.0.0",
   "pydantic>=2.0.0,<3.0.0",
   "ydata-profiling>=4.0.0,<5.0.0",
   "sweetviz>=2.3.0,<3.0.0",
@@ -66,16 +66,16 @@ test = [
   "pytest-mock>=3.11.0,<4.0.0",
 ]
 llm = [
-  "langchain-openai>=0.1.0,<0.3.0",
+  "langchain-openai>=0.3.0,<0.4.0",
 ]
 embedding = [
-  "sentence-transformers>=2.2.0,<3.0.0",
+  "sentence-transformers>=5.0.0,<6.0.0",
   "torch>=2.0.0,<3.0.0",
 ]
 plm = [
   "transformers>=4.30.0,<5.0.0",
   "torch>=2.0.0,<3.0.0",
-  "sentence-transformers>=2.2.0,<3.0.0",
+  "sentence-transformers>=5.0.0,<6.0.0",
 ]
 faiss = [
   "faiss-cpu>=1.7.4,<2.0.0",
@@ -90,7 +90,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src/*"]
+include = ["PyDI*"]
 
 [tool.black]
 line-length = 88
