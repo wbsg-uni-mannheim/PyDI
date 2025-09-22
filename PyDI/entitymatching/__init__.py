@@ -34,7 +34,6 @@ from .comparators import StringComparator, NumericComparator, DateComparator
 
 # Evaluation tools
 from .evaluation import EntityMatchingEvaluator
-from .blocking.blocking_evaluation import BlockingEvaluator
 
 __all__ = [
     "BaseMatcher",
@@ -57,5 +56,4 @@ __all__ = [
     "NumericComparator",
     "DateComparator",
     "EntityMatchingEvaluator",
-    "BlockingEvaluator",
 ]
