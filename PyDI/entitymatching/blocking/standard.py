@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Iterator, List, Optional, Tuple
+from typing import Iterator, List, Optional, Tuple, Callable
 from collections import Counter
 
 import pandas as pd
@@ -30,6 +30,7 @@ class StandardBlocker(BaseBlocker):
         *,
         batch_size: int = 100_000,
         output_dir: str = "output",
+        preprocess: Optional[Callable[[str], str]] = None,
     ) -> None:
         super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if not on:
@@ -37,16 +38,17 @@ class StandardBlocker(BaseBlocker):
                 "StandardBlocker requires at least one column in 'on'")
         self.on = list(on)
         self.output_dir = output_dir
+        self.preprocess = preprocess
 
         # Setup logging (same as BaseBlocker pattern)
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
         
         # Log DEBUG: Creating blocking key values
         self.logger.debug(f"Creating blocking key values for dataset1: {len(self.df_left)} records")
-        self._left_blocks = self._build_blocks(self.df_left, self.on, self.id_column)
+        self._left_blocks = self._build_blocks(self.df_left, self.on, self.id_column, self.preprocess)
 
         self.logger.debug(f"Creating blocking key values for dataset2: {len(self.df_right)} records")
-        self._right_blocks = self._build_blocks(self.df_right, self.on, self.id_column)
+        self._right_blocks = self._build_blocks(self.df_right, self.on, self.id_column, self.preprocess)
         
         # Log INFO: blocking key counts
         self.logger.info(f"created {len(self._left_blocks)} blocking keys for first dataset")
@@ -75,13 +77,18 @@ class StandardBlocker(BaseBlocker):
         return est
 
     @staticmethod
-    def _build_blocks(df: pd.DataFrame, cols: List[str], id_column: str) -> dict:
+    def _build_blocks(df: pd.DataFrame, cols: List[str], id_column: str, preprocess: Optional[Callable[[str], str]] = None) -> dict:
         for col in cols:
             if col not in df.columns:
                 raise ValueError(f"Column '{col}' not found for blocking")
 
-        # Create a block key column tuple; cast to string and lowercase to avoid NaN issues
-        key_series = df[cols].astype(str).apply(lambda x: x.str.lower()).agg("||".join, axis=1)
+        # Create a block key column tuple; cast to string and apply preprocessing to avoid NaN issues
+        key_series = df[cols].astype(str)
+        if preprocess:
+            key_series = key_series.apply(lambda x: x.apply(preprocess))
+        else:
+            key_series = key_series.apply(lambda x: x.str.lower())
+        key_series = key_series.agg("||".join, axis=1)
         blocks: dict[str, List[str]] = {}
         for record_id, key in zip(df[id_column], key_series):
             if key not in blocks:

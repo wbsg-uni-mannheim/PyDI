@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Iterator, List, Tuple
+from typing import Iterator, List, Tuple, Optional, Callable
 from collections import Counter
 
 import pandas as pd
@@ -32,6 +32,7 @@ class SortedNeighbourhoodBlocker(BaseBlocker):
         *,
         batch_size: int = 100_000,
         output_dir: str = "output",
+        preprocess: Optional[Callable[[str], str]] = None,
     ) -> None:
         super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         if key not in self.df_left.columns or key not in self.df_right.columns:
@@ -41,6 +42,7 @@ class SortedNeighbourhoodBlocker(BaseBlocker):
         self.key = key
         self.window = int(window)
         self.output_dir = output_dir
+        self.preprocess = preprocess
 
         # Setup logging
         self.logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
@@ -57,8 +59,10 @@ class SortedNeighbourhoodBlocker(BaseBlocker):
         combined = pd.concat([left_tmp, right_tmp], ignore_index=True)
 
         if pd.api.types.is_string_dtype(combined[key]):
-            combined["__sort_key"] = combined[key].fillna(
-                "").astype(str).str.lower()
+            if self.preprocess:
+                combined["__sort_key"] = combined[key].fillna("").astype(str).apply(self.preprocess)
+            else:
+                combined["__sort_key"] = combined[key].fillna("").astype(str).str.lower()
         else:
             combined["__sort_key"] = combined[key]
 

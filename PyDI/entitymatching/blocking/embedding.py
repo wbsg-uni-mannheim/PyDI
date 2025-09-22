@@ -80,6 +80,7 @@ class EmbeddingBlocker(BaseBlocker):
         right_embeddings: Optional[np.ndarray] = None,
         device: Optional[str] = None,
         output_dir: str = "output",
+        preprocess: Optional[Callable[[str], str]] = None,
     ):
         super().__init__(df_left, df_right, id_column, batch_size=batch_size)
         
@@ -102,6 +103,7 @@ class EmbeddingBlocker(BaseBlocker):
         self.embedder = embedder
         self.device = device
         self.output_dir = output_dir
+        self.preprocess = preprocess
         
         # Initialize embeddings
         self.left_embeddings = left_embeddings
@@ -189,16 +191,19 @@ class EmbeddingBlocker(BaseBlocker):
     def _combine_text_columns(self, df: pd.DataFrame) -> list[str]:
         """Combine text columns into single strings for embedding."""
         combined_texts = []
-        
+
         for _, row in df.iterrows():
             text_parts = []
             for col in self.text_cols:
                 value = row[col]
                 if pd.isna(value):
                     value = ""
-                text_parts.append(str(value))
+                value_str = str(value)
+                if self.preprocess:
+                    value_str = self.preprocess(value_str)
+                text_parts.append(value_str)
             combined_texts.append(" ".join(text_parts))
-            
+
         return combined_texts
     
     def _compute_embeddings(self, df: pd.DataFrame) -> np.ndarray:

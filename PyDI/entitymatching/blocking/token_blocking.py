@@ -39,6 +39,7 @@ class TokenBlocker(BaseBlocker):
         output_dir: str = "output",
         ngram_size: Optional[int] = None,
         ngram_type: Optional[Literal["character", "word"]] = None,
+        preprocess: Optional[Callable[[str], str]] = None,
     ) -> None:
         """Initialize TokenBlocker with optional ngram support.
 
@@ -71,6 +72,7 @@ class TokenBlocker(BaseBlocker):
         self.ngram_type = ngram_type
         self.min_token_len = int(min_token_len)
         self.output_dir = output_dir
+        self.preprocess = preprocess
 
         # Select appropriate tokenizer
         if tokenizer is not None:
@@ -88,11 +90,11 @@ class TokenBlocker(BaseBlocker):
         
         # Log DEBUG: Creating token index
         self.logger.debug(f"Creating token index for dataset1: {len(self.df_left)} records")
-        self._left_tokens = self._build_token_index(self.df_left, self.column, self.id_column)
+        self._left_tokens = self._build_token_index(self.df_left, self.column, self.id_column, self.preprocess)
 
         self.logger.debug(f"Creating token index for dataset2: {len(self.df_right)} records")
         self._right_tokens = self._build_token_index(
-            self.df_right, self.column, self.id_column)
+            self.df_right, self.column, self.id_column, self.preprocess)
             
         # Log INFO: token counts
         self.logger.info(f"created {len(self._left_tokens)} token keys for first dataset")
@@ -206,10 +208,11 @@ class TokenBlocker(BaseBlocker):
 
         return unique_ngrams
 
-    def _build_token_index(self, df: pd.DataFrame, column: str, id_column: str) -> dict:
+    def _build_token_index(self, df: pd.DataFrame, column: str, id_column: str, preprocess: Optional[Callable[[str], str]] = None) -> dict:
         index: dict[str, List[str]] = {}
         for record_id, val in zip(df[id_column], df[column]):
-            for tok in self.tokenizer(val):
+            processed_val = preprocess(str(val)) if preprocess and val is not None else val
+            for tok in self.tokenizer(processed_val):
                 if len(tok) < self.min_token_len:
                     continue
                 if tok not in index:
