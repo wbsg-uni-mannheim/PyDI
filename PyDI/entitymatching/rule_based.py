@@ -86,8 +86,8 @@ class RuleBasedMatcher(BaseMatcher):
         # Setup logger
         logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__name__}")
         
-        # Log start of identity resolution
-        logger.info("Starting Identity Resolution")
+        # Log start of entity matching
+        logger.info("Starting Entity Matching")
         start_time = time.time()
         
         # Validate inputs
@@ -156,7 +156,7 @@ class RuleBasedMatcher(BaseMatcher):
         total_time_str = f"{total_time:.3f}"
         
         # Log completion info
-        logger.info(f"Identity Resolution finished after 0:00:{total_time_str}; found {len(results)} correspondences.")
+        logger.info(f"Entity Matching finished after 0:00:{total_time_str}; found {len(results)} correspondences.")
         
         # Create correspondence set
         correspondences = pd.DataFrame(results) if results else pd.DataFrame(columns=["id1", "id2", "score", "notes"])

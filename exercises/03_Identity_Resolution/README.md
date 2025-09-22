@@ -1,4 +1,4 @@
-# Exercise 03 - Identity Resolution
+# Exercise 03 - Entity Matching
 
 To-Do's: 
 - Update SlideDeck and share pdf

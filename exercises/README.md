@@ -4,5 +4,5 @@ This repository contains the exercises for the lecture IE670 Web Data Integratio
 Exercises:
 - Data Formats
 - Schema_Mapping
-- Identity Resolution
+- Entity Matching
 - Data Fusion
