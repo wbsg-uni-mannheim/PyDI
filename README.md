@@ -1,4 +1,4 @@
-# Python Data Integration Framework (PyDI)
+# PyDI - Python Data Integration Framework 
 
 The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 
