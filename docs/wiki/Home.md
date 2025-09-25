@@ -177,7 +177,7 @@ Blockers
 
 Example (Blocking without matching step)
 ```python
-from PyDI.entitymatching.blocking import StandardBlocking
+from PyDI.entitymatching import StandardBlocking
 
 blocker = StandardBlocking(df_left, df_right, on=["title","year"], batch_size=100_000, out_dir="output/matching/blocking")
 for batch in blocker:  # yields DataFrames with [id1, id2, block_key]
@@ -187,21 +187,27 @@ for batch in blocker:  # yields DataFrames with [id1, id2, block_key]
 
 Evaluation (Blocking)
 ```python
-from PyDI.entitymatching.blocking import BlockingEvaluator
+from PyDI.entitymatching import EntityMatchingEvaluator
 
-report = BlockingEvaluator.evaluate(candidates=blocker, gold=test_pairs, out_dir="output/matching/blocking_eval")
+report = EntityMatchingEvaluator.evaluate_blocking(candidate_pairs=blocked_pairs, blocker=blocker, test_pairs=test_pairs, out_dir="output/matching/blocking_eval")
 ```
 
 Matchers
 - `Comparators`: A set of attribute comparators that can be used together with the RuleBasedMatcher and FeatureExtractor. Each comparator consists of an attribute and a similarity metric for comparing two values of that attribute.
 - `RuleBasedMatcher`: Composes a set of attribute comparators (e.g., Jaccard on title, date proximity) and assigns weights to calculate record pair similarity. A manually assigned threshold for the rule allows the classification of record pairs into matches and non-matches.
-- `FeatureExtractor` and `VectorFeatureExtractor`: Used to generate features for machine-learning based matchers in PyDI. FeatureExtractor uses similarity-based metrics like Jaccard or Levenshtein. VectorFeatureExtractor generates embedding vectors (BoW and sentence-transformers).  
+- `FeatureExtractor` and `VectorFeatureExtractor`: Used to generate features for machine-learning based matchers in PyDI. FeatureExtractor uses similarity-based metrics like Jaccard or Levenshtein. VectorFeatureExtractor generates embedding vectors (BoW and sentence-transformers).
 - `MLBasedMatcher`: takes a trained scikit-learn model as input and uses the model to classify record pairs and create a set of correspondences between two datasets.
 - `PLMBasedMatcher`: takes an off-the-shelf or fine-tuned huggingface transformer model and performs entity matching. Returns a set of correspondences.
 - `LLMBasedMatcher`: calls external hosted LLMs (e.g. OpenAI) to perform the entity matching and return a set of correspondences.
 - `EntityMatchingEvaluator`: evaluation methods for blocking (pair completeness, pair quality, reduction ratio) and matching (Accuracy, Precision, Recall, F1). Supports writing detailed console logs and debug files.
 
-
+Post-Clustering Methods
+- `ConnectedComponentClusterer`: Groups entities into clusters based on connected components, enforcing transitivity.
+- `CentreClusterer`: Creates star-shaped clusters using the CENTER algorithm, where entities are grouped around high-similarity centers with maximum diameter of 2.
+- `HierarchicalClusterer`: Performs agglomerative hierarchical clustering with configurable linkage modes and stopping criteria.
+- `GreedyOneToOneMatchingAlgorithm`: Ensures one-to-one matching by greedily selecting highest-scoring correspondences while avoiding conflicts.
+- `MaximumBipartiteMatching`: Finds optimal one-to-one matching using maximum weight bipartite matching algorithms.
+- `StableMatching`: Finds stable matches where records are matched to mutually preferred partners, ensuring no record would prefer to switch.
 
 Example (Rule‑based Matcher)
 ```python
@@ -212,9 +218,17 @@ matcher = RuleBasedMatcher(comparators=[jaccard("title"), date_within_years("dat
 correspondences = matcher.match(df_left, df_right, candidates=blocker)
 ```
 
+Example (Post-Clustering)
+```python
+from PyDI.entitymatching import StableMatching
+
+clusterer = StableMatching()
+refined_correspondences = clusterer.cluster(correspondences)
+```
+
 Evaluation (Matching)
 ```python
-from PyDI.entitymatching.evaluation import EntityMatchingEvaluator
+from PyDI.entitymatching import EntityMatchingEvaluator
 
 metrics = EntityMatchingEvaluator.evaluate_matching(corr=correspondences, test_pairs=test_pairs, threshold=0.7)
 ```
