@@ -295,4 +295,4 @@ The LLM logging helpers (`PyDI.utils.llm`) standardize how prompts, responses, t
 
 # Tutorial
 
-For a fully implemented example of a data integration workflow for integrating movie datasets from data loading, profiling, over entity matching and data fusion, refer to the [Tutorial Notebook](../tutorial/PyDI_Winter_Tutorial.ipynb)
+For a fully implemented example of a data integration workflow for integrating movie datasets from data loading, profiling, over entity matching and data fusion, refer to the [Tutorial Notebook](../tutorial/PyDI_Tutorial.ipynb)
