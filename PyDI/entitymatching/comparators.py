@@ -15,13 +15,21 @@ from ..utils import SimilarityRegistry
 
 class StringComparator(BaseComparator):
     """String similarity comparator using textdistance metrics.
-    
+
     Parameters
     ----------
     column : str
         Column name to compare.
     similarity_function : str
         Name of textdistance similarity function.
+    tokenization : str or callable, optional
+        Tokenization strategy for token-based similarity functions. Options:
+        - "word": Whitespace tokenization
+        - "char": Character-level tokenization
+        - "ngram_2", "ngram_3": N-gram tokenization
+        - callable: Custom tokenizer function
+        Default: "word" for token-based functions (jaccard, sorensen_dice, cosine, etc.),
+        "char" for edit-based functions (jaro_winkler, levenshtein, etc.).
     preprocess : callable, optional
         Function to preprocess values before comparison.
     list_strategy : str, optional
@@ -30,27 +38,36 @@ class StringComparator(BaseComparator):
     """
     
     def __init__(
-        self, 
-        column: str, 
+        self,
+        column: str,
         similarity_function: str = "jaro_winkler",
+        tokenization: Optional[str] = None,
         preprocess: Optional[Callable[[str], str]] = None,
         list_strategy: str = None,
     ):
-        super().__init__(f"StringComparator({column}, {similarity_function}, list_strategy={list_strategy})")
         self.column = column
         self.similarity_function = similarity_function
         self.preprocess = preprocess
         self.list_strategy = list_strategy
-        
+
+        # Set intelligent default tokenization based on function type
+        if tokenization is None:
+            self.tokenization = "word" if SimilarityRegistry.is_tokenizable(similarity_function) else "char"
+        else:
+            self.tokenization = tokenization
+
+        super().__init__(f"StringComparator({column}, {similarity_function}, tokenization={self.tokenization}, list_strategy={list_strategy})")
+
         if list_strategy is not None and list_strategy not in ["concatenate", "best_match", "set_jaccard", "set_overlap"]:
             raise ValueError(f"Unknown list_strategy: {list_strategy}")
-        
-        # Get similarity function
+
+        # Get similarity function with tokenization
         try:
-            self._sim_func = SimilarityRegistry.get_function(similarity_function)
+            self._sim_func = SimilarityRegistry.get_function(similarity_function, self.tokenization)
         except ValueError as e:
             available = SimilarityRegistry.get_recommended_functions("entity_matching")
-            raise ValueError(f"{e}. Recommended: {available}")
+            available_tokenization = SimilarityRegistry.list_tokenization_strategies()
+            raise ValueError(f"{e}. Recommended functions: {available}. Available tokenization: {available_tokenization}")
     
     def compare(self, record1: pd.Series, record2: pd.Series) -> float:
         """Compare string values in specified column, handling both single values and lists."""

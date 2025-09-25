@@ -9,6 +9,7 @@ across schema matching, entity matching, and other PyDI modules.
 from __future__ import annotations
 
 import logging
+import re
 from typing import Callable, Dict, List, Optional, Set, Union
 
 import textdistance
@@ -109,32 +110,119 @@ class SimilarityRegistry:
         "monge_elkan", "cosine", "overlap", "damerau_levenshtein"
     ]
 
+    # Functions that benefit from tokenization (token-based algorithms)
+    TOKENIZABLE_FUNCTIONS = {
+        "jaccard", "sorensen_dice", "tversky", "overlap", "tanimoto",
+        "cosine", "monge_elkan", "bag"
+    }
+
+    # Default tokenization strategies
+    TOKENIZATION_STRATEGIES = {
+        "char": lambda text: text,  # Character-level (no tokenization)
+        "word": lambda text: text.split() if isinstance(text, str) else text,
+        "ngram_2": lambda text: [text[i:i+2] for i in range(len(text)-1)] if isinstance(text, str) else text,
+        "ngram_3": lambda text: [text[i:i+3] for i in range(len(text)-2)] if isinstance(text, str) else text,
+    }
+
     @classmethod
-    def get_function(cls, name: str) -> Callable:
-        """Get a similarity function by name.
-        
+    def get_function(cls, name: str, tokenization: str = "char") -> Callable:
+        """Get a similarity function by name with optional tokenization.
+
         Parameters
         ----------
         name : str
             Name of the similarity function.
-            
+        tokenization : str or callable, optional
+            Tokenization strategy. Can be:
+            - "char": Character-level (default, no tokenization)
+            - "word": Whitespace tokenization
+            - "ngram_2", "ngram_3": N-gram tokenization
+            - Callable: Custom tokenizer function
+
         Returns
         -------
         Callable
-            The textdistance similarity function.
-            
+            The textdistance similarity function, optionally wrapped with tokenization.
+
         Raises
         ------
         ValueError
-            If the function name is not recognized.
+            If the function name or tokenization strategy is not recognized.
         """
         if name not in cls.ALL_ALGORITHMS:
             raise ValueError(
                 f"Unknown similarity function: {name}. "
                 f"Available functions: {list(cls.ALL_ALGORITHMS.keys())}"
             )
-        return cls.ALL_ALGORITHMS[name]
-    
+
+        base_func = cls.ALL_ALGORITHMS[name]
+
+        # Apply tokenization if requested and function supports it
+        if tokenization != "char" and name in cls.TOKENIZABLE_FUNCTIONS:
+            return cls._wrap_with_tokenization(base_func, tokenization)
+        elif tokenization != "char" and name not in cls.TOKENIZABLE_FUNCTIONS:
+            logging.warning(
+                f"Tokenization '{tokenization}' not applicable to function '{name}' "
+                f"(only supported for: {sorted(cls.TOKENIZABLE_FUNCTIONS)}). "
+                "Using character-level processing."
+            )
+
+        return base_func
+
+    @classmethod
+    def _wrap_with_tokenization(cls, base_func: Callable, tokenization: Union[str, Callable]) -> Callable:
+        """Wrap a textdistance function with tokenization.
+
+        Parameters
+        ----------
+        base_func : Callable
+            The base textdistance function.
+        tokenization : str or callable
+            Tokenization strategy or custom tokenizer function.
+
+        Returns
+        -------
+        Callable
+            Wrapped function that applies tokenization before similarity computation.
+        """
+        # Get tokenizer function
+        if callable(tokenization):
+            tokenizer = tokenization
+        elif tokenization in cls.TOKENIZATION_STRATEGIES:
+            tokenizer = cls.TOKENIZATION_STRATEGIES[tokenization]
+        else:
+            raise ValueError(
+                f"Unknown tokenization strategy: {tokenization}. "
+                f"Available strategies: {list(cls.TOKENIZATION_STRATEGIES.keys())} "
+                "or provide a callable tokenizer."
+            )
+
+        def tokenized_similarity(s1: str, s2: str) -> float:
+            """Compute similarity with tokenization."""
+            try:
+                # Handle None/empty inputs
+                if not s1 or not s2:
+                    return 0.0 if s1 != s2 else 1.0
+
+                # Apply tokenization
+                tokens1 = tokenizer(s1)
+                tokens2 = tokenizer(s2)
+
+                # Handle empty token lists
+                if not tokens1 and not tokens2:
+                    return 1.0
+                elif not tokens1 or not tokens2:
+                    return 0.0
+
+                # Compute similarity on tokens
+                return float(base_func(tokens1, tokens2))
+
+            except Exception as e:
+                logging.warning(f"Error in tokenized similarity computation: {e}")
+                return 0.0
+
+        return tokenized_similarity
+
     @classmethod
     def get_functions_by_category(cls, category: str) -> Dict[str, Callable]:
         """Get all functions in a specific category.
@@ -279,6 +367,33 @@ class SimilarityRegistry:
         }
     
     @classmethod
+    def list_tokenization_strategies(cls) -> List[str]:
+        """List all available tokenization strategies.
+
+        Returns
+        -------
+        List[str]
+            Sorted list of tokenization strategy names.
+        """
+        return sorted(cls.TOKENIZATION_STRATEGIES.keys())
+
+    @classmethod
+    def is_tokenizable(cls, function_name: str) -> bool:
+        """Check if a function supports tokenization.
+
+        Parameters
+        ----------
+        function_name : str
+            Name of the similarity function.
+
+        Returns
+        -------
+        bool
+            True if the function supports tokenization, False otherwise.
+        """
+        return function_name in cls.TOKENIZABLE_FUNCTIONS
+
+    @classmethod
     def _get_function_description(cls, name: str) -> str:
         """Get description for a similarity function."""
         descriptions = {
@@ -323,20 +438,22 @@ class SimilarityRegistry:
         return descriptions.get(name, "No description available")
 
 
-def get_similarity_function(name: str) -> Callable:
-    """Convenience function to get a similarity function by name.
-    
+def get_similarity_function(name: str, tokenization: str = "char") -> Callable:
+    """Convenience function to get a similarity function by name with optional tokenization.
+
     Parameters
     ----------
     name : str
         Name of the similarity function.
-        
+    tokenization : str or callable, optional
+        Tokenization strategy (default: "char").
+
     Returns
     -------
     Callable
-        The textdistance similarity function.
+        The textdistance similarity function, optionally with tokenization.
     """
-    return SimilarityRegistry.get_function(name)
+    return SimilarityRegistry.get_function(name, tokenization)
 
 
 def list_similarity_functions(category: Optional[str] = None) -> List[str]:
