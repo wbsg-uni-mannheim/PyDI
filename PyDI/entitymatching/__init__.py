@@ -35,6 +35,17 @@ from .comparators import StringComparator, NumericComparator, DateComparator
 # Evaluation tools
 from .evaluation import EntityMatchingEvaluator
 
+# Post-clustering algorithms (subpackage)
+from .post_clustering import (
+    BasePostClusterer,
+    ConnectedComponentClusterer,
+    CentreClusterer,
+    HierarchicalClusterer,
+    GreedyOneToOneMatchingAlgorithm,
+    MaximumBipartiteMatching,
+    StableMatching,
+)
+
 __all__ = [
     "BaseMatcher",
     "BaseComparator",
@@ -56,4 +67,11 @@ __all__ = [
     "NumericComparator",
     "DateComparator",
     "EntityMatchingEvaluator",
+    "BasePostClusterer",
+    "ConnectedComponentClusterer",
+    "CentreClusterer",
+    "HierarchicalClusterer",
+    "GreedyOneToOneMatchingAlgorithm",
+    "MaximumBipartiteMatching",
+    "StableMatching",
 ]

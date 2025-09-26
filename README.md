@@ -48,6 +48,7 @@ The PyDI framework covers all steps of the data integration process, including d
 	-   Rule-based entity matching (manual or machine learning-based)
 	-   PLM-based entity matching
 	-   LLM-based entity matching
+    -   6 post-clustering methods
 -   Evaluation of entity matching and blocking results
 -   Debug reports about the matching process
 
