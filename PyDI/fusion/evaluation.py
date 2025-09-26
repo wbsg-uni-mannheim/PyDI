@@ -370,24 +370,37 @@ class DataFusionEvaluator:
 
         Returns aligned DataFrames with matching records only.
         """
-        # Find common IDs
-        fused_ids = set(fused_df[fused_id_column].dropna().astype(str))
-        gold_ids = set(gold_df[gold_id_column].dropna().astype(str))
-        common_ids = fused_ids.intersection(gold_ids)
+        fused_clean = fused_df.dropna(subset=[fused_id_column]).copy()
+        gold_clean = gold_df.dropna(subset=[gold_id_column]).copy()
 
-        if not common_ids:
+        if gold_clean.empty:
             return pd.DataFrame(), pd.DataFrame()
 
-        # Filter to common IDs and sort for consistent ordering
-        aligned_fused = fused_df[fused_df[fused_id_column].astype(
-            str).isin(common_ids)].copy()
-        aligned_gold = gold_df[gold_df[gold_id_column].astype(
-            str).isin(common_ids)].copy()
+        fused_clean["__eval_id"] = fused_clean[fused_id_column].astype(str)
+        gold_clean["__eval_id"] = gold_clean[gold_id_column].astype(str)
 
-        aligned_fused = aligned_fused.sort_values(
-            fused_id_column).reset_index(drop=True)
-        aligned_gold = aligned_gold.sort_values(
-            gold_id_column).reset_index(drop=True)
+        gold_id_order = gold_clean["__eval_id"].tolist()
+        fused_id_set = set(fused_clean["__eval_id"])
+
+        missing_ids = [gid for gid in gold_id_order if gid not in fused_id_set]
+        if missing_ids:
+            preview = ", ".join(missing_ids[:5])
+            if len(missing_ids) > 5:
+                preview += ", ..."
+            self._logger.warning(
+                "Missing %d gold records in fused dataset: %s",
+                len(missing_ids),
+                preview,
+            )
+
+        aligned_gold = gold_clean.set_index("__eval_id").loc[gold_id_order]
+        aligned_fused = fused_clean.set_index("__eval_id").reindex(gold_id_order)
+
+        aligned_gold = aligned_gold.reset_index(drop=True)
+        aligned_fused = aligned_fused.reset_index(drop=True)
+
+        aligned_gold = aligned_gold.drop(columns="__eval_id", errors="ignore")
+        aligned_fused = aligned_fused.drop(columns="__eval_id", errors="ignore")
 
         return aligned_fused, aligned_gold
 
@@ -433,15 +446,34 @@ class DataFusionEvaluator:
         context = FusionContext(group_id="eval", attribute=attribute)
 
         # Compare values row by row
-        for i in range(len(fused_df)):
+        if len(fused_df) != len(gold_df):
+            self._logger.warning(
+                "Aligned dataframes have different lengths (%d vs %d) for attribute '%s'",
+                len(fused_df),
+                len(gold_df),
+                attribute,
+            )
+
+        num_rows = min(len(fused_df), len(gold_df))
+
+        for i in range(num_rows):
             fused_value = fused_df.iloc[i][attribute]
             gold_value = gold_df.iloc[i][attribute]
 
-            # Skip if either value is missing (robust to arrays/lists)
-            if self._is_missing(fused_value) or self._is_missing(gold_value):
+            fused_missing = self._is_missing(fused_value)
+            gold_missing = self._is_missing(gold_value)
+
+            # No gold value -> cannot evaluate this row
+            if gold_missing and fused_missing:
+                continue
+            if gold_missing:
                 continue
 
             total_count += 1
+
+            if fused_missing:
+                # Count as incorrect when gold value exists but fused is missing
+                continue
 
             # Evaluate using the function
             if eval_function(fused_value, gold_value):
