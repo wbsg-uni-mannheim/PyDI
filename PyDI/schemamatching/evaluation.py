@@ -104,19 +104,27 @@ class SchemaMappingEvaluator:
         matched = 0  # Total predicted correspondences evaluated
         missing_positives = positive_set.copy()
         
+        matched_positives = set()
+
         for corr_tuple in corr_set:
             # Check both directions for symmetry
             reverse_tuple = (corr_tuple[2], corr_tuple[3], corr_tuple[0], corr_tuple[1])
-            
+
             if corr_tuple in positive_set or reverse_tuple in positive_set:
-                # True positive
-                correct += 1
                 matched += 1
-                
+                canonical = corr_tuple if corr_tuple in positive_set else reverse_tuple
+
+                if canonical not in matched_positives:
+                    # True positive (only count once per ground-truth correspondence)
+                    correct += 1
+                    matched_positives.add(canonical)
+                else:
+                    logger.debug(f"[duplicate-correct] {corr_tuple}")
+
                 # Remove from missing positives (check both directions)
                 missing_positives.discard(corr_tuple)
                 missing_positives.discard(reverse_tuple)
-                
+
                 logger.debug(f"[correct] {corr_tuple}")
                 
             elif (complete or 
