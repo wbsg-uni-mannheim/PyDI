@@ -7,11 +7,13 @@ against gold standard data.
 
 from __future__ import annotations
 
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Union, Iterable
 from datetime import datetime, date
 import pandas as pd
 import numpy as np
 import logging
+import json
+from pathlib import Path
 
 from .base import FusionContext, get_callable_name
 from .strategy import DataFusionStrategy
@@ -259,9 +261,63 @@ class DataFusionEvaluator:
         The fusion strategy containing evaluation rules.
     """
 
-    def __init__(self, strategy: DataFusionStrategy):
+    def __init__(
+        self,
+        strategy: DataFusionStrategy,
+        *,
+        debug: bool = False,
+        debug_file: Optional[Union[str, Path]] = None,
+        debug_format: str = "json",
+        fusion_debug_logs: Optional[Union[Path, str, Iterable[Union[Path, str]]]] = None,
+    ):
         self.strategy = strategy
         self._logger = logging.getLogger(__name__)
+        self._debug_enabled = bool(debug)
+        self._debug_format = debug_format if debug_format in {"text", "json"} else "json"
+        self._debug_file: Optional[Path] = None
+        self._fusion_debug_map: Dict[str, Dict[str, Dict[str, Any]]] = {}
+        if self._debug_enabled:
+            path = Path(debug_file) if debug_file is not None else Path(
+                "fusion_evaluation_debug.jsonl" if self._debug_format == "json" else "fusion_evaluation_debug.log"
+            )
+            try:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open("w", encoding="utf-8") as f:
+                    header = {
+                        "type": "evaluation_debug_header",
+                        "strategy": self.strategy.name,
+                        "format": self._debug_format,
+                    }
+                    if self._debug_format == "json":
+                        f.write(json.dumps(header, ensure_ascii=False) + "\n")
+                    else:
+                        f.write(
+                            "=== Fusion Evaluation Debug Log ===\n"
+                            f"Strategy: {self.strategy.name}\n"
+                            "Only mismatches and evaluation errors are recorded.\n\n"
+                        )
+                self._debug_file = path
+                self._logger.info(
+                    "Fusion evaluation debug logging enabled; refer to %s for mismatch details.",
+                    path,
+                )
+            except Exception as exc:
+                self._logger.warning(
+                    "Could not initialize evaluation debug log '%s': %s",
+                    path,
+                    exc,
+                )
+                self._debug_file = None
+
+        if fusion_debug_logs is not None:
+            self.set_fusion_debug_logs(fusion_debug_logs)
+
+    def set_fusion_debug_logs(
+        self,
+        logs: Optional[Union[Path, str, Iterable[Union[Path, str]]]],
+    ) -> None:
+        """Load fusion debug log files to recover conflict inputs for evaluation."""
+        self._fusion_debug_map = self._load_fusion_debug_inputs(logs) if logs else {}
 
     def evaluate(
         self,
@@ -315,7 +371,11 @@ class DataFusionEvaluator:
 
         for attribute in attributes:
             results = self._evaluate_attribute(
-                aligned_fused, aligned_gold, attribute
+                aligned_fused,
+                aligned_gold,
+                attribute,
+                fused_id_column,
+                gold_id_column,
             )
             attribute_results[attribute] = results
             total_correct += results["correct_count"]
@@ -431,6 +491,8 @@ class DataFusionEvaluator:
         fused_df: pd.DataFrame,
         gold_df: pd.DataFrame,
         attribute: str,
+        fused_id_column: str,
+        gold_id_column: str,
     ) -> Dict[str, Any]:
         """Evaluate a single attribute."""
         # Get evaluation function for this attribute
@@ -457,11 +519,62 @@ class DataFusionEvaluator:
         num_rows = min(len(fused_df), len(gold_df))
 
         for i in range(num_rows):
-            fused_value = fused_df.iloc[i][attribute]
-            gold_value = gold_df.iloc[i][attribute]
+            fused_row = fused_df.iloc[i]
+            gold_row = gold_df.iloc[i]
+            fused_value = fused_row.get(attribute)
+            gold_value = gold_row.get(attribute)
 
             fused_missing = self._is_missing(fused_value)
             gold_missing = self._is_missing(gold_value)
+
+            fused_id = fused_row.get(fused_id_column)
+            gold_id = gold_row.get(gold_id_column)
+
+            metadata = fused_row.get("_fusion_metadata")
+            conflict_rule = None
+            inputs = None
+            if isinstance(metadata, dict):
+                conflict_rule = metadata.get(f"{attribute}_rule")
+                inputs = metadata.get(f"{attribute}_inputs")
+            if conflict_rule is None:
+                # Fallback to direct columns if metadata column was removed upstream
+                conflict_rule = fused_row.get(f"{attribute}_rule")
+            if inputs is None:
+                raw_inputs = fused_row.get(f"{attribute}_inputs")
+                if raw_inputs is not None:
+                    inputs = raw_inputs
+
+            debug_entry = None
+            if (inputs is None or conflict_rule is None) and self._fusion_debug_map:
+                debug_entry = self._find_debug_entry(
+                    fused_row, fused_id_column, attribute
+                )
+                if debug_entry:
+                    if inputs is None:
+                        inputs = debug_entry.get("inputs")
+                    if conflict_rule is None:
+                        conflict_rule = debug_entry.get("conflict_rule")
+
+            if conflict_rule is None:
+                fuser = self.strategy.get_attribute_fuser(attribute)
+                if fuser is not None:
+                    conflict_rule = get_callable_name(fuser.resolver)
+                else:
+                    conflict_rule = "default"
+
+            if inputs is None:
+                fused_sources = fused_row.get("_fusion_sources")
+                if isinstance(fused_sources, (list, tuple, set)):
+                    inputs = [
+                        {
+                            "record_id": None,
+                            "dataset": src,
+                            "value": "<metadata unavailable>",
+                        }
+                        for src in fused_sources
+                    ]
+
+            serialized_inputs = inputs if inputs is not None else []
 
             # No gold value -> cannot evaluate this row
             if gold_missing and fused_missing:
@@ -473,11 +586,52 @@ class DataFusionEvaluator:
 
             if fused_missing:
                 # Count as incorrect when gold value exists but fused is missing
+                self._emit_mismatch(
+                    attribute=attribute,
+                    fused_id=fused_id,
+                    gold_id=gold_id,
+                    fused_value=None,
+                    gold_value=gold_value,
+                    evaluation_rule=eval_function,
+                    conflict_rule=conflict_rule,
+                    inputs=serialized_inputs,
+                    reason="missing_fused_value",
+                )
                 continue
 
             # Evaluate using the function
-            if eval_function(fused_value, gold_value):
+            try:
+                matched = eval_function(fused_value, gold_value)
+            except Exception as exc:
+                self._emit_mismatch(
+                    attribute=attribute,
+                    fused_id=fused_id,
+                    gold_id=gold_id,
+                    fused_value=fused_value,
+                    gold_value=gold_value,
+                    evaluation_rule=eval_function,
+                    conflict_rule=conflict_rule,
+                    inputs=serialized_inputs,
+                    reason="evaluation_exception",
+                    error=str(exc),
+                )
+                continue
+
+            if matched:
                 correct_count += 1
+                continue
+
+            self._emit_mismatch(
+                attribute=attribute,
+                fused_id=fused_id,
+                gold_id=gold_id,
+                fused_value=fused_value,
+                gold_value=gold_value,
+                evaluation_rule=eval_function,
+                conflict_rule=conflict_rule,
+                inputs=serialized_inputs,
+                reason="mismatch",
+            )
 
         # Calculate accuracy
         accuracy = correct_count / total_count if total_count > 0 else 0.0
@@ -494,6 +648,188 @@ class DataFusionEvaluator:
         """Delegate to the module-level missing-value check."""
         # Use the module-level helper defined above
         return _is_missing_value(value)
+
+    def _load_fusion_debug_inputs(
+        self,
+        logs: Union[Path, str, Iterable[Union[Path, str]]],
+    ) -> Dict[str, Dict[str, Dict[str, Any]]]:
+        mapping: Dict[str, Dict[str, Dict[str, Any]]] = {}
+
+        if isinstance(logs, (str, Path)):
+            paths = [Path(logs)]
+        else:
+            paths = [Path(p) for p in logs]
+
+        for path in paths:
+            try:
+                with Path(path).open("r", encoding="utf-8") as handle:
+                    for raw_line in handle:
+                        line = raw_line.strip()
+                        if not line:
+                            continue
+                        try:
+                            entry = json.loads(line)
+                        except json.JSONDecodeError:
+                            # Skip non-JSON lines (e.g., headers in text logs)
+                            continue
+                        if not isinstance(entry, dict):
+                            continue
+
+                        group_id = entry.get("group_id")
+                        attribute = entry.get("attribute")
+                        inputs = entry.get("inputs")
+                        if not group_id or not attribute:
+                            continue
+
+                        record = {
+                            "inputs": inputs,
+                            "conflict_rule": entry.get("conflict_resolution_function")
+                            or entry.get("conflict_rule"),
+                        }
+
+                        keys = []
+                        fused_id = entry.get("fused_id")
+                        if fused_id is not None:
+                            keys.append(str(fused_id))
+                        # Store both raw group_id and fused_ variant
+                        keys.append(str(group_id))
+                        keys.append(f"fused_{group_id}")
+
+                        for key in keys:
+                            attr_map = mapping.setdefault(str(key), {})
+                            attr_map[attribute] = record
+            except FileNotFoundError:
+                self._logger.warning(
+                    "Fusion debug log '%s' not found; skipping.", path
+                )
+            except Exception as exc:
+                self._logger.warning(
+                    "Failed to read fusion debug log '%s': %s", path, exc
+                )
+
+        return mapping
+
+    def _find_debug_entry(
+        self,
+        fused_row: pd.Series,
+        fused_id_column: str,
+        attribute: str,
+    ) -> Optional[Dict[str, Any]]:
+        if not self._fusion_debug_map:
+            return None
+
+        candidates: List[Any] = []
+
+        fused_id = fused_row.get(fused_id_column)
+        if fused_id is not None:
+            candidates.extend([fused_id, str(fused_id)])
+
+        group_id = fused_row.get("_fusion_group_id")
+        if group_id is not None:
+            candidates.extend([group_id, str(group_id), f"fused_{group_id}"])
+
+        row_index = fused_row.name
+        if row_index is not None:
+            candidates.extend([row_index, str(row_index)])
+
+        for key in candidates:
+            if key is None:
+                continue
+            attr_map = self._fusion_debug_map.get(str(key))
+            if not attr_map:
+                continue
+            entry = attr_map.get(attribute)
+            if entry:
+                return entry
+
+        return None
+
+    def _emit_mismatch(
+        self,
+        *,
+        attribute: str,
+        fused_id: Any,
+        gold_id: Any,
+        fused_value: Any,
+        gold_value: Any,
+        evaluation_rule,
+        conflict_rule: Optional[str],
+        inputs: Optional[Any],
+        reason: str,
+        error: Optional[str] = None,
+    ) -> None:
+        if not self._debug_enabled or self._debug_file is None:
+            return
+
+        entry = {
+            "type": "evaluation_mismatch",
+            "attribute": attribute,
+            "fused_id": self._serialize_value(fused_id),
+            "gold_id": self._serialize_value(gold_id),
+            "fused_value": self._serialize_value(fused_value),
+            "gold_value": self._serialize_value(gold_value),
+            "evaluation_rule": get_callable_name(evaluation_rule),
+            "conflict_rule": conflict_rule,
+            "inputs": self._serialize_value(inputs),
+            "reason": reason,
+        }
+        if error is not None:
+            entry["error"] = error
+
+        self._emit_debug(entry)
+
+    def _emit_debug(self, entry: Dict[str, Any]) -> None:
+        if not self._debug_enabled or self._debug_file is None:
+            return
+
+        try:
+            with self._debug_file.open("a", encoding="utf-8") as f:
+                if self._debug_format == "json":
+                    f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                else:
+                    block = self._format_debug_block(entry)
+                    f.write(block)
+        except Exception as exc:
+            self._logger.debug(
+                "Failed to write evaluation debug entry: %s", exc
+            )
+
+    @staticmethod
+    def _format_debug_block(entry: Dict[str, Any]) -> str:
+        parts = [
+            f"Attribute: {entry.get('attribute')}\n",
+            f"  Fused ID: {entry.get('fused_id')}\n",
+            f"  Gold ID: {entry.get('gold_id')}\n",
+            f"  Conflict Rule: {entry.get('conflict_rule')}\n",
+            f"  Evaluation Rule: {entry.get('evaluation_rule')}\n",
+            f"  Reason: {entry.get('reason')}\n",
+            f"  Fused Value: {entry.get('fused_value')}\n",
+            f"  Gold Value: {entry.get('gold_value')}\n",
+        ]
+        if entry.get("inputs") is not None:
+            parts.append(f"  Inputs: {entry.get('inputs')}\n")
+        if "error" in entry:
+            parts.append(f"  Error: {entry.get('error')}\n")
+        parts.append("\n")
+        return "".join(parts)
+
+    @staticmethod
+    def _serialize_value(value: Any) -> Any:
+        if value is None:
+            return None
+        if isinstance(value, (str, int, float, bool)):
+            return value
+        if isinstance(value, (list, tuple)):
+            return [DataFusionEvaluator._serialize_value(v) for v in value]
+        if isinstance(value, dict):
+            return {
+                str(k): DataFusionEvaluator._serialize_value(v)
+                for k, v in value.items()
+            }
+        try:
+            return value.item()  # type: ignore[attr-defined]
+        except Exception:
+            return repr(value)
 
 
 def calculate_consistency_metrics(fused_df: pd.DataFrame) -> Dict[str, float]:

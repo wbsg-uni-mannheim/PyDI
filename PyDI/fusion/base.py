@@ -15,8 +15,6 @@ from functools import partial as _partial
 
 import pandas as pd
 import numpy as np
-
-
 def _is_valid_value(value: Any) -> bool:
     """Check if a value is valid (not None, not NA, not empty list).
     
@@ -53,8 +51,7 @@ def _is_valid_value(value: Any) -> bool:
     except Exception:
         # If pd.isna fails (e.g., complex objects), assume valid
         return True
-
-
+    
 @dataclass
 class FusionContext:
     """Context information passed to fusers during fusion.
@@ -375,10 +372,10 @@ class RecordGroup:
     group_id: str
     records: List[pd.Series] = field(default_factory=list)
     source_datasets: Dict[str, str] = field(default_factory=dict)
-    
+
     def add_record(self, record: pd.Series, dataset_name: str):
         """Add a record to this group.
-        
+
         Parameters
         ----------
         record : pd.Series
@@ -389,7 +386,7 @@ class RecordGroup:
         self.records.append(record)
         record_id = record.get("_id", "unknown")
         self.source_datasets[record_id] = dataset_name
-    
+
     def get_all_attributes(self) -> Set[str]:
         """Get all attributes present across records in this group.
         

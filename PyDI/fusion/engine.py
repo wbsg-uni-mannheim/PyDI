@@ -175,12 +175,16 @@ def build_record_groups_from_correspondences(
         f"Created {len(groups)} record groups from {len(normalized_correspondences)} correspondences")
     size_counts = Counter(len(group.records) for group in groups)
     if size_counts:
-        distribution = ", ".join(
-            f"{size}: {count}" for size, count in sorted(size_counts.items())
+        logger.info(
+            "Group Size Distribution of %d groups:",
+            len(groups),
         )
-        logger.info("Group size distribution (size: count): %s", distribution)
+        logger.info("    Group Size | Frequency")
+        logger.info("    ----------------------")
+        for size, count in sorted(size_counts.items()):
+            logger.info("        %3d | %7d", size, count)
     else:
-        logger.info("Group size distribution: none")
+        logger.info("Group Size Distribution: none")
 
     return groups
 
@@ -254,7 +258,7 @@ class DataFusionEngine:
         The fusion strategy to use.
     """
 
-    def __init__(self, strategy: DataFusionStrategy, *, debug: bool = False, debug_file: Optional[Union[str, Path]] = None, debug_format: str = "text"):
+    def __init__(self, strategy: DataFusionStrategy, *, debug: bool = False, debug_file: Optional[Union[str, Path]] = None, debug_format: str = "json"):
         self.strategy = strategy
         self._logger = logging.getLogger(__name__)
         self._debug_enabled = bool(debug)
@@ -298,13 +302,23 @@ class DataFusionEngine:
         try:
             with self._debug_file.open("a", encoding="utf-8") as f:
                 if self._debug_format == "json":
-                    f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                    f.write(json.dumps(entry, ensure_ascii=False, default=self._json_default) + "\n")
                 else:
                     block = self._format_debug_block(entry)
                     f.write(block)
         except Exception as e:
             # Never let debug writing break fusion
             self._logger.debug(f"Failed to write debug block: {e}")
+
+    @staticmethod
+    def _json_default(value: Any) -> Any:
+        if isinstance(value, (set, tuple)):
+            return list(value)
+        try:
+            return value.isoformat()  # datetime-like
+        except AttributeError:
+            pass
+        return str(value)
 
     @staticmethod
     def _format_value(val: Any, max_len: int = 200) -> str:
@@ -385,11 +399,13 @@ class DataFusionEngine:
 
         Returns
         -------
-        pd.DataFrame
-            The fused dataset.
+        Union[pd.DataFrame, Tuple[pd.DataFrame, Dict[str, Dict[str, List[Dict[str, Any]]]]]]
+            The fused dataset. When ``return_provenance`` is True and the engine
+            runs in debug mode, returns a tuple of (dataset, provenance map).
         """
         self._logger.info(
             f"Starting data fusion with strategy '{self.strategy.name}'")
+        self._logger.info("*    Loading correspondences    *")
         start_time = time.time()
 
         # Normalize datasets to ensure `_id` is present and string-typed
@@ -477,6 +493,13 @@ class DataFusionEngine:
             groups = apply_schema_correspondences(
                 groups, schema_correspondences)
 
+        # Attribute-wise consistency diagnostics before fusion runs
+        attr_consistency = self._compute_attribute_consistency(groups)
+        if attr_consistency:
+            self._logger.info("Attribute Consistencies:")
+            for attr, ratio in sorted(attr_consistency.items()):
+                self._logger.info("    %s: %.2f", attr, ratio)
+
         try:
             trust_map = extract_source_trust_scores(normalized_datasets)
         except Exception as exc:
@@ -486,6 +509,8 @@ class DataFusionEngine:
             trust_map = {}
 
         # Fuse each group
+        self._logger.info("*    Running data fusion    *")
+
         fused_records = []
         for group in groups:
             fused_record = self._fuse_group(group, trust_map=trust_map)
@@ -505,7 +530,77 @@ class DataFusionEngine:
             f"Fusion complete: {len(result)} records from {len(groups)} groups")
         self._logger.info(
             f"Fusion time: {time.time() - start_time:.2f} seconds")
+
+        self._log_density_metrics(result)
+
         return result
+
+    @staticmethod
+    def _normalize_consistency_value(value: Any) -> Any:
+        """Normalize values for consistency comparison."""
+        if isinstance(value, dict):
+            return tuple(sorted(value.items()))
+        if isinstance(value, set):
+            return tuple(sorted(value))
+        if isinstance(value, list):
+            return tuple(value)
+        if isinstance(value, tuple):
+            return value
+        return value
+
+    def _compute_attribute_consistency(self, groups: List[RecordGroup]) -> Dict[str, float]:
+        """Compute per-attribute consistency ratios across groups."""
+        attr_totals: Counter[str] = Counter()
+        attr_consistent: Counter[str] = Counter()
+
+        for group in groups:
+            if len(group.records) < 2:
+                continue
+
+            # Gather attribute values for this group
+            values_by_attr: Dict[str, List[Any]] = defaultdict(list)
+            for record in group.records:
+                for attr, value in record.items():
+                    if attr.startswith("_fusion_"):
+                        continue
+                    if not _is_valid_value(value):
+                        continue
+                    values_by_attr[attr].append(self._normalize_consistency_value(value))
+
+            for attr, values in values_by_attr.items():
+                if not values:
+                    continue
+                attr_totals[attr] += 1
+                unique_values = set(values)
+                if len(unique_values) == 1:
+                    attr_consistent[attr] += 1
+
+        return {
+            attr: attr_consistent[attr] / attr_totals[attr]
+            for attr in attr_totals
+            if attr_totals[attr] > 0
+        }
+
+    def _log_density_metrics(self, fused_df: pd.DataFrame) -> None:
+        """Log dataset-level and per-attribute density metrics."""
+        if fused_df.empty:
+            self._logger.info("DataSet density: 0.00 (no fused records)")
+            return
+
+        data_columns = [c for c in fused_df.columns if not c.startswith("_fusion_")]
+        if not data_columns:
+            self._logger.info("DataSet density: 0.00 (no data attributes)")
+            return
+
+        total_cells = len(fused_df) * len(data_columns)
+        missing_cells = fused_df[data_columns].isna().sum().sum()
+        density = 1.0 if total_cells == 0 else (total_cells - missing_cells) / total_cells
+        self._logger.info("DataSet density: %.2f", density)
+
+        self._logger.info("Attributes densities:")
+        for column in sorted(data_columns):
+            col_density = 1.0 - fused_df[column].isna().mean()
+            self._logger.info("    %s: %.2f", column, col_density)
 
     def _fuse_group(
         self,
@@ -571,6 +666,20 @@ class DataFusionEngine:
             # Check if we have a specific fuser for this attribute
             fuser = self.strategy.get_attribute_fuser(attribute)
 
+            inputs: List[Dict[str, Any]] = []
+            for record in group.records:
+                raw_value = record.get(attribute)
+                if not _is_valid_value(raw_value):
+                    continue
+                rid = record.get("_id", "unknown")
+                inputs.append(
+                    {
+                        "record_id": rid,
+                        "dataset": group.source_datasets.get(rid, "unknown"),
+                        "value": raw_value,
+                    }
+                )
+
             if fuser:
                 # Use registered fuser
                 result = fuser.fuse(group.records, context)
@@ -578,15 +687,12 @@ class DataFusionEngine:
                 attribute_confidences.append(result.confidence)
                 fusion_metadata[f"{attribute}_rule"] = result.rule_used
                 fusion_metadata[f"{attribute}_sources"] = list(result.sources)
+                fusion_metadata[f"{attribute}_inputs"] = inputs
             else:
                 # Default fusion: prefer non-null values, first available
                 attr_lower = attribute.lower()
                 track_confidence = attr_lower not in {"id", "_id"}
-                values = []
-                for record in group.records:
-                    value = record.get(attribute)
-                    if _is_valid_value(value):
-                        values.append(value)
+                values = [entry["value"] for entry in inputs]
 
                 if values:
                     fused_record[attribute] = values[0]  # Take first non-null
@@ -594,18 +700,15 @@ class DataFusionEngine:
                     output_confidence = 0.5 if track_confidence else None
                     if track_confidence:
                         attribute_confidences.append(0.5)  # Default confidence
+                    fusion_metadata[f"{attribute}_inputs"] = inputs
                     # Emit debug block for default resolver if enabled
                     if self._debug_enabled and self._debug_file is not None:
                         try:
-                            inputs = [
-                                {
-                                    "record_id": rec.get("_id", "unknown"),
-                                    "dataset": group.source_datasets.get(rec.get("_id", "unknown"), "unknown"),
-                                    "value": rec.get(attribute),
-                                }
-                                for rec in group.records
-                                if _is_valid_value(rec.get(attribute))
-                            ]
+                            self._logger.debug(
+                                "Emitting fusion debug entry for group '%s' attribute '%s'",
+                                group.group_id,
+                                attribute,
+                            )
                             self._emit_debug({
                                 "group_id": group.group_id,
                                 "attribute": attribute,
@@ -627,17 +730,14 @@ class DataFusionEngine:
                     output_confidence = 0.0 if track_confidence else None
                     if track_confidence:
                         attribute_confidences.append(0.0)
+                    fusion_metadata[f"{attribute}_inputs"] = inputs
                     if self._debug_enabled and self._debug_file is not None:
                         try:
-                            inputs = [
-                                {
-                                    "record_id": rec.get("_id", "unknown"),
-                                    "dataset": group.source_datasets.get(rec.get("_id", "unknown"), "unknown"),
-                                    "value": rec.get(attribute),
-                                }
-                                for rec in group.records
-                                if _is_valid_value(rec.get(attribute))
-                            ]
+                            self._logger.debug(
+                                "Emitting fusion debug entry for group '%s' attribute '%s'",
+                                group.group_id,
+                                attribute,
+                            )
                             self._emit_debug({
                                 "group_id": group.group_id,
                                 "attribute": attribute,
