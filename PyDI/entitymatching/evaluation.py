@@ -625,7 +625,7 @@ class EntityMatchingEvaluator:
                     test_pairs=test_pairs,
                 )
                 results["debug_files"] = (full_debug_path, short_debug_path)
-                logging.info(f"Debug results written to {full_debug_path} and {short_debug_path}")
+                # Logging already done inside write_debug_results()
             except Exception as e:
                 logging.warning(f"Failed to write debug results: {e}")
                 results["debug_files"] = None
