@@ -9,7 +9,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, Callable
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union, Callable
 
 import pandas as pd
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -39,11 +39,15 @@ class LLMBasedMatcher(BaseMatcher):
 
     >>> from langchain_openai import ChatOpenAI
     >>> from PyDI.entitymatching import LLMBasedMatcher
-    >>> 
+    >>> import pandas as pd
+    >>>
+    >>> # candidates is a DataFrame with id1, id2 columns
+    >>> candidates = pd.DataFrame({"id1": [1, 2], "id2": [101, 102]})
+    >>>
     >>> matcher = LLMBasedMatcher()
     >>> chat = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     >>> matches = matcher.match(
-    ...     df_left, df_right, candidates,
+    ...     df_left, df_right, candidates, "_id",
     ...     chat_model=chat,
     ...     fields=["name", "address", "city"],
     ...     threshold=0.7
@@ -59,7 +63,7 @@ class LLMBasedMatcher(BaseMatcher):
     ...     )
     ... ]
     >>> matches = matcher.match(
-    ...     df_left, df_right, candidates,
+    ...     df_left, df_right, candidates, "_id",
     ...     chat_model=chat,
     ...     few_shots=few_shots,
     ...     threshold=0.8
@@ -76,7 +80,8 @@ class LLMBasedMatcher(BaseMatcher):
         self,
         df_left: pd.DataFrame,
         df_right: pd.DataFrame,
-        candidates: List[Tuple[Any, Any]],
+        candidates: Union[pd.DataFrame, Iterable[pd.DataFrame]],
+        id_column: str,
         chat_model: BaseChatModel,
         *,
         fields: Optional[List[str]] = None,
@@ -105,8 +110,11 @@ class LLMBasedMatcher(BaseMatcher):
             Left dataset with records to match.
         df_right : pd.DataFrame
             Right dataset with records to match.
-        candidates : List[Tuple[Any, Any]]
-            List of (left_id, right_id) candidate pairs to evaluate.
+        candidates : pd.DataFrame or Iterable[pd.DataFrame]
+            Single DataFrame or iterable of candidate pair batches with id1, id2 columns
+            representing candidate pairs to evaluate.
+        id_column : str
+            Name of the column containing record identifiers.
         chat_model : BaseChatModel
             LangChain chat model instance (e.g., ChatOpenAI, ChatAnthropic).
         fields : Optional[List[str]], default=None
@@ -148,7 +156,7 @@ class LLMBasedMatcher(BaseMatcher):
             CorrespondenceSet with columns: id1, id2, score, notes.
         """
         # Validate inputs using base class
-        self._validate_inputs(df_left, df_right)
+        self._validate_inputs(df_left, df_right, id_column)
 
         # Initialize output directory and remember for artifact writes
         self._current_run_out_dir = Path(out_dir)
@@ -157,42 +165,63 @@ class LLMBasedMatcher(BaseMatcher):
 
         # Auto-select fields if not provided
         if fields is None:
-            fields = self._auto_select_fields(df_left, df_right)
+            fields = self._auto_select_fields(df_left, df_right, id_column)
 
         # Build prompt template
         prompt_template = self._build_prompt_template(system_prompt, few_shots)
 
+        # Normalize candidates to iterable of DataFrames
+        if isinstance(candidates, pd.DataFrame):
+            candidate_batches = [candidates]
+        else:
+            candidate_batches = list(candidates)
+
         # Log matching info
-        self._log_matching_info(df_left, df_right, candidates)
+        self._log_matching_info(df_left, df_right, candidate_batches)
 
         matches = []
+        pair_index = 0
 
-        for i, (left_id, right_id) in enumerate(candidates):
-            # Get records
-            left_record = df_left[df_left["_id"] == left_id].iloc[0]
-            right_record = df_right[df_right["_id"] == right_id].iloc[0]
+        # Process candidate batches
+        for batch in candidate_batches:
+            if batch.empty:
+                continue
 
-            # Serialize records for prompt
-            left_data = self._serialize_record(left_record, fields)
-            right_data = self._serialize_record(right_record, fields)
+            # Validate batch has required columns
+            if "id1" not in batch.columns or "id2" not in batch.columns:
+                raise ValueError("Candidate DataFrame must have 'id1' and 'id2' columns")
 
-            # Try matching with retries
-            match_result = self._match_pair_with_retry(
-                prompt_template, left_data, right_data, chat_model,
-                retries, temperature, max_tokens, i, out_dir, debug,
-                parse_strictness, notes_detail, response_parser)
+            # Process each pair in the batch
+            for _, row in batch.iterrows():
+                left_id, right_id = row["id1"], row["id2"]
 
-            if match_result and match_result["score"] >= threshold:
-                matches.append({
-                    "id1": left_id,
-                    "id2": right_id,
-                    "score": match_result["score"],
-                    "notes": match_result["notes"]
-                })
+                # Get records
+                left_record = df_left[df_left[id_column] == left_id].iloc[0]
+                right_record = df_right[df_right[id_column] == right_id].iloc[0]
+
+                # Serialize records for prompt
+                left_data = self._serialize_record(left_record, fields, id_column)
+                right_data = self._serialize_record(right_record, fields, id_column)
+
+                # Try matching with retries
+                match_result = self._match_pair_with_retry(
+                    prompt_template, left_data, right_data, chat_model,
+                    retries, temperature, max_tokens, pair_index, out_dir, debug,
+                    parse_strictness, notes_detail, response_parser)
+
+                if match_result and match_result["score"] >= threshold:
+                    matches.append({
+                        "id1": left_id,
+                        "id2": right_id,
+                        "score": match_result["score"],
+                        "notes": match_result["notes"]
+                    })
+
+                pair_index += 1
 
         # Flush LLM logs and write artifacts
         if debug:
-            self._write_debug_artifacts(out_dir, matches, len(candidates))
+            self._write_debug_artifacts(out_dir, matches, pair_index)
 
             # Write configuration for this run
             config = {
@@ -206,7 +235,7 @@ class LLMBasedMatcher(BaseMatcher):
                 "system_prompt_provided": bool(system_prompt),
                 "parse_strictness": parse_strictness,
                 "notes_detail": notes_detail,
-                "total_candidates": len(candidates),
+                "total_candidates": pair_index,
             }
             self._write_artifact("llm_config.json", config)
 
@@ -215,10 +244,10 @@ class LLMBasedMatcher(BaseMatcher):
 
         return pd.DataFrame(matches) if matches else pd.DataFrame(columns=["id1", "id2", "score", "notes"])
 
-    def _auto_select_fields(self, df_left: pd.DataFrame, df_right: pd.DataFrame, max_fields: int = 10) -> List[str]:
+    def _auto_select_fields(self, df_left: pd.DataFrame, df_right: pd.DataFrame, id_column: str, max_fields: int = 10) -> List[str]:
         """Auto-select string-like fields for LLM prompts."""
-        # Get common columns (excluding _id)
-        common_cols = set(df_left.columns) & set(df_right.columns) - {"_id"}
+        # Get common columns (excluding id_column)
+        common_cols = set(df_left.columns) & set(df_right.columns) - {id_column}
 
         # Prefer string-like columns
         string_cols = []
@@ -289,9 +318,9 @@ Guidelines:
 - Consider variations in naming, formatting, abbreviations, and data quality
 - Respond with ONLY the JSON object and nothing else."""
 
-    def _serialize_record(self, record: pd.Series, fields: List[str], max_length: int = 200) -> str:
+    def _serialize_record(self, record: pd.Series, fields: List[str], id_column: str, max_length: int = 200) -> str:
         """Serialize a record for the LLM prompt, including only specified fields."""
-        data = {"_id": record.get("_id")}
+        data = {}
 
         for field in fields:
             if field in record and pd.notna(record[field]):
