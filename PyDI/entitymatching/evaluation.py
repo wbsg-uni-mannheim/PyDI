@@ -646,10 +646,7 @@ class EntityMatchingEvaluator:
         logging.info(f"  True Negatives:  {true_negatives}")
         logging.info(f"  False Positives: {false_positives}")
         logging.info(f"  False Negatives: {false_negatives}")
-
-        logging.info(
-            f"Matching evaluation complete: P={precision:.4f} R={recall:.4f} F1={f1:.4f}"
-        )
+        
         return results
 
     @staticmethod
