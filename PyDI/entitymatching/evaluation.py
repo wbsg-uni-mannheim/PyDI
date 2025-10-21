@@ -545,28 +545,69 @@ class EntityMatchingEvaluator:
         # Create a set of all test pairs (both positive and negative) for debug logging
         all_test_pairs = positive_set | negative_set
 
+        # Create a set of evaluated pairs from debug_info if available
+        evaluated_pairs = set()
+        if debug_info is not None and not debug_info.empty:
+            evaluated_pairs = set(zip(debug_info["id1"], debug_info["id2"]))
+
         # Add DEBUG level logging for individual correspondence evaluations (only for pairs in test set)
         logging.debug("Individual correspondence evaluations:")
         for _, row in corr_filtered.iterrows():
             pair = (row["id1"], row["id2"])
             score = row["score"]
-            
+
             # Only log pairs that are actually in the test set
             if pair in all_test_pairs:
                 if pair in positive_set:
                     classification = "correct"
+                    label = "TRUE"
                 elif pair in negative_set:
                     classification = "wrong"
+                    label = "FALSE"
                 else:
                     # This shouldn't happen given the logic above, but just in case
                     continue
-                    
-                logging.debug(f"[{classification}] {row['id1']},{row['id2']},sim:{score:.4f}")
-        
-        # Also log missing correspondences (false negatives)
+
+                logging.debug(f"[{classification}] {row['id1']},{row['id2']},{label},sim:{score:.4f}")
+
+        # Log false negatives - distinguish between evaluated and missing
         missing_pairs = positive_set - predicted_set
         for pair in missing_pairs:
-            logging.debug(f"[missing] {pair[0]},{pair[1]},sim:0.0000")
+            if pair in evaluated_pairs:
+                # Pair was evaluated but scored below threshold - calculate actual score from debug_info
+                pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
+                if not pair_debug.empty:
+                    # Calculate weighted similarity from debug info
+                    # Get unique comparators for this pair and sum their postprocessed similarities
+                    # This assumes equal weighting - ideally we'd have weights from matcher
+                    # But since the pair didn't make it to correspondences, we estimate the score
+                    comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
+                    estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
+                    logging.debug(f"[wrong] {pair[0]},{pair[1]},TRUE,sim:{estimated_score:.4f}")
+                else:
+                    # Not in debug info, must have been blocked
+                    logging.debug(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+            else:
+                # Pair was never evaluated (not in candidate set)
+                logging.debug(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+
+        # Log true negatives (correctly rejected non-matches)
+        if has_labels and negative_set:
+            correctly_rejected = negative_set - predicted_set
+            for pair in correctly_rejected:
+                # Check if this pair was in candidate set but correctly rejected
+                if pair in evaluated_pairs:
+                    # Pair was evaluated - calculate actual score from debug_info
+                    pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
+                    if not pair_debug.empty:
+                        comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
+                        estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
+                        logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:{estimated_score:.4f}")
+                    else:
+                        logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
+                else:
+                    # Pair was never in candidate set (blocked out)
+                    logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
 
         # Compute classification metrics
         true_positives = len(predicted_set & positive_set)
@@ -630,6 +671,13 @@ class EntityMatchingEvaluator:
                 logging.warning(f"Failed to write debug results: {e}")
                 results["debug_files"] = None
 
+        # Log confusion matrix first
+        logging.info(f"Confusion Matrix:")
+        logging.info(f"  True Positives:  {true_positives}")
+        logging.info(f"  True Negatives:  {true_negatives}")
+        logging.info(f"  False Positives: {false_positives}")
+        logging.info(f"  False Negatives: {false_negatives}")
+
         # Log performance metrics
         logging.info(f"Performance Metrics:")
         logging.info(
@@ -640,12 +688,6 @@ class EntityMatchingEvaluator:
         logging.info(f"  Precision: {precision:.3f}")
         logging.info(f"  Recall:    {recall:.3f}")
         logging.info(f"  F1-Score:  {f1:.3f}")
-
-        logging.info(f"Confusion Matrix:")
-        logging.info(f"  True Positives:  {true_positives}")
-        logging.info(f"  True Negatives:  {true_negatives}")
-        logging.info(f"  False Positives: {false_positives}")
-        logging.info(f"  False Negatives: {false_negatives}")
         
         return results
 
