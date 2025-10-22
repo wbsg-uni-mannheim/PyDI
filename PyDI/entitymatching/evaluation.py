@@ -420,6 +420,7 @@ class EntityMatchingEvaluator:
         out_dir: Optional[str] = None,
         debug_info: Optional[pd.DataFrame] = None,
         matcher_instance: Optional[object] = None,
+        max_logged_instances: Optional[int] = 500,
     ) -> Dict[str, Any]:
         """Evaluate entity matching correspondences against ground truth.
 
@@ -450,6 +451,10 @@ class EntityMatchingEvaluator:
         matcher_instance : object, optional
             The matcher instance used to generate the correspondences.
             Used to automatically determine the matching rule name for debug output.
+        max_logged_instances : int, optional
+            Maximum number of per-pair debug log entries to emit when detailed
+            logging is enabled. Defaults to 500. Set to None for no limit or 0
+            to suppress per-pair debug logging completely.
 
         Returns
         -------
@@ -550,64 +555,126 @@ class EntityMatchingEvaluator:
         if debug_info is not None and not debug_info.empty:
             evaluated_pairs = set(zip(debug_info["id1"], debug_info["id2"]))
 
-        # Add DEBUG level logging for individual correspondence evaluations (only for pairs in test set)
-        logging.debug("Individual correspondence evaluations:")
-        for _, row in corr_filtered.iterrows():
-            pair = (row["id1"], row["id2"])
-            score = row["score"]
+        # Configure debug logging throttling to avoid excessive runtime overhead
+        if max_logged_instances is None:
+            log_limit = None
+        else:
+            if max_logged_instances < 0:
+                raise ValueError("max_logged_instances must be non-negative or None")
+            log_limit = int(max_logged_instances)
 
-            # Only log pairs that are actually in the test set
-            if pair in all_test_pairs:
-                if pair in positive_set:
-                    classification = "correct"
-                    label = "TRUE"
-                elif pair in negative_set:
-                    classification = "wrong"
-                    label = "FALSE"
-                else:
-                    # This shouldn't happen given the logic above, but just in case
-                    continue
+        logged_debug_entries = 0
+        log_limit_notice_emitted = False
+        log_limit_reached = False
 
-                logging.debug(f"[{classification}] {row['id1']},{row['id2']},{label},sim:{score:.4f}")
-
-        # Log false negatives - distinguish between evaluated and missing
-        missing_pairs = positive_set - predicted_set
-        for pair in missing_pairs:
-            if pair in evaluated_pairs:
-                # Pair was evaluated but scored below threshold - calculate actual score from debug_info
-                pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
-                if not pair_debug.empty:
-                    # Calculate weighted similarity from debug info
-                    # Get unique comparators for this pair and sum their postprocessed similarities
-                    # This assumes equal weighting - ideally we'd have weights from matcher
-                    # But since the pair didn't make it to correspondences, we estimate the score
-                    comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
-                    estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
-                    logging.debug(f"[wrong] {pair[0]},{pair[1]},TRUE,sim:{estimated_score:.4f}")
-                else:
-                    # Not in debug info, must have been blocked
-                    logging.debug(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+        def _log_debug_entry(message: str) -> None:
+            nonlocal logged_debug_entries, log_limit_notice_emitted, log_limit_reached
+            if log_limit is None:
+                logging.debug(message)
+                return
+            if log_limit <= 0:
+                log_limit_reached = True
+                return
+            if logged_debug_entries < log_limit:
+                logging.debug(message)
+                logged_debug_entries += 1
+                if logged_debug_entries >= log_limit and not log_limit_notice_emitted:
+                    logging.debug(
+                        "Maximum debug log entries reached (%s); suppressing further entries.",
+                        log_limit,
+                    )
+                    log_limit_notice_emitted = True
+                    log_limit_reached = True
             else:
-                # Pair was never evaluated (not in candidate set)
-                logging.debug(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+                if not log_limit_notice_emitted:
+                    logging.debug(
+                        "Maximum debug log entries reached (%s); suppressing further entries.",
+                        log_limit,
+                    )
+                    log_limit_notice_emitted = True
+                log_limit_reached = True
 
-        # Log true negatives (correctly rejected non-matches)
-        if has_labels and negative_set:
-            correctly_rejected = negative_set - predicted_set
-            for pair in correctly_rejected:
-                # Check if this pair was in candidate set but correctly rejected
-                if pair in evaluated_pairs:
-                    # Pair was evaluated - calculate actual score from debug_info
-                    pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
-                    if not pair_debug.empty:
-                        comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
-                        estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
-                        logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:{estimated_score:.4f}")
+        logging_enabled = (log_limit is None) or (log_limit > 0)
+
+        # Add DEBUG level logging for individual correspondence evaluations (only for pairs in test set)
+        if logging_enabled:
+            logging.debug("Individual correspondence evaluations:")
+            for _, row in corr_filtered.iterrows():
+                if log_limit_reached:
+                    break
+                pair = (row["id1"], row["id2"])
+                score = row["score"]
+
+                # Only log pairs that are actually in the test set
+                if pair in all_test_pairs:
+                    if pair in positive_set:
+                        classification = "correct"
+                        label = "TRUE"
+                    elif pair in negative_set:
+                        classification = "wrong"
+                        label = "FALSE"
                     else:
-                        logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
-                else:
-                    # Pair was never in candidate set (blocked out)
-                    logging.debug(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
+                        # This shouldn't happen given the logic above, but just in case
+                        continue
+
+                    _log_debug_entry(
+                        f"[{classification}] {row['id1']},{row['id2']},{label},sim:{score:.4f}"
+                    )
+                    if log_limit_reached:
+                        break
+
+            # Log false negatives - distinguish between evaluated and missing
+            if not log_limit_reached:
+                missing_pairs = positive_set - predicted_set
+                for pair in missing_pairs:
+                    if log_limit_reached:
+                        break
+                    if pair in evaluated_pairs:
+                        # Pair was evaluated but scored below threshold - calculate actual score from debug_info
+                        pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
+                        if not pair_debug.empty:
+                            # Calculate weighted similarity from debug info
+                            # Get unique comparators for this pair and sum their postprocessed similarities
+                            # This assumes equal weighting - ideally we'd have weights from matcher
+                            # But since the pair didn't make it to correspondences, we estimate the score
+                            comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
+                            estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
+                            _log_debug_entry(
+                                f"[wrong] {pair[0]},{pair[1]},TRUE,sim:{estimated_score:.4f}"
+                            )
+                        else:
+                            # Not in debug info, must have been blocked
+                            _log_debug_entry(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+                    else:
+                        # Pair was never evaluated (not in candidate set)
+                        _log_debug_entry(f"[missing] {pair[0]},{pair[1]},TRUE,sim:N/A")
+
+            # Log true negatives (correctly rejected non-matches)
+            if has_labels and negative_set and not log_limit_reached:
+                correctly_rejected = negative_set - predicted_set
+                for pair in correctly_rejected:
+                    if log_limit_reached:
+                        break
+                    # Check if this pair was in candidate set but correctly rejected
+                    if pair in evaluated_pairs:
+                        # Pair was evaluated - calculate actual score from debug_info
+                        pair_debug = debug_info[(debug_info["id1"] == pair[0]) & (debug_info["id2"] == pair[1])]
+                        if not pair_debug.empty:
+                            comparator_sims = pair_debug.groupby('comparator_name')['postprocessed_similarity'].first()
+                            estimated_score = comparator_sims.mean() if len(comparator_sims) > 0 else 0.0
+                            _log_debug_entry(
+                                f"[correct] {pair[0]},{pair[1]},FALSE,sim:{estimated_score:.4f}"
+                            )
+                        else:
+                            _log_debug_entry(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
+                    else:
+                        # Pair was never in candidate set (blocked out)
+                        _log_debug_entry(f"[correct] {pair[0]},{pair[1]},FALSE,sim:N/A")
+        else:
+            logging.debug(
+                "Individual correspondence evaluations suppressed (max_logged_instances=%s)",
+                max_logged_instances,
+            )
 
         # Compute classification metrics
         true_positives = len(predicted_set & positive_set)
