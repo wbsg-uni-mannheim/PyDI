@@ -1,25 +1,26 @@
 Welcome to the PyDI Wiki
 ========================
 
-PyDI (Python Data Integration) is an end‑to‑end data integration framework for loading, profiling, matching, and fusing heterogeneous datasets. It combines traditional methods (rule‑based similarity, blocking, voting) with modern approaches (machine learning, deep‑learning embeddings, and LLM‑based extraction/matching). Each component writes out human‑readable artifacts and logs, so results are understandable and improvements can be targeted based on evidence.
+PyDI (Python Data Integration) is an end to end data integration framework covering all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern embedding- and LLM-based techniques for these tasks. 
 
-PyDI Design Principles
-- Composable modules that can be used independently or as a pipeline.
-- Data is stored in pandas DataFrames throughout the entire framework, allowing for maximum interoperability with other packages and frameworks that are not part of PyDI.
-- Reproducible runs with optional debugging logs allow for detailed performance interpretation and analysis.
+## General Features
+- PyDI consists of composable modules that can be used independently or as a pipeline.
+- All modules rely on pandas DataFrames as underlying data structure, ensuring interoperability with third-party packages that also rely on pandas.
+- Each component writes detailed logs about its work which can be used as starting point for debugging data integration pipelines.
 
-End‑to‑End Data Integration Pipeline 
-1. Load data and add provenance 
+## The PyDI Data Integration Pipeline 
+The framework supports the following steps of the data integration pipeline: 
+1. Load data and add provenance metadata
 2. Profile datasets 
-3. Information extraction 
-4. Value normalization
-5. Schema Mapping
-6. Data Translation   
-7. Entity Matching 
-8. Data Fusion 
+3. Normalize attribute values
+4. Information extraction
+5. Schema matching and mapping
+6. Entity matching 
+8. Data fusion including conflict resolution
 
 
-Contents (PyDI Modules)
+
+## Contents (PyDI Modules)
 - [IO](#io) - load data, set IDs, record provenance
 - [Profiling](#profiling) - dataset profiles and comparisons (HTML)
 - [Information Extraction](#information-extraction) - regex/code/LLM extraction + evaluation
