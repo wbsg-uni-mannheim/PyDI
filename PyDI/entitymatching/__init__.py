@@ -24,6 +24,7 @@ from .rule_based import RuleBasedMatcher
 from .ml_based import MLBasedMatcher
 from .llm_based import LLMBasedMatcher
 from .plm_based import PLMBasedMatcher
+from .labeling_tool.interactive import MatchingSessionResult, run_interactive_matching
 
 # Feature extraction and text formatting
 from .feature_extraction import FeatureExtractor, VectorFeatureExtractor
@@ -60,6 +61,8 @@ __all__ = [
     "MLBasedMatcher",
     "LLMBasedMatcher",
     "PLMBasedMatcher",
+    "MatchingSessionResult",
+    "run_interactive_matching",
     "FeatureExtractor",
     "VectorFeatureExtractor",
     "TextFormatter",
