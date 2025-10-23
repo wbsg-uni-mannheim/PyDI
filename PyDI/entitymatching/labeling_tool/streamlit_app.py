@@ -700,6 +700,14 @@ def _render_swipe_view(
     if hotkeys is None:
         st.caption("Tip: install `streamlit-hotkeys` (`pip install streamlit-hotkeys`) for more reliable keyboard shortcuts.")
     labels_state = _get_label_state()
+    match_count = sum(1 for entry in labels_state.values() if entry.get("label") == "match")
+    non_match_count = sum(1 for entry in labels_state.values() if entry.get("label") == "non_match")
+    corner_count = sum(1 for entry in labels_state.values() if entry.get("corner"))
+    st.caption("Annotation progress")
+    progress_cols = st.columns(3)
+    progress_cols[0].metric("Matches", match_count)
+    progress_cols[1].metric("Non-matches", non_match_count)
+    progress_cols[2].metric("Corner cases", corner_count)
     labeled_snapshot = _labels_state_to_dataframe(labels_state)
     if not labeled_snapshot.empty:
         snapshot_buffer = StringIO()
