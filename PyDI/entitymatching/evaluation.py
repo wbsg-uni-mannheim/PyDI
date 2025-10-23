@@ -1567,11 +1567,11 @@ class EntityMatchingEvaluator:
         # Process test pairs for IsMatch column if available
         positive_set = set()
         negative_set = set()
-        
+
         if test_pairs is not None and not test_pairs.empty:
             # Use the same label normalization logic as in other methods
             positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(test_pairs)
-            
+
             if "label" in test_pairs.columns:
                 positive_pairs = [
                     (row["id1"], row["id2"])
@@ -1590,7 +1590,7 @@ class EntityMatchingEvaluator:
                     for _, row in test_pairs[["id1", "id2"]].iterrows()
                 ]
                 positive_set = set(positive_pairs)
-        
+
         # Get unique comparators and pairs
         unique_comparators = sorted(debug_results["comparator_name"].unique())
 
@@ -1616,15 +1616,39 @@ class EntityMatchingEvaluator:
                 ]
             )
 
-        # Create rows for each correspondence
+        # Create a lookup for correspondence scores
+        correspondence_scores = {}
+        for _, corr_row in correspondences.iterrows():
+            pair_key = (corr_row["id1"], corr_row["id2"])
+            correspondence_scores[pair_key] = corr_row["score"]
+
+        # Get all unique pairs from debug_results (ALL evaluated candidates, not just matches)
+        unique_pairs = debug_results[["id1", "id2"]].drop_duplicates()
+
+        # Create rows for each evaluated pair (not just matches)
         output_rows = []
 
-        for _, corr_row in correspondences.iterrows():
-            pair_id1, pair_id2 = corr_row["id1"], corr_row["id2"]
-            total_similarity = corr_row["score"]
+        for _, pair_row in unique_pairs.iterrows():
+            pair_id1, pair_id2 = pair_row["id1"], pair_row["id2"]
+            pair_tuple = (pair_id1, pair_id2)
+
+            # Get total similarity from correspondences if it matched, otherwise calculate from debug results
+            if pair_tuple in correspondence_scores:
+                total_similarity = correspondence_scores[pair_tuple]
+            else:
+                # Pair was evaluated but didn't match threshold - estimate total similarity
+                # from the weighted average of postprocessed similarities
+                pair_debug = debug_results[
+                    (debug_results["id1"] == pair_id1) & (debug_results["id2"] == pair_id2)
+                ]
+                if not pair_debug.empty:
+                    # Use mean of postprocessed similarities as estimate
+                    # (ideally we'd have weights from the matcher, but this is a reasonable approximation)
+                    total_similarity = pair_debug["postprocessed_similarity"].mean()
+                else:
+                    total_similarity = 0.0
 
             # Determine if this is a match based on test set ground truth
-            pair_tuple = (pair_id1, pair_id2)
             if pair_tuple in positive_set:
                 is_match = "1"  # Ground truth positive match
             elif pair_tuple in negative_set:
