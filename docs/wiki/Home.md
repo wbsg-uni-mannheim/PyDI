@@ -1,39 +1,35 @@
-Welcome to the PyDI Wiki
-========================
+# Welcome to the PyDI Wiki
 
-PyDI (Python Data Integration) is an end to end data integration framework covering all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern embedding- and LLM-based techniques for these tasks. 
-
-## General Features
+PyDI (Python Data Integration) is an end to end data integration framework covering the complete integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern embedding- and LLM-based techniques for these tasks. 
+## General features:
 - PyDI consists of composable modules that can be used independently or as a pipeline.
 - All modules rely on pandas DataFrames as underlying data structure, ensuring interoperability with third-party packages that also rely on pandas.
-- Each component writes detailed logs about its work which can be used as starting point for debugging data integration pipelines.
+- Each module supports result evaluation and can generate detailed logs of its operations. These logs can serve as starting point for debugging and improving data integration pipelines.
 
 ## The PyDI Data Integration Pipeline 
-The framework supports the following steps of the data integration pipeline: 
+PyDI supports the following steps of the data integration pipeline: 
 1. Load data and add provenance metadata
-2. Profile datasets 
-3. Normalize attribute values
+2. Data profiling 
+3. Schema matching and data translation
 4. Information extraction
-5. Schema matching and mapping
-6. Entity matching 
+5. Attribute value normalization
+6. Entity matching including blocking
 8. Data fusion including conflict resolution
 
 
+## The PyDI Modules
+PyDI consists of the following modules:
+- [Schema Matching](#schema-matching) provides matchers to automatically find correspondences between the columns of two datasets. The matchers implement label-based, instance-based, and LLM-based schema matching methods. 
+- [Data Translation](#data-translation) translates a dataset into a target schema using a set of schema correspondences resulting from schema matching or provided by the user.
+- [Information Extraction](#information-extraction) provides functionality for splitting a string into attribute values using regex-, code-, or LLM-based information extraction methods.
+- [Normalization](#normalization) provides methods for standardizing attribute vales including normalizing of units of measurement.
+- [Entity Matching](#entity-matching) this module allows you to identify records in multiple datasets that describe the same real-world entity. For this, the module implements various blocking techniques as well as different matchers (rule-based, ML-based, LLM-based).
+- [Data Fusion](#data-fusion) merges sets of records describing the same real-world entity into a single consolidated dataset. Provides methods for resolving data conflicts using attribute-level conflict resolution heuristics. 
+- [IO](#io) offers readers for loading data in different formats, adding identifiers to records, and adding provenance metadata to datasets.
+- [Profiling](#profiling) provides methods for profiling datasets in order to identify data quality problems such as missing values or heterogeneous value formats. 
+- [Utils](#utils) implements functionality that is used by multiple modules, such as logging and similarity computation.
 
-## Contents (PyDI Modules)
-- [IO](#io) - load data, set IDs, record provenance
-- [Profiling](#profiling) - dataset profiles and comparisons (HTML)
-- [Information Extraction](#information-extraction) - regex/code/LLM extraction + evaluation
-- [Normalization](#normalization) - clean headers/text, standardize values and units
-- [Schema Matching](#schema-matching) - label/instance/duplicate‑based matching + evaluation
-- [Data Translation](#data-translation) - apply schema mappings to align data
-- [Entity Matching](#entity-matching) - candidate generation (standard/sorted‑neighbourhood/token/embedding), rule‑based, ML‑based, and LLM‑based matchers + evaluation
-- [Data Fusion](#data-fusion) - conflict resolution rules and evaluation/reporting
-- [Utils](#utils) - comparators and similarity registry
-- [Tutorial](../tutorial/PyDI_Winter_Tutorial.ipynb) - end‑to‑end example (movie usecase)
-
-
-The sections below provide a concise, high‑level overview of PyDI’s functionality. For more detailed and interactive exploration, see the linked example notebooks and the tutorial notebook in `PyDI/examples` and `PyDI/tutorial`.
+The sections below provide a concise, high level overview of PyDI’s functionality. For more detailed and interactive exploration, see the linked example notebooks and the tutorial notebook in `PyDI/examples` and `PyDI/tutorial`.
 
 
 # IO
