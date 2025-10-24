@@ -15,7 +15,7 @@ from .base import AttributeValueFuser, ConflictResolutionFunction, FusionContext
 
 
 # Type alias for evaluation functions
-# Functions should return bool and typically accept (fused_value, gold_value),
+# Functions should return bool and typically accept (fused_value, expected_value),
 # but may also accept additional keyword parameters (e.g., threshold).
 EvaluationFunction = Callable[..., bool]
 
@@ -130,7 +130,7 @@ class DataFusionStrategy:
             Name of the attribute.
         evaluation_function : EvaluationFunction
             Function to evaluate fusion results for this attribute. Typically
-            has signature ``(fused_value, gold_value, **params) -> bool``.
+            has signature ``(fused_value, expected_value, **params) -> bool``.
         **kwargs : Any
             Optional parameters to bind to the evaluation function (e.g.,
             ``threshold=0.7``).

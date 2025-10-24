@@ -2,7 +2,7 @@
 Evaluation framework for data fusion in PyDI.
 
 This module provides tools for evaluating the quality of fusion results
-against gold standard data.
+against validation/test datasets.
 """
 
 from __future__ import annotations
@@ -45,12 +45,12 @@ def _is_missing_value(value) -> bool:
     return False
 
 
-def exact_match(fused_value, gold_value) -> bool:
+def exact_match(fused_value, expected_value) -> bool:
     """Default evaluation function using exact equality."""
-    return fused_value == gold_value
+    return fused_value == expected_value
 
 
-def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
+def tokenized_match(fused_value, expected_value, threshold: float = 1.0) -> bool:
     """Evaluation function using tokenized comparison with similarity threshold.
 
     For lists: Uses Jaccard similarity between lists (order doesn't matter).
@@ -61,8 +61,8 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
     ----------
     fused_value : Any
         The fused value to compare.
-    gold_value : Any  
-        The gold standard value to compare against.
+    expected_value : Any
+        The expected value to compare against.
     threshold : float, default 1.0
         Minimum similarity threshold (0.0 to 1.0). 
         1.0 requires exact match, lower values allow partial matches.
@@ -73,28 +73,28 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
         True if similarity >= threshold, False otherwise.
     """
     # Check for missing values using the same logic as DataFusionEvaluator
-    if _is_missing_value(fused_value) and _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) and _is_missing_value(expected_value):
         return True
-    if _is_missing_value(fused_value) or _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) or _is_missing_value(expected_value):
         return False
 
     # Get Jaccard similarity function from registry
     jaccard_sim = SimilarityRegistry.get_function('jaccard')
 
     # Handle lists of strings - use Jaccard similarity
-    if isinstance(fused_value, list) and isinstance(gold_value, list):
+    if isinstance(fused_value, list) and isinstance(expected_value, list):
         # Use Jaccard similarity between sets (order doesn't matter)
-        similarity = jaccard_sim(set(fused_value), set(gold_value))
+        similarity = jaccard_sim(set(fused_value), set(expected_value))
         return similarity >= threshold
 
     # Handle mixed list/string by converting both to lists
-    if isinstance(fused_value, list) or isinstance(gold_value, list):
+    if isinstance(fused_value, list) or isinstance(expected_value, list):
         # Convert both to lists, then use Jaccard similarity
         fused_list = fused_value if isinstance(
             fused_value, list) else [str(fused_value)]
-        gold_list = gold_value if isinstance(
-            gold_value, list) else [str(gold_value)]
-        similarity = jaccard_sim(set(fused_list), set(gold_list))
+        expected_list = expected_value if isinstance(
+            expected_value, list) else [str(expected_value)]
+        similarity = jaccard_sim(set(fused_list), set(expected_list))
         return similarity >= threshold
 
     # String tokenization logic - clean and use Jaccard similarity
@@ -112,28 +112,28 @@ def tokenized_match(fused_value, gold_value, threshold: float = 1.0) -> bool:
         return set(clean_words)
 
     fused_tokens = clean_tokens(fused_value)
-    gold_tokens = clean_tokens(gold_value)
+    expected_tokens = clean_tokens(expected_value)
 
     # Use Jaccard similarity between token sets
-    if len(fused_tokens) == 0 and len(gold_tokens) == 0:
+    if len(fused_tokens) == 0 and len(expected_tokens) == 0:
         return True  # Both empty
-    if len(fused_tokens) == 0 or len(gold_tokens) == 0:
+    if len(fused_tokens) == 0 or len(expected_tokens) == 0:
         return False  # One empty, one not
 
-    similarity = jaccard_sim(fused_tokens, gold_tokens)
+    similarity = jaccard_sim(fused_tokens, expected_tokens)
     return similarity >= threshold
 
 
-def year_only_match(fused_value, gold_value) -> bool:
+def year_only_match(fused_value, expected_value) -> bool:
     """Evaluation function comparing only the year part of dates.
 
     If the inputs are strings, attempt to parse to dates; if they are
     ``datetime``/``date``/timestamp-like, compare their ``year`` values.
     On unhandled types or failed parsing, log an error and return False.
     """
-    if _is_missing_value(fused_value) and _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) and _is_missing_value(expected_value):
         return True
-    if _is_missing_value(fused_value) or _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) or _is_missing_value(expected_value):
         return False
 
     logger = logging.getLogger(__name__)
@@ -162,59 +162,59 @@ def year_only_match(fused_value, gold_value) -> bool:
             return None
 
     d1 = _to_date(fused_value)
-    d2 = _to_date(gold_value)
+    d2 = _to_date(expected_value)
 
     if d1 is None or d2 is None:
         logger.error(
-            "year_only_match: could not convert values to date (fused=%r, gold=%r)",
+            "year_only_match: could not convert values to date (fused=%r, expected=%r)",
             fused_value,
-            gold_value,
+            expected_value,
         )
         return False
 
     return d1.year == d2.year
 
 
-def numeric_tolerance_match(fused_value, gold_value, tolerance: float = 0.01) -> bool:
+def numeric_tolerance_match(fused_value, expected_value, tolerance: float = 0.01) -> bool:
     """Evaluation function for numeric values with tolerance."""
-    if _is_missing_value(fused_value) and _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) and _is_missing_value(expected_value):
         return True
-    if _is_missing_value(fused_value) or _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) or _is_missing_value(expected_value):
         return False
 
     try:
-        return abs(float(fused_value) - float(gold_value)) <= tolerance
+        return abs(float(fused_value) - float(expected_value)) <= tolerance
     except (ValueError, TypeError):
-        return str(fused_value).strip() == str(gold_value).strip()
+        return str(fused_value).strip() == str(expected_value).strip()
 
 
-def set_equality_match(fused_value, gold_value) -> bool:
+def set_equality_match(fused_value, expected_value) -> bool:
     """Evaluation function for set equality (order-independent).
 
     Useful for lists where order doesn't matter.
     """
-    if _is_missing_value(fused_value) and _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) and _is_missing_value(expected_value):
         return True
-    if _is_missing_value(fused_value) or _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) or _is_missing_value(expected_value):
         return False
 
     try:
-        if isinstance(fused_value, (list, tuple, set)) and isinstance(gold_value, (list, tuple, set)):
-            return set(fused_value) == set(gold_value)
-        return fused_value == gold_value
+        if isinstance(fused_value, (list, tuple, set)) and isinstance(expected_value, (list, tuple, set)):
+            return set(fused_value) == set(expected_value)
+        return fused_value == expected_value
     except (TypeError, ValueError):
-        return str(fused_value) == str(gold_value)
+        return str(fused_value) == str(expected_value)
 
 
-def boolean_match(fused_value, gold_value) -> bool:
+def boolean_match(fused_value, expected_value) -> bool:
     """Evaluation function for boolean values with flexible interpretation.
 
     Handles various boolean representations:
     - True/False, true/false, yes/no, 1/0, "true"/"false", etc.
     """
-    if _is_missing_value(fused_value) and _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) and _is_missing_value(expected_value):
         return True
-    if _is_missing_value(fused_value) or _is_missing_value(gold_value):
+    if _is_missing_value(fused_value) or _is_missing_value(expected_value):
         return False
 
     def normalize_boolean(value):
@@ -243,17 +243,17 @@ def boolean_match(fused_value, gold_value) -> bool:
 
     # Normalize both values
     fused_bool = normalize_boolean(fused_value)
-    gold_bool = normalize_boolean(gold_value)
+    expected_bool = normalize_boolean(expected_value)
 
     # If either couldn't be normalized, fall back to string comparison
-    if fused_bool is None or gold_bool is None:
-        return str(fused_value).strip().lower() == str(gold_value).strip().lower()
+    if fused_bool is None or expected_bool is None:
+        return str(fused_value).strip().lower() == str(expected_value).strip().lower()
 
-    return fused_bool == gold_bool
+    return fused_bool == expected_bool
 
 
 class DataFusionEvaluator:
-    """Evaluator for data fusion results against gold standard.
+    """Evaluator for data fusion results against validation/test datasets.
 
     Parameters
     ----------
@@ -323,10 +323,12 @@ class DataFusionEvaluator:
         self,
         fused_df: pd.DataFrame,
         fused_id_column: str,
-        gold_df: pd.DataFrame,
-        gold_id_column: str,
+        expected_df: Optional[pd.DataFrame] = None,
+        expected_id_column: Optional[str] = None,
+        gold_df: Optional[pd.DataFrame] = None,
+        gold_id_column: Optional[str] = None,
     ) -> Dict[str, float]:
-        """Evaluate fused results against gold standard.
+        """Evaluate fused results against an expected/validation dataset.
 
         Parameters
         ----------
@@ -334,10 +336,14 @@ class DataFusionEvaluator:
             The fused dataset to evaluate.
         fused_id_column : str
             ID column name in the fused dataset.
-        gold_df : pd.DataFrame
-            The gold standard dataset.
-        gold_id_column : str
-            ID column name in the gold dataset.
+        expected_df : pd.DataFrame, optional
+            The expected/validation/test dataset.
+        expected_id_column : str, optional
+            ID column name in the expected dataset.
+        gold_df : pd.DataFrame, optional
+            Deprecated alias for expected_df.
+        gold_id_column : str, optional
+            Deprecated alias for expected_id_column.
 
         Returns
         -------
@@ -346,19 +352,25 @@ class DataFusionEvaluator:
         """
         self._logger.info("Starting fusion evaluation")
 
+        # Backward-compat: support old gold_* parameter names
+        if expected_df is None and gold_df is not None:
+            expected_df = gold_df
+        if expected_id_column is None and gold_id_column is not None:
+            expected_id_column = gold_id_column
+
         # Align datasets by their respective ID columns
-        aligned_fused, aligned_gold = self._align_datasets_two_ids(
-            fused_df, fused_id_column, gold_df, gold_id_column
+        aligned_fused, aligned_expected = self._align_datasets_two_ids(
+            fused_df, fused_id_column, expected_df, expected_id_column
         )
 
-        if aligned_fused.empty or aligned_gold.empty:
+        if aligned_fused.empty or aligned_expected.empty:
             self._logger.warning(
-                "No matching records found between fused and gold datasets")
+                "No matching records found between fused and expected datasets")
             return {"overall_accuracy": 0.0, "num_evaluated_records": 0}
 
         # Get attributes to evaluate
         attributes = self._get_evaluable_attributes(
-            aligned_fused, aligned_gold, fused_id_column, gold_id_column)
+            aligned_fused, aligned_expected, fused_id_column, expected_id_column)
 
         if not attributes:
             self._logger.warning("No common attributes found for evaluation")
@@ -372,10 +384,10 @@ class DataFusionEvaluator:
         for attribute in attributes:
             results = self._evaluate_attribute(
                 aligned_fused,
-                aligned_gold,
+                aligned_expected,
                 attribute,
                 fused_id_column,
-                gold_id_column,
+                expected_id_column,
             )
             attribute_results[attribute] = results
             total_correct += results["correct_count"]
@@ -423,65 +435,65 @@ class DataFusionEvaluator:
         self,
         fused_df: pd.DataFrame,
         fused_id_column: str,
-        gold_df: pd.DataFrame,
-        gold_id_column: str,
+        expected_df: pd.DataFrame,
+        expected_id_column: str,
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Align two datasets by possibly different ID columns.
 
         Returns aligned DataFrames with matching records only.
         """
         fused_clean = fused_df.dropna(subset=[fused_id_column]).copy()
-        gold_clean = gold_df.dropna(subset=[gold_id_column]).copy()
+        expected_clean = expected_df.dropna(subset=[expected_id_column]).copy()
 
-        if gold_clean.empty:
+        if expected_clean.empty:
             return pd.DataFrame(), pd.DataFrame()
 
         fused_clean["__eval_id"] = fused_clean[fused_id_column].astype(str)
-        gold_clean["__eval_id"] = gold_clean[gold_id_column].astype(str)
+        expected_clean["__eval_id"] = expected_clean[expected_id_column].astype(str)
 
-        gold_id_order = gold_clean["__eval_id"].tolist()
+        expected_id_order = expected_clean["__eval_id"].tolist()
         fused_id_set = set(fused_clean["__eval_id"])
 
-        missing_ids = [gid for gid in gold_id_order if gid not in fused_id_set]
+        missing_ids = [gid for gid in expected_id_order if gid not in fused_id_set]
         if missing_ids:
             preview = ", ".join(missing_ids[:5])
             if len(missing_ids) > 5:
                 preview += ", ..."
             self._logger.warning(
-                "Missing %d gold records in fused dataset: %s",
+                "Missing %d expected/reference records in fused dataset: %s",
                 len(missing_ids),
                 preview,
             )
 
-        aligned_gold = gold_clean.set_index("__eval_id").loc[gold_id_order]
-        aligned_fused = fused_clean.set_index("__eval_id").reindex(gold_id_order)
+        aligned_expected = expected_clean.set_index("__eval_id").loc[expected_id_order]
+        aligned_fused = fused_clean.set_index("__eval_id").reindex(expected_id_order)
 
-        aligned_gold = aligned_gold.reset_index(drop=True)
+        aligned_expected = aligned_expected.reset_index(drop=True)
         aligned_fused = aligned_fused.reset_index(drop=True)
 
-        aligned_gold = aligned_gold.drop(columns="__eval_id", errors="ignore")
+        aligned_expected = aligned_expected.drop(columns="__eval_id", errors="ignore")
         aligned_fused = aligned_fused.drop(columns="__eval_id", errors="ignore")
 
-        return aligned_fused, aligned_gold
+        return aligned_fused, aligned_expected
 
     def _get_evaluable_attributes(
         self,
         fused_df: pd.DataFrame,
-        gold_df: pd.DataFrame,
+        expected_df: pd.DataFrame,
         fused_id_column: str,
-        gold_id_column: str,
+        expected_id_column: str,
     ) -> List[str]:
         """Get attributes that can be evaluated (present in both datasets)."""
         fused_attrs = set(fused_df.columns)
-        gold_attrs = set(gold_df.columns)
+        expected_attrs = set(expected_df.columns)
 
         # Find common attributes, excluding metadata columns
-        common_attrs = fused_attrs.intersection(gold_attrs)
+        common_attrs = fused_attrs.intersection(expected_attrs)
 
         # Filter out metadata and ID columns
         evaluable_attrs = [
             attr for attr in common_attrs
-            if not attr.startswith("_fusion_") and attr not in {fused_id_column, gold_id_column}
+            if not attr.startswith("_fusion_") and attr not in {fused_id_column, expected_id_column}
         ]
 
         return evaluable_attrs
@@ -489,10 +501,10 @@ class DataFusionEvaluator:
     def _evaluate_attribute(
         self,
         fused_df: pd.DataFrame,
-        gold_df: pd.DataFrame,
+        expected_df: pd.DataFrame,
         attribute: str,
         fused_id_column: str,
-        gold_id_column: str,
+        expected_id_column: str,
     ) -> Dict[str, Any]:
         """Evaluate a single attribute."""
         # Get evaluation function for this attribute
@@ -508,27 +520,27 @@ class DataFusionEvaluator:
         context = FusionContext(group_id="eval", attribute=attribute)
 
         # Compare values row by row
-        if len(fused_df) != len(gold_df):
+        if len(fused_df) != len(expected_df):
             self._logger.warning(
                 "Aligned dataframes have different lengths (%d vs %d) for attribute '%s'",
                 len(fused_df),
-                len(gold_df),
+                len(expected_df),
                 attribute,
             )
 
-        num_rows = min(len(fused_df), len(gold_df))
+        num_rows = min(len(fused_df), len(expected_df))
 
         for i in range(num_rows):
             fused_row = fused_df.iloc[i]
-            gold_row = gold_df.iloc[i]
+            expected_row = expected_df.iloc[i]
             fused_value = fused_row.get(attribute)
-            gold_value = gold_row.get(attribute)
+            expected_value = expected_row.get(attribute)
 
             fused_missing = self._is_missing(fused_value)
-            gold_missing = self._is_missing(gold_value)
+            expected_missing = self._is_missing(expected_value)
 
             fused_id = fused_row.get(fused_id_column)
-            gold_id = gold_row.get(gold_id_column)
+            expected_id = expected_row.get(expected_id_column)
 
             metadata = fused_row.get("_fusion_metadata")
             conflict_rule = None
@@ -576,22 +588,22 @@ class DataFusionEvaluator:
 
             serialized_inputs = inputs if inputs is not None else []
 
-            # No gold value -> cannot evaluate this row
-            if gold_missing and fused_missing:
+            # No expected value -> cannot evaluate this row
+            if expected_missing and fused_missing:
                 continue
-            if gold_missing:
+            if expected_missing:
                 continue
 
             total_count += 1
 
             if fused_missing:
-                # Count as incorrect when gold value exists but fused is missing
+                # Count as incorrect when expected value exists but fused is missing
                 self._emit_mismatch(
                     attribute=attribute,
                     fused_id=fused_id,
-                    gold_id=gold_id,
+                    expected_id=expected_id,
                     fused_value=None,
-                    gold_value=gold_value,
+                    expected_value=expected_value,
                     evaluation_rule=eval_function,
                     conflict_rule=conflict_rule,
                     inputs=serialized_inputs,
@@ -601,14 +613,14 @@ class DataFusionEvaluator:
 
             # Evaluate using the function
             try:
-                matched = eval_function(fused_value, gold_value)
+                matched = eval_function(fused_value, expected_value)
             except Exception as exc:
                 self._emit_mismatch(
                     attribute=attribute,
                     fused_id=fused_id,
-                    gold_id=gold_id,
+                    expected_id=expected_id,
                     fused_value=fused_value,
-                    gold_value=gold_value,
+                    expected_value=expected_value,
                     evaluation_rule=eval_function,
                     conflict_rule=conflict_rule,
                     inputs=serialized_inputs,
@@ -624,9 +636,9 @@ class DataFusionEvaluator:
             self._emit_mismatch(
                 attribute=attribute,
                 fused_id=fused_id,
-                gold_id=gold_id,
+                expected_id=expected_id,
                 fused_value=fused_value,
-                gold_value=gold_value,
+                expected_value=expected_value,
                 evaluation_rule=eval_function,
                 conflict_rule=conflict_rule,
                 inputs=serialized_inputs,
@@ -749,9 +761,9 @@ class DataFusionEvaluator:
         *,
         attribute: str,
         fused_id: Any,
-        gold_id: Any,
+        expected_id: Any,
         fused_value: Any,
-        gold_value: Any,
+        expected_value: Any,
         evaluation_rule,
         conflict_rule: Optional[str],
         inputs: Optional[Any],
@@ -765,9 +777,9 @@ class DataFusionEvaluator:
             "type": "evaluation_mismatch",
             "attribute": attribute,
             "fused_id": self._serialize_value(fused_id),
-            "gold_id": self._serialize_value(gold_id),
+            "expected_id": self._serialize_value(expected_id),
             "fused_value": self._serialize_value(fused_value),
-            "gold_value": self._serialize_value(gold_value),
+            "expected_value": self._serialize_value(expected_value),
             "evaluation_rule": get_callable_name(evaluation_rule),
             "conflict_rule": conflict_rule,
             "inputs": self._serialize_value(inputs),
@@ -799,12 +811,12 @@ class DataFusionEvaluator:
         parts = [
             f"Attribute: {entry.get('attribute')}\n",
             f"  Fused ID: {entry.get('fused_id')}\n",
-            f"  Gold ID: {entry.get('gold_id')}\n",
+            f"  Expected ID: {entry.get('expected_id')}\n",
             f"  Conflict Rule: {entry.get('conflict_rule')}\n",
             f"  Evaluation Rule: {entry.get('evaluation_rule')}\n",
             f"  Reason: {entry.get('reason')}\n",
             f"  Fused Value: {entry.get('fused_value')}\n",
-            f"  Gold Value: {entry.get('gold_value')}\n",
+            f"  Expected Value: {entry.get('expected_value')}\n",
         ]
         if entry.get("inputs") is not None:
             parts.append(f"  Inputs: {entry.get('inputs')}\n")

@@ -78,7 +78,7 @@ Artifacts
 
 # Information Extraction
 
-The Information Extraction module derives structured, typed attributes from text‑heavy or semi‑structured columns. It supports pattern‑based extraction with regular expressions, custom Python functions for dataset‑specific logic, and model‑based extraction using large language models. Extracted fields are appended as new columns and can be evaluated against a gold standard when available.
+The Information Extraction module derives structured, typed attributes from text‑heavy or semi‑structured columns. It supports pattern‑based extraction with regular expressions, custom Python functions for dataset‑specific logic, and model‑based extraction using large language models. Extracted fields are appended as new columns and can be evaluated against an expected/validation dataset when available.
 
 Supported Approaches (module `PyDI.informationextraction`)
 - Regex‑based extraction: `RegexExtractor` applies rule sets of patterns with optional post‑processing to normalize results (e.g., amounts, dates, units).
@@ -90,7 +90,7 @@ Additional Notes
 - Multiple extractors can be combined using `ExtractorPipeline` to incrementally enrich a dataset.
 
 Evaluation of Extraction
-- Module: `PyDI.informationextraction.evaluation.InformationExtractionEvaluator` compares predicted columns with a gold standard aligned by record IDs.
+- Module: `PyDI.informationextraction.evaluation.InformationExtractionEvaluator` compares predicted columns with an expected/validation set aligned by record IDs.
 - Metrics: reports attribute‑level results and aggregate micro/macro precision, recall, F1, and non‑null accuracy; supports attribute‑specific rules (e.g., exact match, tokenized text, numeric tolerance, set equality).
 - Diagnostics: optional mismatch logs (text or JSONL) to inspect errors and refine rules or prompts.
 
@@ -296,6 +296,8 @@ Artifacts
 
 Data Fusion merges matched records into one consolidated dataset and then evaluates the result. Conflicts between source values are resolved by per‑attribute rules. Evaluation supports exact and fuzzy comparison.
 
+See the detailed Fusion guide: [Fusion Module](Fusion.md)
+
 Modules
 
 -   `PyDI.fusion.engine` — fusion with strategy rules
@@ -316,7 +318,7 @@ Conflict Resolution Rules (overview)
 
 Evaluation and Reporting
 
--   DataFusionEvaluator compares fused vs. gold by ID. It supports attribute‑specific evaluation functions, enabling fuzzy assessment beyond exact equality, e.g. `tokenized_match`, `numeric_tolerance_match`, `year_only_match`.
+-   DataFusionEvaluator compares fused vs. expected/validation by ID. It supports attribute‑specific evaluation functions, enabling fuzzy assessment beyond exact equality, e.g. `tokenized_match`, `numeric_tolerance_match`, `year_only_match`.
 -   Additional outputs: consistency summaries, rule usage, record/attribute coverage, and JSON/HTML reports via FusionReport.
 
 Example

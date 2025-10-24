@@ -845,7 +845,7 @@ def main() -> None:
     st.title("PyDI Entity Matching Curator")
     st.write(
         "Union multiple blockers, score candidates with PyDI matchers, and curate balanced batches "
-        "for gold-standard labeling. Configure the pipeline on the left and run the sampler to "
+        "for labeling. Configure the pipeline on the left and run the sampler to "
         "surface easy positives, easy negatives, and tricky corner cases."
     )
 

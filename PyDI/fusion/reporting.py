@@ -271,11 +271,11 @@ class FusionReport:
         Parameters
         ----------
         gold_df : pd.DataFrame
-            The gold standard dataset.
+            The expected/validation dataset.
         fused_id_column : str
             ID column name in the fused dataset.
         gold_id_column : str
-            ID column name in the gold dataset.
+            ID column name in the expected dataset.
         max_examples : int, default 3
             Maximum number of examples to show for each category.
         """
@@ -299,7 +299,7 @@ class FusionReport:
                 print(f"    Record ID: {ex['record_id']}")
                 print(f"    Attribute: {ex['attribute']}")
                 print(f"    Fused:  '{ex['fused_value']}'")
-                print(f"    Gold:   '{ex['gold_value']}'")
+                print(f"    Expected:   '{ex['expected_value']}'")
                 print(f"    Confidence: {ex['confidence']}")
                 if ex['sources']:
                     print(f"    Sources: {', '.join(ex['sources'])}")
@@ -313,7 +313,7 @@ class FusionReport:
                 print(f"\n  Example {i}:")
                 print(f"    Record ID: {ex['record_id']}")
                 print(f"    Attribute: {ex['attribute']}")
-                print(f"    Value: '{ex['fused_value']}' (matches gold)")
+                print(f"    Value: '{ex['fused_value']}' (matches expected)")
                 print(f"    Confidence: {ex['confidence']}")
                 if ex['sources']:
                     print(f"    Sources: {', '.join(ex['sources'])}")
@@ -625,11 +625,11 @@ class FusionReport:
         Parameters
         ----------
         gold_df : pd.DataFrame
-            The gold standard dataset.
+            The expected/validation dataset.
         fused_id_column : str
             ID column name in the fused dataset.
         gold_id_column : str
-            ID column name in the gold dataset.
+            ID column name in the expected dataset.
         max_examples : int, default 5
             Maximum number of examples to return for each category.
             
@@ -647,7 +647,7 @@ class FusionReport:
         common_ids = fused_ids.intersection(gold_ids)
         
         if not common_ids:
-            return {"error": "No common IDs found between fused and gold datasets"}
+            return {"error": "No common IDs found between fused and expected datasets"}
         
         # Filter to common IDs
         aligned_fused = self.fused_df[self.fused_df[fused_id_column].astype(str).isin(common_ids)].copy()
@@ -693,6 +693,7 @@ class FusionReport:
                         "record_id": record_id,
                         "attribute": attr,
                         "fused_value": fused_val,
+                        "expected_value": gold_val,
                         "gold_value": gold_val,
                         "confidence": fused_row.get("_fusion_confidence", "N/A"),
                         "sources": fused_row.get("_fusion_sources", [])

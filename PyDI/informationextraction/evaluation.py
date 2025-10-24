@@ -1,7 +1,7 @@
 """Evaluation framework for information extraction in PyDI.
 
 This module provides an evaluator to compare extracted (predicted)
-attributes against a gold standard with common IR-style metrics.
+attributes against an expected/validation dataset with common IR-style metrics.
 
 It supports per-attribute evaluation functions (e.g., exact match,
 tokenized string match, numeric tolerance) and produces both attribute-level
@@ -64,21 +64,21 @@ def _is_missing_value(value: Any) -> bool:
 def _align_two_by_id(
     pred_df: pd.DataFrame,
     pred_id_column: str,
-    gold_df: pd.DataFrame,
-    gold_id_column: str,
+    expected_df: pd.DataFrame,
+    expected_id_column: str,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Align two DataFrames on possibly different ID columns (inner join by IDs)."""
     pred_ids = set(pred_df[pred_id_column].dropna().astype(str))
-    gold_ids = set(gold_df[gold_id_column].dropna().astype(str))
+    gold_ids = set(expected_df[expected_id_column].dropna().astype(str))
     common_ids = pred_ids & gold_ids
     if not common_ids:
         return pd.DataFrame(), pd.DataFrame()
 
     pred_aligned = pred_df[pred_df[pred_id_column].astype(str).isin(common_ids)].copy()
-    gold_aligned = gold_df[gold_df[gold_id_column].astype(str).isin(common_ids)].copy()
+    gold_aligned = expected_df[expected_df[expected_id_column].astype(str).isin(common_ids)].copy()
 
     pred_aligned = pred_aligned.sort_values(pred_id_column).reset_index(drop=True)
-    gold_aligned = gold_aligned.sort_values(gold_id_column).reset_index(drop=True)
+    gold_aligned = gold_aligned.sort_values(expected_id_column).reset_index(drop=True)
     return pred_aligned, gold_aligned
 
 
@@ -88,8 +88,8 @@ def _micro_metrics_from_counts(total_counts: Dict[str, int]) -> Dict[str, float]
     Category semantics:
     - VC: predicted present and correct (TP)
     - VW: predicted present and wrong value (FP)
-    - VN: predicted missing but gold present (FN)
-    - NV: predicted present but gold missing (FP)
+    - VN: predicted missing but expected present (FN)
+    - NV: predicted present but expected missing (FP)
     - NN: both missing (TN)
     """
     tp = total_counts.get("VC", 0)
@@ -119,7 +119,7 @@ def _micro_metrics_from_counts(total_counts: Dict[str, int]) -> Dict[str, float]
 
 
 class InformationExtractionEvaluator:
-    """Evaluate information extraction results against a gold standard.
+    """Evaluate information extraction results against an expected/validation dataset.
 
     Parameters
     ----------
@@ -150,27 +150,35 @@ class InformationExtractionEvaluator:
     def evaluate(
         self,
         predictions_df: pd.DataFrame,
-        gold_df: pd.DataFrame,
+        gold_df: Optional[pd.DataFrame] = None,
         *,
         pred_id_column: str,
-        gold_id_column: str,
+        gold_id_column: Optional[str] = None,
         attributes: Optional[List[str]] = None,
         debug_mismatches: bool = False,
         debug_file: Optional[Union[str, Path]] = None,
         debug_format: str = "text",
+        expected_df: Optional[pd.DataFrame] = None,
+        expected_id_column: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Evaluate predictions against gold standard.
+        """Evaluate predictions against an expected/validation dataset.
 
         Returns a dictionary with attribute-level results and micro/macro metrics.
         """
         self._logger.info("Starting information extraction evaluation")
 
+        # Backward-compat: support old gold_* parameter names
+        if expected_df is None and gold_df is not None:
+            expected_df = gold_df
+        if expected_id_column is None and gold_id_column is not None:
+            expected_id_column = gold_id_column
+
         # Align
         pred_aligned, gold_aligned = _align_two_by_id(
-            predictions_df, pred_id_column, gold_df, gold_id_column
+            predictions_df, pred_id_column, expected_df, expected_id_column
         )
         if pred_aligned.empty or gold_aligned.empty:
-            self._logger.warning("No matching records found between predictions and gold")
+            self._logger.warning("No matching records found between predictions and expected/validation dataset")
             return {
                 "micro": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "accuracy_overall": 0.0},
                 "macro": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "accuracy_overall": 0.0},
@@ -182,7 +190,7 @@ class InformationExtractionEvaluator:
         if attributes is None:
             common = set(pred_aligned.columns) & set(gold_aligned.columns)
             attributes = [
-                a for a in common if a not in {pred_id_column, gold_id_column}
+                a for a in common if a not in {pred_id_column, expected_id_column}
             ]
 
         # Setup mismatch logging if requested
@@ -215,12 +223,12 @@ class InformationExtractionEvaluator:
                         attr = entry.get("attribute", "?")
                         evf = entry.get("evaluation_function", "?")
                         pred = entry.get("predicted_value")
-                        gold = entry.get("gold_value")
+                        gold = entry.get("expected_value")
                         f.write(
                             f"--- Record {rid} | Attribute '{attr}' ---\n"
                             f"Eval function: {evf}\n"
                             f"Predicted: {pred!r}\n"
-                            f"Gold:      {gold!r}\n\n"
+                            f"Expected:  {gold!r}\n\n"
                         )
             except Exception:
                 pass
@@ -247,22 +255,22 @@ class InformationExtractionEvaluator:
                 if pred_missing and gold_missing:
                     counts["NN"] += 1
                 elif pred_missing and not gold_missing:
-                    counts["VN"] += 1  # target present, prediction missing -> FN
+                    counts["VN"] += 1  # expected present, prediction missing -> FN
                     emit_mismatch({
                         "record_id": pred_aligned.iloc[i][pred_id_column],
                         "attribute": attr,
                         "evaluation_function": getattr(eval_fn, "__name__", str(eval_fn)),
                         "predicted_value": None,
-                        "gold_value": gold_val,
+                        "expected_value": gold_val,
                     })
                 elif not pred_missing and gold_missing:
-                    counts["NV"] += 1  # prediction present, target missing -> FP
+                    counts["NV"] += 1  # prediction present, expected missing -> FP
                     emit_mismatch({
                         "record_id": pred_aligned.iloc[i][pred_id_column],
                         "attribute": attr,
                         "evaluation_function": getattr(eval_fn, "__name__", str(eval_fn)),
                         "predicted_value": pred_val,
-                        "gold_value": None,
+                        "expected_value": None,
                     })
                 else:
                     # both present; use evaluation fn
@@ -300,7 +308,7 @@ class InformationExtractionEvaluator:
                             "attribute": attr,
                             "evaluation_function": getattr(eval_fn, "__name__", str(eval_fn)),
                             "predicted_value": pred_val,
-                            "gold_value": gold_val,
+                            "expected_value": gold_val,
                         })
 
             # Aggregate to totals
