@@ -151,9 +151,9 @@ Evaluation mismatch logs show where fused results diverge from the validation/te
    "type":"evaluation_mismatch",
    "attribute":"title",
    "fused_id":"academy_awards_4270",
-   "gold_id":"academy_awards_4270",
+   "expected_id":"academy_awards_4270",
    "fused_value":"The Great Zeigfeld",
-   "gold_value":"The Great Ziegfeld",
+   "expected_value":"The Great Ziegfeld",
    "evaluation_rule":"tokenized_match",
    "conflict_rule":"longest_string",
    "inputs":[
