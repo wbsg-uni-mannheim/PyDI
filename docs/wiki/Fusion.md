@@ -149,23 +149,23 @@ Evaluation mismatch logs show where fused results diverge from the validation/te
 ```json
 {
    "type":"evaluation_mismatch",
-   "attribute":"date",
-   "fused_id":"academy_awards_4469",
-   "expected_id":"academy_awards_4469",
-   "fused_value":"1930-01-01",
-   "expected_value":"1931-01-01",
-   "evaluation_rule":"year_only_match",
-   "conflict_rule":"prefer_higher_trust",
+   "attribute":"title",
+   "fused_id":"academy_awards_4270",
+   "gold_id":"academy_awards_4270",
+   "fused_value":"The Great Zeigfeld",
+   "gold_value":"The Great Ziegfeld",
+   "evaluation_rule":"tokenized_match",
+   "conflict_rule":"longest_string",
    "inputs":[
       {
-         "record_id":"academy_awards_4469",
-         "dataset":"academy_awards",
-         "value":"1930-01-01"
+         "record_id":"actors_9",
+         "dataset":"actors",
+         "value":"The Great Zeigfeld"
       },
       {
-         "record_id":"actors_82",
-         "dataset":"actors",
-         "value":"1932-01-01"
+         "record_id":"academy_awards_4270",
+         "dataset":"academy_awards",
+         "value":"The Great Ziegfeld"
       }
    ],
    "reason":"mismatch"
