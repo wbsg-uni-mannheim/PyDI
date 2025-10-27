@@ -13,7 +13,7 @@ PyDI’s Fusion module consolidates matched records from multiple datasets into 
 
 - Each input `DataFrame` must set `df.attrs["dataset_name"]`.
 - Records need a stable identifier. Provide `_id`/`id` or pass `id_column` to the engine.
-- Correspondences must be a `DataFrame` with at least `id1`, `id2`.
+- Correspondences must be a `DataFrame` with at least `id1`, `id2` (see [Entity Matching](EntityMatching.md)).
 
 ## Fusion Strategy
 
