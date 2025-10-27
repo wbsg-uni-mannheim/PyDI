@@ -5,8 +5,20 @@ PyDI's Entity Matching module identifies duplicate records across datasets. It p
 - Blockers generate a set of candidate pairs
 - Matchers score candidates and decide for match or non-match and output a set of correspondences
 - Post-clustering algorithms refine correspondences for e.g. transitivity or one-to-one constraints.
-- Evaluation against evaluation set with precision, recall, and F1
+- Evaluation using evaluation set with precision, recall, and F1
 - Detailed debug logs for inspection of matching results
+
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Blocking](#blocking)
+- [Comparators](#comparators)
+- [Matchers](#matchers)
+- [Post-Clustering](#post-clustering)
+- [Evaluation](#evaluation)
+- [Debug Logs and Tuning](#debug-logs-and-tuning)
+- [Example: End-to-End](#example-end-to-end)
 
 
 ## Requirements
@@ -305,6 +317,77 @@ correspondences = matcher.match(
 
 If the classifier supports `feature_importances_` or `coef_`, the matcher logs feature importance for interpretability.
 
+Alternatively, you can use the VectorFeatureExtractor to create features from an embedding model.
+
+```python
+from PyDI.entitymatching import VectorFeatureExtractor
+
+
+# Define vector-based feature extractor using embeddings
+extractor = VectorFeatureExtractor(
+    embedding_model='sentence-transformers/all-MiniLM-L6-v2',
+    columns=['name', 'address'],
+    distance_metrics=['cosine', 'euclidean'],
+    pooling_strategy='concatenate',
+    list_strategies={'address': 'concatenate'}  # if address contains lists
+)
+
+# Extract features for training pairs
+train = extractor.create_features(
+    df_left, df_right,
+    pairs=training_pairs[['id1','id2']],
+    labels=training_pairs['label'],
+    id_column="id"
+)
+```
+
+
+### PLM-based matcher
+
+PyDI expects a pre-trained or fine-tuned transformer model from the HuggingFace ecosystem. Refer to the [HuggingFace documentation on text classification](https://huggingface.co/docs/transformers/tasks/sequence_classification) for detailed guidance on fine-tuning models for binary classification (match vs. non-match).
+
+**Using a fine-tuned model with PyDI**
+
+Once you have a fine-tuned model, you can use it with PyDI's `PLMBasedMatcher`. The matcher requires a `TextFormatter` that defines how entity pairs should be formatted as text input for the model.
+
+```python
+from PyDI.entitymatching import PLMBasedMatcher
+from PyDI.entitymatching.text_formatting import TextFormatter
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+
+# Load your fine-tuned model and tokenizer
+model_path = "path/to/your/fine-tuned-model"  # or HuggingFace model ID
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForSequenceClassification.from_pretrained(model_path)
+
+# Define how entity pairs should be formatted as text
+text_formatter = TextFormatter(
+    text_fields=['name', 'address', 'created_date'],  # Attributes to include
+    template="{left} [SEP] {right}",  # Template for the PAIR - uses {left} and {right}
+    single_template="Name: {name}, Address: {address}, Date: {created_date}",  # Template for individual entities
+    max_length=128  # Maximum sequence length
+)
+
+# Initialize PLM-based matcher
+plm_matcher = PLMBasedMatcher(text_formatter=text_formatter)
+
+# Perform matching
+correspondences = plm_matcher.match(
+    df_left=df_left,
+    df_right=df_right,
+    candidates=blocker,  # Use blocking to reduce search space
+    id_column='id',
+    trained_model=model,
+    tokenizer=tokenizer,
+    model_type='classification',  # 'classification' for binary classifiers
+    batch_size=16,
+    device='cuda' if torch.cuda.is_available() else 'cpu'
+)
+```
+
+PLM-based matchers integrate seamlessly with PyDI's blocking strategies, evaluation framework, and post-clustering algorithms.
+
 
 ### LLM-based matcher
 
@@ -482,7 +565,7 @@ metrics = evaluator.evaluate_matching(
 
 ## Debug Logs and Tuning
 
-Enable debug mode in matchers to write per-pair details. Debug logs show comparator scores, final weighted score, and threshold decision.
+Enable debug mode in matchers to write per-pair details. Debug logs show comparator scores, final weighted score and true label ("isMatch") if a pair is part of the evaluation set.
 
 Example debug output (CSV format):
 
@@ -503,6 +586,26 @@ LLM-based matcher writes JSON artifacts:
 - `responses.jsonl`: Model responses with parsed scores
 - `errors.jsonl`: Parse errors and retry attempts
 - `stats.json`: Token usage, latency, cost estimates
+
+
+### Cluster size distribution
+
+After matching (and optional post-clustering), analyzing the size distribution of entity clusters allows understanding how records are grouped which is useful for additional debugging.
+
+```python
+from PyDI.entitymatching import EntityMatchingEvaluator
+from pathlib import Path
+
+OUTPUT_DIR = Path("output/entity_matching")
+
+# Create cluster size distribution from our matches
+cluster_distribution = EntityMatchingEvaluator.create_cluster_size_distribution(
+    correspondences=correspondences,
+    out_dir=OUTPUT_DIR / "cluster_analysis"
+)
+```
+
+Use this to validate that matching parameters produce sensible groupings for the use-case.
 
 
 ## Example: End-to-End
