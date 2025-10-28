@@ -242,7 +242,7 @@ class EntityMatchingEvaluator:
         # Log blocking information
         logging.info(f"  Pair Completeness: {pair_completeness:.3f}")
         logging.info(f"  Pair Quality:      {pair_quality:.3f}")
-        logging.info(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        logging.info(f"  Reduction Ratio:   {reduction_ratio:.6f}")
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
 
         logging.info("Blocking evaluation complete!")
@@ -418,7 +418,7 @@ class EntityMatchingEvaluator:
         # Log blocking information
         logging.info(f"  Pair Completeness: {pair_completeness:.3f}")
         logging.info(f"  Pair Quality:      {pair_quality:.3f}")
-        logging.info(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        logging.info(f"  Reduction Ratio:   {reduction_ratio:.6f}")
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
         logging.info(f"  Batches Processed:  {batches_processed}")
 
