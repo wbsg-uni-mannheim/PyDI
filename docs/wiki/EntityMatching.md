@@ -1,6 +1,6 @@
 # Entity Matching
 
-PyDI's Entity Matching module identifies duplicate records across datasets. It provides a three-stage pipeline: blocking to generate candidate pairs, matching to score those candidates and find duplicates, and optional post-clustering to refine results. The module supports rule-based, machine learning, and (Large) Language Model-based matchers as well as evaluation methods and debugging logs.
+PyDI's Entity Matching module identifies records describing the same real-world entity across datasets. It provides a three-stage pipeline: blocking to generate candidate pairs, matching to score those candidates and generate correspondences between matching records, and optional post-clustering to refine matching results. The module provides rule-based, machine learning-based, and (large) language model-based matchers as well as evaluation methods and debugging logs.
 
 - Blockers generate a set of candidate pairs
 - Matchers score candidates and decide for match or non-match and output a set of correspondences
@@ -32,7 +32,7 @@ PyDI's Entity Matching module identifies duplicate records across datasets. It p
 
 Blocking reduces the O(n×m) Cartesian product to a manageable candidate set. Blockers generate pairs that share some property (blocking key, token, semantic similarity).
 
-Built-in blockers
+PyDI offers the following blockers
 - `NoBlocker` – full Cartesian product
 - `StandardBlocker` – equality-based blocking on one or more blocking keys
 - `SortedNeighbourhoodBlocker` – sliding window on sorted (by blocking key) sequence
