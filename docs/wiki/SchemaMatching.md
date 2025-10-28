@@ -1,12 +1,16 @@
-This module contains methods to automatically find 1-to-1 correspondences between columns across two datasets using label-, instance-, or duplicate-based schema matching strategies. Mapping columns containing corresponding information to a unified schema is important to prepare datasets for a high quality matching and merging during the following entity matching and data fusion steps.
+# Schema Matching 
 
-Module: `PyDI.schemamatching`
+This module contains methods to automatically find 1-to-1 correspondences between columns across two datasets using label-, instance-, or duplicate-based schema matching methods. The discovered correspondences can be used afterwards to translate data from the one schema into the other.
+
+## Available Matchers
+The module `PyDI.schemamatching` provides the following matchers and evaluators:
 - `LabelBasedSchemaMatcher`: compares the labels of the columns using similarity metrics to find schema correspondences. Fast and accurate when column labels are meaningful.
 - `InstanceBasedSchemaMatcher`: compares the distributions of values per column via TF/TF‑IDF/binary vectors and cosine/Jaccard/containment similarity. Better suited than LabelBasedMatcher if column labels are ambigous.
 - `DuplicateBasedSchemaMatcher`: leverage known record correspondences to infer column alignments from co‑occurring values in columns of the corresponding records. Great when a labeled set of matching records between datasets exists.
+- `LLMBasedSchemaMatcher`: the matcher prompts hosted large language models, such as GPT or Gemini, to find corespondences. Using the matcher requires a valid API key from a LLM provider.
 - `SchemaMappingEvaluator`: offers methods for evaluating a generated schema mapping given a labeled set of schema correspondences.
 
-Example schema matching
+## Schema Matching Example 
 ```python
 from langchain_openai import ChatOpenAI
 from PyDI.schemamatching import LLMBasedSchemaMatcher
@@ -27,10 +31,10 @@ from PyDI.schemamatching import SchemaMappingEvaluator
 metrics = SchemaMappingEvaluator.evaluate(corr, test_set)
 ```
 
-### WDC SMB Evaluation
+## WDC SMB Evaluation
 
-Use ``run_wdc_smb_benchmark`` to execute ``LLMBasedSchemaMatcher`` on the
-official WDC Schema Matching Benchmark (SOTAB-SM and T2D-SM). The helper takes
+Use ``run_wdc_smb_benchmark`` to evaluate ``LLMBasedSchemaMatcher`` using the
+ [WDC Schema Matching Benchmark](https://webdatacommons.org/structureddata/smb/) (SOTAB-SM and T2D-SM). The helper takes
 care of loading the released correspondences, aligning column indices with
 their headers, and reporting precision, recall, and F1 via
 ``SchemaMappingEvaluator``.
