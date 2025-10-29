@@ -123,7 +123,8 @@ line_length = 88
 known_first_party = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["src/tests"]
+testpaths = ["tests"]
+pythonpath = ["PyDI"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
