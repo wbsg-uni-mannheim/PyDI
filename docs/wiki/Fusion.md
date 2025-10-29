@@ -30,8 +30,6 @@ Common built‑ins
 - Lists/Sets: `union`, `intersection`, `intersection_k_sources`
 - Source‑aware: `voting`, `weighted_voting`, `favour_sources`, `prefer_higher_trust`, `random_value`
 
-Note: You can pass `accessor=` to extract a field from each row before resolving.
-
 ### Custom resolvers
 
 Resolvers are simple callables: `resolver(values, **kwargs) -> (value, confidence, metadata)`.
@@ -122,7 +120,7 @@ fused = engine.run(
 ```
 
 Notes
-- Pass dataset trust via `df.attrs` or `_trust` column; the engine supplies a `trust_map` to resolvers like `prefer_higher_trust`.
+- Pass dataset trust via `df.attrs` or `_trust` column. The engine supplies a `trust_map` to resolvers like `prefer_higher_trust`.
 - Output includes `_fusion_group_id`, `_fusion_sources`, `_fusion_confidence`, and `_fusion_metadata` (rule, sources, inputs per attribute).
 
 
@@ -144,7 +142,7 @@ print({k: round(v, 3) for k, v in metrics.items() if isinstance(v, (int, float))
 
 ## Tuning with debug logs
 
-Evaluation mismatch logs show where fused results diverge from the validation/testset. They include the evaluation rule used, the fusion rule that produced the value, and the exact inputs considered — ideal for refining rules or thresholds.
+Evaluation mismatch logs show where fused results diverge from the validation/testset. They include the evaluation rule used, the fusion rule that produced the value, and the exact inputs considered. Subsequently, aiding in the refinement of fusion rules and thresholds.
 
 ```json
 {
