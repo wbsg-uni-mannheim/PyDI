@@ -242,18 +242,32 @@ class StringComparator(BaseComparator):
 
 class NumericComparator(BaseComparator):
     """Numeric similarity comparator.
-    
+
     Parameters
     ----------
     column : str
         Column name to compare.
     method : str
-        Similarity method ("absolute_difference", "relative_difference", "within_range").
+        Similarity method:
+        - "absolute_difference": Similarity based on absolute difference.
+        - "relative_difference": Similarity based on percentage difference.
+        - "within_range": Binary similarity (1.0 if within range, 0.0 otherwise).
     max_difference : float, optional
-        Maximum difference for normalization or range checking.
+        Maximum difference for normalization or range checking:
+        - For "absolute_difference": Normalizes similarity to [0, 1] range.
+        - For "relative_difference": Threshold above which similarity is 0 (Winter-compatible).
+          Similarity scales linearly from 1.0 to 0.0 as relative_diff goes from 0 to max_difference.
+        - For "within_range": Required; defines the acceptable range.
     list_strategy : str, optional
         Strategy for handling lists ("average", "best_match", "range_overlap", "set_jaccard").
         Default is "average".
+
+    Notes
+    -----
+    The "relative_difference" method with max_difference is equivalent to Winter's
+    PercentageSimilarity. For values differing by X%, where X < max_difference*100:
+        similarity = 1 - (X/100) / max_difference
+    If X >= max_difference*100, similarity = 0.0.
     """
     
     def __init__(
@@ -418,8 +432,19 @@ class NumericComparator(BaseComparator):
             max_val = max(abs(val1), abs(val2))
             if max_val == 0:
                 return 1.0
-            diff = abs(val1 - val2) / max_val
-            return max(0.0, 1.0 - diff)
+            # Calculate relative difference as percentage
+            relative_diff = abs(val1 - val2) / max_val
+
+            # Apply max_difference threshold if specified (Winter-compatible behavior)
+            if self.max_difference is not None:
+                # If difference exceeds threshold, similarity is 0
+                if relative_diff >= self.max_difference:
+                    return 0.0
+                # Scale similarity linearly from 1.0 to 0.0 within threshold
+                return 1.0 - (relative_diff / self.max_difference)
+            else:
+                # Without threshold, use simple inverse similarity
+                return max(0.0, 1.0 - relative_diff)
         
         elif self.method == "within_range":
             if self.max_difference is None:
