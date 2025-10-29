@@ -27,12 +27,12 @@ class RuleBasedMatcher(BaseMatcher):
     -------
     >>> from PyDI.entitymatching import RuleBasedMatcher
     >>> from PyDI.entitymatching.comparators import jaccard, date_within_years
-    >>> 
+    >>>
     >>> matcher = RuleBasedMatcher()
     >>> matches = matcher.match(
     ...     df_left, df_right, candidates,
     ...     comparators=[jaccard("title"), date_within_years("date", 2)],
-    ...     weights=[0.5, 0.5],
+    ...     weights=[2, 1],  # relative importance (normalized to [0.67, 0.33])
     ...     threshold=0.7
     ... )
     """
@@ -66,8 +66,9 @@ class RuleBasedMatcher(BaseMatcher):
             'comparator' and 'weight' keys. Each comparator should accept
             (record1: pd.Series, record2: pd.Series) and return float.
         weights : List[float], optional
-            Weights for each comparator. If None and comparators are not dicts,
-            equal weights are used. Ignored if comparators contain weights.
+            Relative weights for each comparator. Will be normalized to sum to 1.0.
+            If None, equal weights are used. Example: [1, 3, 2] becomes [0.166, 0.5, 0.333].
+            Ignored if comparators contain weights.
         threshold : float, optional
             Minimum similarity score to include. Default is 0.0.
         debug : bool, optional
@@ -176,30 +177,32 @@ class RuleBasedMatcher(BaseMatcher):
         weights: Optional[List[float]],
     ) -> List[Dict[str, Union[Callable, float]]]:
         """Parse comparators and weights into normalized format.
-        
+
         Parameters
         ----------
         comparators : List
             List of comparators or dicts with comparator/weight.
         weights : List[float], optional
             Weights for comparators.
-            
+
         Returns
         -------
         List[Dict]
             List of dicts with 'comparator' and 'weight' keys.
+            Weights are normalized to sum to 1.0.
         """
         parsed = []
-        
+
+        # First pass: collect comparators and raw weights
         for i, comp in enumerate(comparators):
             if isinstance(comp, dict):
                 # Dict format: {"comparator": func, "weight": 0.5}
                 if "comparator" not in comp or "weight" not in comp:
                     raise ValueError(f"Comparator dict at index {i} must have 'comparator' and 'weight' keys")
-                
+
                 if comp["weight"] <= 0.0:
                     raise ValueError(f"Weight at index {i} must be > 0.0")
-                
+
                 parsed.append({
                     "comparator": comp["comparator"],
                     "weight": comp["weight"],
@@ -207,20 +210,28 @@ class RuleBasedMatcher(BaseMatcher):
             else:
                 # Function/object format - need weights
                 if weights is None:
-                    # Equal weights
-                    weight = 1.0 / len(comparators)
+                    # Use 1.0 as default (will be normalized)
+                    weight = 1.0
                 else:
                     if i >= len(weights):
                         raise ValueError(f"Not enough weights provided for {len(comparators)} comparators")
                     weight = weights[i]
                     if weight <= 0.0:
                         raise ValueError(f"Weight at index {i} must be > 0.0")
-                
+
                 parsed.append({
                     "comparator": comp,
                     "weight": weight,
                 })
-        
+
+        # Second pass: normalize weights to sum to 1.0
+        total_weight = sum(p["weight"] for p in parsed)
+        if total_weight == 0:
+            raise ValueError("Total weight must be greater than 0")
+
+        for p in parsed:
+            p["weight"] /= total_weight
+
         return parsed
     
     def _process_batch(

@@ -184,14 +184,20 @@ class EntityMatchingEvaluator:
                 (row["id1"], row["id2"])
                 for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
             ]
+            negative_pairs = [
+                (row["id1"], row["id2"])
+                for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
+            ]
         else:
             # Assume all test pairs are positive
             positive_pairs = [
                 (row["id1"], row["id2"])
                 for _, row in test_pairs[["id1", "id2"]].iterrows()
             ]
+            negative_pairs = []
 
         positive_set = set(positive_pairs)
+        negative_set = set(negative_pairs) if has_labels else set()
 
         # Compute blocking metrics
         true_positives_found = len(positive_set & candidate_set)
@@ -227,6 +233,7 @@ class EntityMatchingEvaluator:
                 candidate_pairs,
                 test_pairs,
                 positive_set,
+                negative_set,
                 candidate_set,
                 out_dir,
             )
@@ -235,7 +242,7 @@ class EntityMatchingEvaluator:
         # Log blocking information
         logging.info(f"  Pair Completeness: {pair_completeness:.3f}")
         logging.info(f"  Pair Quality:      {pair_quality:.3f}")
-        logging.info(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        logging.info(f"  Reduction Ratio:   {reduction_ratio:.6f}")
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
 
         logging.info("Blocking evaluation complete!")
@@ -312,14 +319,20 @@ class EntityMatchingEvaluator:
                 (row["id1"], row["id2"])
                 for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
             ]
+            negative_pairs = [
+                (row["id1"], row["id2"])
+                for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
+            ]
         else:
             # Assume all test pairs are positive
             positive_pairs = [
                 (row["id1"], row["id2"])
                 for _, row in test_pairs[["id1", "id2"]].iterrows()
             ]
+            negative_pairs = []
 
         positive_set = set(positive_pairs)
+        negative_set = set(negative_pairs) if has_labels else set()
 
         # Initialize counters for batch processing
         total_candidates = 0
@@ -396,6 +409,7 @@ class EntityMatchingEvaluator:
                 candidate_pairs_for_output,
                 test_pairs,
                 positive_set,
+                negative_set,
                 candidate_set,
                 out_dir,
             )
@@ -404,7 +418,7 @@ class EntityMatchingEvaluator:
         # Log blocking information
         logging.info(f"  Pair Completeness: {pair_completeness:.3f}")
         logging.info(f"  Pair Quality:      {pair_quality:.3f}")
-        logging.info(f"  Reduction Ratio:   {reduction_ratio:.3f}")
+        logging.info(f"  Reduction Ratio:   {reduction_ratio:.6f}")
         logging.info(f"  True Matches Found: {true_positives_found}/{total_true_pairs}")
         logging.info(f"  Batches Processed:  {batches_processed}")
 
@@ -718,7 +732,7 @@ class EntityMatchingEvaluator:
         output_files = []
         if out_dir is not None:
             output_files = EntityMatchingEvaluator._write_matching_results(
-                results, corr_filtered, test_pairs, positive_set, predicted_set, out_dir
+                results, corr_filtered, test_pairs, positive_set, negative_set, predicted_set, out_dir
             )
             results["output_files"] = output_files
 
@@ -1039,6 +1053,7 @@ class EntityMatchingEvaluator:
         candidate_pairs: pd.DataFrame,
         test_pairs: pd.DataFrame,
         positive_set: Set[Tuple[str, str]],
+        negative_set: Set[Tuple[str, str]],
         candidate_set: Set[Tuple[str, str]],
         out_dir: str,
     ) -> list:
@@ -1057,13 +1072,24 @@ class EntityMatchingEvaluator:
         for _, row in candidate_pairs.iterrows():
             pair = (row["id1"], row["id2"])
 
-            is_true_match = pair in positive_set
+            # Only classify if pair is in the test set (has a known label)
+            if pair in positive_set:
+                is_true_match = True
+                classification = "TP"
+            elif pair in negative_set:
+                is_true_match = False
+                classification = "FP"
+            else:
+                # Pair not in test set - unknown label
+                is_true_match = None
+                classification = ""
+
             detailed_results.append(
                 {
                     "id1": row["id1"],
                     "id2": row["id2"],
                     "is_true_match": is_true_match,
-                    "classification": "TP" if is_true_match else "FP",
+                    "classification": classification,
                 }
             )
 
@@ -1080,6 +1106,7 @@ class EntityMatchingEvaluator:
         correspondences: pd.DataFrame,
         test_pairs: pd.DataFrame,
         positive_set: Set[Tuple[str, str]],
+        negative_set: Set[Tuple[str, str]],
         predicted_set: Set[Tuple[str, str]],
         out_dir: str,
     ) -> list:
@@ -1098,14 +1125,25 @@ class EntityMatchingEvaluator:
         for _, row in correspondences.iterrows():
             pair = (row["id1"], row["id2"])
 
-            is_correct = pair in positive_set
+            # Only classify if pair is in the test set (has a known label)
+            if pair in positive_set:
+                is_correct = True
+                classification = "TP"
+            elif pair in negative_set:
+                is_correct = False
+                classification = "FP"
+            else:
+                # Pair not in test set - unknown label
+                is_correct = None
+                classification = ""
+
             detailed_results.append(
                 {
                     "id1": row["id1"],
                     "id2": row["id2"],
                     "score": row["score"],
                     "is_correct": is_correct,
-                    "classification": "TP" if is_correct else "FP",
+                    "classification": classification,
                 }
             )
 
@@ -1122,6 +1160,7 @@ class EntityMatchingEvaluator:
         correspondences: pd.DataFrame,
         test_pairs: pd.DataFrame,
         positive_set: Set[Tuple[str, str]],
+        negative_set: Set[Tuple[str, str]],
         predicted_set: Set[Tuple[str, str]],
         out_dir: str,
     ) -> list:
@@ -1140,14 +1179,25 @@ class EntityMatchingEvaluator:
         for _, row in correspondences.iterrows():
             pair = (row["id1"], row["id2"])
 
-            is_correct = pair in positive_set
+            # Only classify if pair is in the test set (has a known label)
+            if pair in positive_set:
+                is_correct = True
+                classification = "TP"
+            elif pair in negative_set:
+                is_correct = False
+                classification = "FP"
+            else:
+                # Pair not in test set - unknown label
+                is_correct = None
+                classification = ""
+
             detailed_results.append(
                 {
                     "id1": row["id1"],
                     "id2": row["id2"],
                     "score": row["score"],
                     "is_correct": is_correct,
-                    "classification": "TP" if is_correct else "FP",
+                    "classification": classification,
                 }
             )
 
