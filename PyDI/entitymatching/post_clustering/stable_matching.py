@@ -104,6 +104,9 @@ class StableMatching(BasePostClusterer):
         CorrespondenceSet
             Stable matched correspondences.
         """
+        # Build correspondence lookup dictionary for O(1) access
+        correspondence_lookup = self._build_correspondence_lookup(correspondences)
+
         # Build preference lists for each entity
         preferences = self._build_preference_lists(correspondences)
 
@@ -120,7 +123,7 @@ class StableMatching(BasePostClusterer):
 
             # Find best stable match for this entity
             best_match = self._find_best_stable_match(
-                entity, preferences, correspondences, already_matched
+                entity, preferences, correspondence_lookup, already_matched
             )
 
             if best_match is not None:
@@ -141,6 +144,36 @@ class StableMatching(BasePostClusterer):
 
         return result
 
+    def _build_correspondence_lookup(
+        self, correspondences: CorrespondenceSet
+    ) -> Dict[Tuple[str, str], dict]:
+        """Build lookup dictionary for fast correspondence access.
+
+        Parameters
+        ----------
+        correspondences : CorrespondenceSet
+            Input correspondences.
+
+        Returns
+        -------
+        Dict[Tuple[str, str], dict]
+            Dictionary mapping (id1, id2) tuples to correspondence rows.
+            Includes both forward and reverse lookups.
+        """
+        lookup = {}
+
+        # Convert to list of dicts once (faster than repeated iterrows)
+        corr_list = correspondences.to_dict('records')
+
+        for row in corr_list:
+            id1, id2 = row['id1'], row['id2']
+            # Add forward lookup
+            lookup[(id1, id2)] = row
+            # Add reverse lookup for symmetric matching
+            lookup[(id2, id1)] = row
+
+        return lookup
+
     def _build_preference_lists(
         self, correspondences: CorrespondenceSet
     ) -> Dict[str, List[Tuple[str, float]]]:
@@ -158,8 +191,11 @@ class StableMatching(BasePostClusterer):
         """
         preferences = {}
 
-        # Build preferences for left entities (id1)
-        for _, row in correspondences.iterrows():
+        # Convert to list of dicts once (much faster than iterrows)
+        corr_list = correspondences.to_dict('records')
+
+        # Build preferences for both sides
+        for row in corr_list:
             id1, id2, score = row['id1'], row['id2'], row['score']
 
             # Add preference for id1 -> id2
@@ -182,7 +218,7 @@ class StableMatching(BasePostClusterer):
         self,
         entity: str,
         preferences: Dict[str, List[Tuple[str, float]]],
-        correspondences: CorrespondenceSet,
+        correspondence_lookup: Dict[Tuple[str, str], dict],
         already_matched: Set[str]
     ) -> Optional[dict]:
         """Find the best stable match for an entity.
@@ -193,8 +229,8 @@ class StableMatching(BasePostClusterer):
             Entity to find match for.
         preferences : Dict[str, List[Tuple[str, float]]]
             Preference lists for all entities.
-        correspondences : CorrespondenceSet
-            Original correspondences for lookup.
+        correspondence_lookup : Dict[Tuple[str, str], dict]
+            Dictionary for O(1) correspondence lookup.
         already_matched : Set[str]
             Set of already matched entities.
 
@@ -214,8 +250,8 @@ class StableMatching(BasePostClusterer):
 
             # Check if this match is stable
             if self._is_stable_match(entity, candidate, score, preferences, already_matched):
-                # Find the original correspondence
-                match_row = self._find_correspondence_row(entity, candidate, correspondences)
+                # Use O(1) lookup instead of O(n) search
+                match_row = correspondence_lookup.get((entity, candidate))
                 if match_row is not None:
                     return match_row
 
@@ -280,34 +316,6 @@ class StableMatching(BasePostClusterer):
             return False
 
         return True
-
-    def _find_correspondence_row(
-        self,
-        entity1: str,
-        entity2: str,
-        correspondences: CorrespondenceSet
-    ) -> Optional[dict]:
-        """Find the correspondence row for two entities.
-
-        Parameters
-        ----------
-        entity1, entity2 : str
-            Entities to find correspondence for.
-        correspondences : CorrespondenceSet
-            Original correspondences.
-
-        Returns
-        -------
-        Optional[dict]
-            Correspondence row as dictionary, or None if not found.
-        """
-        # Try both orderings
-        for _, row in correspondences.iterrows():
-            if ((row['id1'] == entity1 and row['id2'] == entity2) or
-                (row['id1'] == entity2 and row['id2'] == entity1)):
-                return row.to_dict()
-
-        return None
 
     def get_stability_analysis(self, correspondences: CorrespondenceSet) -> dict:
         """Analyze the stability of matches.
