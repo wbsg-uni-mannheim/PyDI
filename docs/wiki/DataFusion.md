@@ -1,12 +1,10 @@
 # Data Fusion
 
-PyDI’s Fusion module consolidates matched records from multiple datasets into a single dataset. It resolves conflicting values per attribute using pluggable rules, tracks provenance, and provides evaluation and reporting utilities so you can audit and improve quality.
+Data Fusion combines multiple records describing the same real world entity into a single, high quality record while resolving data conflicts. The input of the data fusion process are two or more datasets together entity correspondences identifying which records of the datasets describe the same real-world entity. The output of data fusion is a single fused dataset. 
 
-- Record grouping from correspondences (connected components)
-- Strategy object to register per‑attribute rules and evaluation functions
-- Attribute‑level conflict resolution via built‑in and custom rules
-- Evaluation against a test dataset with exact and fuzzy comparisons
-- Optional debug logs capturing inputs, chosen rules, and outputs
+For resolving data conflicts, PyDI's `DataFusionEngine` uses a `DataFusionStrategy` which specifies a conflict resolution function for each attribute. 
+The `DataFusionEvaluator` allows you to compare the resulting fused dataset to a ground truth dataset and to calculate evaluation metrics such as accuracy. 
+FusionReport generates detailed reports about the data fusion process which can be used as a starting point for improving the `DataFusionStrategy`.
 
 
 ## Requirements
@@ -17,18 +15,18 @@ PyDI’s Fusion module consolidates matched records from multiple datasets into 
 
 ## Fusion Strategy
 
-Configure both fusion and evaluation in one place. The strategy binds per‑attribute rules that resolve conflicts during fusion and binds evaluation functions that assess the quality of those resolutions. 
+Configure both fusion and evaluation in one place. The strategy binds per-attribute rules that resolve conflicts during fusion and binds evaluation functions that assess the quality of those resolutions. 
 
 ### Fusion rules
 
 An attribute fuser is a resolver that takes all values for one attribute across sources and returns a single value plus a confidence. Use `add_attribute_fuser(attr, resolver, **kwargs)` to register it.
 
-Common built‑ins
+Common built-ins
 - Strings: `longest_string`, `shortest_string`, `most_complete`
 - Numerics: `average`, `median`, `maximum`, `minimum`, `sum_values`
 - Dates: `most_recent`, `earliest`
 - Lists/Sets: `union`, `intersection`, `intersection_k_sources`
-- Source‑aware: `voting`, `weighted_voting`, `favour_sources`, `prefer_higher_trust`, `random_value`
+- Source-aware: `voting`, `weighted_voting`, `favour_sources`, `prefer_higher_trust`, `random_value`
 
 ### Custom resolvers
 
@@ -64,9 +62,9 @@ strategy.add_attribute_fuser("actors_actor_name", union)
 
 ### Evaluation functions
 
-Exact equality often penalizes harmless differences (token order, punctuation, year vs. full date). Bind attribute‑specific evaluation rules to get quality metrics.
+Exact equality often penalizes harmless differences (token order, punctuation, year vs. full date). Bind attribute-specific evaluation rules to get quality metrics.
 
-Built‑ins
+Built-ins
 - `tokenized_match(threshold=...)` – Jaccard over tokens or sets 
 - `year_only_match` – compare only date years
 - `numeric_tolerance_match(tolerance=...)` – numeric closeness
@@ -98,7 +96,7 @@ strategy.add_evaluation_function("title", title_prefix_match, min_prefix=8)
 
 ## Fusion Engine
 
-Runs fusion end‑to‑end: builds record groups from correspondences, applies your strategy’s attribute fusers, and writes fusion metadata. Enable debug to emit per‑attribute logs that make decisions auditable.
+Runs fusion end-to-end: builds record groups from correspondences, applies your strategy’s attribute fusers, and writes fusion metadata. Enable debug to emit per-attribute logs that make decisions auditable.
 
 ```python
 from PyDI.fusion import DataFusionEngine
@@ -170,7 +168,7 @@ Evaluation mismatch logs show where fused results diverge from the validation/te
 }
 ```
 
-## Example: End‑to‑End (movies)
+## End-to-End Example: Fusing the Movies Datasets 
 
 ```python
 from PyDI.fusion import (
@@ -178,7 +176,7 @@ from PyDI.fusion import (
     longest_string, union, prefer_higher_trust, tokenized_match,
 )
 
-# 1) Strategy
+# 1) Configure data fusion strategy for movies
 strategy = DataFusionStrategy("movie_fusion_strategy")
 # fusion rules
 strategy.add_attribute_fuser("title", longest_string)
@@ -188,17 +186,17 @@ strategy.add_attribute_fuser("actors_actor_name", union)
 # evaluation rule
 strategy.add_evaluation_function("title", tokenized_match, threshold=0.9)
 
-# 2) Engine
+# 2) Configure data fusion engine and run fusion for the three movies datasets
 engine = DataFusionEngine(strategy, debug=True, debug_file="fusion_debug.jsonl", debug_format="json")
 fused = engine.run([df_a, df_b, df_c], correspondences=corr, id_column="_id")
 
-# 3) Evaluate
+# 3) Evaluate data fusion results by comparing them to a ground truth dataset
 metrics = DataFusionEvaluator(strategy, fusion_debug_logs="fusion_debug.jsonl").evaluate(
     fused_df=fused, fused_id_column="_id", expected_df=test_set, expected_id_column="_id"
 )
 print("Overall accuracy:", metrics.get("overall_accuracy"))
 
-# 4) Report
+# 4) Generate data fusion report
 report = FusionReport(fused, [df_a, df_b, df_c], strategy.name, correspondences=corr)
 report.print_summary()
 open("fusion_report.html", "w").write(report.to_html())
