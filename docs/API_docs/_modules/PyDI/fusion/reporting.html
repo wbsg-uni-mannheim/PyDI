@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.fusion.reporting &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.fusion.reporting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Reporting and diagnostics for data fusion in PyDI.</span>
+
+<span class="sd">This module provides comprehensive reporting capabilities for fusion results,</span>
+<span class="sd">including consistency analysis, conflict reporting, and debug information.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">jinja2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">Template</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_is_valid_value</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_consistency_metrics</span><span class="p">,</span> <span class="n">calculate_coverage_metrics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeCoverageAnalyzer</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_missing</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a value is missing (None, NA, or empty list).</span>
+<span class="sd">    </span>
+<span class="sd">    This is the inverse of _is_valid_value from the base module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">_is_valid_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FusionReport">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FusionReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Comprehensive report for data fusion results.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fused_df : pd.DataFrame</span>
+<span class="sd">        The fused dataset.</span>
+<span class="sd">    input_datasets : List[pd.DataFrame]</span>
+<span class="sd">        The original input datasets.</span>
+<span class="sd">    strategy_name : str</span>
+<span class="sd">        Name of the fusion strategy used.</span>
+<span class="sd">    correspondences : pd.DataFrame</span>
+<span class="sd">        The correspondences used for fusion.</span>
+<span class="sd">    evaluation_results : Dict[str, float], optional</span>
+<span class="sd">        Results from fusion evaluation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fused_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">input_datasets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+        <span class="n">strategy_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">correspondences</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">evaluation_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_coverage_analysis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span> <span class="o">=</span> <span class="n">fused_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span> <span class="o">=</span> <span class="n">input_datasets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span> <span class="o">=</span> <span class="n">strategy_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">correspondences</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span> <span class="o">=</span> <span class="n">evaluation_results</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        
+        <span class="c1"># Initialize coverage analyzer if requested</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">include_coverage_analysis</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dataset_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dataset_name&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;dataset_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> 
+                               <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span> <span class="o">=</span> <span class="n">AttributeCoverageAnalyzer</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">,</span> <span class="n">dataset_names</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not initialize coverage analyzer: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate metrics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_metrics</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate all fusion metrics.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span> <span class="o">=</span> <span class="n">calculate_consistency_metrics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coverage_metrics</span> <span class="o">=</span> <span class="n">calculate_coverage_metrics</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_group_statistics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_attribute_statistics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conflict_analysis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_conflicts</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_group_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate statistics about record groups.&quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;total_groups&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;multi_record_groups&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;singleton_groups&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;largest_group_size&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;average_group_size&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;group_size_distribution&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;_fusion_sources&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">source_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="s2">&quot;_fusion_sources&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_groups&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">)</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;multi_record_groups&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">source_counts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;singleton_groups&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">source_counts</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;largest_group_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;average_group_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_counts</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            
+            <span class="c1"># Group size distribution</span>
+            <span class="n">size_dist</span> <span class="o">=</span> <span class="n">source_counts</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;group_size_distribution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">size_dist</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">stats</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_attribute_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate statistics about attribute fusion.&quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;total_attributes&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;attributes_with_conflicts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;most_conflicted_attribute&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rule_usage&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;attribute_coverage&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># Get data attributes (excluding fusion metadata)</span>
+        <span class="n">data_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">col</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_fusion_&quot;</span><span class="p">)]</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;total_attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span>
+        
+        <span class="c1"># Analyze rule usage from metadata</span>
+        <span class="k">if</span> <span class="s2">&quot;_fusion_metadata&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">rule_counts</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">attribute_rule_usage</span> <span class="o">=</span> <span class="p">{}</span>
+            
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_fusion_metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_rule&quot;</span><span class="p">):</span>
+                            <span class="n">attribute</span> <span class="o">=</span> <span class="n">key</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># Remove &#39;_rule&#39; suffix</span>
+                            <span class="n">rule_counts</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attribute_rule_usage</span><span class="p">:</span>
+                                <span class="n">attribute_rule_usage</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                            <span class="n">attribute_rule_usage</span><span class="p">[</span><span class="n">attribute</span><span class="p">][</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_rule_usage</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_counts</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;attribute_rule_usage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_rule_usage</span>
+            
+            <span class="c1"># Find most conflicted attribute (most rule diversity)</span>
+            <span class="n">max_rules</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">most_conflicted</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">rules</span> <span class="ow">in</span> <span class="n">attribute_rule_usage</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_rules</span><span class="p">:</span>
+                    <span class="n">max_rules</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+                    <span class="n">most_conflicted</span> <span class="o">=</span> <span class="n">attr</span>
+            
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;most_conflicted_attribute&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">most_conflicted</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;attributes_with_conflicts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">rules</span> <span class="ow">in</span> <span class="n">attribute_rule_usage</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate attribute coverage</span>
+        <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+            <span class="n">common_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">data_columns</span><span class="p">))</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;attribute_coverage&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_attrs</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span> <span class="k">if</span> <span class="n">data_columns</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+        <span class="k">return</span> <span class="n">stats</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_analyze_conflicts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze conflicts that occurred during fusion.&quot;&quot;&quot;</span>
+        <span class="n">analysis</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;total_potential_conflicts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;resolved_conflicts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;unresolved_conflicts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;conflict_patterns&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;confidence_distribution&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># Analyze confidence scores</span>
+        <span class="k">if</span> <span class="s2">&quot;_fusion_confidence&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">confidences</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="s2">&quot;_fusion_confidence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            
+            <span class="c1"># Create confidence bins</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;very_low&quot;</span><span class="p">,</span> <span class="s2">&quot;low&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span> <span class="s2">&quot;very_high&quot;</span><span class="p">]</span>
+            <span class="n">confidence_bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">confidences</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+            <span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;confidence_distribution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">confidence_bins</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            
+            <span class="c1"># Consider records with low confidence as having conflicts</span>
+            <span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;total_potential_conflicts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">confidences</span><span class="p">)</span>
+            <span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;resolved_conflicts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">confidences</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;unresolved_conflicts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">confidences</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        
+        <span class="c1"># Analyze conflict patterns from source information</span>
+        <span class="k">if</span> <span class="s2">&quot;_fusion_sources&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">source_combinations</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">sources</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="s2">&quot;_fusion_sources&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sources</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Sort for consistent key</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sources</span><span class="p">))</span>
+                    <span class="n">source_combinations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_combinations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+            <span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;conflict_patterns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">source_combinations</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="n">analysis</span>
+    
+<div class="viewcode-block" id="FusionReport.print_summary">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.print_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print a summary of the fusion report.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== PyDI Data Fusion Report ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strategy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Input/Output Summary</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data Summary:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Input datasets: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Input records: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Output records: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Correspondences: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Record coverage: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coverage_metrics</span><span class="p">[</span><span class="s1">&#39;record_coverage&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Quality Metrics</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quality Metrics:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mean confidence: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;mean_confidence&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Multi-source records: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;multi_source_records&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Single-source records: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;single_source_records&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Group Statistics</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Group Statistics:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total groups: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;total_groups&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Multi-record groups: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;multi_record_groups&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Average group size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;average_group_size&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Largest group: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;largest_group_size&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Attribute Statistics</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attribute Statistics:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total attributes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;total_attributes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Attributes with conflicts: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;attributes_with_conflicts&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;most_conflicted_attribute&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Most conflicted: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;most_conflicted_attribute&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Rule Usage</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rule Usage:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">rule</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> applications&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+        
+        <span class="c1"># Evaluation Results</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation Results:&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;overall_accuracy&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Overall accuracy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">[</span><span class="s1">&#39;overall_accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;macro_accuracy&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Macro accuracy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">[</span><span class="s1">&#39;macro_accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Evaluated records: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_evaluated_records&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.print_evaluation_examples">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.print_evaluation_examples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_evaluation_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gold_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">fused_id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gold_id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_examples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print examples of correct and incorrect fusion results.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gold_df : pd.DataFrame</span>
+<span class="sd">            The expected/validation dataset.</span>
+<span class="sd">        fused_id_column : str</span>
+<span class="sd">            ID column name in the fused dataset.</span>
+<span class="sd">        gold_id_column : str</span>
+<span class="sd">            ID column name in the expected dataset.</span>
+<span class="sd">        max_examples : int, default 3</span>
+<span class="sd">            Maximum number of examples to show for each category.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No evaluation results available for examples.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="n">examples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_evaluation_examples</span><span class="p">(</span><span class="n">gold_df</span><span class="p">,</span> <span class="n">fused_id_column</span><span class="p">,</span> <span class="n">gold_id_column</span><span class="p">,</span> <span class="n">max_examples</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting examples: </span><span class="si">{</span><span class="n">examples</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Fusion Examples ===&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Show incorrect examples (most important for debugging)</span>
+        <span class="k">if</span> <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ Incorrect Fusion Examples:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  Example </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Record ID: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;record_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Attribute: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Fused:  &#39;</span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;fused_value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Expected:   &#39;</span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;expected_value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Confidence: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ex</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">]:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Sources: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ No incorrect examples found in sample.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Show correct examples (for validation)</span>
+        <span class="k">if</span> <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ Correct Fusion Examples:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  Example </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Record ID: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;record_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Attribute: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Value: &#39;</span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;fused_value&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; (matches expected)&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Confidence: </span><span class="si">{</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ex</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">]:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Sources: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✅ No correct examples found in sample.&quot;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sample size: </span><span class="si">{</span><span class="n">examples</span><span class="p">[</span><span class="s1">&#39;total_compared&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> records, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s1">&#39;attributes_compared&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> attributes compared&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert report to dictionary format.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;generated_at&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_at</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+                <span class="s2">&quot;strategy_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="p">,</span>
+                <span class="s2">&quot;num_input_datasets&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">),</span>
+                <span class="s2">&quot;num_correspondences&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span><span class="p">),</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;quality_metrics&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">,</span>
+            <span class="s2">&quot;coverage_metrics&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_metrics</span><span class="p">,</span>
+            <span class="s2">&quot;group_statistics&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">,</span>
+            <span class="s2">&quot;attribute_statistics&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">,</span>
+            <span class="s2">&quot;conflict_analysis&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">conflict_analysis</span><span class="p">,</span>
+            <span class="s2">&quot;evaluation_results&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.to_json">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.to_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export report as JSON.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str, optional</span>
+<span class="sd">            File path to save JSON. If None, returns JSON string.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            JSON representation of the report.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">report_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">report_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Report saved to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">json_str</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.to_html">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.to_html">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export report as HTML file.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            File path to save HTML report.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">html_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_html</span><span class="p">()</span>
+        
+        <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTML report saved to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_html</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate HTML report content using Jinja2 template.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Template</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Fallback to simple string formatting if Jinja2 is not available</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_html_fallback</span><span class="p">()</span>
+        
+        <span class="n">template_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">    &lt;title&gt;PyDI Data Fusion Report&lt;/title&gt;</span>
+<span class="s2">    &lt;style&gt;</span>
+<span class="s2">        body { font-family: Arial, sans-serif; margin: 20px; }</span>
+<span class="s2">        .header { background: #2c5aa0; color: white; padding: 20px; border-radius: 5px; }</span>
+<span class="s2">        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }</span>
+<span class="s2">        .metric { display: inline-block; margin: 10px 20px 10px 0; }</span>
+<span class="s2">        .metric-value { font-weight: bold; color: #2c5aa0; }</span>
+<span class="s2">        table { border-collapse: collapse; width: 100%; }</span>
+<span class="s2">        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }</span>
+<span class="s2">        th { background-color: #f2f2f2; }</span>
+<span class="s2">        .good { color: #28a745; }</span>
+<span class="s2">        .warning { color: #ffc107; }</span>
+<span class="s2">        .error { color: #dc3545; }</span>
+<span class="s2">    &lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">    &lt;div class=&quot;header&quot;&gt;</span>
+<span class="s2">        &lt;h1&gt;PyDI Data Fusion Report&lt;/h1&gt;</span>
+<span class="s2">        &lt;p&gt;Strategy: {{ strategy_name }}&lt;/p&gt;</span>
+<span class="s2">        &lt;p&gt;Generated: {{ generated_at }}&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Data Summary&lt;/h2&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Input Datasets: &lt;span class=&quot;metric-value&quot;&gt;{{ num_input_datasets }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Input Records: &lt;span class=&quot;metric-value&quot;&gt;{{ total_input_records }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Output Records: &lt;span class=&quot;metric-value&quot;&gt;{{ num_output_records }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Correspondences: &lt;span class=&quot;metric-value&quot;&gt;{{ num_correspondences }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Record Coverage: &lt;span class=&quot;metric-value&quot;&gt;{{ coverage_metrics.record_coverage | round(4) * 100 }}%&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Quality Metrics&lt;/h2&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Mean Confidence: &lt;span class=&quot;metric-value&quot;&gt;{{ &quot;</span><span class="si">%.3f</span><span class="s2">&quot; | format(quality_metrics.mean_confidence) }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Multi-source Records: &lt;span class=&quot;metric-value&quot;&gt;{{ quality_metrics.multi_source_records }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Single-source Records: &lt;span class=&quot;metric-value&quot;&gt;{{ quality_metrics.single_source_records }}&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Group Statistics&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Total Groups&lt;/td&gt;&lt;td&gt;{{ group_statistics.total_groups }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Multi-record Groups&lt;/td&gt;&lt;td&gt;{{ group_statistics.multi_record_groups }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Singleton Groups&lt;/td&gt;&lt;td&gt;{{ group_statistics.singleton_groups }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Average Group Size&lt;/td&gt;&lt;td&gt;{{ &quot;</span><span class="si">%.2f</span><span class="s2">&quot; | format(group_statistics.average_group_size) }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Largest Group Size&lt;/td&gt;&lt;td&gt;{{ group_statistics.largest_group_size }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Attribute Statistics&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Total Attributes&lt;/td&gt;&lt;td&gt;{{ attribute_statistics.total_attributes }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Attributes with Conflicts&lt;/td&gt;&lt;td&gt;{{ attribute_statistics.attributes_with_conflicts }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Most Conflicted Attribute&lt;/td&gt;&lt;td&gt;{{ attribute_statistics.most_conflicted_attribute or &#39;None&#39; }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    {</span><span class="si">% i</span><span class="s2">f rule_usage %}</span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Rule Usage&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Rule&lt;/th&gt;&lt;th&gt;Applications&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            {</span><span class="si">% f</span><span class="s2">or rule, count in rule_usage | dictsort %}</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;{{ rule }}&lt;/td&gt;&lt;td&gt;{{ count }}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            {</span><span class="si">% e</span><span class="s2">ndfor %}</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    {</span><span class="si">% e</span><span class="s2">ndif %}</span>
+<span class="s2">    </span>
+<span class="s2">    {</span><span class="si">% i</span><span class="s2">f evaluation_results %}</span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Evaluation Results&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            {</span><span class="si">% f</span><span class="s2">or key, value in evaluation_results.items() %}</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;{{ key }}&lt;/td&gt;&lt;td&gt;{</span><span class="si">% i</span><span class="s2">f value is number %}{{ &quot;</span><span class="si">%.3f</span><span class="s2">&quot; | format(value) }}{</span><span class="si">% e</span><span class="s2">lse %}{{ value }}{</span><span class="si">% e</span><span class="s2">ndif %}&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            {</span><span class="si">% e</span><span class="s2">ndfor %}</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    {</span><span class="si">% e</span><span class="s2">ndif %}</span>
+<span class="s2">    </span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        
+        <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">template_str</span><span class="p">)</span>
+        
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;strategy_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="p">,</span>
+            <span class="s1">&#39;generated_at&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;num_input_datasets&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">),</span>
+            <span class="s1">&#39;total_input_records&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">),</span>
+            <span class="s1">&#39;num_output_records&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">),</span>
+            <span class="s1">&#39;num_correspondences&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span><span class="p">),</span>
+            <span class="s1">&#39;coverage_metrics&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_metrics</span><span class="p">,</span>
+            <span class="s1">&#39;quality_metrics&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">,</span>
+            <span class="s1">&#39;group_statistics&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">,</span>
+            <span class="s1">&#39;attribute_statistics&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">,</span>
+            <span class="s1">&#39;rule_usage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">),</span>
+            <span class="s1">&#39;evaluation_results&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_html_fallback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fallback HTML generation without Jinja2.&quot;&quot;&quot;</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">    &lt;title&gt;PyDI Data Fusion Report&lt;/title&gt;</span>
+<span class="s2">    &lt;style&gt;</span>
+<span class="s2">        body </span><span class="se">{{</span><span class="s2"> font-family: Arial, sans-serif; margin: 20px; </span><span class="se">}}</span>
+<span class="s2">        .header </span><span class="se">{{</span><span class="s2"> background: #2c5aa0; color: white; padding: 20px; border-radius: 5px; </span><span class="se">}}</span>
+<span class="s2">        .section </span><span class="se">{{</span><span class="s2"> margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; </span><span class="se">}}</span>
+<span class="s2">        .metric </span><span class="se">{{</span><span class="s2"> display: inline-block; margin: 10px 20px 10px 0; </span><span class="se">}}</span>
+<span class="s2">        .metric-value </span><span class="se">{{</span><span class="s2"> font-weight: bold; color: #2c5aa0; </span><span class="se">}}</span>
+<span class="s2">        table </span><span class="se">{{</span><span class="s2"> border-collapse: collapse; width: 100%; </span><span class="se">}}</span>
+<span class="s2">        th, td </span><span class="se">{{</span><span class="s2"> border: 1px solid #ddd; padding: 8px; text-align: left; </span><span class="se">}}</span>
+<span class="s2">        th </span><span class="se">{{</span><span class="s2"> background-color: #f2f2f2; </span><span class="se">}}</span>
+<span class="s2">        .good </span><span class="se">{{</span><span class="s2"> color: #28a745; </span><span class="se">}}</span>
+<span class="s2">        .warning </span><span class="se">{{</span><span class="s2"> color: #ffc107; </span><span class="se">}}</span>
+<span class="s2">        .error </span><span class="se">{{</span><span class="s2"> color: #dc3545; </span><span class="se">}}</span>
+<span class="s2">    &lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">    &lt;div class=&quot;header&quot;&gt;</span>
+<span class="s2">        &lt;h1&gt;PyDI Data Fusion Report&lt;/h1&gt;</span>
+<span class="s2">        &lt;p&gt;Strategy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">        &lt;p&gt;Generated: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/p&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Data Summary&lt;/h2&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Input Datasets: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Input Records: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Output Records: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Correspondences: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Record Coverage: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">coverage_metrics</span><span class="p">[</span><span class="s1">&#39;record_coverage&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Quality Metrics&lt;/h2&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Mean Confidence: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;mean_confidence&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Multi-source Records: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;multi_source_records&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class=&quot;metric&quot;&gt;Single-source Records: &lt;span class=&quot;metric-value&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s1">&#39;single_source_records&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Group Statistics&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Total Groups&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;total_groups&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Multi-record Groups&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;multi_record_groups&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Singleton Groups&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;singleton_groups&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Average Group Size&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;average_group_size&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Largest Group Size&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_statistics</span><span class="p">[</span><span class="s1">&#39;largest_group_size&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    </span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Attribute Statistics&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Total Attributes&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;total_attributes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Attributes with Conflicts&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="p">[</span><span class="s1">&#39;attributes_with_conflicts&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;Most Conflicted Attribute&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_statistics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;most_conflicted_attribute&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;None&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        
+        <span class="c1"># Add rule usage table if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">):</span>
+            <span class="n">html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Rule Usage&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Rule&lt;/th&gt;&lt;th&gt;Applications&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">rule</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;rule_usage&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;            &lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">rule</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">html</span> <span class="o">+=</span> <span class="s2">&quot;        &lt;/table&gt;</span><span class="se">\n</span><span class="s2">    &lt;/div&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Add evaluation results if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+            <span class="n">html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    &lt;div class=&quot;section&quot;&gt;</span>
+<span class="s2">        &lt;h2&gt;Evaluation Results&lt;/h2&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Metric&lt;/th&gt;&lt;th&gt;Value&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="n">formatted_value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">formatted_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;            &lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">formatted_value</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">html</span> <span class="o">+=</span> <span class="s2">&quot;        &lt;/table&gt;</span><span class="se">\n</span><span class="s2">    &lt;/div&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="n">html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">html</span>
+    
+<div class="viewcode-block" id="FusionReport.print_coverage_analysis">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.print_coverage_analysis">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_coverage_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_attributes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print attribute coverage analysis if available.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Attribute Coverage Analysis:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="o">.</span><span class="n">print_summary</span><span class="p">(</span><span class="n">max_attributes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Coverage analysis not available (disabled or failed to initialize)&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.get_coverage_dataframe">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.get_coverage_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_coverage_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the coverage analysis DataFrame.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="o">.</span><span class="n">coverage_df</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.suggest_fusion_rules">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.suggest_fusion_rules">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">suggest_fusion_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fusion rule suggestions based on coverage analysis.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="o">.</span><span class="n">suggest_fusion_rules</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    
+<div class="viewcode-block" id="FusionReport.get_evaluation_examples">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.get_evaluation_examples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_evaluation_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gold_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">fused_id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gold_id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_examples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get examples of correct and incorrect fusion results.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gold_df : pd.DataFrame</span>
+<span class="sd">            The expected/validation dataset.</span>
+<span class="sd">        fused_id_column : str</span>
+<span class="sd">            ID column name in the fused dataset.</span>
+<span class="sd">        gold_id_column : str</span>
+<span class="sd">            ID column name in the expected dataset.</span>
+<span class="sd">        max_examples : int, default 5</span>
+<span class="sd">            Maximum number of examples to return for each category.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, Any]</span>
+<span class="sd">            Dictionary containing examples of correct and incorrect results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_results</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;No evaluation results available&quot;</span><span class="p">}</span>
+        
+        <span class="c1"># Align datasets by ID</span>
+        <span class="n">fused_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="n">fused_id_column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+        <span class="n">gold_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">gold_df</span><span class="p">[</span><span class="n">gold_id_column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+        <span class="n">common_ids</span> <span class="o">=</span> <span class="n">fused_ids</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">gold_ids</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">common_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;No common IDs found between fused and expected datasets&quot;</span><span class="p">}</span>
+        
+        <span class="c1"># Filter to common IDs</span>
+        <span class="n">aligned_fused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="p">[</span><span class="n">fused_id_column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">common_ids</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">aligned_gold</span> <span class="o">=</span> <span class="n">gold_df</span><span class="p">[</span><span class="n">gold_df</span><span class="p">[</span><span class="n">gold_id_column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">common_ids</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Sort for consistent comparison</span>
+        <span class="n">aligned_fused</span> <span class="o">=</span> <span class="n">aligned_fused</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">fused_id_column</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">aligned_gold</span> <span class="o">=</span> <span class="n">aligned_gold</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">gold_id_column</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Get common attributes (excluding metadata columns)</span>
+        <span class="n">fused_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">aligned_fused</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">col</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_fusion_&#39;</span><span class="p">))</span>
+        <span class="n">gold_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">aligned_gold</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">common_attrs</span> <span class="o">=</span> <span class="n">fused_attrs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">gold_attrs</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">fused_id_column</span><span class="p">,</span> <span class="n">gold_id_column</span><span class="p">}</span>
+        
+        <span class="n">examples</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;correct_examples&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;incorrect_examples&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;total_compared&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">aligned_fused</span><span class="p">),</span>
+            <span class="s2">&quot;attributes_compared&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">common_attrs</span><span class="p">)</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># Compare records and collect examples</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aligned_fused</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">aligned_gold</span><span class="p">))):</span>
+            <span class="n">fused_row</span> <span class="o">=</span> <span class="n">aligned_fused</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">gold_row</span> <span class="o">=</span> <span class="n">aligned_gold</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            
+            <span class="n">record_id</span> <span class="o">=</span> <span class="n">fused_row</span><span class="p">[</span><span class="n">fused_id_column</span><span class="p">]</span>
+            
+            <span class="c1"># Compare each attribute</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">common_attrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">fused_row</span> <span class="ow">and</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">gold_row</span><span class="p">:</span>
+                    <span class="n">fused_val</span> <span class="o">=</span> <span class="n">fused_row</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    <span class="n">gold_val</span> <span class="o">=</span> <span class="n">gold_row</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                    
+                    <span class="c1"># Skip if both are missing</span>
+                    <span class="k">if</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">fused_val</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">gold_val</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    
+                    <span class="c1"># Simple comparison (could be enhanced with evaluation functions)</span>
+                    <span class="n">is_correct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simple_attribute_match</span><span class="p">(</span><span class="n">fused_val</span><span class="p">,</span> <span class="n">gold_val</span><span class="p">)</span>
+                    
+                    <span class="n">example</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;record_id&quot;</span><span class="p">:</span> <span class="n">record_id</span><span class="p">,</span>
+                        <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="n">attr</span><span class="p">,</span>
+                        <span class="s2">&quot;fused_value&quot;</span><span class="p">:</span> <span class="n">fused_val</span><span class="p">,</span>
+                        <span class="s2">&quot;expected_value&quot;</span><span class="p">:</span> <span class="n">gold_val</span><span class="p">,</span>
+                        <span class="s2">&quot;gold_value&quot;</span><span class="p">:</span> <span class="n">gold_val</span><span class="p">,</span>
+                        <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="n">fused_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_fusion_confidence&quot;</span><span class="p">,</span> <span class="s2">&quot;N/A&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;sources&quot;</span><span class="p">:</span> <span class="n">fused_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_fusion_sources&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                    <span class="p">}</span>
+                    
+                    <span class="k">if</span> <span class="n">is_correct</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">max_examples</span><span class="p">:</span>
+                        <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">is_correct</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">max_examples</span><span class="p">:</span>
+                        <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+                    
+                    <span class="c1"># Stop collecting if we have enough examples</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">max_examples</span> <span class="ow">and</span> 
+                        <span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">max_examples</span><span class="p">):</span>
+                        <span class="k">break</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;correct_examples&quot;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">max_examples</span> <span class="ow">and</span> 
+                <span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;incorrect_examples&quot;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">max_examples</span><span class="p">):</span>
+                <span class="k">break</span>
+        
+        <span class="k">return</span> <span class="n">examples</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_simple_attribute_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fused_val</span><span class="p">,</span> <span class="n">gold_val</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple attribute matching logic.&quot;&quot;&quot;</span>
+        <span class="c1"># Handle missing values</span>
+        <span class="k">if</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">fused_val</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">gold_val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">fused_val</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_is_missing</span><span class="p">(</span><span class="n">gold_val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Handle string comparison (case insensitive, strip whitespace)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fused_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gold_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">fused_val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">gold_val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+        <span class="c1"># Handle list comparison (for aggregated values)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fused_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gold_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Check if one might be a comma-separated list</span>
+            <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">fused_val</span> <span class="ow">or</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">gold_val</span><span class="p">:</span>
+                <span class="n">fused_items</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">fused_val</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                <span class="n">gold_items</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">gold_val</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">fused_items</span> <span class="o">==</span> <span class="n">gold_items</span>
+        
+        <span class="c1"># Default exact comparison</span>
+        <span class="k">return</span> <span class="n">fused_val</span> <span class="o">==</span> <span class="n">gold_val</span>
+    
+<div class="viewcode-block" id="FusionReport.export_detailed_results">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.reporting.FusionReport.export_detailed_results">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_detailed_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export detailed fusion results to directory.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_dir : str</span>
+<span class="sd">            Directory to save detailed results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+        <span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Save main fusion results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fused_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">&quot;fused_data.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="c1"># Save report in multiple formats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">&quot;fusion_report.json&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">&quot;fusion_report.html&quot;</span><span class="p">))</span>
+        
+        <span class="c1"># Save correspondences</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correspondences</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">&quot;correspondences.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="c1"># Save input dataset summary</span>
+        <span class="n">input_summary</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_datasets</span><span class="p">):</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;dataset_index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dataset_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;num_records&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+                <span class="s2">&quot;num_attributes&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+                <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="n">input_summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s2">&quot;input_summary.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">input_summary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Export coverage analysis if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coverage_analyzer</span><span class="o">.</span><span class="n">export_analysis</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="s1">&#39;coverage_analysis&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Coverage analysis exported successfully&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not export coverage analysis: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detailed results exported to </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../fusion.html">PyDI.fusion</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

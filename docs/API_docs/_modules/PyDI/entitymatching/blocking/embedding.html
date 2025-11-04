@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.entitymatching.blocking.embedding &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.entitymatching.blocking.embedding</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Embedding-based blocking for entity matching using nearest neighbor search.</span>
+
+<span class="sd">This module provides EmbeddingBlocker, which generates candidate pairs by computing</span>
+<span class="sd">text embeddings and performing nearest neighbor search to find similar records.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBlocker</span><span class="p">,</span> <span class="n">CandidateBatch</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EmbeddingBlocker">
+<a class="viewcode-back" href="../../../../api/PyDI.entitymatching.blocking.html#PyDI.entitymatching.EmbeddingBlocker">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EmbeddingBlocker</span><span class="p">(</span><span class="n">BaseBlocker</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Embedding-based blocking using nearest neighbor search over text embeddings.</span>
+<span class="sd">    </span>
+<span class="sd">    This blocker combines text columns into a single string representation,</span>
+<span class="sd">    computes embeddings using sentence transformers or a custom embedder,</span>
+<span class="sd">    and uses nearest neighbor search to find candidate pairs above a similarity threshold.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_left : pd.DataFrame</span>
+<span class="sd">        Left dataset for blocking</span>
+<span class="sd">    df_right : pd.DataFrame  </span>
+<span class="sd">        Right dataset for blocking</span>
+<span class="sd">    text_cols : list[str]</span>
+<span class="sd">        Column names to use for text embedding (must exist in both datasets)</span>
+<span class="sd">    model : str, default &quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span>
+<span class="sd">        Model name for sentence transformers embedding</span>
+<span class="sd">    index_backend : {&quot;sklearn&quot;, &quot;faiss&quot;, &quot;hnsw&quot;}, default &quot;sklearn&quot;</span>
+<span class="sd">        Backend to use for nearest neighbor index</span>
+<span class="sd">    metric : {&quot;cosine&quot;, &quot;dot&quot;}, default &quot;cosine&quot;</span>
+<span class="sd">        Distance metric for similarity computation</span>
+<span class="sd">    top_k : int, default 50</span>
+<span class="sd">        Maximum number of nearest neighbors to retrieve per query</span>
+<span class="sd">    threshold : float, default 0.3</span>
+<span class="sd">        Minimum similarity threshold for candidate pairs (0-1 for cosine)</span>
+<span class="sd">    normalize : bool, default True</span>
+<span class="sd">        Whether to L2-normalize embeddings (recommended for cosine similarity)</span>
+<span class="sd">    batch_size : int, default 25000</span>
+<span class="sd">        Number of candidate pairs to yield per batch</span>
+<span class="sd">    query_batch_size : int, default 2048</span>
+<span class="sd">        Number of records to process at once during embedding/querying</span>
+<span class="sd">    embedder : callable, optional</span>
+<span class="sd">        Custom embedding function: embedder(df, text_cols) -&gt; np.ndarray</span>
+<span class="sd">    left_embeddings : np.ndarray, optional</span>
+<span class="sd">        Pre-computed embeddings for left dataset</span>
+<span class="sd">    right_embeddings : np.ndarray, optional</span>
+<span class="sd">        Pre-computed embeddings for right dataset</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        Device for embedding computation (e.g., &quot;cpu&quot;, &quot;cuda:0&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">text_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span><span class="p">,</span>
+        <span class="n">index_backend</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sklearn&quot;</span><span class="p">,</span> <span class="s2">&quot;faiss&quot;</span><span class="p">,</span> <span class="s2">&quot;hnsw&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sklearn&quot;</span><span class="p">,</span>
+        <span class="n">metric</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span> <span class="s2">&quot;dot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25_000</span><span class="p">,</span>
+        <span class="n">query_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
+        <span class="n">embedder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">left_embeddings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">right_embeddings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span><span class="p">,</span>
+        <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">df_left</span><span class="p">,</span> <span class="n">df_right</span><span class="p">,</span> <span class="n">id_column</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        
+        <span class="c1"># Setup logging (consistent with other blockers)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Validate parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">(</span><span class="n">text_cols</span><span class="p">,</span> <span class="n">index_backend</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">top_k</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> 
+                            <span class="n">batch_size</span><span class="p">,</span> <span class="n">query_batch_size</span><span class="p">,</span> <span class="n">left_embeddings</span><span class="p">,</span> <span class="n">right_embeddings</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_cols</span> <span class="o">=</span> <span class="n">text_cols</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">=</span> <span class="n">index_backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">=</span> <span class="n">top_k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_batch_size</span> <span class="o">=</span> <span class="n">query_batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span> <span class="o">=</span> <span class="n">embedder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="o">=</span> <span class="n">preprocess</span>
+        
+        <span class="c1"># Initialize embeddings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span> <span class="o">=</span> <span class="n">left_embeddings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span> <span class="o">=</span> <span class="n">right_embeddings</span>
+        
+        <span class="c1"># Lazy-loaded components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sentence_transformer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialized EmbeddingBlocker with </span><span class="si">{</span><span class="n">index_backend</span><span class="si">}</span><span class="s2"> backend, &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;top_k=</span><span class="si">{</span><span class="n">top_k</span><span class="si">}</span><span class="s2">, threshold=</span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Write debug file will be called during iteration when embeddings are ready</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_params</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">index_backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">query_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">left_embeddings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">right_embeddings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate initialization parameters.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text_cols</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;text_cols cannot be empty&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Check text columns exist in both datasets</span>
+        <span class="n">missing_left</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">text_cols</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">missing_right</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">text_cols</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">missing_left</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;text_cols </span><span class="si">{</span><span class="n">missing_left</span><span class="si">}</span><span class="s2"> not found in left dataset&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing_right</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;text_cols </span><span class="si">{</span><span class="n">missing_right</span><span class="si">}</span><span class="s2"> not found in right dataset&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Validate numeric parameters</span>
+        <span class="k">if</span> <span class="n">top_k</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;top_k must be positive&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">threshold</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;threshold must be between 0 and 1 for cosine metric&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;batch_size must be positive&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">query_batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;query_batch_size must be positive&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Validate embeddings if provided</span>
+        <span class="k">if</span> <span class="n">left_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">left_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;left_embeddings shape </span><span class="si">{</span><span class="n">left_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> doesn&#39;t match &quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;left dataset length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                               
+        <span class="k">if</span> <span class="n">right_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">right_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;right_embeddings shape </span><span class="si">{</span><span class="n">right_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> doesn&#39;t match &quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;right dataset length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                               
+        <span class="k">if</span> <span class="p">(</span><span class="n">left_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">right_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both left_embeddings and right_embeddings must be provided together&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">left_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">right_embeddings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">left_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">right_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding dimensions don&#39;t match: left=</span><span class="si">{</span><span class="n">left_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;right=</span><span class="si">{</span><span class="n">right_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_sentence_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazy-load sentence transformer model.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sentence_transformer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">sentence_transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentenceTransformer</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                    <span class="s2">&quot;sentence-transformers is required for embedding generation. &quot;</span>
+                    <span class="s2">&quot;Install with: pip install sentence-transformers&quot;</span>
+                <span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sentence_transformer</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded sentence transformer model: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sentence_transformer</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_combine_text_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine text columns into single strings for embedding.&quot;&quot;&quot;</span>
+        <span class="n">combined_texts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">text_parts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_cols</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">value_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                    <span class="n">value_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">value_str</span><span class="p">)</span>
+                <span class="n">text_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_str</span><span class="p">)</span>
+            <span class="n">combined_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_parts</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">combined_texts</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute embeddings for a dataset.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use custom embedder</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_cols</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use sentence transformers</span>
+            <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sentence_transformer</span><span class="p">()</span>
+            <span class="n">texts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combine_text_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            
+            <span class="c1"># Compute embeddings in batches</span>
+            <span class="n">all_embeddings</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_batch_size</span><span class="p">):</span>
+                <span class="n">batch_texts</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_batch_size</span><span class="p">]</span>
+                <span class="n">batch_embeddings</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                    <span class="n">batch_texts</span><span class="p">,</span> 
+                    <span class="n">convert_to_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">show_progress_bar</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+                <span class="n">all_embeddings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_embeddings</span><span class="p">)</span>
+            
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">all_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Convert to float32 and normalize if requested</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">:</span>
+            <span class="c1"># L2 normalize</span>
+            <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">norms</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">)</span>  <span class="c1"># Avoid division by zero</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span> <span class="o">/</span> <span class="n">norms</span>
+            
+        <span class="k">return</span> <span class="n">embeddings</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure both left and right embeddings are computed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing embeddings for datasets...&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating embeddings for dataset1: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">d embeddings for first dataset&quot;</span><span class="p">)</span>
+                
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating embeddings for dataset2: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">d embeddings for second dataset&quot;</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_embeddings</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_nn_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build nearest neighbor index for right-side embeddings.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;sklearn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_sklearn_index</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;faiss&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_faiss_index</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;hnsw&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_hnsw_index</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown index_backend: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_sklearn_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build sklearn NearestNeighbors index.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NearestNeighbors</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;sklearn is required for sklearn backend&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Map metric names</span>
+        <span class="n">sklearn_metric</span> <span class="o">=</span> <span class="s2">&quot;cosine&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span> <span class="k">else</span> <span class="s2">&quot;euclidean&quot;</span>
+        
+        <span class="n">index</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span>
+            <span class="n">n_neighbors</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)),</span>
+            <span class="n">metric</span><span class="o">=</span><span class="n">sklearn_metric</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">index</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created similarity index with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors, metric=</span><span class="si">{</span><span class="n">sklearn_metric</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_faiss_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build FAISS index.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">faiss</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;faiss-cpu is required for faiss backend. &quot;</span>
+                <span class="s2">&quot;Install with: pip install faiss-cpu&quot;</span>
+            <span class="p">)</span>
+            
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;dot&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">):</span>
+            <span class="c1"># Use inner product index (works for normalized vectors)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexFlatIP</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use L2 distance</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexFlatL2</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            
+        <span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created similarity index with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors, metric=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_hnsw_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build HNSW index.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">hnswlib</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;hnswlib is required for hnsw backend. &quot;</span>
+                <span class="s2">&quot;Install with: pip install hnswlib&quot;</span>
+            <span class="p">)</span>
+            
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="s2">&quot;cosine&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span> <span class="k">else</span> <span class="s2">&quot;ip&quot;</span>
+        
+        <span class="n">index</span> <span class="o">=</span> <span class="n">hnswlib</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">index</span><span class="o">.</span><span class="n">init_index</span><span class="p">(</span><span class="n">max_elements</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">),</span> <span class="n">M</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">ef_construction</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+        <span class="n">index</span><span class="o">.</span><span class="n">add_items</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)))</span>
+        <span class="n">index</span><span class="o">.</span><span class="n">set_ef</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>  <span class="c1"># Controls recall/speed tradeoff</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created similarity index with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors, space=</span><span class="si">{</span><span class="n">space</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_nn_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query nearest neighbor index and return indices and similarities.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;sklearn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_sklearn_index</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;faiss&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_faiss_index</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span> <span class="o">==</span> <span class="s2">&quot;hnsw&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_hnsw_index</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown index_backend: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_backend</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_sklearn_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query sklearn index.&quot;&quot;&quot;</span>
+        <span class="n">distances</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Convert distances to similarities</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span><span class="p">:</span>
+            <span class="n">similarities</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">distances</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># euclidean for dot product</span>
+            <span class="n">similarities</span> <span class="o">=</span> <span class="o">-</span><span class="n">distances</span>  <span class="c1"># Higher distance = lower similarity</span>
+            
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">similarities</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_faiss_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query FAISS index.&quot;&quot;&quot;</span>
+        <span class="n">scores</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span><span class="o">.</span><span class="n">ntotal</span><span class="p">))</span>
+        
+        <span class="c1"># FAISS returns similarities (higher = better)</span>
+        <span class="n">similarities</span> <span class="o">=</span> <span class="n">scores</span>
+        
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">similarities</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_hnsw_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query HNSW index.&quot;&quot;&quot;</span>
+        <span class="n">all_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_similarities</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">query_vec</span> <span class="ow">in</span> <span class="n">query_embeddings</span><span class="p">:</span>
+            <span class="n">indices</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span><span class="o">.</span><span class="n">knn_query</span><span class="p">(</span><span class="n">query_vec</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span><span class="o">.</span><span class="n">get_current_count</span><span class="p">()))</span>
+            
+            <span class="c1"># Convert distances to similarities based on space</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span><span class="p">:</span>
+                <span class="n">similarities</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">distances</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># inner product</span>
+                <span class="n">similarities</span> <span class="o">=</span> <span class="n">distances</span>
+                
+            <span class="n">all_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+            <span class="n">all_similarities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">similarities</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_indices</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_similarities</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_debug_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">right_embeddings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write debug CSV file with embedding similarity statistics like Winter framework.&quot;&quot;&quot;</span>
+        <span class="c1"># Create output directory if it doesn&#39;t exist</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Sample a subset for debug analysis to avoid expensive computation</span>
+        <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">))</span>
+        <span class="n">sample_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sample_embeddings</span> <span class="o">=</span> <span class="n">left_embeddings</span><span class="p">[</span><span class="n">sample_indices</span><span class="p">]</span>
+        
+        <span class="c1"># Query for similarity distribution</span>
+        <span class="n">neighbor_indices</span><span class="p">,</span> <span class="n">similarities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_nn_index</span><span class="p">(</span><span class="n">sample_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Create debug data with similarity ranges</span>
+        <span class="n">debug_data</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Analyze similarity distribution in bins</span>
+        <span class="n">all_sims</span> <span class="o">=</span> <span class="n">similarities</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">valid_sims</span> <span class="o">=</span> <span class="n">all_sims</span><span class="p">[</span><span class="n">all_sims</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_sims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Create similarity bins</span>
+            <span class="n">sim_bins</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sim_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">sim_bins</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sim_bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">valid_sims</span> <span class="o">&gt;=</span> <span class="n">low</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">valid_sims</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">range_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">low</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">high</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">debug_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;Blocking Key Value&quot;</span><span class="p">:</span> <span class="n">range_str</span><span class="p">,</span> <span class="s2">&quot;Frequency&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)})</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">debug_data</span><span class="p">:</span>
+            <span class="n">debug_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;Blocking Key Value&quot;</span><span class="p">:</span> <span class="s2">&quot;no_similarities&quot;</span><span class="p">,</span> <span class="s2">&quot;Frequency&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+        
+        <span class="c1"># Sort by similarity range (approximate ordering)</span>
+        <span class="n">debug_data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Frequency&quot;</span><span class="p">])</span>
+        
+        <span class="c1"># Write to CSV file</span>
+        <span class="n">debug_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;debugResultsBlocking_EmbeddingBlocker.csv&quot;</span><span class="p">)</span>
+        <span class="n">debug_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">debug_data</span><span class="p">)</span>
+        <span class="n">debug_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">debug_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Debug results written to file: </span><span class="si">{</span><span class="n">debug_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">CandidateBatch</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate batches of candidate pairs.&quot;&quot;&quot;</span>
+        <span class="c1"># Ensure embeddings are computed</span>
+        <span class="n">left_embeddings</span><span class="p">,</span> <span class="n">right_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_embeddings</span><span class="p">()</span>
+        
+        <span class="c1"># Build NN index on right embeddings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building similarity index for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">right_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> vectors&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_nn_index</span><span class="p">(</span><span class="n">right_embeddings</span><span class="p">)</span>
+            
+            <span class="c1"># Write debug file after embeddings and index are ready</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_debug_file</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">,</span> <span class="n">right_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Log DEBUG: Creating candidate pairs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating candidate record pairs from embedding similarity with threshold </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Accumulator for candidate pairs</span>
+        <span class="n">pairs_accumulator</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Process left embeddings in batches</span>
+        <span class="k">for</span> <span class="n">start_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_batch_size</span><span class="p">):</span>
+            <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_idx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_batch_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">))</span>
+            <span class="n">query_batch</span> <span class="o">=</span> <span class="n">left_embeddings</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">]</span>
+            
+            <span class="c1"># Query NN index</span>
+            <span class="n">neighbor_indices</span><span class="p">,</span> <span class="n">similarities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_nn_index</span><span class="p">(</span><span class="n">query_batch</span><span class="p">)</span>
+            
+            <span class="c1"># Process results</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">sims</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">neighbor_indices</span><span class="p">,</span> <span class="n">similarities</span><span class="p">)):</span>
+                <span class="n">left_idx</span> <span class="o">=</span> <span class="n">start_idx</span> <span class="o">+</span> <span class="n">i</span>
+                <span class="n">left_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_left_indexed</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">left_idx</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">id_column</span><span class="p">]</span>
+                
+                <span class="c1"># Filter by threshold</span>
+                <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">sims</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+                <span class="n">valid_neighbors</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+                
+                <span class="c1"># Add valid pairs to accumulator</span>
+                <span class="k">for</span> <span class="n">right_idx</span> <span class="ow">in</span> <span class="n">valid_neighbors</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">right_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_right_indexed</span><span class="p">):</span>  <span class="c1"># Safety check</span>
+                        <span class="n">right_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_right_indexed</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">right_idx</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">id_column</span><span class="p">]</span>
+                        <span class="n">pairs_accumulator</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">left_id</span><span class="p">,</span> <span class="n">right_id</span><span class="p">))</span>
+                        
+                        <span class="c1"># Emit batch if we&#39;ve accumulated enough pairs</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs_accumulator</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
+                            <span class="n">batch_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pairs_accumulator</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">])</span>
+                            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit_batch</span><span class="p">(</span><span class="n">batch_df</span><span class="p">)</span>
+                            <span class="n">pairs_accumulator</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        
+        <span class="c1"># Emit remaining pairs</span>
+        <span class="k">if</span> <span class="n">pairs_accumulator</span><span class="p">:</span>
+            <span class="n">batch_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pairs_accumulator</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit_batch</span><span class="p">(</span><span class="n">batch_df</span><span class="p">)</span>
+        
+    
+<div class="viewcode-block" id="EmbeddingBlocker.estimate_pairs">
+<a class="viewcode-back" href="../../../../api/PyDI.entitymatching.blocking.html#PyDI.entitymatching.EmbeddingBlocker.estimate_pairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate number of candidate pairs using sampling.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+            
+        <span class="c1"># Ensure embeddings are computed</span>
+        <span class="n">left_embeddings</span><span class="p">,</span> <span class="n">right_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_embeddings</span><span class="p">()</span>
+        
+        <span class="c1"># Build NN index if needed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nn_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_nn_index</span><span class="p">(</span><span class="n">right_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Sample from left dataset</span>
+        <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">))</span>
+        <span class="n">sample_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_embeddings</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sample_embeddings</span> <span class="o">=</span> <span class="n">left_embeddings</span><span class="p">[</span><span class="n">sample_indices</span><span class="p">]</span>
+        
+        <span class="c1"># Query for samples</span>
+        <span class="n">neighbor_indices</span><span class="p">,</span> <span class="n">similarities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_nn_index</span><span class="p">(</span><span class="n">sample_embeddings</span><span class="p">)</span>
+        
+        <span class="c1"># Count valid neighbors per sample</span>
+        <span class="n">total_valid_neighbors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">sims</span> <span class="ow">in</span> <span class="n">similarities</span><span class="p">:</span>
+            <span class="n">total_valid_neighbors</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sims</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">sample_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+            
+        <span class="c1"># Extrapolate to full dataset</span>
+        <span class="n">avg_neighbors_per_query</span> <span class="o">=</span> <span class="n">total_valid_neighbors</span> <span class="o">/</span> <span class="n">sample_size</span>
+        <span class="n">estimated_pairs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">avg_neighbors_per_query</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_left</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated </span><span class="si">{</span><span class="n">estimated_pairs</span><span class="si">}</span><span class="s2"> candidate pairs from </span><span class="si">{</span><span class="n">sample_size</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">estimated_pairs</span></div>
+</div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EmbeddingBlocker&quot;</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

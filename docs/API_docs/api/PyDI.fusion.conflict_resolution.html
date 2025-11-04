@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.fusion.conflict_resolution package &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PyDI.informationextraction package" href="PyDI.informationextraction.html" />
+    <link rel="prev" title="PyDI.fusion package" href="PyDI.fusion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PyDI API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modules.html">PyDI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.html">PyDI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.datatranslation.html">PyDI.datatranslation package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.entitymatching.html">PyDI.entitymatching package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.entitymatching.blocking.html">PyDI.entitymatching.blocking package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.entitymatching.post_clustering.html">PyDI.entitymatching.post_clustering package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.fusion.html">PyDI.fusion package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PyDI.fusion.conflict_resolution package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.date">PyDI.fusion.conflict_resolution.date module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.date.earliest"><code class="docutils literal notranslate"><span class="pre">earliest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.date.most_recent"><code class="docutils literal notranslate"><span class="pre">most_recent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.general">PyDI.fusion.conflict_resolution.general module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.general.favour_sources"><code class="docutils literal notranslate"><span class="pre">favour_sources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.general.prefer_higher_trust"><code class="docutils literal notranslate"><span class="pre">prefer_higher_trust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.general.random_value"><code class="docutils literal notranslate"><span class="pre">random_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.general.voting"><code class="docutils literal notranslate"><span class="pre">voting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.general.weighted_voting"><code class="docutils literal notranslate"><span class="pre">weighted_voting()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.list">PyDI.fusion.conflict_resolution.list module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.list.intersection"><code class="docutils literal notranslate"><span class="pre">intersection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.list.intersection_k_sources"><code class="docutils literal notranslate"><span class="pre">intersection_k_sources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.list.union"><code class="docutils literal notranslate"><span class="pre">union()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.numeric">PyDI.fusion.conflict_resolution.numeric module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.numeric.average"><code class="docutils literal notranslate"><span class="pre">average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.numeric.maximum"><code class="docutils literal notranslate"><span class="pre">maximum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.numeric.median"><code class="docutils literal notranslate"><span class="pre">median()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.numeric.minimum"><code class="docutils literal notranslate"><span class="pre">minimum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.numeric.sum_values"><code class="docutils literal notranslate"><span class="pre">sum_values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.string">PyDI.fusion.conflict_resolution.string module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.string.longest_string"><code class="docutils literal notranslate"><span class="pre">longest_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.string.most_complete"><code class="docutils literal notranslate"><span class="pre">most_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.string.shortest_string"><code class="docutils literal notranslate"><span class="pre">shortest_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution.utils">PyDI.fusion.conflict_resolution.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.fusion.conflict_resolution">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.average"><code class="docutils literal notranslate"><span class="pre">average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.earliest"><code class="docutils literal notranslate"><span class="pre">earliest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.favour_sources"><code class="docutils literal notranslate"><span class="pre">favour_sources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.intersection"><code class="docutils literal notranslate"><span class="pre">intersection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.intersection_k_sources"><code class="docutils literal notranslate"><span class="pre">intersection_k_sources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.longest_string"><code class="docutils literal notranslate"><span class="pre">longest_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.maximum"><code class="docutils literal notranslate"><span class="pre">maximum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.median"><code class="docutils literal notranslate"><span class="pre">median()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.minimum"><code class="docutils literal notranslate"><span class="pre">minimum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.most_complete"><code class="docutils literal notranslate"><span class="pre">most_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.most_recent"><code class="docutils literal notranslate"><span class="pre">most_recent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.prefer_higher_trust"><code class="docutils literal notranslate"><span class="pre">prefer_higher_trust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.random_value"><code class="docutils literal notranslate"><span class="pre">random_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.shortest_string"><code class="docutils literal notranslate"><span class="pre">shortest_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.sum_values"><code class="docutils literal notranslate"><span class="pre">sum_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.union"><code class="docutils literal notranslate"><span class="pre">union()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.voting"><code class="docutils literal notranslate"><span class="pre">voting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.fusion.conflict_resolution.weighted_voting"><code class="docutils literal notranslate"><span class="pre">weighted_voting()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.informationextraction.html">PyDI.informationextraction package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.io.html">PyDI.io package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.normalization.html">PyDI.normalization package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.profiling.html">PyDI.profiling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.schemamatching.html">PyDI.schemamatching package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.utils.html">PyDI.utils package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyDI API Reference</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">PyDI</a></li>
+          <li class="breadcrumb-item"><a href="PyDI.html">PyDI package</a></li>
+          <li class="breadcrumb-item"><a href="PyDI.fusion.html">PyDI.fusion package</a></li>
+      <li class="breadcrumb-item active">PyDI.fusion.conflict_resolution package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/PyDI.fusion.conflict_resolution.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydi-fusion-conflict-resolution-package">
+<h1>PyDI.fusion.conflict_resolution package<a class="headerlink" href="#pydi-fusion-conflict-resolution-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.date">
+<span id="pydi-fusion-conflict-resolution-date-module"></span><h2>PyDI.fusion.conflict_resolution.date module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.date" title="Link to this heading"></a></h2>
+<p>Date-based conflict resolution functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.date.earliest">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.date.</span></span><span class="sig-name descname"><span class="pre">earliest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/date.html#earliest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.date.earliest" title="Link to this definition"></a></dt>
+<dd><p>Select the earliest date value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.date.most_recent">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.date.</span></span><span class="sig-name descname"><span class="pre">most_recent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/date.html#most_recent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.date.most_recent" title="Link to this definition"></a></dt>
+<dd><p>Select the most recent date value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.general">
+<span id="pydi-fusion-conflict-resolution-general-module"></span><h2>PyDI.fusion.conflict_resolution.general module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.general" title="Link to this heading"></a></h2>
+<p>General conflict resolution functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.general.favour_sources">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.general.</span></span><span class="sig-name descname"><span class="pre">favour_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_preferences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_source'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#favour_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.general.favour_sources" title="Link to this definition"></a></dt>
+<dd><p>Select value from preferred sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>source_preferences</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Ordered list of preferred source names</p></li>
+<li><p><strong>source_column</strong> (<em>str</em>) – Column name that contains source information</p></li>
+<li><p><strong>**kwargs</strong> – Additional context containing source information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.general.prefer_higher_trust">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.general.</span></span><span class="sig-name descname"><span class="pre">prefer_higher_trust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_datasets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_trust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'trust'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tie_breaker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#prefer_higher_trust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.general.prefer_higher_trust" title="Link to this definition"></a></dt>
+<dd><p>Prefer the value coming from the dataset with the highest trust level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – Candidate values for the attribute.</p></li>
+<li><p><strong>sources</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Record IDs corresponding 1:1 to <code class="docutils literal notranslate"><span class="pre">values</span></code> (provided by the engine).</p></li>
+<li><p><strong>source_datasets</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Map from record ID to dataset name (provided by the engine).</p></li>
+<li><p><strong>trust_map</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Map from dataset name to trust score/level. Higher means more trusted.</p></li>
+<li><p><strong>default_trust</strong> (<em>float</em><em>, </em><em>default 1.0</em>) – Trust to assume for datasets not in <code class="docutils literal notranslate"><span class="pre">trust_map</span></code>.</p></li>
+<li><p><strong>trust_key</strong> (<em>str</em><em>, </em><em>default &quot;trust&quot;</em>) – Key name to use for the trust value in the emitted metadata.</p></li>
+<li><p><strong>tie_breaker</strong> (<em>str</em><em>, </em><em>default &quot;first&quot;</em>) – How to break ties when multiple datasets share the highest trust.
+Options: “first” (preserve input order).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (value, confidence, metadata).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.general.random_value">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.general.</span></span><span class="sig-name descname"><span class="pre">random_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#random_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.general.random_value" title="Link to this definition"></a></dt>
+<dd><p>Select a random value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.general.voting">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.general.</span></span><span class="sig-name descname"><span class="pre">voting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#voting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.general.voting" title="Link to this definition"></a></dt>
+<dd><p>Select the most frequent value (majority vote).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.general.weighted_voting">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.general.</span></span><span class="sig-name descname"><span class="pre">weighted_voting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#weighted_voting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.general.weighted_voting" title="Link to this definition"></a></dt>
+<dd><p>Select value using weighted voting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>weights</strong> (<em>List</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Weights for each value. If None, uses uniform weights.</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.list">
+<span id="pydi-fusion-conflict-resolution-list-module"></span><h2>PyDI.fusion.conflict_resolution.list module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.list" title="Link to this heading"></a></h2>
+<p>List-based conflict resolution functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.list.intersection">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.list.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.list.intersection" title="Link to this definition"></a></dt>
+<dd><p>Create intersection of all list values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.list.intersection_k_sources">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.list.</span></span><span class="sig-name descname"><span class="pre">intersection_k_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#intersection_k_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.list.intersection_k_sources" title="Link to this definition"></a></dt>
+<dd><p>Keep items that appear in at least k sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Minimum number of sources an item must appear in</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.list.union">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.list.</span></span><span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.list.union" title="Link to this definition"></a></dt>
+<dd><p>Create union of all list values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.numeric">
+<span id="pydi-fusion-conflict-resolution-numeric-module"></span><h2>PyDI.fusion.conflict_resolution.numeric module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.numeric" title="Link to this heading"></a></h2>
+<p>Numeric conflict resolution functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.numeric.average">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.numeric.</span></span><span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.numeric.average" title="Link to this definition"></a></dt>
+<dd><p>Calculate the average of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.numeric.maximum">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.numeric.</span></span><span class="sig-name descname"><span class="pre">maximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#maximum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.numeric.maximum" title="Link to this definition"></a></dt>
+<dd><p>Select the maximum numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.numeric.median">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.numeric.</span></span><span class="sig-name descname"><span class="pre">median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#median"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.numeric.median" title="Link to this definition"></a></dt>
+<dd><p>Calculate the median of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.numeric.minimum">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.numeric.</span></span><span class="sig-name descname"><span class="pre">minimum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#minimum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.numeric.minimum" title="Link to this definition"></a></dt>
+<dd><p>Select the minimum numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.numeric.sum_values">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.numeric.</span></span><span class="sig-name descname"><span class="pre">sum_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#sum_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.numeric.sum_values" title="Link to this definition"></a></dt>
+<dd><p>Calculate the sum of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.string">
+<span id="pydi-fusion-conflict-resolution-string-module"></span><h2>PyDI.fusion.conflict_resolution.string module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.string" title="Link to this heading"></a></h2>
+<p>String-based conflict resolution functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.string.longest_string">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.string.</span></span><span class="sig-name descname"><span class="pre">longest_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#longest_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.string.longest_string" title="Link to this definition"></a></dt>
+<dd><p>Select the longest string value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.string.most_complete">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.string.</span></span><span class="sig-name descname"><span class="pre">most_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#most_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.string.most_complete" title="Link to this definition"></a></dt>
+<dd><p>Select the string with most non-whitespace characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.string.shortest_string">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.string.</span></span><span class="sig-name descname"><span class="pre">shortest_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#shortest_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.string.shortest_string" title="Link to this definition"></a></dt>
+<dd><p>Select the shortest string value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.fusion.conflict_resolution.utils">
+<span id="pydi-fusion-conflict-resolution-utils-module"></span><h2>PyDI.fusion.conflict_resolution.utils module<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution.utils" title="Link to this heading"></a></h2>
+<p>Shared utilities for conflict resolution functions.</p>
+</section>
+<section id="module-PyDI.fusion.conflict_resolution">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-PyDI.fusion.conflict_resolution" title="Link to this heading"></a></h2>
+<p>Conflict resolution functions for PyDI data fusion.</p>
+<p>This package provides built-in conflict resolution functions for different
+data types and fusion scenarios.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.average">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.average" title="Link to this definition"></a></dt>
+<dd><p>Calculate the average of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.earliest">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">earliest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/date.html#earliest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.earliest" title="Link to this definition"></a></dt>
+<dd><p>Select the earliest date value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.favour_sources">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">favour_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_preferences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_source'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#favour_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.favour_sources" title="Link to this definition"></a></dt>
+<dd><p>Select value from preferred sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>source_preferences</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Ordered list of preferred source names</p></li>
+<li><p><strong>source_column</strong> (<em>str</em>) – Column name that contains source information</p></li>
+<li><p><strong>**kwargs</strong> – Additional context containing source information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.intersection">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.intersection" title="Link to this definition"></a></dt>
+<dd><p>Create intersection of all list values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.intersection_k_sources">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">intersection_k_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#intersection_k_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.intersection_k_sources" title="Link to this definition"></a></dt>
+<dd><p>Keep items that appear in at least k sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Minimum number of sources an item must appear in</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.longest_string">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">longest_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#longest_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.longest_string" title="Link to this definition"></a></dt>
+<dd><p>Select the longest string value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.maximum">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">maximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#maximum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.maximum" title="Link to this definition"></a></dt>
+<dd><p>Select the maximum numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.median">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#median"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.median" title="Link to this definition"></a></dt>
+<dd><p>Calculate the median of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.minimum">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">minimum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#minimum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.minimum" title="Link to this definition"></a></dt>
+<dd><p>Select the minimum numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.most_complete">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">most_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#most_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.most_complete" title="Link to this definition"></a></dt>
+<dd><p>Select the string with most non-whitespace characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.most_recent">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">most_recent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/date.html#most_recent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.most_recent" title="Link to this definition"></a></dt>
+<dd><p>Select the most recent date value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.prefer_higher_trust">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">prefer_higher_trust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_datasets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_trust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'trust'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tie_breaker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#prefer_higher_trust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.prefer_higher_trust" title="Link to this definition"></a></dt>
+<dd><p>Prefer the value coming from the dataset with the highest trust level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – Candidate values for the attribute.</p></li>
+<li><p><strong>sources</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Record IDs corresponding 1:1 to <code class="docutils literal notranslate"><span class="pre">values</span></code> (provided by the engine).</p></li>
+<li><p><strong>source_datasets</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Map from record ID to dataset name (provided by the engine).</p></li>
+<li><p><strong>trust_map</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Map from dataset name to trust score/level. Higher means more trusted.</p></li>
+<li><p><strong>default_trust</strong> (<em>float</em><em>, </em><em>default 1.0</em>) – Trust to assume for datasets not in <code class="docutils literal notranslate"><span class="pre">trust_map</span></code>.</p></li>
+<li><p><strong>trust_key</strong> (<em>str</em><em>, </em><em>default &quot;trust&quot;</em>) – Key name to use for the trust value in the emitted metadata.</p></li>
+<li><p><strong>tie_breaker</strong> (<em>str</em><em>, </em><em>default &quot;first&quot;</em>) – How to break ties when multiple datasets share the highest trust.
+Options: “first” (preserve input order).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple (value, confidence, metadata).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.random_value">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">random_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#random_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.random_value" title="Link to this definition"></a></dt>
+<dd><p>Select a random value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.shortest_string">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">shortest_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/string.html#shortest_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.shortest_string" title="Link to this definition"></a></dt>
+<dd><p>Select the shortest string value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.sum_values">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">sum_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/numeric.html#sum_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.sum_values" title="Link to this definition"></a></dt>
+<dd><p>Calculate the sum of numeric values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.union">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/list.html#union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.union" title="Link to this definition"></a></dt>
+<dd><p>Create union of all list values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>separator</strong> (<em>str</em><em>, </em><em>optional</em>) – If provided, split string values by this separator</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.voting">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">voting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#voting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.voting" title="Link to this definition"></a></dt>
+<dd><p>Select the most frequent value (majority vote).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.fusion.conflict_resolution.weighted_voting">
+<span class="sig-prename descclassname"><span class="pre">PyDI.fusion.conflict_resolution.</span></span><span class="sig-name descname"><span class="pre">weighted_voting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/fusion/conflict_resolution/general.html#weighted_voting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.fusion.conflict_resolution.weighted_voting" title="Link to this definition"></a></dt>
+<dd><p>Select value using weighted voting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>List</em><em>[</em><em>Any</em><em>]</em>) – List of values to resolve conflicts from</p></li>
+<li><p><strong>weights</strong> (<em>List</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Weights for each value. If None, uses uniform weights.</p></li>
+<li><p><strong>**kwargs</strong> – Additional context (ignored)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (resolved_value, confidence, metadata)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="PyDI.fusion.html#PyDI.fusion.base.FusionResult" title="PyDI.fusion.base.FusionResult">FusionResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="PyDI.fusion.html" class="btn btn-neutral float-left" title="PyDI.fusion package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PyDI.informationextraction.html" class="btn btn-neutral float-right" title="PyDI.informationextraction package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

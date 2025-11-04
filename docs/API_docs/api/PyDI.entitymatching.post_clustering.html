@@ -1,0 +1,1068 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.entitymatching.post_clustering package &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PyDI.fusion package" href="PyDI.fusion.html" />
+    <link rel="prev" title="PyDI.entitymatching.blocking package" href="PyDI.entitymatching.blocking.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PyDI API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modules.html">PyDI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.html">PyDI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.datatranslation.html">PyDI.datatranslation package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.entitymatching.html">PyDI.entitymatching package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.entitymatching.blocking.html">PyDI.entitymatching.blocking package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PyDI.entitymatching.post_clustering package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.base">PyDI.entitymatching.post_clustering.base module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.centre_clusterer">PyDI.entitymatching.post_clustering.centre_clusterer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer"><code class="docutils literal notranslate"><span class="pre">CentreClusterer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.connected_components">PyDI.entitymatching.post_clustering.connected_components module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer"><code class="docutils literal notranslate"><span class="pre">ConnectedComponentClusterer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.greedy_one_to_one">PyDI.entitymatching.post_clustering.greedy_one_to_one module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm"><code class="docutils literal notranslate"><span class="pre">GreedyOneToOneMatchingAlgorithm</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.hierarchical_clusterer">PyDI.entitymatching.post_clustering.hierarchical_clusterer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.HierarchicalClusterer"><code class="docutils literal notranslate"><span class="pre">HierarchicalClusterer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode"><code class="docutils literal notranslate"><span class="pre">LinkageMode</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.maximum_bipartite_matching">PyDI.entitymatching.post_clustering.maximum_bipartite_matching module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching"><code class="docutils literal notranslate"><span class="pre">MaximumBipartiteMatching</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering.stable_matching">PyDI.entitymatching.post_clustering.stable_matching module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.stable_matching.StableMatching"><code class="docutils literal notranslate"><span class="pre">StableMatching</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-PyDI.entitymatching.post_clustering">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.BasePostClusterer"><code class="docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.CentreClusterer"><code class="docutils literal notranslate"><span class="pre">CentreClusterer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.ConnectedComponentClusterer"><code class="docutils literal notranslate"><span class="pre">ConnectedComponentClusterer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm"><code class="docutils literal notranslate"><span class="pre">GreedyOneToOneMatchingAlgorithm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.HierarchicalClusterer"><code class="docutils literal notranslate"><span class="pre">HierarchicalClusterer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.MaximumBipartiteMatching"><code class="docutils literal notranslate"><span class="pre">MaximumBipartiteMatching</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#PyDI.entitymatching.post_clustering.StableMatching"><code class="docutils literal notranslate"><span class="pre">StableMatching</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.fusion.html">PyDI.fusion package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.fusion.conflict_resolution.html">PyDI.fusion.conflict_resolution package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.informationextraction.html">PyDI.informationextraction package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.io.html">PyDI.io package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.normalization.html">PyDI.normalization package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.profiling.html">PyDI.profiling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.schemamatching.html">PyDI.schemamatching package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyDI.utils.html">PyDI.utils package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyDI API Reference</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">PyDI</a></li>
+          <li class="breadcrumb-item"><a href="PyDI.html">PyDI package</a></li>
+          <li class="breadcrumb-item"><a href="PyDI.entitymatching.html">PyDI.entitymatching package</a></li>
+      <li class="breadcrumb-item active">PyDI.entitymatching.post_clustering package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/PyDI.entitymatching.post_clustering.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydi-entitymatching-post-clustering-package">
+<h1>PyDI.entitymatching.post_clustering package<a class="headerlink" href="#pydi-entitymatching-post-clustering-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.base">
+<span id="pydi-entitymatching-post-clustering-base-module"></span><h2>PyDI.entitymatching.post_clustering.base module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.base" title="Link to this heading"></a></h2>
+<p>Base classes for post-clustering and global optimization algorithms.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.base.BasePostClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.base.</span></span><span class="sig-name descname"><span class="pre">BasePostClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/base.html#BasePostClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for post-clustering assignment algorithms.</p>
+<p>Post-clustering algorithms take entity correspondences and refine them
+by solving various assignment problems. This includes clustering-based
+methods (grouping similar entities) and global optimization methods
+(enforcing constraints like one-to-one matching).</p>
+<p>All implementations maintain compatibility with PyDI’s CorrespondenceSet
+format for seamless integration with evaluation and downstream processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.base.BasePostClusterer.cluster">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/base.html#BasePostClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply clustering algorithm to refine correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – DataFrame with columns id1, id2, score, notes containing
+entity correspondences to be refined.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Refined correspondences in the same format as input.
+The specific refinement depends on the algorithm:
+- Clustering methods may group entities into equivalence classes
+- Matching methods may enforce one-to-one constraints</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.centre_clusterer">
+<span id="pydi-entitymatching-post-clustering-centre-clusterer-module"></span><h2>PyDI.entitymatching.post_clustering.centre_clusterer module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.centre_clusterer" title="Link to this heading"></a></h2>
+<p>Centre Clusterer for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s CentreClusterer (CENTER algorithm),
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.centre_clusterer.</span></span><span class="sig-name descname"><span class="pre">CentreClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Creates star-shaped clusters using the CENTER algorithm.</p>
+<p>The CENTER algorithm finds star-shaped clusters by:
+1. Sorting all correspondences by similarity score (descending)
+2. For each correspondence, checking if either entity is already a center
+3. If neither is assigned, creating a new cluster with the first entity as center
+4. If one entity is a center, adding the other to that cluster
+5. Resulting clusters have maximum diameter of 2 (star shape)</p>
+<p>This is useful for creating hub-based entity groups where one entity
+serves as the canonical representative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply centre clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Star-shaped clusters where each cluster has a center entity.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer.get_clusters_with_centers">
+<span class="sig-name descname"><span class="pre">get_clusters_with_centers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer.get_clusters_with_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.centre_clusterer.CentreClusterer.get_clusters_with_centers" title="Link to this definition"></a></dt>
+<dd><p>Get clusters with their center entities.</p>
+<p>This method is useful for analysis and understanding cluster structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapping from center entity ID to set of cluster members.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Set[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.connected_components">
+<span id="pydi-entitymatching-post-clustering-connected-components-module"></span><h2>PyDI.entitymatching.post_clustering.connected_components module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.connected_components" title="Link to this heading"></a></h2>
+<p>Connected Components Clusterer for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s ConnectedComponentClusterer,
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.connected_components.</span></span><span class="sig-name descname"><span class="pre">ConnectedComponentClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Groups entities into clusters based on connected components.</p>
+<p>This clusterer finds weakly connected components in the similarity graph
+formed by entity correspondences. All entities that are transitively
+connected (directly or through other entities) are grouped into the
+same cluster.</p>
+<p>This enforces transitivity: if A matches B and B matches C, then A, B, and C
+are all considered equivalent and grouped together.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clusterer</span> <span class="o">=</span> <span class="n">ConnectedComponentClusterer</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result groups: {a,b,c}, {d,e}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply connected components clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clustered correspondences where all entities in the same
+connected component are fully connected to each other.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer.get_clusters">
+<span class="sig-name descname"><span class="pre">get_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer.get_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.connected_components.ConnectedComponentClusterer.get_clusters" title="Link to this definition"></a></dt>
+<dd><p>Get the clusters without generating correspondences.</p>
+<p>This method is useful for analysis and debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of entity clusters (connected components).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Set[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.greedy_one_to_one">
+<span id="pydi-entitymatching-post-clustering-greedy-one-to-one-module"></span><h2>PyDI.entitymatching.post_clustering.greedy_one_to_one module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.greedy_one_to_one" title="Link to this heading"></a></h2>
+<p>Greedy One-to-One Matching Algorithm for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s GreedyOneToOneMatchingAlgorithm,
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.greedy_one_to_one.</span></span><span class="sig-name descname"><span class="pre">GreedyOneToOneMatchingAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by_dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Enforces one-to-one matching using a greedy approach.</p>
+<p>This algorithm ensures that each entity participates in at most one
+correspondence by greedily selecting the highest-scoring matches first
+and removing conflicting lower-scoring matches.</p>
+<p>The algorithm:
+1. Sorts all correspondences by similarity score (descending)
+2. Greedily selects correspondences, ensuring no entity appears twice
+3. Returns the subset of correspondences with maximum total weight</p>
+<p>This is not guaranteed to return the globally optimal solution, but
+provides a good approximation efficiently.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">GreedyOneToOneMatchingAlgorithm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result: a-b (0.9), d-c (0.1) - greedy selection ensures one-to-one</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>group_by_dataset</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply greedy one-to-one matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-to-one matched correspondences where each entity appears
+in at most one correspondence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm.get_matching_statistics">
+<span class="sig-name descname"><span class="pre">get_matching_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm.get_matching_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.greedy_one_to_one.GreedyOneToOneMatchingAlgorithm.get_matching_statistics" title="Link to this definition"></a></dt>
+<dd><p>Get statistics about the matching process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Statistics including reduction ratio, entity counts, etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.hierarchical_clusterer">
+<span id="pydi-entitymatching-post-clustering-hierarchical-clusterer-module"></span><h2>PyDI.entitymatching.post_clustering.hierarchical_clusterer module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.hierarchical_clusterer" title="Link to this heading"></a></h2>
+<p>Hierarchical Clusterer for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s HierarchicalClusterer,
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.HierarchicalClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.hierarchical_clusterer.</span></span><span class="sig-name descname"><span class="pre">HierarchicalClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">LinkageMode.MIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/hierarchical_clusterer.html#HierarchicalClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.HierarchicalClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Hierarchical clustering for entity correspondences.</p>
+<p>Implements agglomerative hierarchical clustering that builds a hierarchy
+of entity clusters by iteratively merging the closest pairs of clusters.
+Supports different linkage criteria (min, max, average) and stopping
+criteria (number of clusters or minimum similarity threshold).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage_mode</strong> (<a class="reference internal" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode" title="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode"><em>LinkageMode</em></a>)</p></li>
+<li><p><strong>num_clusters</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>)</p></li>
+<li><p><strong>min_similarity</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>)</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.HierarchicalClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/hierarchical_clusterer.html#HierarchicalClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.HierarchicalClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply hierarchical clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hierarchically clustered correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.hierarchical_clusterer.</span></span><span class="sig-name descname"><span class="pre">LinkageMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/hierarchical_clusterer.html#LinkageMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Linkage modes for hierarchical clustering.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.AVG">
+<span class="sig-name descname"><span class="pre">AVG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'avg'</span></em><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.AVG" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.MAX">
+<span class="sig-name descname"><span class="pre">MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'max'</span></em><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.MAX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.MIN">
+<span class="sig-name descname"><span class="pre">MIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'min'</span></em><a class="headerlink" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode.MIN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.maximum_bipartite_matching">
+<span id="pydi-entitymatching-post-clustering-maximum-bipartite-matching-module"></span><h2>PyDI.entitymatching.post_clustering.maximum_bipartite_matching module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.maximum_bipartite_matching" title="Link to this heading"></a></h2>
+<p>Maximum Bipartite Matching Algorithm for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s MaximumBipartiteMatchingAlgorithm,
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.maximum_bipartite_matching.</span></span><span class="sig-name descname"><span class="pre">MaximumBipartiteMatching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weight_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Finds optimal one-to-one matching using maximum bipartite matching.</p>
+<p>This algorithm formulates the entity matching problem as a maximum weight
+bipartite matching problem and finds the globally optimal solution using
+the Hungarian algorithm or similar optimization methods.</p>
+<p>Unlike the greedy approach, this guarantees the optimal solution that
+maximizes the total similarity score while enforcing one-to-one constraints.</p>
+<p>Requires NetworkX for the bipartite matching implementation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">MaximumBipartiteMatching</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result: a-x (0.9), b-y (0.85) - optimal total weight = 1.75</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>use_weight_scaling</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply maximum bipartite matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optimally matched correspondences with maximum total weight.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching.get_matching_quality">
+<span class="sig-name descname"><span class="pre">get_matching_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching.get_matching_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.maximum_bipartite_matching.MaximumBipartiteMatching.get_matching_quality" title="Link to this definition"></a></dt>
+<dd><p>Get matching quality metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quality metrics comparing optimal vs. greedy solutions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering.stable_matching">
+<span id="pydi-entitymatching-post-clustering-stable-matching-module"></span><h2>PyDI.entitymatching.post_clustering.stable_matching module<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering.stable_matching" title="Link to this heading"></a></h2>
+<p>Stable Matching Algorithm for entity matching post-processing.</p>
+<p>This implementation is based on Winter’s BestChoiceMatching (stable marriage-style),
+adapted to work with PyDI’s CorrespondenceSet format.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.stable_matching.StableMatching">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.stable_matching.</span></span><span class="sig-name descname"><span class="pre">StableMatching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_one_to_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.stable_matching.StableMatching" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Finds stable matches using preference-based selection.</p>
+<p>This algorithm ensures that the selected matches are stable in the sense
+that no entity would prefer to switch to a different partner. It implements
+a variant of the stable marriage problem for entity matching.</p>
+<p>The algorithm:
+1. For each entity, find its best potential match
+2. Check if this match is mutual (both entities prefer each other)
+3. Only include matches that are stable (mutually preferred)</p>
+<p>This guarantees that no entity in the result would prefer to switch partners
+with any other entity in the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>force_one_to_one</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.stable_matching.StableMatching.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.stable_matching.StableMatching.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply stable matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stable matches where each entity is matched to its mutually
+preferred partner.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.stable_matching.StableMatching.get_stability_analysis">
+<span class="sig-name descname"><span class="pre">get_stability_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching.get_stability_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.stable_matching.StableMatching.get_stability_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze the stability of matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stability analysis including number of stable matches,
+preference satisfaction, etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.entitymatching.post_clustering">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-PyDI.entitymatching.post_clustering" title="Link to this heading"></a></h2>
+<p>Post-clustering and global optimization methods for entity matching.</p>
+<p>This module provides algorithms to refine entity correspondences through
+clustering-based grouping and global optimization approaches. All methods
+take correspondences as input and return refined correspondences in the
+same format for seamless integration with PyDI’s evaluation framework.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.BasePostClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">BasePostClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/base.html#BasePostClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.BasePostClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for post-clustering assignment algorithms.</p>
+<p>Post-clustering algorithms take entity correspondences and refine them
+by solving various assignment problems. This includes clustering-based
+methods (grouping similar entities) and global optimization methods
+(enforcing constraints like one-to-one matching).</p>
+<p>All implementations maintain compatibility with PyDI’s CorrespondenceSet
+format for seamless integration with evaluation and downstream processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.BasePostClusterer.cluster">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/base.html#BasePostClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.BasePostClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply clustering algorithm to refine correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – DataFrame with columns id1, id2, score, notes containing
+entity correspondences to be refined.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Refined correspondences in the same format as input.
+The specific refinement depends on the algorithm:
+- Clustering methods may group entities into equivalence classes
+- Matching methods may enforce one-to-one constraints</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.CentreClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">CentreClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.CentreClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Creates star-shaped clusters using the CENTER algorithm.</p>
+<p>The CENTER algorithm finds star-shaped clusters by:
+1. Sorting all correspondences by similarity score (descending)
+2. For each correspondence, checking if either entity is already a center
+3. If neither is assigned, creating a new cluster with the first entity as center
+4. If one entity is a center, adding the other to that cluster
+5. Resulting clusters have maximum diameter of 2 (star shape)</p>
+<p>This is useful for creating hub-based entity groups where one entity
+serves as the canonical representative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.CentreClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.CentreClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply centre clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Star-shaped clusters where each cluster has a center entity.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.CentreClusterer.get_clusters_with_centers">
+<span class="sig-name descname"><span class="pre">get_clusters_with_centers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/centre_clusterer.html#CentreClusterer.get_clusters_with_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.CentreClusterer.get_clusters_with_centers" title="Link to this definition"></a></dt>
+<dd><p>Get clusters with their center entities.</p>
+<p>This method is useful for analysis and understanding cluster structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapping from center entity ID to set of cluster members.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Set[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.ConnectedComponentClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">ConnectedComponentClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.ConnectedComponentClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Groups entities into clusters based on connected components.</p>
+<p>This clusterer finds weakly connected components in the similarity graph
+formed by entity correspondences. All entities that are transitively
+connected (directly or through other entities) are grouped into the
+same cluster.</p>
+<p>This enforces transitivity: if A matches B and B matches C, then A, B, and C
+are all considered equivalent and grouped together.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clusterer</span> <span class="o">=</span> <span class="n">ConnectedComponentClusterer</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result groups: {a,b,c}, {d,e}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.ConnectedComponentClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.ConnectedComponentClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply connected components clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clustered correspondences where all entities in the same
+connected component are fully connected to each other.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.ConnectedComponentClusterer.get_clusters">
+<span class="sig-name descname"><span class="pre">get_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/connected_components.html#ConnectedComponentClusterer.get_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.ConnectedComponentClusterer.get_clusters" title="Link to this definition"></a></dt>
+<dd><p>Get the clusters without generating correspondences.</p>
+<p>This method is useful for analysis and debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of entity clusters (connected components).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Set[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">GreedyOneToOneMatchingAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by_dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Enforces one-to-one matching using a greedy approach.</p>
+<p>This algorithm ensures that each entity participates in at most one
+correspondence by greedily selecting the highest-scoring matches first
+and removing conflicting lower-scoring matches.</p>
+<p>The algorithm:
+1. Sorts all correspondences by similarity score (descending)
+2. Greedily selects correspondences, ensuring no entity appears twice
+3. Returns the subset of correspondences with maximum total weight</p>
+<p>This is not guaranteed to return the globally optimal solution, but
+provides a good approximation efficiently.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">GreedyOneToOneMatchingAlgorithm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result: a-b (0.9), d-c (0.1) - greedy selection ensures one-to-one</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>group_by_dataset</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply greedy one-to-one matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-to-one matched correspondences where each entity appears
+in at most one correspondence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm.get_matching_statistics">
+<span class="sig-name descname"><span class="pre">get_matching_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/greedy_one_to_one.html#GreedyOneToOneMatchingAlgorithm.get_matching_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.GreedyOneToOneMatchingAlgorithm.get_matching_statistics" title="Link to this definition"></a></dt>
+<dd><p>Get statistics about the matching process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Statistics including reduction ratio, entity counts, etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.HierarchicalClusterer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">HierarchicalClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">LinkageMode.MIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cluster_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/hierarchical_clusterer.html#HierarchicalClusterer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.HierarchicalClusterer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Hierarchical clustering for entity correspondences.</p>
+<p>Implements agglomerative hierarchical clustering that builds a hierarchy
+of entity clusters by iteratively merging the closest pairs of clusters.
+Supports different linkage criteria (min, max, average) and stopping
+criteria (number of clusters or minimum similarity threshold).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage_mode</strong> (<a class="reference internal" href="#PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode" title="PyDI.entitymatching.post_clustering.hierarchical_clusterer.LinkageMode"><em>LinkageMode</em></a>)</p></li>
+<li><p><strong>num_clusters</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>)</p></li>
+<li><p><strong>min_similarity</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>)</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>min_cluster_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.HierarchicalClusterer.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/hierarchical_clusterer.html#HierarchicalClusterer.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.HierarchicalClusterer.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply hierarchical clustering to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hierarchically clustered correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.MaximumBipartiteMatching">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">MaximumBipartiteMatching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weight_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.MaximumBipartiteMatching" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Finds optimal one-to-one matching using maximum bipartite matching.</p>
+<p>This algorithm formulates the entity matching problem as a maximum weight
+bipartite matching problem and finds the globally optimal solution using
+the Hungarian algorithm or similar optimization methods.</p>
+<p>Unlike the greedy approach, this guarantees the optimal solution that
+maximizes the total similarity score while enforcing one-to-one constraints.</p>
+<p>Requires NetworkX for the bipartite matching implementation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">MaximumBipartiteMatching</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;id2&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s1">&#39;notes&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+<span class="go"># Result: a-x (0.9), b-y (0.85) - optimal total weight = 1.75</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>use_weight_scaling</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.MaximumBipartiteMatching.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.MaximumBipartiteMatching.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply maximum bipartite matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optimally matched correspondences with maximum total weight.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.MaximumBipartiteMatching.get_matching_quality">
+<span class="sig-name descname"><span class="pre">get_matching_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/maximum_bipartite_matching.html#MaximumBipartiteMatching.get_matching_quality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.MaximumBipartiteMatching.get_matching_quality" title="Link to this definition"></a></dt>
+<dd><p>Get matching quality metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quality metrics comparing optimal vs. greedy solutions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.StableMatching">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.entitymatching.post_clustering.</span></span><span class="sig-name descname"><span class="pre">StableMatching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_one_to_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.StableMatching" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.entitymatching.post_clustering.base.BasePostClusterer" title="PyDI.entitymatching.post_clustering.base.BasePostClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePostClusterer</span></code></a></p>
+<p>Finds stable matches using preference-based selection.</p>
+<p>This algorithm ensures that the selected matches are stable in the sense
+that no entity would prefer to switch to a different partner. It implements
+a variant of the stable marriage problem for entity matching.</p>
+<p>The algorithm:
+1. For each entity, find its best potential match
+2. Check if this match is mutual (both entities prefer each other)
+3. Only include matches that are stable (mutually preferred)</p>
+<p>This guarantees that no entity in the result would prefer to switch partners
+with any other entity in the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>)</p></li>
+<li><p><strong>preserve_scores</strong> (<em>bool</em>)</p></li>
+<li><p><strong>force_one_to_one</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.StableMatching.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.StableMatching.cluster" title="Link to this definition"></a></dt>
+<dd><p>Apply stable matching to correspondences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stable matches where each entity is matched to its mutually
+preferred partner.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CorrespondenceSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.entitymatching.post_clustering.StableMatching.get_stability_analysis">
+<span class="sig-name descname"><span class="pre">get_stability_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correspondences</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/entitymatching/post_clustering/stable_matching.html#StableMatching.get_stability_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.entitymatching.post_clustering.StableMatching.get_stability_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze the stability of matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>correspondences</strong> (<em>CorrespondenceSet</em>) – Input correspondences.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stability analysis including number of stable matches,
+preference satisfaction, etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="PyDI.entitymatching.blocking.html" class="btn btn-neutral float-left" title="PyDI.entitymatching.blocking package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PyDI.fusion.html" class="btn btn-neutral float-right" title="PyDI.fusion package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.fusion.engine &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.fusion.engine</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Data fusion engine for PyDI.</span>
+
+<span class="sd">This module defines the DataFusionEngine class and utilities for record grouping</span>
+<span class="sd">and executing fusion strategies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecordGroup</span><span class="p">,</span> <span class="n">FusionContext</span><span class="p">,</span> <span class="n">FusionResult</span><span class="p">,</span> <span class="n">_is_valid_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_source_trust_scores</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFusionStrategy</span>
+
+
+<div class="viewcode-block" id="build_record_groups_from_correspondences">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.engine.build_record_groups_from_correspondences">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_record_groups_from_correspondences</span><span class="p">(</span>
+    <span class="n">datasets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+    <span class="n">correspondences</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">id_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">pre_normalized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecordGroup</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build record groups from correspondences using connected components.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datasets : List[pd.DataFrame]</span>
+<span class="sd">        List of input datasets. Each must have &#39;dataset_name&#39; in attrs. If</span>
+<span class="sd">        `id_column` is provided, this function will ensure a string `_id`</span>
+<span class="sd">        column is created from the specified column(s).</span>
+<span class="sd">    correspondences : pd.DataFrame</span>
+<span class="sd">        Correspondences with columns &#39;id1&#39;, &#39;id2&#39;, and optionally &#39;score&#39;.</span>
+<span class="sd">        This is compatible with PyDI&#39;s CorrespondenceSet format.</span>
+<span class="sd">    id_column : Optional[Union[str, Dict[str, str]]]</span>
+<span class="sd">        Identifier column name(s). If a string, the same column is used for</span>
+<span class="sd">        all datasets. If a dict, it should map dataset name -&gt; ID column for</span>
+<span class="sd">        that dataset.</span>
+
+<span class="sd">    pre_normalized : bool, default False</span>
+<span class="sd">        When True, assume ``datasets`` already contain string ``_id`` columns and</span>
+<span class="sd">        ``correspondences`` already use string identifiers. Use this when inputs</span>
+<span class="sd">        were normalized upstream to avoid redundant copies.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[RecordGroup]</span>
+<span class="sd">        List of record groups representing connected components.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pre_normalized</span><span class="p">:</span>
+        <span class="n">normalized_datasets</span> <span class="o">=</span> <span class="n">datasets</span>
+        <span class="n">normalized_correspondences</span> <span class="o">=</span> <span class="n">correspondences</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Normalize datasets to ensure `_id` exists and is string-typed</span>
+        <span class="n">normalized_datasets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Each dataset must have &#39;dataset_name&#39; in df.attrs&quot;</span><span class="p">)</span>
+
+            <span class="n">selected_id_col</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_column</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">selected_id_col</span> <span class="o">=</span> <span class="n">id_column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_column</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">selected_id_col</span> <span class="o">=</span> <span class="n">id_column</span>
+
+            <span class="n">df_copy</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">selected_id_col</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">selected_id_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;ID column &#39;</span><span class="si">{</span><span class="n">selected_id_col</span><span class="si">}</span><span class="s2">&#39; not found in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="n">selected_id_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;_id&quot;</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39; lacks an ID column. Provide &#39;id_column&#39; or include &#39;_id&#39;/&#39;id&#39;.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">normalized_datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_copy</span><span class="p">)</span>
+
+        <span class="c1"># Normalize correspondences ID dtypes to strings</span>
+        <span class="n">normalized_correspondences</span> <span class="o">=</span> <span class="n">correspondences</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;id1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;id2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Correspondences must contain &#39;id1&#39; and &#39;id2&#39; columns&quot;</span><span class="p">)</span>
+        <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1"># Build mapping from record ID to record and dataset name</span>
+    <span class="n">id_to_record</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">id_to_dataset</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">normalized_datasets</span><span class="p">:</span>
+        <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Each dataset must have &#39;dataset_name&#39; in df.attrs&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">record_id</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">record_id</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each record must have &#39;_id&#39; column&quot;</span><span class="p">)</span>
+
+            <span class="n">id_to_record</span><span class="p">[</span><span class="n">record_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span>
+            <span class="n">id_to_dataset</span><span class="p">[</span><span class="n">record_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset_name</span>
+
+    <span class="c1"># Build graph of correspondences</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span> <span class="o">=</span> <span class="n">corr</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">corr</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">id1</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id2</span><span class="p">)</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">id2</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id1</span><span class="p">)</span>
+
+    <span class="c1"># Find connected components using DFS</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">group_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depth-first search to find connected component.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="nb">set</span><span class="p">()):</span>
+            <span class="n">dfs</span><span class="p">(</span><span class="n">neighbor</span><span class="p">,</span> <span class="n">component</span><span class="p">)</span>
+
+    <span class="c1"># Process all nodes that appear in correspondences</span>
+    <span class="n">all_correspondence_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">all_correspondence_ids</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">corr</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">corr</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]])</span>
+
+    <span class="k">for</span> <span class="n">record_id</span> <span class="ow">in</span> <span class="n">all_correspondence_ids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">record_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">dfs</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">component</span><span class="p">:</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">RecordGroup</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;group_</span><span class="si">{</span><span class="n">group_counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">group_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">component</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">rid</span> <span class="ow">in</span> <span class="n">id_to_record</span><span class="p">:</span>
+                        <span class="n">group</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="n">id_to_record</span><span class="p">[</span><span class="n">rid</span><span class="p">],</span> <span class="n">id_to_dataset</span><span class="p">[</span><span class="n">rid</span><span class="p">])</span>
+
+                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+    <span class="c1"># Add singleton groups for records not in any correspondence</span>
+    <span class="n">all_record_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">id_to_record</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">for</span> <span class="n">record_id</span> <span class="ow">in</span> <span class="n">all_record_ids</span> <span class="o">-</span> <span class="n">all_correspondence_ids</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">RecordGroup</span><span class="p">(</span><span class="n">group_id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;singleton_</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="n">id_to_record</span><span class="p">[</span><span class="n">record_id</span><span class="p">],</span> <span class="n">id_to_dataset</span><span class="p">[</span><span class="n">record_id</span><span class="p">])</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> record groups from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized_correspondences</span><span class="p">)</span><span class="si">}</span><span class="s2"> correspondences&quot;</span><span class="p">)</span>
+    <span class="n">size_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">size_counts</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Group Size Distribution of </span><span class="si">%d</span><span class="s2"> groups:&quot;</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Group Size | Frequency&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    ----------------------&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">size</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">size_counts</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;        </span><span class="si">%3d</span><span class="s2"> | </span><span class="si">%7d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Group Size Distribution: none&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">groups</span></div>
+
+
+
+<div class="viewcode-block" id="apply_schema_correspondences">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.engine.apply_schema_correspondences">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_schema_correspondences</span><span class="p">(</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RecordGroup</span><span class="p">],</span>
+    <span class="n">schema_correspondences</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RecordGroup</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply schema correspondences to align attributes across datasets.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    groups : List[RecordGroup]</span>
+<span class="sd">        List of record groups to process.</span>
+<span class="sd">    schema_correspondences : pd.DataFrame</span>
+<span class="sd">        Schema correspondences with columns like &#39;source_attribute&#39;, &#39;target_attribute&#39;, </span>
+<span class="sd">        &#39;dataset_name&#39; to map dataset-specific columns to canonical attributes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[RecordGroup]</span>
+<span class="sd">        Modified record groups with aligned schemas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="c1"># Build mapping from (dataset, source_attr) -&gt; target_attr</span>
+    <span class="n">schema_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">schema_correspondences</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">),</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_attribute&quot;</span><span class="p">))</span>
+        <span class="n">schema_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target_attribute&quot;</span><span class="p">)</span>
+
+    <span class="n">modified_groups</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="n">new_records</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+            <span class="n">record_id</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record_id</span><span class="p">)</span>
+
+            <span class="c1"># Create new record with mapped attributes</span>
+            <span class="n">new_record</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">source_attr</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">target_attr</span> <span class="o">=</span> <span class="n">schema_map</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">source_attr</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">target_attr</span> <span class="ow">and</span> <span class="n">target_attr</span> <span class="o">!=</span> <span class="n">source_attr</span><span class="p">:</span>
+                    <span class="c1"># Rename attribute</span>
+                    <span class="n">new_record</span><span class="p">[</span><span class="n">target_attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_record</span><span class="p">[</span><span class="n">source_attr</span><span class="p">]</span>
+                    <span class="n">new_record</span> <span class="o">=</span> <span class="n">new_record</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">source_attr</span><span class="p">)</span>
+
+            <span class="n">new_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_record</span><span class="p">)</span>
+
+        <span class="c1"># Create new group with modified records</span>
+        <span class="n">new_group</span> <span class="o">=</span> <span class="n">RecordGroup</span><span class="p">(</span>
+            <span class="n">group_id</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+            <span class="n">records</span><span class="o">=</span><span class="n">new_records</span><span class="p">,</span>
+            <span class="n">source_datasets</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">modified_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_group</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applied schema correspondences to </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> groups&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">modified_groups</span></div>
+
+
+
+<div class="viewcode-block" id="DataFusionEngine">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.engine.DataFusionEngine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFusionEngine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Engine for executing data fusion strategies on record groups.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strategy : DataFusionStrategy</span>
+<span class="sd">        The fusion strategy to use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="n">DataFusionStrategy</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">debug_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">debug_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">debug</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_format</span> <span class="o">=</span> <span class="n">debug_format</span> <span class="k">if</span> <span class="n">debug_format</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">}</span> <span class="k">else</span> <span class="s2">&quot;text&quot;</span>
+        <span class="c1"># Default debug file if enabled but not provided</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span><span class="p">:</span>
+            <span class="n">default_name</span> <span class="o">=</span> <span class="s2">&quot;fusion_debug.jsonl&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span> <span class="k">else</span> <span class="s2">&quot;fusion_debug.log&quot;</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">debug_file</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">default_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="c1"># Ensure we start with a fresh file per engine instance</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_format</span> <span class="o">==</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=== Fusion Debug Log ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timestamp: </span><span class="si">{</span><span class="n">ts</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strategy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;header&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">ts</span><span class="p">,</span>
+                            <span class="s2">&quot;strategy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Fusion debug logging enabled; refer to </span><span class="si">%s</span><span class="s2"> for detailed traces.&quot;</span><span class="p">,</span>
+                    <span class="n">path</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not initialize debug log file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Internal: format and emit a debug block</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_emit_debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_json_default</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_debug_block</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Never let debug writing break fusion</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to write debug block: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_json_default</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>  <span class="c1"># datetime-like</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_value</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span><span class="p">[:</span> <span class="n">max_len</span> <span class="o">-</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_debug_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">gid</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;group_id&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attribute&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">)</span>
+        <span class="n">resolver</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;conflict_resolution_function&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resolver_kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
+
+        <span class="n">datasets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ds</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+                <span class="n">datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- Group </span><span class="si">{</span><span class="n">gid</span><span class="si">}</span><span class="s2"> | Attribute &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39; ---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conflict resolution function: </span><span class="si">{</span><span class="n">resolver</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input datasets: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Inputs:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;  (none)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+                <span class="n">rid</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;record_id&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">)</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_value</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">))</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">rid</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">ds</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Function kwargs: </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">out_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_value</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">))</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;confidence&quot;</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output: value=</span><span class="si">{</span><span class="n">out_val</span><span class="si">}</span><span class="s2">, confidence=</span><span class="si">{</span><span class="n">conf</span><span class="si">}</span><span class="s2">, metadata=</span><span class="si">{</span><span class="n">meta</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataFusionEngine.run">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.engine.DataFusionEngine.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">datasets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+        <span class="n">correspondences</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">schema_correspondences</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the data fusion process.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        datasets : List[pd.DataFrame]</span>
+<span class="sd">            List of input datasets to fuse.</span>
+<span class="sd">        correspondences : pd.DataFrame</span>
+<span class="sd">            Record correspondences (CorrespondenceSet format).</span>
+<span class="sd">        schema_correspondences : Optional[pd.DataFrame]</span>
+<span class="sd">            Optional schema correspondences for attribute alignment.</span>
+<span class="sd">        id_column : Optional[Union[str, Dict[str, str]]]</span>
+<span class="sd">            Identifier column name(s). If a string, the same column is used for</span>
+<span class="sd">            all datasets. If a dict, it should map dataset name -&gt; ID column</span>
+<span class="sd">            for that dataset. When provided, each dataset is normalized to have</span>
+<span class="sd">            a string `_id` column derived from the specified column. If not</span>
+<span class="sd">            provided, the engine will use an existing `_id` column if present,</span>
+<span class="sd">            otherwise fall back to `id`.</span>
+<span class="sd">        include_singletons : bool, default True</span>
+<span class="sd">            Whether to include singleton groups (records not referenced in any</span>
+<span class="sd">            correspondence) in the fused output. Set to False to return only</span>
+<span class="sd">            records that participate in at least one correspondence (group size &gt; 1).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Union[pd.DataFrame, Tuple[pd.DataFrame, Dict[str, Dict[str, List[Dict[str, Any]]]]]]</span>
+<span class="sd">            The fused dataset. When ``return_provenance`` is True and the engine</span>
+<span class="sd">            runs in debug mode, returns a tuple of (dataset, provenance map).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Starting data fusion with strategy &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*    Loading correspondences    *&quot;</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Normalize datasets to ensure `_id` is present and string-typed</span>
+        <span class="n">normalized_datasets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Each dataset must have &#39;dataset_name&#39; in df.attrs&quot;</span><span class="p">)</span>
+            <span class="c1"># Determine which column to use for IDs</span>
+            <span class="n">selected_id_col</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_column</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">selected_id_col</span> <span class="o">=</span> <span class="n">id_column</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_column</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">selected_id_col</span> <span class="o">=</span> <span class="n">id_column</span>
+
+            <span class="c1"># Create a shallow copy to avoid mutating caller&#39;s DataFrame</span>
+            <span class="n">df_copy</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Ensure attrs are preserved on the copy (pandas may drop or not deep-copy attrs)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">selected_id_col</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">selected_id_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;ID column &#39;</span><span class="si">{</span><span class="n">selected_id_col</span><span class="si">}</span><span class="s2">&#39; not found in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="n">selected_id_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;_id&quot;</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39; lacks an ID column. Provide &#39;id_column&#39; or include &#39;_id&#39;/&#39;id&#39;.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Warn if id_column mapping did not specify this dataset explicitly</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_column</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dataset_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_column</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;id_column mapping has no entry for dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;. Using existing &#39;_id&#39; or &#39;id&#39; column.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">normalized_datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_copy</span><span class="p">)</span>
+
+        <span class="c1"># Normalize correspondences ID types to strings for consistent matching</span>
+        <span class="n">normalized_correspondences</span> <span class="o">=</span> <span class="n">correspondences</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;id1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;id2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">normalized_correspondences</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Correspondences must contain &#39;id1&#39; and &#39;id2&#39; columns&quot;</span><span class="p">)</span>
+        <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">)</span>
+        <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1"># Diagnostics: measure how many correspondence IDs match dataset IDs</span>
+        <span class="n">known_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">normalized_datasets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_id&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">known_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">corr_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">])</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">normalized_correspondences</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">])</span>
+        <span class="n">matched_ids</span> <span class="o">=</span> <span class="n">corr_ids</span> <span class="o">&amp;</span> <span class="n">known_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Correspondence ID coverage: matched </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">matched_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">corr_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> unique IDs&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">corr_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matched_ids</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">corr_ids</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Less than 50</span><span class="si">% o</span><span class="s2">f correspondence IDs were found in the input datasets. &quot;</span>
+                <span class="s2">&quot;Check ID normalization/mapping (id_column) and correspondence ID values.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Build record groups</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">build_record_groups_from_correspondences</span><span class="p">(</span>
+            <span class="n">normalized_datasets</span><span class="p">,</span> <span class="n">normalized_correspondences</span><span class="p">,</span> <span class="n">id_column</span><span class="o">=</span><span class="n">id_column</span><span class="p">,</span> <span class="n">pre_normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Optionally filter out singleton groups (unmatched records)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_singletons</span><span class="p">:</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Apply schema correspondences if provided</span>
+        <span class="k">if</span> <span class="n">schema_correspondences</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="n">apply_schema_correspondences</span><span class="p">(</span>
+                <span class="n">groups</span><span class="p">,</span> <span class="n">schema_correspondences</span><span class="p">)</span>
+
+        <span class="c1"># Attribute-wise consistency diagnostics before fusion runs</span>
+        <span class="n">attr_consistency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_attribute_consistency</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attr_consistency</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Attribute Consistencies:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">ratio</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">attr_consistency</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">%s</span><span class="s2">: </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">ratio</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trust_map</span> <span class="o">=</span> <span class="n">extract_source_trust_scores</span><span class="p">(</span><span class="n">normalized_datasets</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to extract trust scores from datasets: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span>
+            <span class="p">)</span>
+            <span class="n">trust_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Fuse each group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*    Running data fusion    *&quot;</span><span class="p">)</span>
+
+        <span class="n">fused_records</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">fused_record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuse_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">trust_map</span><span class="o">=</span><span class="n">trust_map</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fused_record</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fused_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fused_record</span><span class="p">)</span>
+
+        <span class="c1"># Create result DataFrame</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fused_records</span><span class="p">)</span>
+
+        <span class="c1"># Add metadata</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;fusion_strategy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;num_input_datasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized_datasets</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;num_correspondences&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;num_groups&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Fusion complete: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> records from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> groups&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Fusion time: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_density_metrics</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_consistency_value</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize values for consistency comparison.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_attribute_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RecordGroup</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute per-attribute consistency ratios across groups.&quot;&quot;&quot;</span>
+        <span class="n">attr_totals</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">attr_consistent</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Gather attribute values for this group</span>
+            <span class="n">values_by_attr</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_fusion_&quot;</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="n">values_by_attr</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_consistency_value</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">values_by_attr</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">attr_totals</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">unique_values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">attr_consistent</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">attr</span><span class="p">:</span> <span class="n">attr_consistent</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">/</span> <span class="n">attr_totals</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_totals</span>
+            <span class="k">if</span> <span class="n">attr_totals</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_log_density_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fused_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log dataset-level and per-attribute density metrics.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fused_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DataSet density: 0.00 (no fused records)&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">data_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">fused_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_fusion_&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DataSet density: 0.00 (no data attributes)&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">total_cells</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fused_df</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span>
+        <span class="n">missing_cells</span> <span class="o">=</span> <span class="n">fused_df</span><span class="p">[</span><span class="n">data_columns</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">total_cells</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">total_cells</span> <span class="o">-</span> <span class="n">missing_cells</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DataSet density: </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">density</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Attributes densities:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data_columns</span><span class="p">):</span>
+            <span class="n">col_density</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">fused_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">%s</span><span class="s2">: </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">col_density</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fuse_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">group</span><span class="p">:</span> <span class="n">RecordGroup</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">trust_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fuse a single record group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group : RecordGroup</span>
+<span class="sd">            The record group to fuse.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[Dict]</span>
+<span class="sd">            The fused record as a dictionary, or None if fusion failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># If only one record, return it with minimal processing</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">record</span><span class="p">[</span><span class="s2">&quot;_fusion_group_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">group_id</span>
+            <span class="n">record</span><span class="p">[</span><span class="s2">&quot;_fusion_sources&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">record</span><span class="p">[</span><span class="s2">&quot;_fusion_confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">return</span> <span class="n">record</span>
+
+        <span class="c1"># Get all attributes present in this group</span>
+        <span class="n">all_attributes</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get_all_attributes</span><span class="p">()</span>
+
+        <span class="c1"># Create fusion context</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">FusionContext</span><span class="p">(</span>
+            <span class="n">group_id</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+            <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="c1"># Will be set per attribute</span>
+            <span class="n">source_datasets</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;trust_map&quot;</span><span class="p">:</span> <span class="n">trust_map</span> <span class="ow">or</span> <span class="p">{}},</span>
+            <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span><span class="p">,</span>
+            <span class="n">debug_emit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_emit_debug</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fused_record</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;fused_</span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_fusion_group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+            <span class="s2">&quot;_fusion_sources&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Track overall confidence and metadata</span>
+        <span class="n">attribute_confidences</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fusion_metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Fuse each attribute</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">all_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_fusion_&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>  <span class="c1"># Skip our own metadata attributes</span>
+
+            <span class="n">context</span><span class="o">.</span><span class="n">attribute</span> <span class="o">=</span> <span class="n">attribute</span>
+
+            <span class="c1"># Check if we have a specific fuser for this attribute</span>
+            <span class="n">fuser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="o">.</span><span class="n">get_attribute_fuser</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+                <span class="n">raw_value</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_value</span><span class="p">(</span><span class="n">raw_value</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">rid</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;record_id&quot;</span><span class="p">:</span> <span class="n">rid</span><span class="p">,</span>
+                        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">source_datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">raw_value</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">fuser</span><span class="p">:</span>
+                <span class="c1"># Use registered fuser</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">fuser</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">records</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                <span class="n">fused_record</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">attribute_confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="p">)</span>
+                <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_rule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rule_used</span>
+                <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_sources&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+                <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_inputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Default fusion: prefer non-null values, first available</span>
+                <span class="n">attr_lower</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">track_confidence</span> <span class="o">=</span> <span class="n">attr_lower</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">}</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="n">fused_record</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Take first non-null</span>
+                    <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_rule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;first_non_null&quot;</span>
+                    <span class="n">output_confidence</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">track_confidence</span> <span class="k">else</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">track_confidence</span><span class="p">:</span>
+                        <span class="n">attribute_confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># Default confidence</span>
+                    <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_inputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span>
+                    <span class="c1"># Emit debug block for default resolver if enabled</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                <span class="s2">&quot;Emitting fusion debug entry for group &#39;</span><span class="si">%s</span><span class="s2">&#39; attribute &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+                                <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+                                <span class="n">attribute</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_emit_debug</span><span class="p">({</span>
+                                <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+                                <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="n">attribute</span><span class="p">,</span>
+                                <span class="s2">&quot;conflict_resolution_function&quot;</span><span class="p">:</span> <span class="s2">&quot;first_non_null&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span>
+                                <span class="s2">&quot;resolver_kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+                                <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="n">output_confidence</span><span class="p">,</span>
+                                    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{},</span>
+                                <span class="p">},</span>
+                                <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="p">})</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fused_record</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_rule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;no_value&quot;</span>
+                    <span class="n">output_confidence</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">track_confidence</span> <span class="k">else</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">track_confidence</span><span class="p">:</span>
+                        <span class="n">attribute_confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">fusion_metadata</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">_inputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_enabled</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                <span class="s2">&quot;Emitting fusion debug entry for group &#39;</span><span class="si">%s</span><span class="s2">&#39; attribute &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+                                <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+                                <span class="n">attribute</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_emit_debug</span><span class="p">({</span>
+                                <span class="s2">&quot;group_id&quot;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+                                <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="n">attribute</span><span class="p">,</span>
+                                <span class="s2">&quot;conflict_resolution_function&quot;</span><span class="p">:</span> <span class="s2">&quot;first_non_null&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span>
+                                <span class="s2">&quot;resolver_kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+                                <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="n">output_confidence</span><span class="p">,</span>
+                                    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{},</span>
+                                <span class="p">},</span>
+                                <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="p">})</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+        <span class="c1"># Calculate overall confidence</span>
+        <span class="k">if</span> <span class="n">attribute_confidences</span><span class="p">:</span>
+            <span class="n">fused_record</span><span class="p">[</span><span class="s2">&quot;_fusion_confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">attribute_confidences</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute_confidences</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fused_record</span><span class="p">[</span><span class="s2">&quot;_fusion_confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Add fusion metadata</span>
+        <span class="n">fused_record</span><span class="p">[</span><span class="s2">&quot;_fusion_metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fusion_metadata</span>
+
+        <span class="k">return</span> <span class="n">fused_record</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../fusion.html">PyDI.fusion</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

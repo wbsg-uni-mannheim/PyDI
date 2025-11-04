@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.utils.similarity_registry &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.utils.similarity_registry</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Comprehensive similarity function registry for textdistance metrics.</span>
+
+<span class="sd">This module provides a centralized registry of all textdistance similarity</span>
+<span class="sd">metrics, organized by category and optimized for data integration use cases</span>
+<span class="sd">across schema matching, entity matching, and other PyDI modules.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">textdistance</span>
+
+
+<div class="viewcode-block" id="SimilarityRegistry">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimilarityRegistry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registry for textdistance similarity metrics.</span>
+<span class="sd">    </span>
+<span class="sd">    Provides a centralized way to access and validate textdistance similarity</span>
+<span class="sd">    functions, categorized by their characteristics and use cases across</span>
+<span class="sd">    all PyDI modules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Edit-based algorithms - good for typos and character-level variations</span>
+    <span class="n">EDIT_BASED</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;hamming&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">hamming</span><span class="p">,</span>
+        <span class="s2">&quot;levenshtein&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">levenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;damerau_levenshtein&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">damerau_levenshtein</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">jaro_winkler</span><span class="p">,</span>
+        <span class="s2">&quot;jaro&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">jaro</span><span class="p">,</span>
+        <span class="s2">&quot;strcmp95&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">strcmp95</span><span class="p">,</span>
+        <span class="s2">&quot;needleman_wunsch&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">needleman_wunsch</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;gotoh&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">gotoh</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;smith_waterman&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">smith_waterman</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;mlipns&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">mlipns</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;editex&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">editex</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Token-based algorithms - good for multi-word strings and sets</span>
+    <span class="n">TOKEN_BASED</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;jaccard&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">jaccard</span><span class="p">,</span>
+        <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">sorensen</span><span class="p">,</span>
+        <span class="s2">&quot;tversky&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">tversky</span><span class="p">,</span>
+        <span class="s2">&quot;overlap&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">overlap</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;tanimoto&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">tanimoto</span><span class="p">,</span>
+        <span class="s2">&quot;cosine&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">cosine</span><span class="p">,</span>
+        <span class="s2">&quot;monge_elkan&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">monge_elkan</span><span class="p">,</span>
+        <span class="s2">&quot;bag&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Sequence-based algorithms - good for substring matching</span>
+    <span class="n">SEQUENCE_BASED</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;lcsseq&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">lcsseq</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;lcsstr&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">lcsstr</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;ratcliff_obershelp&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">ratcliff_obershelp</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Simple algorithms - good for specific patterns</span>
+    <span class="n">SIMPLE</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;prefix&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;postfix&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">postfix</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">length</span><span class="o">.</span><span class="n">normalized_similarity</span><span class="p">,</span>
+        <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Phonetic algorithms - good for similar-sounding strings</span>
+    <span class="n">PHONETIC</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;mra&quot;</span><span class="p">:</span> <span class="n">textdistance</span><span class="o">.</span><span class="n">mra</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># All algorithms combined</span>
+    <span class="n">ALL_ALGORITHMS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">EDIT_BASED</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">TOKEN_BASED</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">SEQUENCE_BASED</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">SIMPLE</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">PHONETIC</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Categories mapping</span>
+    <span class="n">CATEGORIES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;edit&quot;</span><span class="p">:</span> <span class="n">EDIT_BASED</span><span class="p">,</span>
+        <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">TOKEN_BASED</span><span class="p">,</span>
+        <span class="s2">&quot;sequence&quot;</span><span class="p">:</span> <span class="n">SEQUENCE_BASED</span><span class="p">,</span>
+        <span class="s2">&quot;simple&quot;</span><span class="p">:</span> <span class="n">SIMPLE</span><span class="p">,</span>
+        <span class="s2">&quot;phonetic&quot;</span><span class="p">:</span> <span class="n">PHONETIC</span><span class="p">,</span>
+        <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="n">ALL_ALGORITHMS</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># Recommended algorithms for different use cases</span>
+    <span class="n">SCHEMA_MATCHING_RECOMMENDED</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">,</span> <span class="s2">&quot;levenshtein&quot;</span><span class="p">,</span> <span class="s2">&quot;damerau_levenshtein&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">,</span> <span class="s2">&quot;prefix&quot;</span><span class="p">,</span> <span class="s2">&quot;postfix&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;instance&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;cosine&quot;</span><span class="p">,</span> <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">,</span> <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;levenshtein&quot;</span><span class="p">,</span> <span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;ratcliff_obershelp&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;duplicate&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">,</span> <span class="s2">&quot;levenshtein&quot;</span><span class="p">,</span> <span class="s2">&quot;damerau_levenshtein&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">,</span> <span class="s2">&quot;monge_elkan&quot;</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+    
+    <span class="n">ENTITY_MATCHING_RECOMMENDED</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">,</span> <span class="s2">&quot;levenshtein&quot;</span><span class="p">,</span> <span class="s2">&quot;jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;monge_elkan&quot;</span><span class="p">,</span> <span class="s2">&quot;cosine&quot;</span><span class="p">,</span> <span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;damerau_levenshtein&quot;</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Functions that benefit from tokenization (token-based algorithms)</span>
+    <span class="n">TOKENIZABLE_FUNCTIONS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">,</span> <span class="s2">&quot;tversky&quot;</span><span class="p">,</span> <span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;tanimoto&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cosine&quot;</span><span class="p">,</span> <span class="s2">&quot;monge_elkan&quot;</span><span class="p">,</span> <span class="s2">&quot;bag&quot;</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Default tokenization strategies</span>
+    <span class="n">TOKENIZATION_STRATEGIES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;char&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>  <span class="c1"># Character-level (no tokenization)</span>
+        <span class="s2">&quot;word&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span><span class="p">,</span>
+        <span class="s2">&quot;ngram_2&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="p">[</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span><span class="p">,</span>
+        <span class="s2">&quot;ngram_3&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="p">[</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="SimilarityRegistry.get_function">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.get_function">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_function</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;char&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a similarity function by name with optional tokenization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the similarity function.</span>
+<span class="sd">        tokenization : str or callable, optional</span>
+<span class="sd">            Tokenization strategy. Can be:</span>
+<span class="sd">            - &quot;char&quot;: Character-level (default, no tokenization)</span>
+<span class="sd">            - &quot;word&quot;: Whitespace tokenization</span>
+<span class="sd">            - &quot;ngram_2&quot;, &quot;ngram_3&quot;: N-gram tokenization</span>
+<span class="sd">            - Callable: Custom tokenizer function</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Callable</span>
+<span class="sd">            The textdistance similarity function, optionally wrapped with tokenization.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the function name or tokenization strategy is not recognized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown similarity function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Available functions: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">base_func</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="c1"># Apply tokenization if requested and function supports it</span>
+        <span class="k">if</span> <span class="n">tokenization</span> <span class="o">!=</span> <span class="s2">&quot;char&quot;</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZABLE_FUNCTIONS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_wrap_with_tokenization</span><span class="p">(</span><span class="n">base_func</span><span class="p">,</span> <span class="n">tokenization</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">tokenization</span> <span class="o">!=</span> <span class="s2">&quot;char&quot;</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZABLE_FUNCTIONS</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Tokenization &#39;</span><span class="si">{</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">&#39; not applicable to function &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(only supported for: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZABLE_FUNCTIONS</span><span class="p">)</span><span class="si">}</span><span class="s2">). &quot;</span>
+                <span class="s2">&quot;Using character-level processing.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_func</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap_with_tokenization</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">base_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">tokenization</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap a textdistance function with tokenization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_func : Callable</span>
+<span class="sd">            The base textdistance function.</span>
+<span class="sd">        tokenization : str or callable</span>
+<span class="sd">            Tokenization strategy or custom tokenizer function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Callable</span>
+<span class="sd">            Wrapped function that applies tokenization before similarity computation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get tokenizer function</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">tokenization</span><span class="p">):</span>
+            <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenization</span>
+        <span class="k">elif</span> <span class="n">tokenization</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZATION_STRATEGIES</span><span class="p">:</span>
+            <span class="n">tokenizer</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZATION_STRATEGIES</span><span class="p">[</span><span class="n">tokenization</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown tokenization strategy: </span><span class="si">{</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Available strategies: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZATION_STRATEGIES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;or provide a callable tokenizer.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">tokenized_similarity</span><span class="p">(</span><span class="n">s1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Compute similarity with tokenization.&quot;&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Handle None/empty inputs</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">s1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">s1</span> <span class="o">!=</span> <span class="n">s2</span> <span class="k">else</span> <span class="mf">1.0</span>
+
+                <span class="c1"># Apply tokenization</span>
+                <span class="n">tokens1</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+                <span class="n">tokens2</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+
+                <span class="c1"># Handle empty token lists</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">tokens1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tokens2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">1.0</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">tokens1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tokens2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+
+                <span class="c1"># Compute similarity on tokens</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">base_func</span><span class="p">(</span><span class="n">tokens1</span><span class="p">,</span> <span class="n">tokens2</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in tokenized similarity computation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+
+        <span class="k">return</span> <span class="n">tokenized_similarity</span>
+
+<div class="viewcode-block" id="SimilarityRegistry.get_functions_by_category">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.get_functions_by_category">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_functions_by_category</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all functions in a specific category.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        category : str</span>
+<span class="sd">            Category name (&quot;edit&quot;, &quot;token&quot;, &quot;sequence&quot;, &quot;simple&quot;, &quot;phonetic&quot;, &quot;all&quot;).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, Callable]</span>
+<span class="sd">            Dictionary mapping function names to functions.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the category is not recognized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown category: </span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Available categories: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">[</span><span class="n">category</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="SimilarityRegistry.get_recommended_functions">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.get_recommended_functions">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recommended_functions</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">use_case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">matcher_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get recommended functions for a specific use case.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use_case : str</span>
+<span class="sd">            Use case (&quot;schema_matching&quot;, &quot;entity_matching&quot;).</span>
+<span class="sd">        matcher_type : str, optional</span>
+<span class="sd">            For schema matching: &quot;label&quot;, &quot;instance&quot;, &quot;duplicate&quot;.</span>
+<span class="sd">            Ignored for other use cases.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            List of recommended function names.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the use case or matcher type is not recognized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">use_case</span> <span class="o">==</span> <span class="s2">&quot;schema_matching&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">matcher_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">SCHEMA_MATCHING_RECOMMENDED</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unknown schema matcher type: </span><span class="si">{</span><span class="n">matcher_type</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Available types: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">SCHEMA_MATCHING_RECOMMENDED</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">SCHEMA_MATCHING_RECOMMENDED</span><span class="p">[</span><span class="n">matcher_type</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">use_case</span> <span class="o">==</span> <span class="s2">&quot;entity_matching&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ENTITY_MATCHING_RECOMMENDED</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown use case: </span><span class="si">{</span><span class="n">use_case</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Available use cases: schema_matching, entity_matching&quot;</span>
+            <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="SimilarityRegistry.list_available_functions">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.list_available_functions">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_available_functions</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all available similarity function names.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        category : str, optional</span>
+<span class="sd">            Specific category to list. If None, lists all functions.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            Sorted list of function names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_functions_by_category</span><span class="p">(</span><span class="n">category</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+    
+<div class="viewcode-block" id="SimilarityRegistry.validate_functions">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.validate_functions">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_functions</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">function_names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate and normalize function names.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function_names : str or List[str]</span>
+<span class="sd">            Single function name or list of function names.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            List of validated function names.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any function name is not recognized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">function_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">function_names</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">function_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unknown similarity function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Available functions: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">function_names</span></div>
+
+    
+<div class="viewcode-block" id="SimilarityRegistry.get_function_info">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.get_function_info">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_function_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get information about a specific function.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the similarity function.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, str]</span>
+<span class="sd">            Dictionary with function information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ALL_ALGORITHMS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown similarity function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Determine category</span>
+        <span class="n">category</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">cat_name</span><span class="p">,</span> <span class="n">functions</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cat_name</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">:</span>
+                <span class="n">category</span> <span class="o">=</span> <span class="n">cat_name</span>
+                <span class="k">break</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">category</span> <span class="ow">or</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_function_description</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+        <span class="p">}</span></div>
+
+    
+<div class="viewcode-block" id="SimilarityRegistry.list_tokenization_strategies">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.list_tokenization_strategies">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_tokenization_strategies</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all available tokenization strategies.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            Sorted list of tokenization strategy names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZATION_STRATEGIES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="SimilarityRegistry.is_tokenizable">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.SimilarityRegistry.is_tokenizable">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_tokenizable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a function supports tokenization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function_name : str</span>
+<span class="sd">            Name of the similarity function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the function supports tokenization, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">function_name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">TOKENIZABLE_FUNCTIONS</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_function_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get description for a similarity function.&quot;&quot;&quot;</span>
+        <span class="n">descriptions</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c1"># Edit-based</span>
+            <span class="s2">&quot;hamming&quot;</span><span class="p">:</span> <span class="s2">&quot;Character-level edit distance for strings of equal length&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;levenshtein&quot;</span><span class="p">:</span> <span class="s2">&quot;Standard edit distance with insertions, deletions, substitutions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;damerau_levenshtein&quot;</span><span class="p">:</span> <span class="s2">&quot;Edit distance with transpositions allowed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">:</span> <span class="s2">&quot;String similarity with prefix scaling bonus&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;jaro&quot;</span><span class="p">:</span> <span class="s2">&quot;String similarity based on matching characters&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;strcmp95&quot;</span><span class="p">:</span> <span class="s2">&quot;Enhanced Jaro-Winkler with additional adjustments&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;needleman_wunsch&quot;</span><span class="p">:</span> <span class="s2">&quot;Global sequence alignment algorithm&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gotoh&quot;</span><span class="p">:</span> <span class="s2">&quot;Sequence alignment with affine gap penalties&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;smith_waterman&quot;</span><span class="p">:</span> <span class="s2">&quot;Local sequence alignment algorithm&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mlipns&quot;</span><span class="p">:</span> <span class="s2">&quot;Modified LCS-based similarity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;editex&quot;</span><span class="p">:</span> <span class="s2">&quot;Phonetic-aware edit distance&quot;</span><span class="p">,</span>
+            
+            <span class="c1"># Token-based</span>
+            <span class="s2">&quot;jaccard&quot;</span><span class="p">:</span> <span class="s2">&quot;Set intersection over union&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sorensen_dice&quot;</span><span class="p">:</span> <span class="s2">&quot;Overlap coefficient with different weighting&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tversky&quot;</span><span class="p">:</span> <span class="s2">&quot;Generalized Jaccard with asymmetric weights&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;overlap&quot;</span><span class="p">:</span> <span class="s2">&quot;Shared elements divided by minimum set size&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tanimoto&quot;</span><span class="p">:</span> <span class="s2">&quot;Variant of Jaccard similarity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cosine&quot;</span><span class="p">:</span> <span class="s2">&quot;Vector space cosine similarity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;monge_elkan&quot;</span><span class="p">:</span> <span class="s2">&quot;Token-level approximate string matching&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bag&quot;</span><span class="p">:</span> <span class="s2">&quot;Frequency-based token similarity&quot;</span><span class="p">,</span>
+            
+            <span class="c1"># Sequence-based</span>
+            <span class="s2">&quot;lcsseq&quot;</span><span class="p">:</span> <span class="s2">&quot;Longest Common Subsequence for sequences&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lcsstr&quot;</span><span class="p">:</span> <span class="s2">&quot;Longest Common Substring similarity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ratcliff_obershelp&quot;</span><span class="p">:</span> <span class="s2">&quot;Pattern recognition based similarity&quot;</span><span class="p">,</span>
+            
+            <span class="c1"># Simple</span>
+            <span class="s2">&quot;prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;Common prefix length ratio&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;postfix&quot;</span><span class="p">:</span> <span class="s2">&quot;Common suffix length ratio&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Length-based similarity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="s2">&quot;Exact string identity check&quot;</span><span class="p">,</span>
+            
+            <span class="c1"># Phonetic</span>
+            <span class="s2">&quot;mra&quot;</span><span class="p">:</span> <span class="s2">&quot;Match Rating Approach phonetic similarity&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="n">descriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;No description available&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_similarity_function">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.get_similarity_function">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_similarity_function</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;char&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to get a similarity function by name with optional tokenization.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the similarity function.</span>
+<span class="sd">    tokenization : str or callable, optional</span>
+<span class="sd">        Tokenization strategy (default: &quot;char&quot;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Callable</span>
+<span class="sd">        The textdistance similarity function, optionally with tokenization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tokenization</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="list_similarity_functions">
+<a class="viewcode-back" href="../../../api/PyDI.utils.html#PyDI.utils.similarity_registry.list_similarity_functions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_similarity_functions</span><span class="p">(</span><span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to list available similarity functions.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    category : str, optional</span>
+<span class="sd">        Specific category to list.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[str]</span>
+<span class="sd">        Sorted list of function names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">list_available_functions</span><span class="p">(</span><span class="n">category</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../utils.html">PyDI.utils</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

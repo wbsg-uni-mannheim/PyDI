@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.normalization.detectors &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.normalization.detectors</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Data type and quality detection utilities for PyDI.</span>
+
+<span class="sd">This module provides classes for automatically detecting data types, missing values,</span>
+<span class="sd">outliers, and other data quality issues. It&#39;s inspired by Winter framework&#39;s </span>
+<span class="sd">type detection but adapted for pandas DataFrames.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DataType">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.DataType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumeration of supported data types for normalization.&quot;&quot;&quot;</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">&quot;string&quot;</span>
+    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s2">&quot;integer&quot;</span>
+    <span class="n">FLOAT</span> <span class="o">=</span> <span class="s2">&quot;float&quot;</span>
+    <span class="n">DATE</span> <span class="o">=</span> <span class="s2">&quot;date&quot;</span>
+    <span class="n">DATETIME</span> <span class="o">=</span> <span class="s2">&quot;datetime&quot;</span>
+    <span class="n">BOOLEAN</span> <span class="o">=</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="n">EMAIL</span> <span class="o">=</span> <span class="s2">&quot;email&quot;</span>
+    <span class="n">URL</span> <span class="o">=</span> <span class="s2">&quot;url&quot;</span>
+    <span class="n">PHONE</span> <span class="o">=</span> <span class="s2">&quot;phone&quot;</span>
+    <span class="n">COORDINATE</span> <span class="o">=</span> <span class="s2">&quot;coordinate&quot;</span>
+    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="s2">&quot;currency&quot;</span>
+    <span class="n">PERCENTAGE</span> <span class="o">=</span> <span class="s2">&quot;percentage&quot;</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="TypeDetectionResult">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.TypeDetectionResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeDetectionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of type detection for a column.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span>
+        <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">patterns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">sample_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">null_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">total_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="n">confidence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patterns</span> <span class="o">=</span> <span class="n">patterns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_values</span> <span class="o">=</span> <span class="n">sample_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">null_count</span> <span class="o">=</span> <span class="n">null_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">=</span> <span class="n">total_count</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">null_percentage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Percentage of null values in the column.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_count</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TypeDetectionResult(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">null_percentage</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">% null)&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NullDetector">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.NullDetector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NullDetector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detector for various representations of missing/null values.</span>
+<span class="sd">    </span>
+<span class="sd">    Inspired by Winter&#39;s WebTablesStringNormalizer null detection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Extended null representations (case-insensitive) - includes Winter framework patterns</span>
+    <span class="n">DEFAULT_NULL_PATTERNS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>           <span class="c1"># Empty string</span>
+        <span class="s2">&quot;null&quot;</span><span class="p">,</span>       <span class="c1"># Literal null</span>
+        <span class="s2">&quot;none&quot;</span><span class="p">,</span>       <span class="c1"># Python None equivalent</span>
+        <span class="s2">&quot;nil&quot;</span><span class="p">,</span>        <span class="c1"># Common in some systems</span>
+        <span class="s2">&quot;na&quot;</span><span class="p">,</span>         <span class="c1"># Not Available</span>
+        <span class="s2">&quot;n/a&quot;</span><span class="p">,</span>        <span class="c1"># Not Available</span>
+        <span class="s2">&quot;nan&quot;</span><span class="p">,</span>        <span class="c1"># Not a Number</span>
+        <span class="s2">&quot;missing&quot;</span><span class="p">,</span>    <span class="c1"># Explicit missing</span>
+        <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>    <span class="c1"># Unknown value</span>
+        <span class="s2">&quot;undefined&quot;</span><span class="p">,</span>  <span class="c1"># Undefined value</span>
+        <span class="s2">&quot;void&quot;</span><span class="p">,</span>       <span class="c1"># Void value</span>
+        <span class="s2">&quot;-&quot;</span><span class="p">,</span>          <span class="c1"># Single dash</span>
+        <span class="s2">&quot;--&quot;</span><span class="p">,</span>         <span class="c1"># Double dash</span>
+        <span class="s2">&quot;___&quot;</span><span class="p">,</span>        <span class="c1"># Underscores</span>
+        <span class="s2">&quot;__&quot;</span><span class="p">,</span>         <span class="c1"># Double underscore (from Winter)</span>
+        <span class="s2">&quot;_&quot;</span><span class="p">,</span>          <span class="c1"># Single underscore (from Winter)</span>
+        <span class="s2">&quot;...&quot;</span><span class="p">,</span>        <span class="c1"># Ellipsis</span>
+        <span class="s2">&quot;?&quot;</span><span class="p">,</span>          <span class="c1"># Question mark</span>
+        <span class="s2">&quot;??&quot;</span><span class="p">,</span>         <span class="c1"># Double question (from Winter)</span>
+        <span class="s2">&quot;•&quot;</span><span class="p">,</span>          <span class="c1"># Bullet point (from Winter)</span>
+        <span class="s2">&quot;.&quot;</span><span class="p">,</span>          <span class="c1"># Single dot (from Winter)</span>
+        <span class="s2">&quot;- -&quot;</span><span class="p">,</span>        <span class="c1"># Spaced dashes (from Winter)</span>
+        <span class="s2">&quot;- - -&quot;</span><span class="p">,</span>      <span class="c1"># Spaced triple dash (from Winter)</span>
+        <span class="s2">&quot;(n/a)&quot;</span><span class="p">,</span>      <span class="c1"># Parenthesized n/a (from Winter)</span>
+        <span class="s2">&quot;n.a.&quot;</span><span class="p">,</span>       <span class="c1"># Dotted n.a.</span>
+        <span class="s2">&quot;not available&quot;</span><span class="p">,</span> <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;not applicable&quot;</span><span class="p">,</span> <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;no data&quot;</span><span class="p">,</span>    <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;no info&quot;</span><span class="p">,</span>    <span class="c1"># No information</span>
+        <span class="s2">&quot;tbd&quot;</span><span class="p">,</span>        <span class="c1"># To be determined</span>
+        <span class="s2">&quot;tba&quot;</span><span class="p">,</span>        <span class="c1"># To be announced</span>
+        <span class="c1"># Additional Winter framework patterns</span>
+        <span class="s2">&quot;n.d.&quot;</span><span class="p">,</span>       <span class="c1"># No data</span>
+        <span class="s2">&quot;nd&quot;</span><span class="p">,</span>         <span class="c1"># No data short</span>
+        <span class="s2">&quot;n</span><span class="se">\\</span><span class="s2">a&quot;</span><span class="p">,</span>       <span class="c1"># Escaped n/a</span>
+        <span class="s2">&quot;---&quot;</span><span class="p">,</span>        <span class="c1"># Triple dash</span>
+        <span class="s2">&quot;n/d&quot;</span><span class="p">,</span>        <span class="c1"># No data</span>
+        <span class="s2">&quot;no value&quot;</span><span class="p">,</span>   <span class="c1"># No value</span>
+        <span class="s2">&quot;empty&quot;</span><span class="p">,</span>      <span class="c1"># Empty</span>
+        <span class="s2">&quot;blank&quot;</span><span class="p">,</span>      <span class="c1"># Blank</span>
+        <span class="s2">&quot;not specified&quot;</span><span class="p">,</span> <span class="c1"># Not specified</span>
+        <span class="s2">&quot;not set&quot;</span><span class="p">,</span>    <span class="c1"># Not set</span>
+        <span class="s2">&quot;not given&quot;</span><span class="p">,</span>  <span class="c1"># Not given</span>
+        <span class="s2">&quot;not provided&quot;</span><span class="p">,</span> <span class="c1"># Not provided</span>
+        <span class="s2">&quot;not entered&quot;</span><span class="p">,</span> <span class="c1"># Not entered</span>
+        <span class="s2">&quot;not found&quot;</span><span class="p">,</span>  <span class="c1"># Not found</span>
+        <span class="s2">&quot;not recorded&quot;</span><span class="p">,</span> <span class="c1"># Not recorded</span>
+        <span class="s2">&quot;not listed&quot;</span><span class="p">,</span> <span class="c1"># Not listed</span>
+        <span class="s2">&quot;not mentioned&quot;</span><span class="p">,</span> <span class="c1"># Not mentioned</span>
+        <span class="s2">&quot;not stated&quot;</span><span class="p">,</span> <span class="c1"># Not stated</span>
+        <span class="s2">&quot;not indicated&quot;</span><span class="p">,</span> <span class="c1"># Not indicated</span>
+        <span class="s2">&quot;no entry&quot;</span><span class="p">,</span>   <span class="c1"># No entry</span>
+        <span class="s2">&quot;no record&quot;</span><span class="p">,</span>  <span class="c1"># No record</span>
+        <span class="s2">&quot;no information&quot;</span><span class="p">,</span> <span class="c1"># No information (full)</span>
+        <span class="s2">&quot;information not available&quot;</span><span class="p">,</span> <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;data not available&quot;</span><span class="p">,</span> <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;value not available&quot;</span><span class="p">,</span> <span class="c1"># Full phrase</span>
+        <span class="s2">&quot;not available/applicable&quot;</span><span class="p">,</span> <span class="c1"># Combined</span>
+        <span class="s2">&quot;n/a - not available&quot;</span><span class="p">,</span> <span class="c1"># Extended n/a</span>
+        <span class="s2">&quot;n/a - not applicable&quot;</span><span class="p">,</span> <span class="c1"># Extended n/a</span>
+        <span class="c1"># Language variations</span>
+        <span class="s2">&quot;nicht verfügbar&quot;</span><span class="p">,</span> <span class="c1"># German: not available</span>
+        <span class="s2">&quot;nicht angegeben&quot;</span><span class="p">,</span> <span class="c1"># German: not specified</span>
+        <span class="s2">&quot;unbekannt&quot;</span><span class="p">,</span>  <span class="c1"># German: unknown</span>
+        <span class="s2">&quot;pas disponible&quot;</span><span class="p">,</span> <span class="c1"># French: not available</span>
+        <span class="s2">&quot;non disponible&quot;</span><span class="p">,</span> <span class="c1"># French: not available</span>
+        <span class="s2">&quot;inconnu&quot;</span><span class="p">,</span>    <span class="c1"># French: unknown</span>
+        <span class="s2">&quot;no disponible&quot;</span><span class="p">,</span> <span class="c1"># Spanish: not available</span>
+        <span class="s2">&quot;desconocido&quot;</span><span class="p">,</span> <span class="c1"># Spanish: unknown</span>
+        <span class="c1"># Technical variations</span>
+        <span class="s2">&quot;null value&quot;</span><span class="p">,</span> <span class="c1"># Technical null</span>
+        <span class="s2">&quot;null entry&quot;</span><span class="p">,</span> <span class="c1"># Technical null</span>
+        <span class="s2">&quot;nil value&quot;</span><span class="p">,</span>  <span class="c1"># Technical nil</span>
+        <span class="s2">&quot;void value&quot;</span><span class="p">,</span> <span class="c1"># Technical void</span>
+        <span class="s2">&quot;empty value&quot;</span><span class="p">,</span> <span class="c1"># Technical empty</span>
+        <span class="s2">&quot;missing value&quot;</span><span class="p">,</span> <span class="c1"># Technical missing</span>
+        <span class="s2">&quot;undefined value&quot;</span><span class="p">,</span> <span class="c1"># Technical undefined</span>
+        <span class="c1"># Web/HTML related</span>
+        <span class="s2">&quot;&amp;nbsp;&quot;</span><span class="p">,</span>     <span class="c1"># HTML non-breaking space</span>
+        <span class="s2">&quot;nbsp;&quot;</span><span class="p">,</span>      <span class="c1"># HTML entity</span>
+        <span class="s2">&quot;&amp;ndash;&quot;</span><span class="p">,</span>    <span class="c1"># HTML en dash</span>
+        <span class="s2">&quot;&amp;mdash;&quot;</span><span class="p">,</span>    <span class="c1"># HTML em dash</span>
+        <span class="c1"># Database related</span>
+        <span class="s2">&quot;null record&quot;</span><span class="p">,</span> <span class="c1"># Database null</span>
+        <span class="s2">&quot;no record found&quot;</span><span class="p">,</span> <span class="c1"># Database query result</span>
+        <span class="s2">&quot;record not found&quot;</span><span class="p">,</span> <span class="c1"># Database query result</span>
+        <span class="s2">&quot;field empty&quot;</span><span class="p">,</span> <span class="c1"># Database field</span>
+        <span class="s2">&quot;column empty&quot;</span><span class="p">,</span> <span class="c1"># Database column</span>
+    <span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_patterns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize null detector.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        custom_patterns : List[str], optional</span>
+<span class="sd">            Additional null patterns to recognize.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">null_patterns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_NULL_PATTERNS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">custom_patterns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">null_patterns</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">custom_patterns</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="NullDetector.is_null">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.NullDetector.is_null">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a value should be considered null.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            Value to check for nullness.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if value should be considered null.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Standard pandas null checks</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+            
+        <span class="c1"># String-based null pattern matching</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">cleaned</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">cleaned</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_patterns</span>
+            
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    
+<div class="viewcode-block" id="NullDetector.detect_nulls">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.NullDetector.detect_nulls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_nulls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect null values in a pandas Series.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : pd.Series</span>
+<span class="sd">            Series to analyze for null values.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.Series</span>
+<span class="sd">            Boolean series indicating null values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_null</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="NullDetector.null_summary">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.NullDetector.null_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">null_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a summary of null values across DataFrame columns.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            DataFrame to analyze.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Summary with columns: null_count, null_percentage, sample_nulls</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">summary_data</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">null_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_nulls</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+            <span class="n">null_count</span> <span class="o">=</span> <span class="n">null_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">null_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">null_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
+            
+            <span class="c1"># Sample some null representations</span>
+            <span class="n">null_values</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">null_mask</span><span class="p">,</span> <span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">sample_nulls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">null_values</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">null_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
+            
+            <span class="n">summary_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="n">column</span><span class="p">,</span>
+                <span class="s1">&#39;null_count&#39;</span><span class="p">:</span> <span class="n">null_count</span><span class="p">,</span>
+                <span class="s1">&#39;null_percentage&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">null_percentage</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="s1">&#39;sample_nulls&#39;</span><span class="p">:</span> <span class="n">sample_nulls</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary_data</span><span class="p">)</span></div>
+
+
+
+    
+<div class="viewcode-block" id="NullDetector.detect_dataframe_types">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.NullDetector.detect_dataframe_types">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_dataframe_types</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">confidence_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TypeDetectionResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect data types for all columns in a DataFrame.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            DataFrame to analyze.</span>
+<span class="sd">        sample_size : int, default 1000</span>
+<span class="sd">            Maximum number of values to sample per column.</span>
+<span class="sd">        confidence_threshold : float, default 0.7</span>
+<span class="sd">            Minimum confidence required for type detection.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, TypeDetectionResult]</span>
+<span class="sd">            Dictionary mapping column names to type detection results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detecting type for column: </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_column_type</span><span class="p">(</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> 
+                <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+                <span class="n">confidence_threshold</span><span class="o">=</span><span class="n">confidence_threshold</span>
+            <span class="p">)</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; detected as </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">data_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> (confidence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="OutlierDetector">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.OutlierDetector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OutlierDetector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Statistical outlier detector for numeric data.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;iqr&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize outlier detector.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : str, default &quot;iqr&quot;</span>
+<span class="sd">            Method for outlier detection: &quot;iqr&quot;, &quot;zscore&quot;, or &quot;modified_zscore&quot;</span>
+<span class="sd">        threshold : float, default 1.5</span>
+<span class="sd">            Threshold for outlier detection (method-specific)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+    
+<div class="viewcode-block" id="OutlierDetector.detect_outliers">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.OutlierDetector.detect_outliers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect outliers in a numeric series.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : pd.Series</span>
+<span class="sd">            Numeric series to analyze.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.Series</span>
+<span class="sd">            Boolean series indicating outliers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert to numeric, coercing errors to NaN</span>
+        <span class="n">numeric_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;iqr&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iqr_outliers</span><span class="p">(</span><span class="n">numeric_series</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;zscore&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zscore_outliers</span><span class="p">(</span><span class="n">numeric_series</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;modified_zscore&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modified_zscore_outliers</span><span class="p">(</span><span class="n">numeric_series</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown outlier detection method: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iqr_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect outliers using Interquartile Range method.&quot;&quot;&quot;</span>
+        <span class="n">Q1</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+        <span class="n">Q3</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+        <span class="n">IQR</span> <span class="o">=</span> <span class="n">Q3</span> <span class="o">-</span> <span class="n">Q1</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">*</span> <span class="n">IQR</span>
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">Q3</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">*</span> <span class="n">IQR</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">series</span> <span class="o">&lt;</span> <span class="n">lower_bound</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">series</span> <span class="o">&gt;</span> <span class="n">upper_bound</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_zscore_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect outliers using Z-score method.&quot;&quot;&quot;</span>
+        <span class="n">z_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">series</span> <span class="o">-</span> <span class="n">series</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">series</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">z_scores</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_modified_zscore_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect outliers using Modified Z-score method.&quot;&quot;&quot;</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+        <span class="n">mad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">series</span> <span class="o">-</span> <span class="n">median</span><span class="p">))</span>
+        <span class="n">modified_z_scores</span> <span class="o">=</span> <span class="mf">0.6745</span> <span class="o">*</span> <span class="p">(</span><span class="n">series</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">/</span> <span class="n">mad</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">modified_z_scores</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span></div>
+
+
+
+<div class="viewcode-block" id="DuplicateDetector">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.DuplicateDetector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DuplicateDetector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detector for duplicate and near-duplicate values.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize duplicate detector.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        case_sensitive : bool, default False</span>
+<span class="sd">            Whether to consider case when detecting duplicates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">case_sensitive</span> <span class="o">=</span> <span class="n">case_sensitive</span>
+    
+<div class="viewcode-block" id="DuplicateDetector.detect_exact_duplicates">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.DuplicateDetector.detect_exact_duplicates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_exact_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect exact duplicate values.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : pd.Series</span>
+<span class="sd">            Series to analyze.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.Series</span>
+<span class="sd">            Boolean series indicating duplicate values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_sensitive</span> <span class="ow">and</span> <span class="n">series</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">series</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DuplicateDetector.duplicate_summary">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.detectors.DuplicateDetector.duplicate_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">duplicate_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a summary of duplicates across DataFrame columns.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            DataFrame to analyze.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Summary with duplicate statistics per column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">summary_data</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">duplicates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_exact_duplicates</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+            <span class="n">duplicate_count</span> <span class="o">=</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">unique_count</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+            <span class="n">total_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="n">duplicate_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">duplicate_count</span> <span class="o">/</span> <span class="n">total_count</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">total_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            
+            <span class="n">summary_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="n">column</span><span class="p">,</span>
+                <span class="s1">&#39;total_values&#39;</span><span class="p">:</span> <span class="n">total_count</span><span class="p">,</span>
+                <span class="s1">&#39;unique_values&#39;</span><span class="p">:</span> <span class="n">unique_count</span><span class="p">,</span>
+                <span class="s1">&#39;duplicate_values&#39;</span><span class="p">:</span> <span class="n">duplicate_count</span><span class="p">,</span>
+                <span class="s1">&#39;duplicate_percentage&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">duplicate_percentage</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary_data</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.entitymatching.text_formatting &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.entitymatching.text_formatting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Text formatting utilities for transformer-based entity matching.</span>
+
+<span class="sd">This module provides text formatting capabilities to convert entity pairs</span>
+<span class="sd">into formatted text strings suitable for pre-trained language models.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+<div class="viewcode-block" id="TextFormatter">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.text_formatting.TextFormatter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextFormatter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Text formatter for converting entity pairs to formatted strings.</span>
+
+<span class="sd">    This class handles the conversion of entity pairs into formatted text</span>
+<span class="sd">    strings suitable for transformer-based entity matching. It supports</span>
+<span class="sd">    configurable text templates, field selection, and handles missing values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    text_fields : list of str</span>
+<span class="sd">        Column names to include in the formatted text.</span>
+<span class="sd">    template : str, optional</span>
+<span class="sd">        Template string for formatting entity pairs. Use {left} and {right}</span>
+<span class="sd">        as placeholders for left and right entity text. Default uses [SEP] token.</span>
+<span class="sd">    single_template : str, optional</span>
+<span class="sd">        Template string for formatting individual entities. Use field names</span>
+<span class="sd">        as placeholders (e.g., &quot;{title} ({year})&quot;). If None, uses space-separated values.</span>
+<span class="sd">    max_length : int, optional</span>
+<span class="sd">        Maximum length for formatted text. Default is 512.</span>
+<span class="sd">    handle_missing : str, optional</span>
+<span class="sd">        How to handle missing values: &#39;skip&#39;, &#39;empty&#39;, or &#39;placeholder&#39;.</span>
+<span class="sd">        Default is &#39;skip&#39;.</span>
+<span class="sd">    missing_placeholder : str, optional</span>
+<span class="sd">        Placeholder text for missing values when handle_missing=&#39;placeholder&#39;.</span>
+<span class="sd">        Default is &#39;[MISSING]&#39;.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; formatter = TextFormatter(</span>
+<span class="sd">    ...     text_fields=[&#39;title&#39;, &#39;year&#39;, &#39;director&#39;],</span>
+<span class="sd">    ...     template=&quot;{left} [SEP] {right}&quot;,</span>
+<span class="sd">    ...     single_template=&quot;{title} ({year}) by {director}&quot;</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; texts = formatter.format_pairs(df_left, df_right, pairs, &#39;id&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text_fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{left}</span><span class="s2"> [SEP] </span><span class="si">{right}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">single_template</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
+        <span class="n">handle_missing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;skip&quot;</span><span class="p">,</span>
+        <span class="n">missing_placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;[MISSING]&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize text formatter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        text_fields : list of str</span>
+<span class="sd">            Column names to include in the formatted text.</span>
+<span class="sd">        template : str, optional</span>
+<span class="sd">            Template for entity pairs. Default is &quot;{left} [SEP] {right}&quot;.</span>
+<span class="sd">        single_template : str, optional</span>
+<span class="sd">            Template for individual entities. If None, uses space-separated values.</span>
+<span class="sd">        max_length : int, optional</span>
+<span class="sd">            Maximum text length. Default is 512.</span>
+<span class="sd">        handle_missing : str, optional</span>
+<span class="sd">            How to handle missing values. Default is &#39;skip&#39;.</span>
+<span class="sd">        missing_placeholder : str, optional</span>
+<span class="sd">            Placeholder for missing values. Default is &#39;[MISSING]&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text_fields</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;text_fields cannot be empty&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handle_missing</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;skip&quot;</span><span class="p">,</span> <span class="s2">&quot;empty&quot;</span><span class="p">,</span> <span class="s2">&quot;placeholder&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;handle_missing must be &#39;skip&#39;, &#39;empty&#39;, or &#39;placeholder&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span> <span class="o">=</span> <span class="n">text_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_template</span> <span class="o">=</span> <span class="n">single_template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_missing</span> <span class="o">=</span> <span class="n">handle_missing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">missing_placeholder</span> <span class="o">=</span> <span class="n">missing_placeholder</span>
+
+        <span class="c1"># Setup logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TextFormatter.format_pairs">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.text_formatting.TextFormatter.format_pairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_pairs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">pairs</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format entity pairs into text strings.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_left : pandas.DataFrame</span>
+<span class="sd">            Left dataset with entity records.</span>
+<span class="sd">        df_right : pandas.DataFrame</span>
+<span class="sd">            Right dataset with entity records.</span>
+<span class="sd">        pairs : pandas.DataFrame</span>
+<span class="sd">            Entity pairs with id1, id2 columns.</span>
+<span class="sd">        id_column : str</span>
+<span class="sd">            Name of the ID column in the datasets.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Formatted text strings for each entity pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Validate required columns</span>
+        <span class="k">if</span> <span class="s2">&quot;id1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pairs</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;id2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pairs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pairs must contain &#39;id1&#39; and &#39;id2&#39; columns&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check if text fields exist in datasets</span>
+        <span class="n">missing_left</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_left</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="n">missing_right</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_right</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">missing_left</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing fields in left dataset: </span><span class="si">{</span><span class="n">missing_left</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing_right</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing fields in right dataset: </span><span class="si">{</span><span class="n">missing_right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">formatted_texts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Get entity records</span>
+            <span class="n">left_record</span> <span class="o">=</span> <span class="n">df_left</span><span class="p">[</span><span class="n">df_left</span><span class="p">[</span><span class="n">id_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">id1</span><span class="p">]</span>
+            <span class="n">right_record</span> <span class="o">=</span> <span class="n">df_right</span><span class="p">[</span><span class="n">df_right</span><span class="p">[</span><span class="n">id_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">id2</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">left_record</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="n">right_record</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing records for pair (</span><span class="si">{</span><span class="n">id1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">id2</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Format individual entity texts</span>
+            <span class="n">left_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_single_entity</span><span class="p">(</span><span class="n">left_record</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">right_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_single_entity</span><span class="p">(</span><span class="n">right_record</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># Apply pair template</span>
+            <span class="n">formatted_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">left_text</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right_text</span><span class="p">)</span>
+
+            <span class="c1"># Truncate if necessary</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">formatted_text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
+                <span class="n">formatted_text</span> <span class="o">=</span> <span class="n">formatted_text</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">]</span>
+
+            <span class="n">formatted_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formatted_text</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">formatted_texts</span><span class="p">)</span><span class="si">}</span><span class="s2"> entity pairs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formatted_texts</span></div>
+
+
+<div class="viewcode-block" id="TextFormatter.format_single_entities">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.text_formatting.TextFormatter.format_single_entities">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_single_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">entity_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format individual entities into text strings.</span>
+
+<span class="sd">        This method is useful for embedding-based approaches where individual</span>
+<span class="sd">        entity representations are needed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            Dataset containing entity records.</span>
+<span class="sd">        entity_ids : list</span>
+<span class="sd">            List of entity IDs to format.</span>
+<span class="sd">        id_column : str</span>
+<span class="sd">            Name of the ID column in the dataset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Formatted text strings for each entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">entity_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Check if text fields exist in dataset</span>
+        <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing fields in dataset: </span><span class="si">{</span><span class="n">missing_fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">formatted_texts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">entity_id</span> <span class="ow">in</span> <span class="n">entity_ids</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">id_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">entity_id</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing record for entity </span><span class="si">{</span><span class="n">entity_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">formatted_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_single_entity</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># Truncate if necessary</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">formatted_text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
+                <span class="n">formatted_text</span> <span class="o">=</span> <span class="n">formatted_text</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">]</span>
+
+            <span class="n">formatted_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formatted_text</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">formatted_texts</span><span class="p">)</span><span class="si">}</span><span class="s2"> individual entities&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formatted_texts</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_single_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a single entity record into text.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        record : pandas.Series</span>
+<span class="sd">            Entity record with field values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Formatted text for the entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_template</span><span class="p">:</span>
+            <span class="c1"># Use custom template</span>
+            <span class="n">format_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">format_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_missing_value</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">format_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">format_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_missing_value</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">format_dict</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Template formatting error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Fall back to space-separated format</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_space_separated</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use space-separated format</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_space_separated</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_space_separated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format entity as space-separated field values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        record : pandas.Series</span>
+<span class="sd">            Entity record.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Space-separated field values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_missing</span> <span class="o">!=</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_missing_value</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_missing</span> <span class="o">!=</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span>
+                    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_missing_value</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_missing_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle missing values based on configuration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Replacement value for missing data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_missing</span> <span class="o">==</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_missing</span> <span class="o">==</span> <span class="s2">&quot;placeholder&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_placeholder</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># skip</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="TextFormatter.get_feature_names">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.text_formatting.TextFormatter.get_feature_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get feature names for compatibility with other extractors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            List containing single feature name for text input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;formatted_text&quot;</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;TextFormatter(text_fields=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text_fields</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;template=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="si">}</span><span class="s2">&#39;, max_length=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

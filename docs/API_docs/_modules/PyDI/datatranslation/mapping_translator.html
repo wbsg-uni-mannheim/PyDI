@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.datatranslation.mapping_translator &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.datatranslation.mapping_translator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Schema translation using explicit column mappings.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTranslator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..schemamatching.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaMapping</span>
+
+
+<div class="viewcode-block" id="MappingTranslator">
+<a class="viewcode-back" href="../../../api/PyDI.datatranslation.html#PyDI.datatranslation.mapping_translator.MappingTranslator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingTranslator</span><span class="p">(</span><span class="n">BaseTranslator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate column names based on an explicit schema mapping.</span>
+<span class="sd">    </span>
+<span class="sd">    This translator applies column renaming transformations based on a</span>
+<span class="sd">    SchemaMapping DataFrame. It filters the mapping to only apply transformations</span>
+<span class="sd">    relevant to the input dataset and preserves metadata with provenance tracking.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rename&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the mapping translator.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        strategy : str, optional</span>
+<span class="sd">            Translation strategy. Currently only &quot;rename&quot; is supported.</span>
+<span class="sd">            Default is &quot;rename&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">strategy</span> <span class="o">!=</span> <span class="s2">&quot;rename&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported translation strategy: &#39;</span><span class="si">{</span><span class="n">strategy</span><span class="si">}</span><span class="s2">&#39;. Only &#39;rename&#39; is supported.&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">strategy</span>
+    
+<div class="viewcode-block" id="MappingTranslator.translate">
+<a class="viewcode-back" href="../../../api/PyDI.datatranslation.html#PyDI.datatranslation.mapping_translator.MappingTranslator.translate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">corr</span><span class="p">:</span> <span class="n">SchemaMapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translate column names according to a schema mapping.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            The DataFrame to translate. Must have ``dataset_name`` in attrs.</span>
+<span class="sd">        corr : SchemaMapping</span>
+<span class="sd">            Schema mapping DataFrame with the required columns.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            A new DataFrame with columns renamed according to the mapping.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If DataFrame is missing dataset_name or if schema mapping is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate input DataFrame</span>
+        <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DataFrame is missing &#39;dataset_name&#39; in attrs&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Validate schema mapping</span>
+        <span class="n">required_columns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source_dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;source_column&quot;</span><span class="p">,</span> <span class="s2">&quot;target_dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;target_column&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">required_columns</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="n">required_columns</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SchemaMapping is missing required columns: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Extract mappings for this dataset</span>
+        <span class="n">relevant_mappings</span> <span class="o">=</span> <span class="n">corr</span><span class="p">[</span><span class="n">corr</span><span class="p">[</span><span class="s2">&quot;source_dataset&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset_name</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">relevant_mappings</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No schema mappings found for dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;, returning unchanged DataFrame&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            
+        <span class="c1"># Build column mapping dictionary, selecting best mapping by score</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">best_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">unmapped_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Check if score column exists in the mapping</span>
+        <span class="n">has_score</span> <span class="o">=</span> <span class="s2">&quot;score&quot;</span> <span class="ow">in</span> <span class="n">relevant_mappings</span><span class="o">.</span><span class="n">columns</span>
+        
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">relevant_mappings</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">source_col</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_column&quot;</span><span class="p">]</span>
+            <span class="n">target_col</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;target_column&quot;</span><span class="p">]</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_score</span> <span class="k">else</span> <span class="mf">1.0</span>
+            
+            <span class="k">if</span> <span class="n">source_col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">source_col</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">:</span>
+                    <span class="c1"># Compare scores and keep the better mapping</span>
+                    <span class="k">if</span> <span class="n">has_score</span> <span class="ow">and</span> <span class="n">source_col</span> <span class="ow">in</span> <span class="n">best_scores</span> <span class="ow">and</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Better mapping found for column &#39;</span><span class="si">{</span><span class="n">source_col</span><span class="si">}</span><span class="s2">&#39; in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                                   <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">target_col</span><span class="si">}</span><span class="s2">&#39; (score=</span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">) replacing &#39;</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                                   <span class="sa">f</span><span class="s2">&quot;(score=</span><span class="si">{</span><span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                        <span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_col</span>
+                        <span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+                    <span class="k">elif</span> <span class="n">has_score</span> <span class="ow">and</span> <span class="n">source_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_scores</span><span class="p">:</span>
+                        <span class="c1"># First time seeing this column with score, replace no-score mapping</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding score to mapping for column &#39;</span><span class="si">{</span><span class="n">source_col</span><span class="si">}</span><span class="s2">&#39; in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                                   <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">target_col</span><span class="si">}</span><span class="s2">&#39; (score=</span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">) replacing &#39;</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                        <span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_col</span>
+                        <span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">has_score</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate mapping for column &#39;</span><span class="si">{</span><span class="n">source_col</span><span class="si">}</span><span class="s2">&#39; in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
+                                      <span class="sa">f</span><span class="s2">&quot;using &#39;</span><span class="si">{</span><span class="n">target_col</span><span class="si">}</span><span class="s2">&#39; (was &#39;</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;) - no scores available&quot;</span><span class="p">)</span>
+                        <span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_col</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keeping existing mapping for column &#39;</span><span class="si">{</span><span class="n">source_col</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; (score=</span><span class="si">{</span><span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">) over &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">target_col</span><span class="si">}</span><span class="s2">&#39; (score=</span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mapping</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_col</span>
+                    <span class="k">if</span> <span class="n">has_score</span><span class="p">:</span>
+                        <span class="n">best_scores</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unmapped_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_col</span><span class="p">)</span>
+                
+        <span class="k">if</span> <span class="n">unmapped_columns</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Schema mapping references columns not found in dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unmapped_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Apply translation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No applicable mappings for dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;, returning unchanged DataFrame&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Translating </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns for dataset &#39;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Store original column attributes before rename (pandas doesn&#39;t preserve them)</span>
+        <span class="n">original_column_attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">target_col</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">source_col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">source_col</span><span class="p">],</span> <span class="s1">&#39;attrs&#39;</span><span class="p">):</span>
+                <span class="n">original_column_attrs</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Create translated DataFrame</span>
+        <span class="n">translated_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Preserve and update metadata</span>
+        <span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Add provenance information</span>
+        <span class="n">provenance_entry</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;schema_translate&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;strategy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span>
+                <span class="s2">&quot;mappings&quot;</span><span class="p">:</span> <span class="n">mapping</span><span class="p">,</span>
+                <span class="s2">&quot;translator&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;ts&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># Initialize or extend provenance list</span>
+        <span class="k">if</span> <span class="s2">&quot;provenance&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># Convert existing provenance to list format if it&#39;s not already</span>
+            <span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]]</span>
+        <span class="n">translated_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">provenance_entry</span><span class="p">)</span>
+        
+        <span class="c1"># Restore column-level attributes and add provenance for renamed columns</span>
+        <span class="k">for</span> <span class="n">source_col</span><span class="p">,</span> <span class="n">target_col</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">source_col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">target_col</span> <span class="ow">in</span> <span class="n">translated_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="c1"># Restore original column attributes</span>
+                <span class="k">if</span> <span class="n">target_col</span> <span class="ow">in</span> <span class="n">original_column_attrs</span><span class="p">:</span>
+                    <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">original_column_attrs</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Initialize attrs if source didn&#39;t have any</span>
+                    <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+                    
+                <span class="c1"># Add column-level provenance</span>
+                <span class="k">if</span> <span class="s2">&quot;provenance&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                    <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># Convert existing provenance to list format if it&#39;s not already</span>
+                    <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]]</span>
+                
+                <span class="n">column_provenance</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;schema_transform&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;name_old&quot;</span><span class="p">:</span> <span class="n">source_col</span><span class="p">,</span>
+                        <span class="s2">&quot;name_new&quot;</span><span class="p">:</span> <span class="n">target_col</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;ts&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+                <span class="p">}</span>
+                <span class="n">translated_df</span><span class="p">[</span><span class="n">target_col</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;provenance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_provenance</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">translated_df</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

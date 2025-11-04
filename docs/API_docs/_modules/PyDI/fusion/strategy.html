@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.fusion.strategy &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.fusion.strategy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Data fusion strategy management for PyDI.</span>
+
+<span class="sd">This module defines the DataFusionStrategy class for registering and managing</span>
+<span class="sd">attribute-level fusers and evaluation rules.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeValueFuser</span><span class="p">,</span> <span class="n">ConflictResolutionFunction</span><span class="p">,</span> <span class="n">FusionContext</span><span class="p">,</span> <span class="n">get_callable_name</span>
+
+
+<span class="c1"># Type alias for evaluation functions</span>
+<span class="c1"># Functions should return bool and typically accept (fused_value, expected_value),</span>
+<span class="c1"># but may also accept additional keyword parameters (e.g., threshold).</span>
+<span class="n">EvaluationFunction</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="DataFusionStrategy">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFusionStrategy</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy for data fusion that manages attribute fusers and evaluation rules.</span>
+
+<span class="sd">    A strategy defines how to fuse each attribute by registering AttributeValueFuser</span>
+<span class="sd">    instances and optional evaluation rules for quality assessment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a new data fusion strategy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of this strategy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AttributeValueFuser</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EvaluationFunction</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataFusionStrategy.add_attribute_fuser">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.add_attribute_fuser">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_attribute_fuser</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">fuser_or_resolver</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AttributeValueFuser</span><span class="p">,</span> <span class="n">ConflictResolutionFunction</span><span class="p">],</span>
+        <span class="n">evaluation_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EvaluationFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">fuser_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register how to fuse an attribute (unified API).</span>
+
+<span class="sd">        Accepts either a pre-built AttributeValueFuser (advanced usage) or a</span>
+<span class="sd">        resolver function (simple usage). When a resolver function is provided,</span>
+<span class="sd">        it is wrapped into an AttributeValueFuser with any extra keyword args</span>
+<span class="sd">        supplied via ``fuser_kwargs`` (e.g., accessor=..., required=True).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute to fuse.</span>
+<span class="sd">        fuser_or_resolver : Union[AttributeValueFuser, ConflictResolutionFunction]</span>
+<span class="sd">            Either an AttributeValueFuser instance or a resolver function that</span>
+<span class="sd">            resolves conflicts and returns (value, confidence, metadata).</span>
+<span class="sd">        evaluation_function : Optional[EvaluationFunction]</span>
+<span class="sd">            Optional evaluation rule for quality assessment.</span>
+<span class="sd">        **fuser_kwargs : Any</span>
+<span class="sd">            Extra options used when a resolver function is provided, passed to</span>
+<span class="sd">            AttributeValueFuser (e.g., accessor=callable, required=True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fuser_or_resolver</span><span class="p">,</span> <span class="n">AttributeValueFuser</span><span class="p">):</span>
+            <span class="n">fuser</span> <span class="o">=</span> <span class="n">fuser_or_resolver</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Assume callable resolver and wrap it</span>
+            <span class="n">fuser</span> <span class="o">=</span> <span class="n">AttributeValueFuser</span><span class="p">(</span><span class="n">fuser_or_resolver</span><span class="p">,</span> <span class="o">**</span><span class="n">fuser_kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">fuser</span>
+        <span class="k">if</span> <span class="n">evaluation_function</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluation_function</span>
+
+        <span class="n">resolver_name</span> <span class="o">=</span> <span class="n">get_callable_name</span><span class="p">(</span><span class="n">fuser</span><span class="o">.</span><span class="n">resolver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Registered fuser for attribute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&#39; using rule &#39;</span><span class="si">{</span><span class="n">resolver_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DataFusionStrategy.get_attribute_fuser">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.get_attribute_fuser">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_attribute_fuser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributeValueFuser</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the fuser registered for a specific attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[AttributeValueFuser]</span>
+<span class="sd">            The registered fuser, or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.get_evaluation_function">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.get_evaluation_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_evaluation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EvaluationFunction</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the evaluation rule registered for a specific attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[EvaluationFunction]</span>
+<span class="sd">            The registered evaluation function, or None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.add_evaluation_function">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.add_evaluation_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_evaluation_function</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">evaluation_function</span><span class="p">:</span> <span class="n">EvaluationFunction</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register an evaluation function for an attribute.</span>
+
+<span class="sd">        Supports optional keyword parameters which will be bound to the</span>
+<span class="sd">        function using ``functools.partial``.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute.</span>
+<span class="sd">        evaluation_function : EvaluationFunction</span>
+<span class="sd">            Function to evaluate fusion results for this attribute. Typically</span>
+<span class="sd">            has signature ``(fused_value, expected_value, **params) -&gt; bool``.</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Optional parameters to bind to the evaluation function (e.g.,</span>
+<span class="sd">            ``threshold=0.7``).</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Register without parameters (exact signature):</span>
+<span class="sd">        &gt;&gt;&gt; strategy.add_evaluation_function(&quot;title&quot;, tokenized_match)</span>
+
+<span class="sd">        Register with parameters using keyword args (will be bound via partial):</span>
+<span class="sd">        &gt;&gt;&gt; strategy.add_evaluation_function(&quot;director_name&quot;, tokenized_match, threshold=0.7)</span>
+<span class="sd">        &gt;&gt;&gt; strategy.add_evaluation_function(&quot;actors&quot;, tokenized_match, threshold=0.5)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bound_function</span><span class="p">:</span> <span class="n">EvaluationFunction</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">evaluation_function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">evaluation_function</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">bound_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Registered evaluation function for attribute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; with params </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.get_registered_attributes">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.get_registered_attributes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_registered_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all attributes that have registered fusers.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Set[str]</span>
+<span class="sd">            Set of attribute names with registered fusers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.has_fuser_for">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.has_fuser_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_fuser_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a fuser is registered for the given attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute to check.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if a fuser is registered for this attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.remove_attribute_fuser">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.remove_attribute_fuser">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_attribute_fuser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the fuser for a specific attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str</span>
+<span class="sd">            Name of the attribute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if a fuser was removed, False if none was registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">removed_fuser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Also remove evaluation rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">removed_fuser</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed fuser for attribute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="DataFusionStrategy.clear">
+<a class="viewcode-back" href="../../../api/PyDI.fusion.html#PyDI.fusion.strategy.DataFusionStrategy.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all registered fusers and evaluation rules.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluation_rules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleared all registered fusers and evaluation rules&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;DataFusionStrategy(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;, attributes=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute_fusers</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../fusion.html">PyDI.fusion</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

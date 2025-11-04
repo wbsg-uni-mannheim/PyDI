@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.schemamatching.duplicate_based &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.schemamatching.duplicate_based</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyDI.schemamatching.duplicate_based</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Duplicate-based schema matching using known record correspondences.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSchemaMatcher</span><span class="p">,</span> <span class="n">SchemaMapping</span><span class="p">,</span> <span class="n">get_schema_columns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimilarityRegistry</span>
+
+
+<div class="viewcode-block" id="DuplicateBasedSchemaMatcher">
+<a class="viewcode-back" href="../../../api/PyDI.schemamatching.html#PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DuplicateBasedSchemaMatcher</span><span class="p">(</span><span class="n">BaseSchemaMatcher</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Duplicate-based schema matcher using known record correspondences.</span>
+<span class="sd">    </span>
+<span class="sd">    This matcher uses known duplicate records (correspondences) between datasets</span>
+<span class="sd">    to determine schema correspondences. For each pair of duplicate records,</span>
+<span class="sd">    it compares attribute values and aggregates votes to determine which</span>
+<span class="sd">    attributes correspond across schemas.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports both exact and fuzzy string matching using the textdistance package,</span>
+<span class="sd">    enabling more flexible matching of similar but not identical values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">vote_aggregation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;majority&quot;</span><span class="p">,</span>
+        <span class="n">value_comparison</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;exact&quot;</span><span class="p">,</span>
+        <span class="n">min_votes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">ignore_zero_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">similarity_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">similarity_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the duplicate-based schema matcher.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vote_aggregation : str, optional</span>
+<span class="sd">            Method for aggregating votes. Options: &quot;majority&quot;, &quot;weighted&quot;.</span>
+<span class="sd">            Default is &quot;majority&quot;.</span>
+<span class="sd">        value_comparison : str, optional</span>
+<span class="sd">            Method for comparing values. Options: &quot;exact&quot;, &quot;normalized&quot;, &quot;fuzzy&quot;.</span>
+<span class="sd">            Default is &quot;exact&quot;.</span>
+<span class="sd">        min_votes : int, optional</span>
+<span class="sd">            Minimum number of votes required for a correspondence.</span>
+<span class="sd">        ignore_zero_values : bool, optional</span>
+<span class="sd">            Whether to ignore zero or empty values when voting.</span>
+<span class="sd">        similarity_function : str, optional</span>
+<span class="sd">            Similarity function for fuzzy matching when value_comparison=&quot;fuzzy&quot;.</span>
+<span class="sd">            Any function from SimilarityRegistry. Recommended: &quot;levenshtein&quot;, &quot;jaro_winkler&quot;, &quot;jaccard&quot;.</span>
+<span class="sd">            Default is None (exact matching).</span>
+<span class="sd">        similarity_threshold : float, optional</span>
+<span class="sd">            Minimum similarity score for fuzzy matching. Default is 0.8.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vote_aggregation</span> <span class="o">=</span> <span class="n">vote_aggregation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_comparison</span> <span class="o">=</span> <span class="n">value_comparison</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_votes</span> <span class="o">=</span> <span class="n">min_votes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_zero_values</span> <span class="o">=</span> <span class="n">ignore_zero_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">similarity_function</span> <span class="o">=</span> <span class="n">similarity_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">similarity_threshold</span> <span class="o">=</span> <span class="n">similarity_threshold</span>
+        
+        <span class="k">if</span> <span class="n">vote_aggregation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;majority&quot;</span><span class="p">,</span> <span class="s2">&quot;weighted&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported vote aggregation: </span><span class="si">{</span><span class="n">vote_aggregation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">value_comparison</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="s2">&quot;normalized&quot;</span><span class="p">,</span> <span class="s2">&quot;fuzzy&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported value comparison: </span><span class="si">{</span><span class="n">value_comparison</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">value_comparison</span> <span class="o">==</span> <span class="s2">&quot;fuzzy&quot;</span> <span class="ow">and</span> <span class="n">similarity_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;similarity_function must be specified when using fuzzy value comparison&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Initialize similarity function for fuzzy matching</span>
+        <span class="k">if</span> <span class="n">similarity_function</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span> <span class="o">=</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="n">similarity_function</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">available_funcs</span> <span class="o">=</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">get_recommended_functions</span><span class="p">(</span><span class="s2">&quot;schema_matching&quot;</span><span class="p">,</span> <span class="s2">&quot;duplicate&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Recommended functions for duplicate-based matching: </span><span class="si">{</span><span class="n">available_funcs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize a value for comparison.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        
+        <span class="n">str_val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_comparison</span> <span class="o">==</span> <span class="s2">&quot;normalized&quot;</span><span class="p">:</span>
+            <span class="c1"># Remove extra whitespace and punctuation</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+            <span class="n">str_val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w\s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">str_val</span><span class="p">)</span>
+            <span class="n">str_val</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_val</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        
+        <span class="c1"># Apply preprocessing if provided</span>
+        <span class="k">if</span> <span class="n">preprocess</span><span class="p">:</span>
+            <span class="n">str_val</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">str_val</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">str_val</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_values_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">val2</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if two values match according to comparison method.&quot;&quot;&quot;</span>
+        <span class="n">norm_val1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_value</span><span class="p">(</span><span class="n">val1</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">)</span>
+        <span class="n">norm_val2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_value</span><span class="p">(</span><span class="n">val2</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">)</span>
+        
+        <span class="c1"># Skip empty/zero values if configured</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_zero_values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">norm_val1</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">norm_val2</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Exact matching (original behavior)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_comparison</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="s2">&quot;normalized&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">norm_val1</span> <span class="o">==</span> <span class="n">norm_val2</span>
+        
+        <span class="c1"># Fuzzy matching using textdistance</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_comparison</span> <span class="o">==</span> <span class="s2">&quot;fuzzy&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">norm_val1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">norm_val2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span><span class="p">(</span><span class="n">norm_val1</span><span class="p">,</span> <span class="n">norm_val2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">similarity</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity_threshold</span>
+        
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_votes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">correspondences</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect votes for schema correspondences from record correspondences.&quot;&quot;&quot;</span>
+        <span class="n">votes</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collecting votes from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">correspondences</span><span class="p">)</span><span class="si">}</span><span class="s2"> record correspondences&quot;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">correspondences</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="c1"># Get the matching records</span>
+            <span class="n">id1</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first_id&quot;</span><span class="p">)))</span>
+            <span class="n">id2</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target_id&quot;</span><span class="p">,</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;second_id&quot;</span><span class="p">)))</span>
+            
+            <span class="k">if</span> <span class="n">id1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">id2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find ID columns in correspondence&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Find records in dataframes</span>
+            <span class="c1"># Try different common ID column names</span>
+            <span class="n">id_cols_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="n">id_cols_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            
+            <span class="n">record1</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">record2</span> <span class="o">=</span> <span class="kc">None</span>
+            
+            <span class="c1"># Try to find matching records</span>
+            <span class="n">id_cols_1_extended</span> <span class="o">=</span> <span class="n">id_cols_1</span> <span class="o">+</span> <span class="p">([</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">id_col</span> <span class="ow">in</span> <span class="n">id_cols_1_extended</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">id_col</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">id_col</span> <span class="ow">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                        <span class="n">matching_rows</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="n">id_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">id1</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                            <span class="n">record1</span> <span class="o">=</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">id_col</span><span class="p">:</span>
+                        <span class="c1"># Match using the index</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="c1"># For MultiIndex, get_level_values</span>
+                            <span class="n">matching_idx</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">id_col</span><span class="p">)</span> <span class="o">==</span> <span class="n">id1</span>
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                            <span class="c1"># For single index or unnamed index</span>
+                            <span class="n">matching_idx</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">id1</span>
+                        <span class="n">matching_rows</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">matching_idx</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                            <span class="n">record1</span> <span class="o">=</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">break</span>
+            
+            <span class="n">id_cols_2_extended</span> <span class="o">=</span> <span class="n">id_cols_2</span> <span class="o">+</span> <span class="p">([</span><span class="n">df2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">df2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">id_col</span> <span class="ow">in</span> <span class="n">id_cols_2_extended</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">id_col</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">id_col</span> <span class="ow">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                        <span class="n">matching_rows</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="n">df2</span><span class="p">[</span><span class="n">id_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">id2</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                            <span class="n">record2</span> <span class="o">=</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">df2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">id_col</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">matching_idx</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">id_col</span><span class="p">)</span> <span class="o">==</span> <span class="n">id2</span>
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                            <span class="n">matching_idx</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">id2</span>
+                        <span class="n">matching_rows</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="n">matching_idx</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                            <span class="n">record2</span> <span class="o">=</span> <span class="n">matching_rows</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">break</span>
+            
+            <span class="k">if</span> <span class="n">record1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">record2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find records for correspondence </span><span class="si">{</span><span class="n">id1</span><span class="si">}</span><span class="s2"> &lt;-&gt; </span><span class="si">{</span><span class="n">id2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Compare all attribute pairs (excluding PyDI ID columns)</span>
+            <span class="n">schema_cols_1</span> <span class="o">=</span> <span class="n">get_schema_columns</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
+            <span class="n">schema_cols_2</span> <span class="o">=</span> <span class="n">get_schema_columns</span><span class="p">(</span><span class="n">df2</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">attr1</span> <span class="ow">in</span> <span class="n">schema_cols_1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">attr2</span> <span class="ow">in</span> <span class="n">schema_cols_2</span><span class="p">:</span>
+                    <span class="n">val1</span> <span class="o">=</span> <span class="n">record1</span><span class="p">[</span><span class="n">attr1</span><span class="p">]</span>
+                    <span class="n">val2</span> <span class="o">=</span> <span class="n">record2</span><span class="p">[</span><span class="n">attr2</span><span class="p">]</span>
+                    
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values_match</span><span class="p">(</span><span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">):</span>
+                        <span class="n">votes</span><span class="p">[(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">votes</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_aggregate_votes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">votes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Aggregate votes to determine final correspondences.&quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vote_aggregation</span> <span class="o">==</span> <span class="s2">&quot;majority&quot;</span><span class="p">:</span>
+            <span class="c1"># Simple majority voting</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">),</span> <span class="n">vote_count</span> <span class="ow">in</span> <span class="n">votes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">vote_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_votes</span><span class="p">:</span>
+                    <span class="n">confidence</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vote_count</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">votes</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">votes</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    
+                    <span class="k">if</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                            <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">attr1</span><span class="p">,</span>
+                            <span class="s2">&quot;target_column&quot;</span><span class="p">:</span> <span class="n">attr2</span><span class="p">,</span>
+                            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">confidence</span><span class="p">,</span>
+                            <span class="s2">&quot;votes&quot;</span><span class="p">:</span> <span class="n">vote_count</span>
+                        <span class="p">})</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vote_aggregation</span> <span class="o">==</span> <span class="s2">&quot;weighted&quot;</span><span class="p">:</span>
+            <span class="c1"># Weighted voting (could be extended with more sophisticated weighting)</span>
+            <span class="n">total_votes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">votes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            
+            <span class="k">for</span> <span class="p">(</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">),</span> <span class="n">vote_count</span> <span class="ow">in</span> <span class="n">votes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">vote_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_votes</span><span class="p">:</span>
+                    <span class="n">confidence</span> <span class="o">=</span> <span class="n">vote_count</span> <span class="o">/</span> <span class="n">total_votes</span> <span class="k">if</span> <span class="n">total_votes</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    
+                    <span class="k">if</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                            <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">attr1</span><span class="p">,</span>
+                            <span class="s2">&quot;target_column&quot;</span><span class="p">:</span> <span class="n">attr2</span><span class="p">,</span>
+                            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">confidence</span><span class="p">,</span>
+                            <span class="s2">&quot;votes&quot;</span><span class="p">:</span> <span class="n">vote_count</span>
+                        <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="n">results</span>
+    
+<div class="viewcode-block" id="DuplicateBasedSchemaMatcher.match">
+<a class="viewcode-back" href="../../../api/PyDI.schemamatching.html#PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher.match">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">source_dataset</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">target_dataset</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">correspondences</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SchemaMapping</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find schema correspondences using duplicate-based matching.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        source_dataset : pandas.DataFrame</span>
+<span class="sd">            The source dataset.</span>
+<span class="sd">        target_dataset : pandas.DataFrame</span>
+<span class="sd">            The target dataset.</span>
+<span class="sd">        preprocess : callable, optional</span>
+<span class="sd">            Function to preprocess values before comparison.</span>
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            Minimum confidence score for correspondences.</span>
+<span class="sd">        correspondences : pandas.DataFrame, optional</span>
+<span class="sd">            Record correspondences between the datasets. Must contain columns</span>
+<span class="sd">            identifying matching records (e.g., &#39;id1&#39;, &#39;id2&#39; or &#39;source_id&#39;, &#39;target_id&#39;).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments (ignored).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SchemaMapping</span>
+<span class="sd">            DataFrame with schema correspondences.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If correspondences are not provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">correspondences</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">correspondences</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Duplicate-based matching requires record correspondences&quot;</span><span class="p">)</span>
+        
+        <span class="n">source_name</span> <span class="o">=</span> <span class="n">source_dataset</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">)</span>
+        <span class="n">target_name</span> <span class="o">=</span> <span class="n">target_dataset</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get schema columns excluding PyDI-generated ID columns  </span>
+        <span class="n">source_columns</span> <span class="o">=</span> <span class="n">get_schema_columns</span><span class="p">(</span><span class="n">source_dataset</span><span class="p">)</span>
+        <span class="n">target_columns</span> <span class="o">=</span> <span class="n">get_schema_columns</span><span class="p">(</span><span class="n">target_dataset</span><span class="p">)</span>
+        
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate-based matching: </span><span class="si">{</span><span class="n">source_name</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Source columns for matching: </span><span class="si">{</span><span class="n">source_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Target columns for matching: </span><span class="si">{</span><span class="n">target_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Collect votes from record correspondences</span>
+        <span class="n">votes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_votes</span><span class="p">(</span><span class="n">source_dataset</span><span class="p">,</span> <span class="n">target_dataset</span><span class="p">,</span> <span class="n">correspondences</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">)</span>
+        
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">votes</span><span class="p">)</span><span class="si">}</span><span class="s2"> attribute pair votes&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Aggregate votes to get final correspondences</span>
+        <span class="n">aggregated_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_votes</span><span class="p">(</span><span class="n">votes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        
+        <span class="c1"># Format results</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">aggregated_results</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;source_dataset&quot;</span><span class="p">:</span> <span class="n">source_name</span><span class="p">,</span>
+                <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;source_column&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;target_dataset&quot;</span><span class="p">:</span> <span class="n">target_name</span><span class="p">,</span>
+                <span class="s2">&quot;target_column&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;target_column&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;votes=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;votes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">,method=duplicate_based&quot;</span>
+            <span class="p">})</span>
+            
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Duplicate match: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;source_column&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt;-&gt; </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;target_column&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;votes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> votes)&quot;</span>
+            <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

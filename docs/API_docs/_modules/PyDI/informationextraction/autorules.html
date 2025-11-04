@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.informationextraction.autorules &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.informationextraction.autorules</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Auto-discovery of useful extraction rules based on built-in patterns and coverage.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.regex</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegexExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">built_in_rules</span><span class="p">,</span> <span class="n">TRANSFORMATIONS</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RuleDiscovery">
+<a class="viewcode-back" href="../../../api/PyDI.informationextraction.html#PyDI.informationextraction.autorules.RuleDiscovery">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RuleDiscovery</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatically discover useful extraction fields by applying built-in rules</span>
+<span class="sd">    and filtering by coverage threshold.</span>
+<span class="sd">    </span>
+<span class="sd">    This class applies all available built-in regex rules to a text column,</span>
+<span class="sd">    computes coverage for each extracted field, and returns only fields that</span>
+<span class="sd">    meet minimum coverage thresholds. This is useful for exploratory data</span>
+<span class="sd">    analysis when you don&#39;t know what structured information might be present</span>
+<span class="sd">    in unstructured text.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out_dir : str, optional</span>
+<span class="sd">        Output directory for debug artifacts, by default &quot;output/informationextraction&quot;</span>
+<span class="sd">    debug : bool, optional</span>
+<span class="sd">        Enable debug mode with verbose logging and artifacts, by default False</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.informationextraction import RuleDiscovery</span>
+<span class="sd">    &gt;&gt;&gt; discovery = RuleDiscovery(debug=True)</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;text&#39;: [&#39;Call us at (555) 123-4567&#39;, &#39;Visit http://example.com&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; result = discovery.extract_and_select(</span>
+<span class="sd">    ...     df, </span>
+<span class="sd">    ...     source_column=&#39;text&#39;,</span>
+<span class="sd">    ...     coverage_threshold=0.5</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; print(result.columns.tolist())  # [&#39;phone_us&#39;, &#39;url&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output/informationextraction&quot;</span><span class="p">,</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_source</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># RuleDiscovery requires explicit source_column</span>
+    
+<div class="viewcode-block" id="RuleDiscovery.build_all_rules">
+<a class="viewcode-back" href="../../../api/PyDI.informationextraction.html#PyDI.informationextraction.autorules.RuleDiscovery.build_all_rules">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_all_rules</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">source_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="o">*</span><span class="p">,</span> 
+        <span class="n">categories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">namespacing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;category__name&quot;</span><span class="p">,</span>
+        <span class="n">include_postprocess</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build regex rules dictionary from all built-in rules.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        source_column : str</span>
+<span class="sd">            Source column name to extract from</span>
+<span class="sd">        categories : list of str, optional</span>
+<span class="sd">            List of categories to include. If None, includes all categories</span>
+<span class="sd">        namespacing : str, optional</span>
+<span class="sd">            Field naming format, by default &quot;category__name&quot;</span>
+<span class="sd">        include_postprocess : bool, optional</span>
+<span class="sd">            Whether to include postprocessing functions, by default True</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Rules dictionary compatible with RegexExtractor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">categories</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">categories</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">built_in_rules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        
+        <span class="n">rules</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">built_in_rules</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Category &#39;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">&#39; not found in built_in_rules&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+                
+            <span class="k">for</span> <span class="n">rule_name</span><span class="p">,</span> <span class="n">rule_config</span> <span class="ow">in</span> <span class="n">built_in_rules</span><span class="p">[</span><span class="n">category</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Create field name using namespacing</span>
+                <span class="k">if</span> <span class="n">namespacing</span> <span class="o">==</span> <span class="s2">&quot;category__name&quot;</span><span class="p">:</span>
+                    <span class="n">field_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">__</span><span class="si">{</span><span class="n">rule_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">elif</span> <span class="n">namespacing</span> <span class="o">==</span> <span class="s2">&quot;name_only&quot;</span><span class="p">:</span>
+                    <span class="n">field_name</span> <span class="o">=</span> <span class="n">rule_name</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">field_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">rule_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                
+                <span class="c1"># Build rule configuration</span>
+                <span class="n">rule_dict</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">source_column</span><span class="p">,</span>
+                    <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="n">rule_config</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="n">rule_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;flags&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">rule_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="p">}</span>
+                
+                <span class="c1"># Add postprocessing if available and requested</span>
+                <span class="k">if</span> <span class="n">include_postprocess</span> <span class="ow">and</span> <span class="s2">&quot;postprocess&quot;</span> <span class="ow">in</span> <span class="n">rule_config</span><span class="p">:</span>
+                    <span class="n">postprocess_name</span> <span class="o">=</span> <span class="n">rule_config</span><span class="p">[</span><span class="s2">&quot;postprocess&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">postprocess_name</span> <span class="ow">in</span> <span class="n">TRANSFORMATIONS</span><span class="p">:</span>
+                        <span class="n">rule_dict</span><span class="p">[</span><span class="s2">&quot;postprocess&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TRANSFORMATIONS</span><span class="p">[</span><span class="n">postprocess_name</span><span class="p">]</span>
+                
+                <span class="n">rules</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dict</span>
+        
+        <span class="k">return</span> <span class="n">rules</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">extracted_fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute coverage statistics for extracted fields.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            DataFrame with extracted fields</span>
+<span class="sd">        extracted_fields : list of str</span>
+<span class="sd">            List of field names to compute coverage for</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Coverage statistics {field_name: coverage_rate}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coverage</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">extracted_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">non_null_count</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">coverage</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_null_count</span> <span class="o">/</span> <span class="n">total_rows</span> <span class="k">if</span> <span class="n">total_rows</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coverage</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                
+        <span class="k">return</span> <span class="n">coverage</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_fields_by_coverage</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">coverage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">coverage_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">min_non_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter fields based on coverage criteria.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coverage : dict</span>
+<span class="sd">            Coverage statistics {field_name: coverage_rate}</span>
+<span class="sd">        coverage_threshold : float, optional</span>
+<span class="sd">            Minimum coverage threshold (0.0-1.0), by default 0.25</span>
+<span class="sd">        min_non_null : int, optional</span>
+<span class="sd">            Minimum number of non-null values required, by default None</span>
+<span class="sd">        top_k : int, optional</span>
+<span class="sd">            Maximum number of fields to return (sorted by coverage), by default None</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            List of selected field names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Start with all fields meeting coverage threshold</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">field</span> <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">cov</span> <span class="ow">in</span> <span class="n">coverage</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> 
+            <span class="k">if</span> <span class="n">cov</span> <span class="o">&gt;=</span> <span class="n">coverage_threshold</span>
+        <span class="p">]</span>
+        
+        <span class="c1"># Apply min_non_null filter if specified</span>
+        <span class="k">if</span> <span class="n">min_non_null</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">selected</span>
+                <span class="k">if</span> <span class="n">coverage</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">coverage</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_non_null</span>  <span class="c1"># Approximate non-null count</span>
+            <span class="p">]</span>
+        
+        <span class="c1"># Sort by coverage (descending) and limit to top_k</span>
+        <span class="n">selected</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">coverage</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">top_k</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="n">selected</span><span class="p">[:</span><span class="n">top_k</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">selected</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_debug_artifacts</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">coverage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">selected_fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">source_column</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save debug artifacts to disk.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Result DataFrame</span>
+<span class="sd">        coverage : dict</span>
+<span class="sd">            Coverage statistics</span>
+<span class="sd">        selected_fields : list of str</span>
+<span class="sd">            Selected field names</span>
+<span class="sd">        source_column : str</span>
+<span class="sd">            Source column name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">return</span>
+            
+        <span class="c1"># Save coverage statistics</span>
+        <span class="n">coverage_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="o">/</span> <span class="s2">&quot;autorules_coverage.json&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">coverage_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">coverage</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved coverage statistics to </span><span class="si">{</span><span class="n">coverage_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Save selected fields</span>
+        <span class="n">selected_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="o">/</span> <span class="s2">&quot;autorules_selected_fields.json&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span>
+                <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">source_column</span><span class="p">,</span>
+                <span class="s2">&quot;selected_fields&quot;</span><span class="p">:</span> <span class="n">selected_fields</span><span class="p">,</span>
+                <span class="s2">&quot;selection_criteria&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;total_fields_evaluated&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">coverage</span><span class="p">),</span>
+                    <span class="s2">&quot;fields_selected&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_fields</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved field selection to </span><span class="si">{</span><span class="n">selected_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Save sample of results</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+            <span class="n">sample_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">sample_size</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sample_size</span> <span class="k">else</span> <span class="n">df</span>
+            <span class="n">sample_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="o">/</span> <span class="s2">&quot;autorules_samples.csv&quot;</span>
+            <span class="n">sample_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">sample_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved sample results to </span><span class="si">{</span><span class="n">sample_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="RuleDiscovery.extract_and_select">
+<a class="viewcode-back" href="../../../api/PyDI.informationextraction.html#PyDI.informationextraction.autorules.RuleDiscovery.extract_and_select">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_and_select</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">source_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">categories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">coverage_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">min_non_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_original</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">return_meta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract fields using built-in rules and select by coverage.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Input DataFrame</span>
+<span class="sd">        source_column : str</span>
+<span class="sd">            Column to extract from</span>
+<span class="sd">        categories : list of str, optional</span>
+<span class="sd">            List of rule categories to apply. If None, applies all categories</span>
+<span class="sd">        coverage_threshold : float, optional</span>
+<span class="sd">            Minimum coverage threshold (0.0-1.0), by default 0.25</span>
+<span class="sd">        top_k : int, optional</span>
+<span class="sd">            Maximum number of fields to return (sorted by coverage), by default None</span>
+<span class="sd">        min_non_null : int, optional</span>
+<span class="sd">            Minimum number of non-null values required, by default None</span>
+<span class="sd">        include_original : bool, optional</span>
+<span class="sd">            Whether to include original DataFrame columns, by default False</span>
+<span class="sd">        return_meta : bool, optional</span>
+<span class="sd">            Whether to return metadata about extraction, by default False</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame or tuple</span>
+<span class="sd">            DataFrame with selected extracted fields.</span>
+<span class="sd">            If return_meta=True, returns (DataFrame, metadata_dict)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate input</span>
+        <span class="n">source_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_column</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting rule discovery on column &#39;</span><span class="si">{</span><span class="n">source_col</span><span class="si">}</span><span class="s2">&#39; with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Categories: </span><span class="si">{</span><span class="n">categories</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;all&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverage threshold: </span><span class="si">{</span><span class="n">coverage_threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Build all rules</span>
+        <span class="n">all_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_all_rules</span><span class="p">(</span>
+            <span class="n">source_col</span><span class="p">,</span>
+            <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+            <span class="n">include_postprocess</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Built </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_rules</span><span class="p">)</span><span class="si">}</span><span class="s2"> rules from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">categories</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">built_in_rules</span><span class="p">)</span><span class="si">}</span><span class="s2"> categories&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Apply regex extraction</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">RegexExtractor</span><span class="p">(</span>
+            <span class="n">all_rules</span><span class="p">,</span>
+            <span class="n">default_source</span><span class="o">=</span><span class="n">source_col</span><span class="p">,</span>
+            <span class="n">out_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">),</span>
+            <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span>
+        <span class="p">)</span>
+        
+        <span class="n">extracted_df</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_column</span><span class="o">=</span><span class="n">source_col</span><span class="p">)</span>
+        
+        <span class="c1"># Get list of newly extracted fields (exclude original columns)</span>
+        <span class="n">original_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">extracted_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">extracted_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">original_columns</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracted </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">extracted_fields</span><span class="p">)</span><span class="si">}</span><span class="s2"> fields from regex patterns&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Compute coverage</span>
+        <span class="n">coverage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_coverage</span><span class="p">(</span><span class="n">extracted_df</span><span class="p">,</span> <span class="n">extracted_fields</span><span class="p">)</span>
+        
+        <span class="c1"># Select fields by coverage</span>
+        <span class="n">selected_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_fields_by_coverage</span><span class="p">(</span>
+            <span class="n">coverage</span><span class="p">,</span>
+            <span class="n">coverage_threshold</span><span class="o">=</span><span class="n">coverage_threshold</span><span class="p">,</span>
+            <span class="n">min_non_null</span><span class="o">=</span><span class="n">min_non_null</span><span class="p">,</span>
+            <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_fields</span><span class="p">)</span><span class="si">}</span><span class="s2"> fields meeting criteria&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">selected_fields</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected fields with coverage:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">selected_fields</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">coverage</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Build result DataFrame</span>
+        <span class="k">if</span> <span class="n">include_original</span><span class="p">:</span>
+            <span class="n">result_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="n">selected_fields</span>
+            <span class="n">result_df</span> <span class="o">=</span> <span class="n">extracted_df</span><span class="p">[</span><span class="n">result_columns</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_df</span> <span class="o">=</span> <span class="n">extracted_df</span><span class="p">[</span><span class="n">selected_fields</span><span class="p">]</span> <span class="k">if</span> <span class="n">selected_fields</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        
+        <span class="c1"># Save debug artifacts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_debug_artifacts</span><span class="p">(</span><span class="n">result_df</span><span class="p">,</span> <span class="n">coverage</span><span class="p">,</span> <span class="n">selected_fields</span><span class="p">,</span> <span class="n">source_col</span><span class="p">)</span>
+        
+        <span class="c1"># Return results</span>
+        <span class="k">if</span> <span class="n">return_meta</span><span class="p">:</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">coverage</span><span class="p">,</span>
+                <span class="s2">&quot;selected_fields&quot;</span><span class="p">:</span> <span class="n">selected_fields</span><span class="p">,</span>
+                <span class="s2">&quot;total_fields_evaluated&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">extracted_fields</span><span class="p">),</span>
+                <span class="s2">&quot;source_column&quot;</span><span class="p">:</span> <span class="n">source_col</span><span class="p">,</span>
+                <span class="s2">&quot;categories_used&quot;</span><span class="p">:</span> <span class="n">categories</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="n">built_in_rules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">result_df</span><span class="p">,</span> <span class="n">metadata</span>
+        
+        <span class="k">return</span> <span class="n">result_df</span></div>
+
+    
+<div class="viewcode-block" id="RuleDiscovery.extract">
+<a class="viewcode-back" href="../../../api/PyDI.informationextraction.html#PyDI.informationextraction.autorules.RuleDiscovery.extract">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
+        <span class="o">*</span><span class="p">,</span> 
+        <span class="n">source_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract method required by BaseExtractor interface.</span>
+<span class="sd">        </span>
+<span class="sd">        This is a simplified interface that calls extract_and_select with</span>
+<span class="sd">        default parameters. For more control, use extract_and_select directly.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Input DataFrame</span>
+<span class="sd">        source_column : str, optional</span>
+<span class="sd">            Column to extract from</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional parameters passed to extract_and_select</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            DataFrame with extracted and selected fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">source_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;source_column must be specified for RuleDiscovery&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_and_select</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_column</span><span class="o">=</span><span class="n">source_column</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="discover_fields">
+<a class="viewcode-back" href="../../../api/PyDI.informationextraction.html#PyDI.informationextraction.autorules.discover_fields">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">discover_fields</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">source_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">categories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">coverage_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_non_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_original</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output/informationextraction&quot;</span><span class="p">,</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function for field discovery using built-in rules.</span>
+<span class="sd">    </span>
+<span class="sd">    This is a functional interface to RuleDiscovery that creates an extractor</span>
+<span class="sd">    instance and runs field discovery in a single call.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Input DataFrame</span>
+<span class="sd">    source_column : str</span>
+<span class="sd">        Column to extract from</span>
+<span class="sd">    categories : list of str, optional</span>
+<span class="sd">        List of rule categories to apply. If None, applies all categories</span>
+<span class="sd">    coverage_threshold : float, optional</span>
+<span class="sd">        Minimum coverage threshold (0.0-1.0), by default 0.25</span>
+<span class="sd">    top_k : int, optional</span>
+<span class="sd">        Maximum number of fields to return (sorted by coverage), by default None</span>
+<span class="sd">    min_non_null : int, optional</span>
+<span class="sd">        Minimum number of non-null values required, by default None</span>
+<span class="sd">    include_original : bool, optional</span>
+<span class="sd">        Whether to include original DataFrame columns, by default False</span>
+<span class="sd">    out_dir : str, optional</span>
+<span class="sd">        Output directory for debug artifacts, by default &quot;output/informationextraction&quot;</span>
+<span class="sd">    debug : bool, optional</span>
+<span class="sd">        Enable debug mode, by default False</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        DataFrame with selected extracted fields</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.informationextraction import discover_fields</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({</span>
+<span class="sd">    ...     &#39;text&#39;: [</span>
+<span class="sd">    ...         &#39;Contact us at john@example.com or call (555) 123-4567&#39;,</span>
+<span class="sd">    ...         &#39;Visit our website at https://example.com for $99.99 deals&#39;,</span>
+<span class="sd">    ...         &#39;Free shipping on orders over €50.00&#39;</span>
+<span class="sd">    ...     ]</span>
+<span class="sd">    ... })</span>
+<span class="sd">    &gt;&gt;&gt; result = discover_fields(</span>
+<span class="sd">    ...     df,</span>
+<span class="sd">    ...     source_column=&#39;text&#39;,</span>
+<span class="sd">    ...     categories=[&#39;contact&#39;, &#39;money&#39;],</span>
+<span class="sd">    ...     coverage_threshold=0.3,</span>
+<span class="sd">    ...     include_original=True</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; print(result.columns.tolist())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">discovery</span> <span class="o">=</span> <span class="n">RuleDiscovery</span><span class="p">(</span><span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">discovery</span><span class="o">.</span><span class="n">extract_and_select</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">source_column</span><span class="o">=</span><span class="n">source_column</span><span class="p">,</span>
+        <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+        <span class="n">coverage_threshold</span><span class="o">=</span><span class="n">coverage_threshold</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span>
+        <span class="n">min_non_null</span><span class="o">=</span><span class="n">min_non_null</span><span class="p">,</span>
+        <span class="n">include_original</span><span class="o">=</span><span class="n">include_original</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

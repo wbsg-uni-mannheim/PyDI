@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.fusion.conflict_resolution.numeric &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.fusion.conflict_resolution.numeric</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Numeric conflict resolution functions.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_filter_valid_values</span><span class="p">,</span> <span class="n">_calculate_tie_confidence</span>
+
+
+<span class="c1"># Type alias for fusion rule result</span>
+<span class="n">FusionResult</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="average">
+<a class="viewcode-back" href="../../../../api/PyDI.fusion.conflict_resolution.html#PyDI.fusion.average">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FusionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the average of numeric values.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : List[Any]</span>
+<span class="sd">        List of values to resolve conflicts from</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional context (ignored)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FusionResult</span>
+<span class="sd">        Tuple of (resolved_value, confidence, metadata)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_values</span> <span class="o">=</span> <span class="n">_filter_valid_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_valid_values&quot;</span><span class="p">}</span>
+    
+    <span class="c1"># Convert to numeric values</span>
+    <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numeric_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_numeric_values&quot;</span><span class="p">}</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+    
+    <span class="c1"># Confidence based on variance (lower variance = higher confidence)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+        <span class="n">mean_abs</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_abs</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span>
+    
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_values&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">),</span>
+        <span class="s2">&quot;variance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))]</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">confidence</span><span class="p">,</span> <span class="n">metadata</span></div>
+
+
+
+<div class="viewcode-block" id="median">
+<a class="viewcode-back" href="../../../../api/PyDI.fusion.conflict_resolution.html#PyDI.fusion.median">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">median</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FusionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the median of numeric values.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : List[Any]</span>
+<span class="sd">        List of values to resolve conflicts from</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional context (ignored)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FusionResult</span>
+<span class="sd">        Tuple of (resolved_value, confidence, metadata)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_values</span> <span class="o">=</span> <span class="n">_filter_valid_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_valid_values&quot;</span><span class="p">}</span>
+    
+    <span class="c1"># Convert to numeric values</span>
+    <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numeric_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">continue</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_numeric_values&quot;</span><span class="p">}</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+    
+    <span class="c1"># Confidence based on how close values are to median</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">deviations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">result</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numeric_values</span><span class="p">]</span>
+        <span class="n">mean_deviation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">deviations</span><span class="p">)</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numeric_values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean_deviation</span> <span class="o">/</span> <span class="n">max_value</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">confidence</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_values&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">),</span>
+        <span class="s2">&quot;mean_deviation&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">result</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numeric_values</span><span class="p">])),</span>
+        <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="maximum">
+<a class="viewcode-back" href="../../../../api/PyDI.fusion.conflict_resolution.html#PyDI.fusion.maximum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">maximum</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FusionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select the maximum numeric value.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : List[Any]</span>
+<span class="sd">        List of values to resolve conflicts from</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional context (ignored)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FusionResult</span>
+<span class="sd">        Tuple of (resolved_value, confidence, metadata)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_values</span> <span class="o">=</span> <span class="n">_filter_valid_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_valid_values&quot;</span><span class="p">}</span>
+    
+    <span class="c1"># Convert to numeric values</span>
+    <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numeric_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">continue</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_numeric_values&quot;</span><span class="p">}</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+    
+    <span class="c1"># Count how many values equal the maximum</span>
+    <span class="n">max_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numeric_values</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">result</span><span class="p">)</span>
+    <span class="n">confidence</span> <span class="o">=</span> <span class="n">_calculate_tie_confidence</span><span class="p">(</span><span class="n">max_count</span><span class="p">,</span> <span class="n">max_count</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">confidence</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_values&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">),</span>
+        <span class="s2">&quot;num_max_values&quot;</span><span class="p">:</span> <span class="n">max_count</span><span class="p">,</span>
+        <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="minimum">
+<a class="viewcode-back" href="../../../../api/PyDI.fusion.conflict_resolution.html#PyDI.fusion.minimum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimum</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FusionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select the minimum numeric value.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : List[Any]</span>
+<span class="sd">        List of values to resolve conflicts from</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional context (ignored)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FusionResult</span>
+<span class="sd">        Tuple of (resolved_value, confidence, metadata)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_values</span> <span class="o">=</span> <span class="n">_filter_valid_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_valid_values&quot;</span><span class="p">}</span>
+    
+    <span class="c1"># Convert to numeric values</span>
+    <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numeric_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">continue</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_numeric_values&quot;</span><span class="p">}</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+    
+    <span class="c1"># Count how many values equal the minimum</span>
+    <span class="n">min_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numeric_values</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">result</span><span class="p">)</span>
+    <span class="n">confidence</span> <span class="o">=</span> <span class="n">_calculate_tie_confidence</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">min_count</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">confidence</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;minimum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_values&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">),</span>
+        <span class="s2">&quot;num_min_values&quot;</span><span class="p">:</span> <span class="n">min_count</span><span class="p">,</span>
+        <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="sum_values">
+<a class="viewcode-back" href="../../../../api/PyDI.fusion.conflict_resolution.html#PyDI.fusion.sum_values">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_values</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FusionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the sum of numeric values.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : List[Any]</span>
+<span class="sd">        List of values to resolve conflicts from</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional context (ignored)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FusionResult</span>
+<span class="sd">        Tuple of (resolved_value, confidence, metadata)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_values</span> <span class="o">=</span> <span class="n">_filter_valid_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_valid_values&quot;</span><span class="p">}</span>
+    
+    <span class="c1"># Convert to numeric values</span>
+    <span class="n">numeric_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">valid_values</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">numeric_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">continue</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no_numeric_values&quot;</span><span class="p">}</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)</span>
+    
+    <span class="c1"># Confidence is always high for sum (it&#39;s deterministic)</span>
+    <span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">confidence</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_values&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">),</span>
+        <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">numeric_values</span><span class="p">))]</span>
+    <span class="p">}</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../fusion.html">PyDI.fusion</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

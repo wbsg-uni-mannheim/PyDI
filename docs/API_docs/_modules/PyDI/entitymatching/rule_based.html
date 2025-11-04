@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.entitymatching.rule_based &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.entitymatching.rule_based</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Rule-based entity matching using weighted linear combination of comparators.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMatcher</span><span class="p">,</span> <span class="n">BaseComparator</span><span class="p">,</span> <span class="n">CorrespondenceSet</span>
+
+
+<div class="viewcode-block" id="RuleBasedMatcher">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.rule_based.RuleBasedMatcher">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RuleBasedMatcher</span><span class="p">(</span><span class="n">BaseMatcher</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rule-based matcher using weighted linear combination of attribute similarities.</span>
+<span class="sd">    </span>
+<span class="sd">    This matcher implements the same functionality as Winter&#39;s LinearCombinationMatchingRule</span>
+<span class="sd">    but with PyDI&#39;s simpler DataFrame-first design. It computes a weighted sum of </span>
+<span class="sd">    similarity scores from multiple comparators to determine entity matches.</span>
+<span class="sd">    </span>
+<span class="sd">    The comparators and weights are passed directly to the match() method following</span>
+<span class="sd">    the design principle of keeping the matcher stateless.</span>
+<span class="sd">    </span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.entitymatching import RuleBasedMatcher</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.entitymatching.comparators import jaccard, date_within_years</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; matcher = RuleBasedMatcher()</span>
+<span class="sd">    &gt;&gt;&gt; matches = matcher.match(</span>
+<span class="sd">    ...     df_left, df_right, candidates,</span>
+<span class="sd">    ...     comparators=[jaccard(&quot;title&quot;), date_within_years(&quot;date&quot;, 2)],</span>
+<span class="sd">    ...     weights=[2, 1],  # relative importance (normalized to [0.67, 0.33])</span>
+<span class="sd">    ...     threshold=0.7</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="RuleBasedMatcher.match">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.rule_based.RuleBasedMatcher.match">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">candidates</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">comparators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseComparator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]],</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">CorrespondenceSet</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CorrespondenceSet</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find entity correspondences using rule-based matching.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_left : pandas.DataFrame</span>
+<span class="sd">            Left dataset with specified ID column.</span>
+<span class="sd">        df_right : pandas.DataFrame</span>
+<span class="sd">            Right dataset with specified ID column.</span>
+<span class="sd">        candidates : pandas.DataFrame or Iterable[pandas.DataFrame]</span>
+<span class="sd">            Single DataFrame or iterable of candidate pair batches with id1, id2 columns.</span>
+<span class="sd">        id_column : str</span>
+<span class="sd">            Name of the column containing record identifiers.</span>
+<span class="sd">        comparators : List[callable] or List[dict]</span>
+<span class="sd">            List of comparator functions/objects, or list of dicts with</span>
+<span class="sd">            &#39;comparator&#39; and &#39;weight&#39; keys. Each comparator should accept</span>
+<span class="sd">            (record1: pd.Series, record2: pd.Series) and return float.</span>
+<span class="sd">        weights : List[float], optional</span>
+<span class="sd">            Relative weights for each comparator. Will be normalized to sum to 1.0.</span>
+<span class="sd">            If None, equal weights are used. Example: [1, 3, 2] becomes [0.166, 0.5, 0.333].</span>
+<span class="sd">            Ignored if comparators contain weights.</span>
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            Minimum similarity score to include. Default is 0.0.</span>
+<span class="sd">        debug : bool, optional</span>
+<span class="sd">            If True, captures detailed comparator results for debugging.</span>
+<span class="sd">            Returns tuple of (correspondences, debug_results). Default is False.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional arguments (ignored).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CorrespondenceSet or Tuple[CorrespondenceSet, pandas.DataFrame]</span>
+<span class="sd">            If debug=False: DataFrame with columns id1, id2, score, notes.</span>
+<span class="sd">            If debug=True: Tuple of (correspondences, debug_results) where</span>
+<span class="sd">            debug_results contains detailed comparator information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Setup logger</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Log start of entity matching</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Entity Matching&quot;</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        
+        <span class="c1"># Validate inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_inputs</span><span class="p">(</span><span class="n">df_left</span><span class="p">,</span> <span class="n">df_right</span><span class="p">,</span> <span class="n">id_column</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">comparators</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No comparators provided&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Parse comparators and weights</span>
+        <span class="n">parsed_comparators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_comparators</span><span class="p">(</span><span class="n">comparators</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        
+        <span class="c1"># Validate that the specified ID column exists</span>
+        <span class="k">if</span> <span class="n">id_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_left</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Left dataset missing required ID column: &#39;</span><span class="si">{</span><span class="n">id_column</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">id_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_right</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Right dataset missing required ID column: &#39;</span><span class="si">{</span><span class="n">id_column</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Normalize candidates to iterable of DataFrames</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">candidate_batches</span> <span class="o">=</span> <span class="p">[</span><span class="n">candidates</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">candidate_batches</span> <span class="o">=</span> <span class="n">candidates</span>
+        
+        <span class="c1"># Log blocking info (similar to Winter&#39;s blocking log)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Blocking </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2"> elements&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Create lookup dictionaries for fast record access</span>
+        <span class="n">left_lookup</span> <span class="o">=</span> <span class="n">df_left</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">id_column</span><span class="p">)</span>
+        <span class="n">right_lookup</span> <span class="o">=</span> <span class="n">df_right</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">id_column</span><span class="p">)</span>
+        
+        <span class="c1"># Count total candidate pairs for reduction ratio calculation</span>
+        <span class="n">total_pairs_processed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">candidate_batches</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="o">.</span><span class="n">empty</span><span class="p">)</span>
+        <span class="n">total_possible_pairs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span>
+        <span class="n">reduction_ratio</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">total_pairs_processed</span> <span class="o">/</span> <span class="n">total_possible_pairs</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_possible_pairs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        
+        <span class="c1"># Calculate elapsed time for blocking phase</span>
+        <span class="n">blocking_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">blocking_time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">blocking_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Log matching phase info with reduction ratio</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matching </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2"> elements after 0:00:</span><span class="si">{</span><span class="n">blocking_time_str</span><span class="si">}</span><span class="s2">; &quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_pairs_processed</span><span class="si">}</span><span class="s2"> blocked pairs (reduction ratio: </span><span class="si">{</span><span class="n">reduction_ratio</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">debug_results</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span>
+        
+        <span class="c1"># Process candidate batches</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">candidate_batches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">batch</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+                
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="n">batch_results</span><span class="p">,</span> <span class="n">batch_debug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_batch</span><span class="p">(</span>
+                    <span class="n">batch</span><span class="p">,</span> <span class="n">left_lookup</span><span class="p">,</span> <span class="n">right_lookup</span><span class="p">,</span> <span class="n">parsed_comparators</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">debug_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_debug</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_batch</span><span class="p">(</span>
+                    <span class="n">batch</span><span class="p">,</span> <span class="n">left_lookup</span><span class="p">,</span> <span class="n">right_lookup</span><span class="p">,</span> <span class="n">parsed_comparators</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            
+            <span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_results</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate total elapsed time</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">total_time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Log completion info</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entity Matching finished after 0:00:</span><span class="si">{</span><span class="n">total_time_str</span><span class="si">}</span><span class="s2">; found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> correspondences.&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Create correspondence set</span>
+        <span class="n">correspondences</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;notes&quot;</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">debug_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">debug_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug_results</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="s2">&quot;comparator_name&quot;</span><span class="p">,</span> <span class="s2">&quot;record1_value&quot;</span><span class="p">,</span> <span class="s2">&quot;record2_value&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;record1_preprocessed&quot;</span><span class="p">,</span> <span class="s2">&quot;record2_preprocessed&quot;</span><span class="p">,</span> <span class="s2">&quot;similarity&quot;</span><span class="p">,</span> <span class="s2">&quot;postprocessed_similarity&quot;</span>
+            <span class="p">])</span>
+            <span class="k">return</span> <span class="n">correspondences</span><span class="p">,</span> <span class="n">debug_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">correspondences</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_comparators</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">comparators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseComparator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]],</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse comparators and weights into normalized format.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        comparators : List</span>
+<span class="sd">            List of comparators or dicts with comparator/weight.</span>
+<span class="sd">        weights : List[float], optional</span>
+<span class="sd">            Weights for comparators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Dict]</span>
+<span class="sd">            List of dicts with &#39;comparator&#39; and &#39;weight&#39; keys.</span>
+<span class="sd">            Weights are normalized to sum to 1.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># First pass: collect comparators and raw weights</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">comparators</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># Dict format: {&quot;comparator&quot;: func, &quot;weight&quot;: 0.5}</span>
+                <span class="k">if</span> <span class="s2">&quot;comparator&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">comp</span> <span class="ow">or</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">comp</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Comparator dict at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> must have &#39;comparator&#39; and &#39;weight&#39; keys&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">comp</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> must be &gt; 0.0&quot;</span><span class="p">)</span>
+
+                <span class="n">parsed</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;comparator&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="p">[</span><span class="s2">&quot;comparator&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+                <span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Function/object format - need weights</span>
+                <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Use 1.0 as default (will be normalized)</span>
+                    <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not enough weights provided for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comparators</span><span class="p">)</span><span class="si">}</span><span class="s2"> comparators&quot;</span><span class="p">)</span>
+                    <span class="n">weight</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">weight</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> must be &gt; 0.0&quot;</span><span class="p">)</span>
+
+                <span class="n">parsed</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;comparator&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="p">,</span>
+                    <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">weight</span><span class="p">,</span>
+                <span class="p">})</span>
+
+        <span class="c1"># Second pass: normalize weights to sum to 1.0</span>
+        <span class="n">total_weight</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_weight</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Total weight must be greater than 0&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">total_weight</span>
+
+        <span class="k">return</span> <span class="n">parsed</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_batch</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">batch</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">left_lookup</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">right_lookup</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">comparators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a batch of candidate pairs.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        batch : pandas.DataFrame</span>
+<span class="sd">            Candidate pairs with id1, id2 columns.</span>
+<span class="sd">        left_lookup : pandas.DataFrame</span>
+<span class="sd">            Left dataset indexed by _id.</span>
+<span class="sd">        right_lookup : pandas.DataFrame</span>
+<span class="sd">            Right dataset indexed by _id.</span>
+<span class="sd">        comparators : List[Dict]</span>
+<span class="sd">            Parsed comparators with weights.</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Minimum similarity threshold.</span>
+<span class="sd">        debug : bool, optional</span>
+<span class="sd">            If True, captures detailed comparator results.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Dict] or Tuple[List[Dict], List[Dict]]</span>
+<span class="sd">            If debug=False: List of correspondence dictionaries.</span>
+<span class="sd">            If debug=True: Tuple of (correspondence_list, debug_results_list).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">debug_results</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span>
+        
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">]</span>
+            
+            <span class="c1"># Get records</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">record1</span> <span class="o">=</span> <span class="n">left_lookup</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">id1</span><span class="p">]</span>
+                <span class="n">record2</span> <span class="o">=</span> <span class="n">right_lookup</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">id2</span><span class="p">]</span>
+                
+                <span class="c1"># Handle case where .loc returns DataFrame due to duplicate indices</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                    <span class="n">record1</span> <span class="o">=</span> <span class="n">record1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record2</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                    <span class="n">record2</span> <span class="o">=</span> <span class="n">record2</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record not found: </span><span class="si">{</span><span class="n">id1</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">id2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Compute similarity</span>
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="n">similarity</span><span class="p">,</span> <span class="n">pair_debug_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity_with_debug</span><span class="p">(</span>
+                    <span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="n">comparators</span><span class="p">,</span> <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span>
+                <span class="p">)</span>
+                <span class="n">debug_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pair_debug_results</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="n">comparators</span><span class="p">)</span>
+            
+            <span class="c1"># Add to results if above threshold</span>
+            <span class="k">if</span> <span class="n">similarity</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">id1</span><span class="p">,</span>
+                    <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="n">id2</span><span class="p">,</span>
+                    <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">similarity</span><span class="p">,</span>
+                    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;comparators=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comparators</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">})</span>
+        
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">debug_results</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">results</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_similarity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">record1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> 
+        <span class="n">record2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+        <span class="n">comparators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute weighted similarity between two records.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        record1 : pandas.Series</span>
+<span class="sd">            First record.</span>
+<span class="sd">        record2 : pandas.Series</span>
+<span class="sd">            Second record.</span>
+<span class="sd">        comparators : List[Dict]</span>
+<span class="sd">            Parsed comparators with weights.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Weighted similarity score.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">weighted_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        
+        <span class="k">for</span> <span class="n">comp_info</span> <span class="ow">in</span> <span class="n">comparators</span><span class="p">:</span>
+            <span class="n">comparator</span> <span class="o">=</span> <span class="n">comp_info</span><span class="p">[</span><span class="s2">&quot;comparator&quot;</span><span class="p">]</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">comp_info</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+            
+            <span class="c1"># Compute similarity using comparator</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="n">BaseComparator</span><span class="p">):</span>
+                <span class="n">similarity</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Assume it&#39;s a callable</span>
+                <span class="n">similarity</span> <span class="o">=</span> <span class="n">comparator</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">)</span>
+            
+            <span class="n">weighted_sum</span> <span class="o">+=</span> <span class="n">similarity</span> <span class="o">*</span> <span class="n">weight</span>
+        
+        <span class="k">return</span> <span class="n">weighted_sum</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_similarity_with_debug</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+        <span class="n">record2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+        <span class="n">comparators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="n">id1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">id2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute weighted similarity with detailed debug information.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        record1 : pandas.Series</span>
+<span class="sd">            First record.</span>
+<span class="sd">        record2 : pandas.Series</span>
+<span class="sd">            Second record.</span>
+<span class="sd">        comparators : List[Dict]</span>
+<span class="sd">            Parsed comparators with weights.</span>
+<span class="sd">        id1, id2 : str</span>
+<span class="sd">            Record identifiers for debug output.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[float, List[Dict]]</span>
+<span class="sd">            Tuple of (weighted_similarity, debug_results_list).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">weighted_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">debug_results</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">comp_info</span> <span class="ow">in</span> <span class="n">comparators</span><span class="p">:</span>
+            <span class="n">comparator</span> <span class="o">=</span> <span class="n">comp_info</span><span class="p">[</span><span class="s2">&quot;comparator&quot;</span><span class="p">]</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">comp_info</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
+            
+            <span class="c1"># Get comparator name - only show list_strategy if lists were actually processed</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="n">BaseComparator</span><span class="p">):</span>
+                <span class="c1"># Create a cleaner name by conditionally including list_strategy</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">):</span>
+                    <span class="n">class_name</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                    <span class="n">column</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="n">column</span>
+                    
+                    <span class="c1"># Check if this comparator actually processed lists</span>
+                    <span class="n">list_was_used</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;list_strategy&#39;</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="c1"># Check if either record has a list for this column</span>
+                            <span class="n">val1</span> <span class="o">=</span> <span class="n">record1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+                            <span class="n">val2</span> <span class="o">=</span> <span class="n">record2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+                            <span class="n">list_was_used</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_actual_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_actual_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">list_was_used</span> <span class="o">=</span> <span class="kc">False</span>
+                    
+                    <span class="c1"># Build the name based on comparator type and whether lists were used</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;similarity_function&#39;</span><span class="p">):</span>
+                        <span class="c1"># StringComparator</span>
+                        <span class="k">if</span> <span class="n">list_was_used</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">similarity_function</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">similarity_function</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">):</span>
+                        <span class="c1"># NumericComparator</span>
+                        <span class="k">if</span> <span class="n">list_was_used</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Other comparators like DateComparator</span>
+                        <span class="k">if</span> <span class="n">list_was_used</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">comparator</span><span class="o">.</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">comparator_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Fallback to original name</span>
+                    <span class="n">comparator_name</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+                <span class="n">comparator_name</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">comparator_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">comparator</span><span class="p">)</span>
+            
+            <span class="c1"># Extract the values being compared by the comparator</span>
+            <span class="n">record1_value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">record2_value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">record1_preprocessed</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">record2_preprocessed</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            
+            <span class="c1"># Try to extract the actual column values that the comparator uses</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="n">BaseComparator</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">):</span>
+                <span class="c1"># Most PyDI comparators have a &#39;column&#39; attribute</span>
+                <span class="n">column_name</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="n">column</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">raw_val1</span> <span class="o">=</span> <span class="n">record1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">raw_val2</span> <span class="o">=</span> <span class="n">record2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="n">record1_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw_val1</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw_val1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">raw_val1</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">record2_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw_val2</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw_val2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">raw_val2</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    
+                    <span class="c1"># Apply preprocessing if the comparator has it</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;preprocess&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">comparator</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">record1_preprocessed</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">comparator</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">raw_val1</span><span class="p">))</span> <span class="k">if</span> <span class="n">raw_val1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">raw_val1</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                            <span class="n">record2_preprocessed</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">comparator</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">raw_val2</span><span class="p">))</span> <span class="k">if</span> <span class="n">raw_val2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">raw_val2</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">record1_preprocessed</span> <span class="o">=</span> <span class="n">record1_value</span>
+                            <span class="n">record2_preprocessed</span> <span class="o">=</span> <span class="n">record2_value</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">record1_preprocessed</span> <span class="o">=</span> <span class="n">record1_value</span>
+                        <span class="n">record2_preprocessed</span> <span class="o">=</span> <span class="n">record2_value</span>
+                        
+                <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+                    <span class="c1"># Column not found, leave values empty</span>
+                    <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+                <span class="c1"># For simple callable comparators, try to infer from function name</span>
+                <span class="c1"># This is a fallback for custom comparators</span>
+                <span class="n">record1_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">record1</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">record1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record1</span><span class="p">)</span>
+                <span class="n">record2_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">record2</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">record2</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record2</span><span class="p">)</span>
+                <span class="n">record1_preprocessed</span> <span class="o">=</span> <span class="n">record1_value</span>
+                <span class="n">record2_preprocessed</span> <span class="o">=</span> <span class="n">record2_value</span>
+            
+            <span class="c1"># Compute similarity using comparator</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparator</span><span class="p">,</span> <span class="n">BaseComparator</span><span class="p">):</span>
+                <span class="n">similarity</span> <span class="o">=</span> <span class="n">comparator</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Assume it&#39;s a callable</span>
+                <span class="n">similarity</span> <span class="o">=</span> <span class="n">comparator</span><span class="p">(</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">)</span>
+            
+            <span class="c1"># For now, postprocessed similarity is the same as raw similarity</span>
+            <span class="n">postprocessed_similarity</span> <span class="o">=</span> <span class="n">similarity</span>
+            
+            <span class="c1"># Store debug information</span>
+            <span class="n">debug_results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">id1</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="n">id2</span><span class="p">,</span>
+                <span class="s2">&quot;comparator_name&quot;</span><span class="p">:</span> <span class="n">comparator_name</span><span class="p">,</span>
+                <span class="s2">&quot;record1_value&quot;</span><span class="p">:</span> <span class="n">record1_value</span><span class="p">,</span>
+                <span class="s2">&quot;record2_value&quot;</span><span class="p">:</span> <span class="n">record2_value</span><span class="p">,</span>
+                <span class="s2">&quot;record1_preprocessed&quot;</span><span class="p">:</span> <span class="n">record1_preprocessed</span><span class="p">,</span>
+                <span class="s2">&quot;record2_preprocessed&quot;</span><span class="p">:</span> <span class="n">record2_preprocessed</span><span class="p">,</span>
+                <span class="s2">&quot;similarity&quot;</span><span class="p">:</span> <span class="n">similarity</span><span class="p">,</span>
+                <span class="s2">&quot;postprocessed_similarity&quot;</span><span class="p">:</span> <span class="n">postprocessed_similarity</span><span class="p">,</span>
+            <span class="p">})</span>
+            
+            <span class="n">weighted_sum</span> <span class="o">+=</span> <span class="n">similarity</span> <span class="o">*</span> <span class="n">weight</span>
+        
+        <span class="k">return</span> <span class="n">weighted_sum</span><span class="p">,</span> <span class="n">debug_results</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_null_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is null, handling both scalars and arrays.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For arrays/series, check if all values are null</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="c1"># For scalars</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_actual_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is actually a list/array (not a scalar or string).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Check if it&#39;s iterable but not a string</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For pandas Series/arrays, check if they have multiple elements</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="c1"># For other iterables, try to count elements (avoid consuming iterators)</span>
+            <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">)</span>  <span class="c1"># Has indexing, likely a list-like structure</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RuleBasedMatcher()&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

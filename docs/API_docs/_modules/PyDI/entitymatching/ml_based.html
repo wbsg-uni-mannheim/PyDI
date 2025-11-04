@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.entitymatching.ml_based &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.entitymatching.ml_based</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Machine learning-based entity matching using scikit-learn integration.</span>
+
+<span class="sd">This module provides ML-based entity matching that leverages scikit-learn&#39;s</span>
+<span class="sd">full ecosystem while maintaining compatibility with PyDI&#39;s design principles.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMatcher</span><span class="p">,</span> <span class="n">CorrespondenceSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.feature_extraction</span><span class="w"> </span><span class="kn">import</span> <span class="n">FeatureExtractor</span><span class="p">,</span> <span class="n">VectorFeatureExtractor</span>
+
+
+<div class="viewcode-block" id="MLBasedMatcher">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.ml_based.MLBasedMatcher">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MLBasedMatcher</span><span class="p">(</span><span class="n">BaseMatcher</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Machine learning-based entity matcher with scikit-learn integration.</span>
+
+<span class="sd">    This matcher uses trained scikit-learn classifiers to predict entity matches</span>
+<span class="sd">    based on feature vectors extracted from candidate pairs. It provides minimal</span>
+<span class="sd">    wrapping around scikit-learn while maintaining PyDI compatibility.</span>
+
+<span class="sd">    The matcher requires a FeatureExtractor to convert entity pairs into features</span>
+<span class="sd">    and a trained scikit-learn classifier. This design allows users to leverage</span>
+<span class="sd">    the full scikit-learn ecosystem (hyperparameter tuning, cross-validation,</span>
+<span class="sd">    feature selection, etc.) while maintaining PyDI&#39;s DataFrame-first approach.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feature_extractor : FeatureExtractor or VectorFeatureExtractor</span>
+<span class="sd">        Feature extraction component that converts entity pairs to feature vectors.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.entitymatching import MLBasedMatcher, FeatureExtractor</span>
+<span class="sd">    &gt;&gt;&gt; from PyDI.entitymatching.comparators import StringComparator</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Create feature extractor</span>
+<span class="sd">    &gt;&gt;&gt; extractor = FeatureExtractor([</span>
+<span class="sd">    ...     StringComparator(&quot;title&quot;, &quot;jaro_winkler&quot;),</span>
+<span class="sd">    ...     NumericComparator(&quot;year&quot;, &quot;absolute_difference&quot;)</span>
+<span class="sd">    ... ])</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Prepare training data</span>
+<span class="sd">    &gt;&gt;&gt; train_features = extractor.create_features(df_left, df_right, train_pairs, train_labels)</span>
+<span class="sd">    &gt;&gt;&gt; X = train_features.drop([&#39;label&#39;, &#39;id1&#39;, &#39;id2&#39;], axis=1)</span>
+<span class="sd">    &gt;&gt;&gt; y = train_features[&#39;label&#39;]</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Train classifier using full scikit-learn workflow</span>
+<span class="sd">    &gt;&gt;&gt; clf = RandomForestClassifier(n_estimators=100)</span>
+<span class="sd">    &gt;&gt;&gt; clf.fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Use trained classifier with matcher</span>
+<span class="sd">    &gt;&gt;&gt; matcher = MLBasedMatcher(extractor)</span>
+<span class="sd">    &gt;&gt;&gt; matches = matcher.match(df_left, df_right, candidates, clf, threshold=0.7)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">feature_extractor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">FeatureExtractor</span><span class="p">,</span> <span class="n">VectorFeatureExtractor</span><span class="p">]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize ML-based matcher.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_extractor : FeatureExtractor or VectorFeatureExtractor</span>
+<span class="sd">            Feature extraction component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">feature_extractor</span><span class="p">,</span> <span class="p">(</span><span class="n">FeatureExtractor</span><span class="p">,</span> <span class="n">VectorFeatureExtractor</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;feature_extractor must be FeatureExtractor or VectorFeatureExtractor instance&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">feature_extractor</span>
+
+<div class="viewcode-block" id="MLBasedMatcher.match">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.ml_based.MLBasedMatcher.match">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">candidates</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">trained_classifier</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">use_probabilities</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">CorrespondenceSet</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CorrespondenceSet</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find entity correspondences using trained ML classifier.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_left : pandas.DataFrame</span>
+<span class="sd">            Left dataset with _id column and dataset_name in attrs.</span>
+<span class="sd">        df_right : pandas.DataFrame</span>
+<span class="sd">            Right dataset with _id column and dataset_name in attrs.</span>
+<span class="sd">        candidates : Iterable[pandas.DataFrame]</span>
+<span class="sd">            Candidate pair batches with id1, id2 columns.</span>
+<span class="sd">        trained_classifier : sklearn classifier</span>
+<span class="sd">            Trained scikit-learn classifier with predict() method.</span>
+<span class="sd">            If use_probabilities=True, must also have predict_proba() method.</span>
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            Decision threshold for classification. Default is 0.5.</span>
+<span class="sd">            If use_probabilities=True, applied to probability of positive class.</span>
+<span class="sd">            If use_probabilities=False, applied to raw classifier output.</span>
+<span class="sd">        use_probabilities : bool, optional</span>
+<span class="sd">            Whether to use predict_proba() for probabilistic scores (default)</span>
+<span class="sd">            or predict() for binary decisions. Default is False.</span>
+<span class="sd">        debug : bool, optional</span>
+<span class="sd">            If True, captures detailed feature extraction and prediction results</span>
+<span class="sd">            for debugging. Returns tuple of (correspondences, debug_results). Default is False.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional arguments (ignored).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CorrespondenceSet or Tuple[CorrespondenceSet, pandas.DataFrame]</span>
+<span class="sd">            If debug=False: DataFrame with columns id1, id2, score, notes containing</span>
+<span class="sd">            entity correspondences above the threshold.</span>
+<span class="sd">            If debug=True: Tuple of (correspondences, debug_results) where</span>
+<span class="sd">            debug_results contains detailed ML prediction information.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If classifier doesn&#39;t have required methods or inputs are invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Setup logger</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Log start of entity matching</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Entity Matching&quot;</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        
+        <span class="c1"># Validate inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_inputs</span><span class="p">(</span><span class="n">df_left</span><span class="p">,</span> <span class="n">df_right</span><span class="p">,</span> <span class="n">id_column</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">trained_classifier</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;trained_classifier cannot be None&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check classifier methods</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">,</span> <span class="s2">&quot;predict&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;trained_classifier must have predict() method&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_probabilities</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;trained_classifier must have predict_proba() method when use_probabilities=True&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Log blocking info (similar to Winter&#39;s blocking log)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Blocking </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2"> elements&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Convert candidates to list to count total pairs</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">candidate_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">candidate_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">candidates</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="p">[]</span>
+        
+        <span class="c1"># Count total candidate pairs for reduction ratio calculation</span>
+        <span class="n">total_pairs_processed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">candidate_list</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">batch</span><span class="o">.</span><span class="n">empty</span><span class="p">)</span>
+        <span class="n">total_possible_pairs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span>
+        <span class="n">reduction_ratio</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">total_pairs_processed</span> <span class="o">/</span> <span class="n">total_possible_pairs</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_possible_pairs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        
+        <span class="c1"># Calculate elapsed time for blocking phase</span>
+        <span class="n">blocking_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">blocking_time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">blocking_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Log matching phase info with reduction ratio</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matching </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_left</span><span class="p">)</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_right</span><span class="p">)</span><span class="si">}</span><span class="s2"> elements after 0:00:</span><span class="si">{</span><span class="n">blocking_time_str</span><span class="si">}</span><span class="s2">; &quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_pairs_processed</span><span class="si">}</span><span class="s2"> blocked pairs (reduction ratio: </span><span class="si">{</span><span class="n">reduction_ratio</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">debug_results</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1"># Process candidate batches</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">candidate_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">batch</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="n">batch_results</span><span class="p">,</span> <span class="n">batch_debug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_batch</span><span class="p">(</span>
+                    <span class="n">batch</span><span class="p">,</span>
+                    <span class="n">df_left</span><span class="p">,</span>
+                    <span class="n">df_right</span><span class="p">,</span>
+                    <span class="n">id_column</span><span class="p">,</span>
+                    <span class="n">trained_classifier</span><span class="p">,</span>
+                    <span class="n">threshold</span><span class="p">,</span>
+                    <span class="n">use_probabilities</span><span class="p">,</span>
+                    <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">debug_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_debug</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_batch</span><span class="p">(</span>
+                    <span class="n">batch</span><span class="p">,</span>
+                    <span class="n">df_left</span><span class="p">,</span>
+                    <span class="n">df_right</span><span class="p">,</span>
+                    <span class="n">id_column</span><span class="p">,</span>
+                    <span class="n">trained_classifier</span><span class="p">,</span>
+                    <span class="n">threshold</span><span class="p">,</span>
+                    <span class="n">use_probabilities</span><span class="p">,</span>
+                    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_results</span><span class="p">)</span>
+
+        <span class="c1"># Calculate total elapsed time</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">total_time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Log completion info</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entity Matching finished after 0:00:</span><span class="si">{</span><span class="n">total_time_str</span><span class="si">}</span><span class="s2">; found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> correspondences.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create correspondence set</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">corr_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+            <span class="c1"># Add metadata</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;classifier_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">threshold</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;use_probabilities&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_probabilities</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;feature_extractor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">corr_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;notes&quot;</span><span class="p">])</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;classifier_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">corr_df</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">threshold</span>
+
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">debug_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">debug_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug_results</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_names&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_values&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction_score&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;classifier_type&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction_proba_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction_proba_negative&quot;</span>
+            <span class="p">])</span>
+            <span class="k">return</span> <span class="n">corr_df</span><span class="p">,</span> <span class="n">debug_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">corr_df</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_batch</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">batch</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">id_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">trained_classifier</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">use_probabilities</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a batch of candidate pairs using the trained classifier.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        batch : pandas.DataFrame</span>
+<span class="sd">            Candidate pairs with id1, id2 columns.</span>
+<span class="sd">        df_left : pandas.DataFrame</span>
+<span class="sd">            Left dataset.</span>
+<span class="sd">        df_right : pandas.DataFrame</span>
+<span class="sd">            Right dataset.</span>
+<span class="sd">        trained_classifier : sklearn classifier</span>
+<span class="sd">            Trained classifier.</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Decision threshold.</span>
+<span class="sd">        use_probabilities : bool</span>
+<span class="sd">            Whether to use probabilistic scores.</span>
+<span class="sd">        debug : bool, optional</span>
+<span class="sd">            Whether to capture debug information. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list or Tuple[list, list]</span>
+<span class="sd">            If debug=False: List of correspondence dictionaries.</span>
+<span class="sd">            If debug=True: Tuple of (correspondence_list, debug_results_list).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Extract features for this batch</span>
+            <span class="n">feature_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span><span class="o">.</span><span class="n">create_features</span><span class="p">(</span>
+                <span class="n">df_left</span><span class="p">,</span> <span class="n">df_right</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">id_column</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No features extracted for batch&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[]</span>
+
+            <span class="c1"># Prepare feature matrix (exclude id columns)</span>
+            <span class="n">id_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">]</span>
+            <span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_columns</span>
+            <span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">feature_columns</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No feature columns found&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[]</span>
+
+            <span class="n">X</span> <span class="o">=</span> <span class="n">feature_df</span><span class="p">[</span>
+                <span class="n">feature_columns</span>
+            <span class="p">]</span>  <span class="c1"># Keep as DataFrame to preserve column names</span>
+
+            <span class="c1"># Get predictions</span>
+            <span class="k">if</span> <span class="n">use_probabilities</span><span class="p">:</span>
+                <span class="c1"># Use probabilities of positive class</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">probas</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">probas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="c1"># Binary classification - use positive class probability</span>
+                        <span class="n">scores</span> <span class="o">=</span> <span class="n">probas</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Multi-class or single-class - use max probability</span>
+                        <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Error getting probabilities, falling back to predictions: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="c1"># Fall back to binary predictions</span>
+                    <span class="n">predictions</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+                    <span class="n">scores</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Use raw predictions</span>
+                <span class="n">predictions</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+                <span class="n">scores</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="c1"># Filter by threshold and create results</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">debug_results</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scores</span><span class="p">):</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="c1"># Always capture debug info if requested</span>
+                <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                    <span class="c1"># Get feature names and values for this pair</span>
+                    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">]]</span>
+                    <span class="n">feature_values</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">}</span>
+
+                    <span class="c1"># Get probabilities if available</span>
+                    <span class="n">proba_positive</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">proba_negative</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">use_probabilities</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">proba</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">i</span><span class="p">]])</span>
+                            <span class="k">if</span> <span class="n">proba</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                                <span class="n">proba_negative</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proba</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                                <span class="n">proba_positive</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">proba</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                    <span class="n">debug_results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">feature_names</span><span class="p">),</span>
+                        <span class="s2">&quot;feature_values&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">feature_values</span><span class="p">),</span>
+                        <span class="s2">&quot;prediction_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">),</span>
+                        <span class="s2">&quot;classifier_type&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                        <span class="s2">&quot;prediction_proba_positive&quot;</span><span class="p">:</span> <span class="n">proba_positive</span><span class="p">,</span>
+                        <span class="s2">&quot;prediction_proba_negative&quot;</span><span class="p">:</span> <span class="n">proba_negative</span><span class="p">,</span>
+                    <span class="p">})</span>
+
+                <span class="c1"># Add to results if above threshold</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span>
+                            <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id2&quot;</span><span class="p">],</span>
+                            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">),</span>
+                            <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;ml_classifier=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">debug_results</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">results</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error processing batch: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MLBasedMatcher.predict_pairs">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.ml_based.MLBasedMatcher.predict_pairs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_pairs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df_left</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">df_right</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">pairs</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">trained_classifier</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">use_probabilities</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict match probabilities for specific pairs without threshold filtering.</span>
+
+<span class="sd">        This method is useful for getting raw predictions or probabilities for</span>
+<span class="sd">        evaluation purposes without applying a threshold.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_left : pandas.DataFrame</span>
+<span class="sd">            Left dataset.</span>
+<span class="sd">        df_right : pandas.DataFrame</span>
+<span class="sd">            Right dataset.</span>
+<span class="sd">        pairs : pandas.DataFrame</span>
+<span class="sd">            Pairs to predict with id1, id2 columns.</span>
+<span class="sd">        trained_classifier : sklearn classifier</span>
+<span class="sd">            Trained classifier.</span>
+<span class="sd">        use_probabilities : bool, optional</span>
+<span class="sd">            Whether to use predict_proba() or predict(). Default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            DataFrame with id1, id2, prediction columns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Extract features</span>
+        <span class="n">feature_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span><span class="o">.</span><span class="n">create_features</span><span class="p">(</span>
+            <span class="n">df_left</span><span class="p">,</span> <span class="n">df_right</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Prepare feature matrix</span>
+        <span class="n">id_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">]</span>
+        <span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_columns</span><span class="p">]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">feature_df</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">]</span>  <span class="c1"># Keep as DataFrame</span>
+
+        <span class="c1"># Get predictions</span>
+        <span class="k">if</span> <span class="n">use_probabilities</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+            <span class="n">probas</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">probas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">predictions</span> <span class="o">=</span> <span class="n">probas</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Positive class probability</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">probas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">predictions</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1"># Create result DataFrame</span>
+        <span class="n">result_df</span> <span class="o">=</span> <span class="n">feature_df</span><span class="p">[[</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">result_df</span><span class="p">[</span><span class="s2">&quot;prediction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictions</span>
+
+        <span class="k">return</span> <span class="n">result_df</span></div>
+
+
+<div class="viewcode-block" id="MLBasedMatcher.get_feature_importance">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.ml_based.MLBasedMatcher.get_feature_importance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_feature_importance</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trained_classifier</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">feature_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get feature importance from trained classifier if available.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        trained_classifier : sklearn classifier</span>
+<span class="sd">            Trained classifier with feature_importances_ attribute.</span>
+<span class="sd">        feature_names : list, optional</span>
+<span class="sd">            Names of features. If None, uses extractor&#39;s feature names.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            DataFrame with feature names and importance scores.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If classifier doesn&#39;t have feature importance information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">,</span> <span class="s2">&quot;feature_importances_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trained_classifier</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t provide feature importance&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">importances</span> <span class="o">=</span> <span class="n">trained_classifier</span><span class="o">.</span><span class="n">feature_importances_</span>
+
+        <span class="k">if</span> <span class="n">feature_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">feature_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span>
+
+        <span class="c1"># Handle mismatch by using the actual number of importances</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Feature name mismatch: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)</span><span class="si">}</span><span class="s2"> importances vs </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span><span class="si">}</span><span class="s2"> names&quot;</span>
+            <span class="p">)</span>
+            <span class="c1"># Use generic names if mismatch</span>
+            <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;feature_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">))]</span>
+
+        <span class="n">importance_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;feature&quot;</span><span class="p">:</span> <span class="n">feature_names</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)],</span> <span class="s2">&quot;importance&quot;</span><span class="p">:</span> <span class="n">importances</span><span class="p">}</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;importance&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Format importance values to 4 decimal places</span>
+        <span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">importance_df</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">importance_df</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;MLBasedMatcher(feature_extractor=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_extractor</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

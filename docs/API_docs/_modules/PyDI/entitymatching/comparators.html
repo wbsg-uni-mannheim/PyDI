@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyDI.entitymatching.comparators &#8212; PyDI 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyDI.entitymatching.comparators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Comparator classes for entity matching.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseComparator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimilarityRegistry</span>
+
+
+<div class="viewcode-block" id="StringComparator">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.StringComparator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StringComparator</span><span class="p">(</span><span class="n">BaseComparator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;String similarity comparator using textdistance metrics.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    column : str</span>
+<span class="sd">        Column name to compare.</span>
+<span class="sd">    similarity_function : str</span>
+<span class="sd">        Name of textdistance similarity function.</span>
+<span class="sd">    tokenization : str or callable, optional</span>
+<span class="sd">        Tokenization strategy for token-based similarity functions. Options:</span>
+<span class="sd">        - &quot;word&quot;: Whitespace tokenization</span>
+<span class="sd">        - &quot;char&quot;: Character-level tokenization</span>
+<span class="sd">        - &quot;ngram_2&quot;, &quot;ngram_3&quot;: N-gram tokenization</span>
+<span class="sd">        - callable: Custom tokenizer function</span>
+<span class="sd">        Default: &quot;word&quot; for token-based functions (jaccard, sorensen_dice, cosine, etc.),</span>
+<span class="sd">        &quot;char&quot; for edit-based functions (jaro_winkler, levenshtein, etc.).</span>
+<span class="sd">    preprocess : callable, optional</span>
+<span class="sd">        Function to preprocess values before comparison.</span>
+<span class="sd">    list_strategy : str, optional</span>
+<span class="sd">        Strategy for handling lists (&quot;concatenate&quot;, &quot;best_match&quot;, &quot;set_jaccard&quot;, &quot;set_overlap&quot;).</span>
+<span class="sd">        Default is &quot;concatenate&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">similarity_function</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jaro_winkler&quot;</span><span class="p">,</span>
+        <span class="n">tokenization</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">preprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">similarity_function</span> <span class="o">=</span> <span class="n">similarity_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="o">=</span> <span class="n">preprocess</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">=</span> <span class="n">list_strategy</span>
+
+        <span class="c1"># Set intelligent default tokenization based on function type</span>
+        <span class="k">if</span> <span class="n">tokenization</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">=</span> <span class="s2">&quot;word&quot;</span> <span class="k">if</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">is_tokenizable</span><span class="p">(</span><span class="n">similarity_function</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;char&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">=</span> <span class="n">tokenization</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;StringComparator(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">similarity_function</span><span class="si">}</span><span class="s2">, tokenization=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">list_strategy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">list_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;concatenate&quot;</span><span class="p">,</span> <span class="s2">&quot;best_match&quot;</span><span class="p">,</span> <span class="s2">&quot;set_jaccard&quot;</span><span class="p">,</span> <span class="s2">&quot;set_overlap&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown list_strategy: </span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get similarity function with tokenization</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span> <span class="o">=</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="n">similarity_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">available</span> <span class="o">=</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">get_recommended_functions</span><span class="p">(</span><span class="s2">&quot;entity_matching&quot;</span><span class="p">)</span>
+            <span class="n">available_tokenization</span> <span class="o">=</span> <span class="n">SimilarityRegistry</span><span class="o">.</span><span class="n">list_tokenization_strategies</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Recommended functions: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">. Available tokenization: </span><span class="si">{</span><span class="n">available_tokenization</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="StringComparator.compare">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.StringComparator.compare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">record2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare string values in specified column, handling both single values and lists.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val1</span> <span class="o">=</span> <span class="n">record1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="n">record2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            
+            <span class="c1"># Handle missing values - properly handle arrays/series</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val2</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Check if we have list values but no list_strategy</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val2</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;List values detected in column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; but list_strategy is None. Please specify a list_strategy.&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Handle comparison based on whether we have lists or single values</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Both are single values - compare directly</span>
+                <span class="n">str1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="k">if</span> <span class="n">val1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">str2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span> <span class="k">if</span> <span class="n">val2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                    <span class="n">str1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span>
+                    <span class="n">str2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Apply list strategy to get comparison values</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_list_strategy</span><span class="p">(</span><span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">result</span>
+            
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in one or both records&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in StringComparator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_null_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is null, handling both scalars and arrays.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For arrays/series, check if all values are null</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="c1"># For scalars</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_list_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is a list/array (not a scalar string).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_to_string_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value to list of strings.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="c1"># Handle lists/arrays</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">item</span><span class="p">)]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)]</span>
+        
+        <span class="c1"># Handle single values</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_list_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the list strategy to get comparison result.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;concatenate&quot;</span><span class="p">:</span>
+            <span class="c1"># Convert to concatenated strings</span>
+            <span class="n">str1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concatenate_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+            <span class="n">str2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concatenate_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+            
+            <span class="c1"># Preprocess if needed</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                <span class="n">str1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span>
+                <span class="n">str2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">))</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;best_match&quot;</span><span class="p">:</span>
+            <span class="c1"># Get string lists</span>
+            <span class="n">list1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+            <span class="n">list2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">list1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">list2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Find best matching pair</span>
+            <span class="n">max_sim</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">s1</span> <span class="ow">in</span> <span class="n">list1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">list2</span><span class="p">:</span>
+                    <span class="c1"># Preprocess if needed</span>
+                    <span class="n">proc_s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">else</span> <span class="n">s1</span>
+                    <span class="n">proc_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">else</span> <span class="n">s2</span>
+                    
+                    <span class="n">sim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span><span class="p">(</span><span class="n">proc_s1</span><span class="p">,</span> <span class="n">proc_s2</span><span class="p">))</span>
+                    <span class="n">max_sim</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_sim</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">max_sim</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;set_jaccard&quot;</span><span class="p">:</span>
+            <span class="c1"># Get string sets</span>
+            <span class="n">set1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val1</span><span class="p">))</span>
+            <span class="n">set2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val2</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                <span class="n">set1</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">set1</span><span class="p">}</span>
+                <span class="n">set2</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">set2</span><span class="p">}</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">set1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">set2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">set1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">set2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Jaccard similarity</span>
+            <span class="n">intersection</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">set1</span> <span class="o">&amp;</span> <span class="n">set2</span><span class="p">)</span>
+            <span class="n">union</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">set1</span> <span class="o">|</span> <span class="n">set2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">intersection</span> <span class="o">/</span> <span class="n">union</span> <span class="k">if</span> <span class="n">union</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;set_overlap&quot;</span><span class="p">:</span>
+            <span class="c1"># Get string sets</span>
+            <span class="n">set1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val1</span><span class="p">))</span>
+            <span class="n">set2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_string_list</span><span class="p">(</span><span class="n">val2</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                <span class="n">set1</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">set1</span><span class="p">}</span>
+                <span class="n">set2</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">set2</span><span class="p">}</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">set1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">set2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">set1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">set2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Overlap coefficient</span>
+            <span class="n">intersection</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">set1</span> <span class="o">&amp;</span> <span class="n">set2</span><span class="p">)</span>
+            <span class="n">min_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">set1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">set2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">intersection</span> <span class="o">/</span> <span class="n">min_size</span> <span class="k">if</span> <span class="n">min_size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Default to concatenate</span>
+            <span class="n">str1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concatenate_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+            <span class="n">str2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concatenate_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+                <span class="n">str1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span>
+                <span class="n">str2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_func</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">))</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_concatenate_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value to concatenated string.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        
+        <span class="c1"># Handle lists/arrays</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Convert list to space-separated string</span>
+                <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        
+        <span class="c1"># Handle single values</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="NumericComparator">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.NumericComparator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NumericComparator</span><span class="p">(</span><span class="n">BaseComparator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numeric similarity comparator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    column : str</span>
+<span class="sd">        Column name to compare.</span>
+<span class="sd">    method : str</span>
+<span class="sd">        Similarity method:</span>
+<span class="sd">        - &quot;absolute_difference&quot;: Similarity based on absolute difference.</span>
+<span class="sd">        - &quot;relative_difference&quot;: Similarity based on percentage difference.</span>
+<span class="sd">        - &quot;within_range&quot;: Binary similarity (1.0 if within range, 0.0 otherwise).</span>
+<span class="sd">    max_difference : float, optional</span>
+<span class="sd">        Maximum difference for normalization or range checking:</span>
+<span class="sd">        - For &quot;absolute_difference&quot;: Normalizes similarity to [0, 1] range.</span>
+<span class="sd">        - For &quot;relative_difference&quot;: Threshold above which similarity is 0 (Winter-compatible).</span>
+<span class="sd">          Similarity scales linearly from 1.0 to 0.0 as relative_diff goes from 0 to max_difference.</span>
+<span class="sd">        - For &quot;within_range&quot;: Required; defines the acceptable range.</span>
+<span class="sd">    list_strategy : str, optional</span>
+<span class="sd">        Strategy for handling lists (&quot;average&quot;, &quot;best_match&quot;, &quot;range_overlap&quot;, &quot;set_jaccard&quot;).</span>
+<span class="sd">        Default is &quot;average&quot;.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The &quot;relative_difference&quot; method with max_difference is equivalent to Winter&#39;s</span>
+<span class="sd">    PercentageSimilarity. For values differing by X%, where X &lt; max_difference*100:</span>
+<span class="sd">        similarity = 1 - (X/100) / max_difference</span>
+<span class="sd">    If X &gt;= max_difference*100, similarity = 0.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;absolute_difference&quot;</span><span class="p">,</span>
+        <span class="n">max_difference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">list_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumericComparator(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span> <span class="o">=</span> <span class="n">max_difference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">=</span> <span class="n">list_strategy</span>
+        
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;absolute_difference&quot;</span><span class="p">,</span> <span class="s2">&quot;relative_difference&quot;</span><span class="p">,</span> <span class="s2">&quot;within_range&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">list_strategy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">list_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;best_match&quot;</span><span class="p">,</span> <span class="s2">&quot;range_overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;set_jaccard&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown list_strategy: </span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="NumericComparator.compare">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.NumericComparator.compare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">record2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare numeric values in specified column, handling both single values and lists.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val1</span> <span class="o">=</span> <span class="n">record1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="n">record2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            
+            <span class="c1"># Handle missing values - properly handle arrays/series</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val2</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Check if we have list values but no list_strategy</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val2</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;List values detected in column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; but list_strategy is None. Please specify a list_strategy.&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Handle comparison based on whether we have lists or single values</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Both are single values - compare directly</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">num1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+                    <span class="n">num2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Normalize values to numeric lists</span>
+                <span class="n">nums1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_numeric_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+                <span class="n">nums2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_numeric_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">nums1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">nums2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+                
+                <span class="c1"># Apply list strategy to get single values for comparison</span>
+                <span class="n">comp_val1</span><span class="p">,</span> <span class="n">comp_val2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_list_strategy</span><span class="p">(</span><span class="n">nums1</span><span class="p">,</span> <span class="n">nums2</span><span class="p">)</span>
+                
+                <span class="c1"># Apply the comparison method</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity</span><span class="p">(</span><span class="n">comp_val1</span><span class="p">,</span> <span class="n">comp_val2</span><span class="p">)</span>
+            
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in one or both records&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in NumericComparator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_null_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is null, handling both scalars and arrays.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For arrays/series, check if all values are null</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="c1"># For scalars</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_list_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is a list/array (not a scalar string).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_to_numeric_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value to list of numeric values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="c1"># Handle lists/arrays</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">item</span><span class="p">)]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="c1"># Handle single values</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_list_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums1</span><span class="p">,</span> <span class="n">nums2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the list strategy to get comparison values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;average&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nums1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums1</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;best_match&quot;</span><span class="p">:</span>
+            <span class="c1"># Find the pair with minimum difference</span>
+            <span class="n">min_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+            <span class="n">best_val1</span><span class="p">,</span> <span class="n">best_val2</span> <span class="o">=</span> <span class="n">nums1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nums2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="k">for</span> <span class="n">n1</span> <span class="ow">in</span> <span class="n">nums1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">n2</span> <span class="ow">in</span> <span class="n">nums2</span><span class="p">:</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="n">n2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">min_diff</span><span class="p">:</span>
+                        <span class="n">min_diff</span> <span class="o">=</span> <span class="n">diff</span>
+                        <span class="n">best_val1</span><span class="p">,</span> <span class="n">best_val2</span> <span class="o">=</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span>
+            
+            <span class="k">return</span> <span class="n">best_val1</span><span class="p">,</span> <span class="n">best_val2</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;range_overlap&quot;</span><span class="p">:</span>
+            <span class="c1"># Use range boundaries for comparison</span>
+            <span class="n">min1</span><span class="p">,</span> <span class="n">max1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nums1</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">nums1</span><span class="p">)</span>
+            <span class="n">min2</span><span class="p">,</span> <span class="n">max2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nums2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span>
+            
+            <span class="c1"># Calculate overlap ratio</span>
+            <span class="n">overlap_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min1</span><span class="p">,</span> <span class="n">min2</span><span class="p">)</span>
+            <span class="n">overlap_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max1</span><span class="p">,</span> <span class="n">max2</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">overlap_start</span> <span class="o">&lt;=</span> <span class="n">overlap_end</span><span class="p">:</span>
+                <span class="n">overlap</span> <span class="o">=</span> <span class="n">overlap_end</span> <span class="o">-</span> <span class="n">overlap_start</span>
+                <span class="n">total_range</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max1</span><span class="p">,</span> <span class="n">max2</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">min1</span><span class="p">,</span> <span class="n">min2</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">overlap</span><span class="p">,</span> <span class="n">total_range</span> <span class="k">if</span> <span class="n">total_range</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>  <span class="c1"># No overlap</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;set_jaccard&quot;</span><span class="p">:</span>
+            <span class="c1"># Use set intersection/union for Jaccard similarity</span>
+            <span class="n">set1</span><span class="p">,</span> <span class="n">set2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nums1</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span>
+            <span class="n">intersection</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">set1</span> <span class="o">&amp;</span> <span class="n">set2</span><span class="p">)</span>
+            <span class="n">union</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">set1</span> <span class="o">|</span> <span class="n">set2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">intersection</span><span class="p">,</span> <span class="n">union</span> <span class="k">if</span> <span class="n">union</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Default to average</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nums1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums1</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums2</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute similarity based on the comparison method.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;absolute_difference&quot;</span><span class="p">:</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">val1</span> <span class="o">-</span> <span class="n">val2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Return inverse similarity (closer to 0 = more similar)</span>
+                <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;relative_difference&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">val1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">val2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">val1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">val2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">max_val</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="c1"># Calculate relative difference as percentage</span>
+            <span class="n">relative_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">val1</span> <span class="o">-</span> <span class="n">val2</span><span class="p">)</span> <span class="o">/</span> <span class="n">max_val</span>
+
+            <span class="c1"># Apply max_difference threshold if specified (Winter-compatible behavior)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If difference exceeds threshold, similarity is 0</span>
+                <span class="k">if</span> <span class="n">relative_diff</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+                <span class="c1"># Scale similarity linearly from 1.0 to 0.0 within threshold</span>
+                <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">relative_diff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Without threshold, use simple inverse similarity</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">relative_diff</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;within_range&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_difference required for within_range method&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">val1</span> <span class="o">-</span> <span class="n">val2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_difference</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+
+<div class="viewcode-block" id="DateComparator">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.DateComparator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DateComparator</span><span class="p">(</span><span class="n">BaseComparator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Date similarity comparator.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    column : str</span>
+<span class="sd">        Column name to compare.</span>
+<span class="sd">    max_days_difference : int, optional</span>
+<span class="sd">        Maximum days difference for normalization.</span>
+<span class="sd">    list_strategy : str, optional</span>
+<span class="sd">        Strategy for handling lists (&quot;closest_dates&quot;, &quot;range_overlap&quot;, &quot;average_dates&quot;, &quot;latest_dates&quot;, &quot;earliest_dates&quot;).</span>
+<span class="sd">        Default is &quot;closest_dates&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_days_difference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">list_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DateComparator(</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">, list_strategy=</span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_days_difference</span> <span class="o">=</span> <span class="n">max_days_difference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">=</span> <span class="n">list_strategy</span>
+        
+        <span class="k">if</span> <span class="n">list_strategy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">list_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;closest_dates&quot;</span><span class="p">,</span> <span class="s2">&quot;range_overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;average_dates&quot;</span><span class="p">,</span> <span class="s2">&quot;latest_dates&quot;</span><span class="p">,</span> <span class="s2">&quot;earliest_dates&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown list_strategy: </span><span class="si">{</span><span class="n">list_strategy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="DateComparator.compare">
+<a class="viewcode-back" href="../../../api/PyDI.entitymatching.html#PyDI.entitymatching.comparators.DateComparator.compare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">record2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare date values in specified column, handling both single values and lists.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val1</span> <span class="o">=</span> <span class="n">record1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="n">record2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">]</span>
+            
+            <span class="c1"># Handle missing values - properly handle arrays/series</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_value</span><span class="p">(</span><span class="n">val2</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+            
+            <span class="c1"># Check if we have list values but no list_strategy</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_list_value</span><span class="p">(</span><span class="n">val2</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;List values detected in column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; but list_strategy is None. Please specify a list_strategy.&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Handle comparison based on whether we have lists or single values</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Both are single values - compare directly</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">date1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+                    <span class="n">date2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+                    <span class="n">diff_days</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">date1</span> <span class="o">-</span> <span class="n">date2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity</span><span class="p">(</span><span class="n">diff_days</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Normalize values to date lists</span>
+                <span class="n">dates1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_date_list</span><span class="p">(</span><span class="n">val1</span><span class="p">)</span>
+                <span class="n">dates2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_to_date_list</span><span class="p">(</span><span class="n">val2</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dates1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">dates2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mf">0.0</span>
+                
+                <span class="c1"># Apply list strategy to get comparison values</span>
+                <span class="n">comp_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_list_strategy</span><span class="p">(</span><span class="n">dates1</span><span class="p">,</span> <span class="n">dates2</span><span class="p">)</span>
+                
+                <span class="c1"># Apply the comparison method</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_similarity</span><span class="p">(</span><span class="n">comp_result</span><span class="p">)</span>
+            
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in one or both records&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in DateComparator: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_null_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is null, handling both scalars and arrays.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># For arrays/series, check if all values are null</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="c1"># For scalars</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_list_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if value is a list/array (not a scalar string).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_to_date_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value to list of datetime objects.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="c1"># Handle lists/arrays</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                        <span class="k">continue</span>
+            <span class="k">return</span> <span class="n">dates</span>
+        
+        <span class="c1"># Handle single values</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">val</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_list_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dates1</span><span class="p">,</span> <span class="n">dates2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the list strategy to get comparison values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;closest_dates&quot;</span><span class="p">:</span>
+            <span class="c1"># Find the pair with minimum difference</span>
+            <span class="n">min_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+            <span class="n">best_date1</span><span class="p">,</span> <span class="n">best_date2</span> <span class="o">=</span> <span class="n">dates1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dates2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="k">for</span> <span class="n">d1</span> <span class="ow">in</span> <span class="n">dates1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">d2</span> <span class="ow">in</span> <span class="n">dates2</span><span class="p">:</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">d1</span> <span class="o">-</span> <span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">min_diff</span><span class="p">:</span>
+                        <span class="n">min_diff</span> <span class="o">=</span> <span class="n">diff</span>
+                        <span class="n">best_date1</span><span class="p">,</span> <span class="n">best_date2</span> <span class="o">=</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span>
+            
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">best_date1</span> <span class="o">-</span> <span class="n">best_date2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;range_overlap&quot;</span><span class="p">:</span>
+            <span class="c1"># Calculate date range overlap</span>
+            <span class="n">min1</span><span class="p">,</span> <span class="n">max1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dates1</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">dates1</span><span class="p">)</span>
+            <span class="n">min2</span><span class="p">,</span> <span class="n">max2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dates2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">dates2</span><span class="p">)</span>
+            
+            <span class="n">overlap_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min1</span><span class="p">,</span> <span class="n">min2</span><span class="p">)</span>
+            <span class="n">overlap_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max1</span><span class="p">,</span> <span class="n">max2</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">overlap_start</span> <span class="o">&lt;=</span> <span class="n">overlap_end</span><span class="p">:</span>
+                <span class="n">overlap_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">overlap_end</span> <span class="o">-</span> <span class="n">overlap_start</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+                <span class="n">total_range_days</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">max1</span><span class="p">,</span> <span class="n">max2</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">min1</span><span class="p">,</span> <span class="n">min2</span><span class="p">))</span><span class="o">.</span><span class="n">days</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">overlap_days</span><span class="p">,</span> <span class="n">total_range_days</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_range_days</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># No overlap</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;average_dates&quot;</span><span class="p">:</span>
+            <span class="c1"># Compare average dates</span>
+            <span class="n">avg1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dates1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates1</span><span class="p">))</span>
+            <span class="n">avg2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dates2</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">avg1</span> <span class="o">-</span> <span class="n">avg2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;latest_dates&quot;</span><span class="p">:</span>
+            <span class="c1"># Compare latest dates</span>
+            <span class="n">latest1</span><span class="p">,</span> <span class="n">latest2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dates1</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">dates2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">latest1</span> <span class="o">-</span> <span class="n">latest2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;earliest_dates&quot;</span><span class="p">:</span>
+            <span class="c1"># Compare earliest dates</span>
+            <span class="n">earliest1</span><span class="p">,</span> <span class="n">earliest2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dates1</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">dates2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">earliest1</span> <span class="o">-</span> <span class="n">earliest2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Default to closest dates</span>
+            <span class="n">min_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d1</span> <span class="ow">in</span> <span class="n">dates1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">d2</span> <span class="ow">in</span> <span class="n">dates2</span><span class="p">:</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">d1</span> <span class="o">-</span> <span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">min_diff</span><span class="p">:</span>
+                        <span class="n">min_diff</span> <span class="o">=</span> <span class="n">diff</span>
+            <span class="k">return</span> <span class="n">min_diff</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute similarity based on the comparison result.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_strategy</span> <span class="o">==</span> <span class="s2">&quot;range_overlap&quot;</span><span class="p">:</span>
+            <span class="n">overlap_days</span><span class="p">,</span> <span class="n">total_range_days</span> <span class="o">=</span> <span class="n">comp_result</span>
+            <span class="k">if</span> <span class="n">total_range_days</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="k">return</span> <span class="n">overlap_days</span> <span class="o">/</span> <span class="n">total_range_days</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For all other strategies, comp_result is days difference</span>
+            <span class="n">diff_days</span> <span class="o">=</span> <span class="n">comp_result</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_days_difference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">diff_days</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_days_difference</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Return inverse similarity</span>
+                <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">diff_days</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Peeters, Steiner, Bizer.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
