@@ -7,7 +7,7 @@ and executing fusion strategies.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Set, Tuple, Union, Any
+from typing import Dict, List, Optional, Set, Tuple, Union, Any, Sequence
 from collections import defaultdict, Counter
 import logging
 import time
@@ -15,14 +15,72 @@ import pandas as pd
 from pathlib import Path
 import json
 
+from PyDI.utils.cluster_stats import (
+    cluster_size_distribution_from_sizes,
+    log_cluster_size_distribution,
+)
 from .base import RecordGroup, FusionContext, FusionResult, _is_valid_value
 from .provenance import extract_source_trust_scores
 from .strategy import DataFusionStrategy
 
 
+CorrespondenceInput = Union[
+    pd.DataFrame,
+    Sequence[pd.DataFrame],
+]
+
+
+def _prepare_correspondence_frame(df: pd.DataFrame, *, label: str) -> pd.DataFrame:
+    """Validate correspondence columns and ensure a 'score' column exists."""
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError(f"Correspondence item '{label}' must be a pandas DataFrame")
+
+    missing = [col for col in ("id1", "id2") if col not in df.columns]
+    if missing:
+        raise ValueError(
+            f"Correspondence DataFrame '{label}' missing required columns: {missing}"
+        )
+
+    has_score = "score" in df.columns
+    has_similarity = "similarity" in df.columns
+    if not has_score and not has_similarity:
+        raise ValueError(
+            f"Correspondence DataFrame '{label}' must include a 'score' or 'similarity' column"
+        )
+
+    prepared = df.copy()
+    if not has_score and has_similarity:
+        prepared = prepared.rename(columns={"similarity": "score"})
+
+    return prepared
+
+
+def _coerce_correspondences(correspondences: CorrespondenceInput) -> pd.DataFrame:
+    """Allow correspondences to be provided as a single DataFrame or a sequence."""
+    if isinstance(correspondences, pd.DataFrame):
+        return _prepare_correspondence_frame(correspondences, label="correspondences")
+
+    if isinstance(correspondences, Sequence) and not isinstance(
+        correspondences, (str, bytes)
+    ):
+        if not correspondences:
+            raise ValueError("No correspondence DataFrames provided")
+
+        prepared_frames = []
+        for idx, frame in enumerate(correspondences):
+            label = f"correspondences[{idx}]"
+            prepared_frames.append(_prepare_correspondence_frame(frame, label=label))
+
+        return pd.concat(prepared_frames, ignore_index=True)
+
+    raise TypeError(
+        "Correspondences must be a pandas DataFrame or a sequence of DataFrames"
+    )
+
+
 def build_record_groups_from_correspondences(
     datasets: List[pd.DataFrame],
-    correspondences: pd.DataFrame,
+    correspondences: CorrespondenceInput,
     id_column: Optional[Union[str, Dict[str, str]]] = None,
     *,
     pre_normalized: bool = False,
@@ -35,9 +93,11 @@ def build_record_groups_from_correspondences(
         List of input datasets. Each must have 'dataset_name' in attrs. If
         `id_column` is provided, this function will ensure a string `_id`
         column is created from the specified column(s).
-    correspondences : pd.DataFrame
-        Correspondences with columns 'id1', 'id2', and optionally 'score'.
-        This is compatible with PyDI's CorrespondenceSet format.
+    correspondences : pandas.DataFrame or Sequence[pandas.DataFrame]
+        Correspondences with columns 'id1', 'id2', and a similarity column
+        ('score' or 'similarity'). When a sequence is provided, all DataFrames
+        are validated and concatenated before processing. This is compatible
+        with PyDI's CorrespondenceSet format.
     id_column : Optional[Union[str, Dict[str, str]]]
         Identifier column name(s). If a string, the same column is used for
         all datasets. If a dict, it should map dataset name -> ID column for
@@ -55,9 +115,11 @@ def build_record_groups_from_correspondences(
     """
     logger = logging.getLogger(__name__)
 
+    correspondences_df = _coerce_correspondences(correspondences)
+
     if pre_normalized:
         normalized_datasets = datasets
-        normalized_correspondences = correspondences
+        normalized_correspondences = correspondences_df
     else:
         # Normalize datasets to ensure `_id` exists and is string-typed
         normalized_datasets = []
@@ -97,7 +159,7 @@ def build_record_groups_from_correspondences(
             normalized_datasets.append(df_copy)
 
         # Normalize correspondences ID dtypes to strings
-        normalized_correspondences = correspondences.copy()
+        normalized_correspondences = correspondences_df.copy()
         if "id1" not in normalized_correspondences.columns or "id2" not in normalized_correspondences.columns:
             raise ValueError(
                 "Correspondences must contain 'id1' and 'id2' columns")
@@ -173,18 +235,16 @@ def build_record_groups_from_correspondences(
 
     logger.info(
         f"Created {len(groups)} record groups from {len(normalized_correspondences)} correspondences")
-    size_counts = Counter(len(group.records) for group in groups)
-    if size_counts:
-        logger.info(
-            "Group Size Distribution of %d groups:",
-            len(groups),
-        )
-        logger.info("    Group Size | Frequency")
-        logger.info("    ----------------------")
-        for size, count in sorted(size_counts.items()):
-            logger.info("        %3d | %7d", size, count)
-    else:
-        logger.info("Group Size Distribution: none")
+
+    distribution_df = cluster_size_distribution_from_sizes(
+        len(group.records) for group in groups
+    )
+    log_cluster_size_distribution(
+        distribution_df,
+        logger,
+        header="Group Size Distribution",
+        total_clusters=len(groups),
+    )
 
     return groups
 
@@ -370,10 +430,10 @@ class DataFusionEngine:
     def run(
         self,
         datasets: List[pd.DataFrame],
-        correspondences: pd.DataFrame,
+        correspondences: CorrespondenceInput,
         schema_correspondences: Optional[pd.DataFrame] = None,
         id_column: Optional[Union[str, Dict[str, str]]] = None,
-        include_singletons: bool = True,
+        include_singletons: bool = False,
     ) -> pd.DataFrame:
         """Run the data fusion process.
 
@@ -381,8 +441,9 @@ class DataFusionEngine:
         ----------
         datasets : List[pd.DataFrame]
             List of input datasets to fuse.
-        correspondences : pd.DataFrame
-            Record correspondences (CorrespondenceSet format).
+        correspondences : pandas.DataFrame or Sequence[pandas.DataFrame]
+            Record correspondences (CorrespondenceSet format). When a sequence
+            is provided, all frames are validated and concatenated.
         schema_correspondences : Optional[pd.DataFrame]
             Optional schema correspondences for attribute alignment.
         id_column : Optional[Union[str, Dict[str, str]]]
@@ -454,7 +515,9 @@ class DataFusionEngine:
             normalized_datasets.append(df_copy)
 
         # Normalize correspondences ID types to strings for consistent matching
-        normalized_correspondences = correspondences.copy()
+        normalized_correspondences = _coerce_correspondences(
+            correspondences
+        ).copy()
         if "id1" not in normalized_correspondences.columns or "id2" not in normalized_correspondences.columns:
             raise ValueError(
                 "Correspondences must contain 'id1' and 'id2' columns")
@@ -625,10 +688,17 @@ class DataFusionEngine:
 
         # If only one record, return it with minimal processing
         if len(group.records) == 1:
-            record = group.records[0].to_dict()
-            record["_fusion_group_id"] = group.group_id
-            record["_fusion_sources"] = list(
-                group.source_datasets.values())[:1]
+            record_series = group.records[0]
+            record = record_series.to_dict()
+            record_id = record_series.get("_id")
+            dataset_name = group.source_datasets.get(record_id, "unknown") or "unknown"
+            
+            if record_id:
+                record["_fusion_sources"] = [record_id]
+                record["_fusion_source_datasets"] = [dataset_name]
+            else:
+                record["_fusion_sources"] = []
+                record["_fusion_source_datasets"] = []
             record["_fusion_confidence"] = 1.0
             return record
 
@@ -646,10 +716,32 @@ class DataFusionEngine:
             debug_emit=self._emit_debug,
         )
 
+        source_ids: List[str] = []
+        dataset_names: List[str] = []
+        seen_ids: Set[str] = set()
+        for record in group.records:
+            rid = record.get("_id")
+            if not rid or rid in seen_ids:
+                continue
+            seen_ids.add(rid)
+            source_ids.append(str(rid))
+
+            dataset_name = group.source_datasets.get(rid, "unknown")
+            if not dataset_name:
+                dataset_name = "unknown"
+            dataset_names.append(dataset_name)
+
+        if len(source_ids) > 1:
+            fused_id = "+".join(source_ids)
+        elif len(source_ids) == 1:
+            fused_id = source_ids[0]
+        else:
+            fused_id = f"fused_{group.group_id}"
+
         fused_record = {
-            "_id": f"fused_{group.group_id}",
-            "_fusion_group_id": group.group_id,
-            "_fusion_sources": list(set(group.source_datasets.values())),
+            "_id": fused_id,
+            "_fusion_sources": source_ids,
+            "_fusion_source_datasets": dataset_names,
         }
 
         # Track overall confidence and metadata

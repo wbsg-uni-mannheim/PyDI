@@ -8,6 +8,7 @@ against validation/test datasets.
 from __future__ import annotations
 
 from typing import Dict, Any, List, Optional, Tuple, Union, Iterable
+from collections import Counter
 from datetime import datetime, date
 import pandas as pd
 import numpy as np
@@ -276,6 +277,7 @@ class DataFusionEvaluator:
         self._debug_format = debug_format if debug_format in {"text", "json"} else "json"
         self._debug_file: Optional[Path] = None
         self._fusion_debug_map: Dict[str, Dict[str, Dict[str, Any]]] = {}
+        self._current_mismatch_counter: Optional[Counter[str]] = None
         if self._debug_enabled:
             path = Path(debug_file) if debug_file is not None else Path(
                 "fusion_evaluation_debug.jsonl" if self._debug_format == "json" else "fusion_evaluation_debug.log"
@@ -352,84 +354,130 @@ class DataFusionEvaluator:
         """
         self._logger.info("Starting fusion evaluation")
 
-        # Backward-compat: support old gold_* parameter names
-        if expected_df is None and gold_df is not None:
-            expected_df = gold_df
-        if expected_id_column is None and gold_id_column is not None:
-            expected_id_column = gold_id_column
+        mismatch_counter: Optional[Counter[str]] = Counter() if self._debug_enabled else None
 
-        # Align datasets by their respective ID columns
-        aligned_fused, aligned_expected = self._align_datasets_two_ids(
-            fused_df, fused_id_column, expected_df, expected_id_column
-        )
+        previous_mismatch_counter = self._current_mismatch_counter
+        self._current_mismatch_counter = mismatch_counter
 
-        if aligned_fused.empty or aligned_expected.empty:
-            self._logger.warning(
-                "No matching records found between fused and expected datasets")
-            return {"overall_accuracy": 0.0, "num_evaluated_records": 0}
+        attribute_results: Dict[str, Dict[str, Any]] = {}
 
-        # Get attributes to evaluate
-        attributes = self._get_evaluable_attributes(
-            aligned_fused, aligned_expected, fused_id_column, expected_id_column)
+        try:
+            # Backward-compat: support old gold_* parameter names
+            if expected_df is None and gold_df is not None:
+                expected_df = gold_df
+            if expected_id_column is None and gold_id_column is not None:
+                expected_id_column = gold_id_column
 
-        if not attributes:
-            self._logger.warning("No common attributes found for evaluation")
-            return {"overall_accuracy": 0.0, "num_evaluated_records": len(aligned_fused)}
-
-        # Evaluate each attribute
-        attribute_results = {}
-        total_correct = 0
-        total_evaluated = 0
-
-        for attribute in attributes:
-            results = self._evaluate_attribute(
-                aligned_fused,
-                aligned_expected,
-                attribute,
-                fused_id_column,
-                expected_id_column,
-            )
-            attribute_results[attribute] = results
-            total_correct += results["correct_count"]
-            total_evaluated += results["total_count"]
-
-            self._logger.debug(
-                f"Attribute '{attribute}': {results['accuracy']:.3f} "
-                f"({results['correct_count']}/{results['total_count']})"
+            # Align datasets by their respective ID columns
+            aligned_fused, aligned_expected = self._align_datasets_two_ids(
+                fused_df, fused_id_column, expected_df, expected_id_column
             )
 
-        # Calculate overall metrics
-        overall_accuracy = total_correct / total_evaluated if total_evaluated > 0 else 0.0
+            if aligned_fused.empty or aligned_expected.empty:
+                self._logger.warning(
+                    "No matching records found between fused and expected datasets")
+                return {"overall_accuracy": 0.0, "num_evaluated_records": 0}
 
-        # Calculate macro-average (average of individual attribute accuracies)
-        individual_accuracies = [
-            results["accuracy"] for results in attribute_results.values()
-            if results["total_count"] > 0
-        ]
-        macro_accuracy = np.mean(
-            individual_accuracies) if individual_accuracies else 0.0
+            # Get attributes to evaluate
+            attributes = self._get_evaluable_attributes(
+                aligned_fused, aligned_expected, fused_id_column, expected_id_column)
 
-        # Prepare result dictionary
-        evaluation_results = {
-            "overall_accuracy": overall_accuracy,
-            "macro_accuracy": macro_accuracy,
-            "num_evaluated_records": len(aligned_fused),
-            "num_evaluated_attributes": len(attributes),
-            "total_evaluations": total_evaluated,
-            "total_correct": total_correct,
-        }
+            if not attributes:
+                self._logger.warning("No common attributes found for evaluation")
+                return {"overall_accuracy": 0.0, "num_evaluated_records": len(aligned_fused)}
 
-        # Add per-attribute results
-        for attr, results in attribute_results.items():
-            evaluation_results[f"{attr}_accuracy"] = results["accuracy"]
-            evaluation_results[f"{attr}_count"] = results["total_count"]
+            # Evaluate each attribute
+            total_correct = 0
+            total_evaluated = 0
 
-        self._logger.info(
-            f"Evaluation complete: {overall_accuracy:.3f} overall accuracy "
-            f"({total_correct}/{total_evaluated})"
-        )
+            for attribute in attributes:
+                results = self._evaluate_attribute(
+                    aligned_fused,
+                    aligned_expected,
+                    attribute,
+                    fused_id_column,
+                    expected_id_column,
+                )
+                attribute_results[attribute] = results
+                total_correct += results["correct_count"]
+                total_evaluated += results["total_count"]
 
-        return evaluation_results
+                self._logger.debug(
+                    f"Attribute '{attribute}': {results['accuracy']:.3f} "
+                    f"({results['correct_count']}/{results['total_count']})"
+                )
+
+            # Calculate overall metrics
+            overall_accuracy = total_correct / total_evaluated if total_evaluated > 0 else 0.0
+
+            # Calculate macro-average (average of individual attribute accuracies)
+            individual_accuracies = [
+                results["accuracy"] for results in attribute_results.values()
+                if results["total_count"] > 0
+            ]
+            macro_accuracy = np.mean(
+                individual_accuracies) if individual_accuracies else 0.0
+
+            # Prepare result dictionary
+            evaluation_results = {
+                "overall_accuracy": overall_accuracy,
+                "macro_accuracy": macro_accuracy,
+                "num_evaluated_records": len(aligned_fused),
+                "num_evaluated_attributes": len(attributes),
+                "total_evaluations": total_evaluated,
+                "total_correct": total_correct,
+            }
+
+            # Add per-attribute results
+            for attr, results in attribute_results.items():
+                evaluation_results[f"{attr}_accuracy"] = results["accuracy"]
+                evaluation_results[f"{attr}_count"] = results["total_count"]
+
+            self._logger.info(
+                f"Evaluation complete: {overall_accuracy:.3f} overall accuracy "
+                f"({total_correct}/{total_evaluated})"
+            )
+
+            return evaluation_results
+        finally:
+            if mismatch_counter is not None:
+                total_mismatches = sum(mismatch_counter.values())
+                if total_mismatches:
+                    sorted_items = sorted(
+                        mismatch_counter.items(), key=lambda item: item[1], reverse=True
+                    )
+                    max_attr_len = max(len(attr) for attr, _ in sorted_items)
+                    attr_col_width = max(32, min(max_attr_len, 52))
+
+                    def _shorten(text: str) -> str:
+                        if len(text) <= attr_col_width:
+                            return text
+                        return text[: attr_col_width - 1] + "…"
+
+                    header = (
+                        f"{'Attribute':<{attr_col_width}} | {'Errors':>7} | {'Percentage':>10}"
+                    )
+                    separator = "─" * len(header)
+
+                    self._logger.info(
+                        "Evaluation mismatches by attribute (debug): %d total",
+                        total_mismatches,
+                    )
+                    self._logger.info("\t%s", header)
+                    self._logger.info("\t%s", separator)
+
+                    row_template = f"{{:<{attr_col_width}}} | {{:>7}} | {{:>9.2f}}%%"
+                    for attr, count in sorted_items:
+                        percentage = (count / total_mismatches) * 100
+                        line = row_template.format(
+                            _shorten(attr), count, percentage
+                        )
+                        self._logger.info("\t%s", line)
+                else:
+                    self._logger.info(
+                        "Evaluation mismatches by attribute (debug): none recorded"
+                    )
+            self._current_mismatch_counter = previous_mismatch_counter
 
     def _align_datasets_two_ids(
         self,
@@ -576,23 +624,54 @@ class DataFusionEvaluator:
 
             if inputs is None:
                 fused_sources = fused_row.get("_fusion_sources")
-                if isinstance(fused_sources, (list, tuple, set)):
-                    inputs = [
-                        {
-                            "record_id": None,
-                            "dataset": src,
-                            "value": "<metadata unavailable>",
-                        }
-                        for src in fused_sources
-                    ]
+                fused_source_datasets = fused_row.get("_fusion_source_datasets")
 
-            serialized_inputs = inputs if inputs is not None else []
+                if isinstance(fused_sources, (list, tuple, set)):
+                    normalized_sources = list(fused_sources)
+                    dataset_list = (
+                        list(fused_source_datasets)
+                        if isinstance(fused_source_datasets, (list, tuple, set))
+                        else []
+                    )
+
+                    inputs = []
+                    for idx, src in enumerate(normalized_sources):
+                        record_id = src
+                        dataset_name = None
+
+                        if isinstance(src, dict):
+                            record_id = src.get("record_id")
+                            dataset_name = src.get("dataset")
+
+                        if dataset_name is None and dataset_list:
+                            dataset_name = dataset_list[min(idx, len(dataset_list) - 1)]
+
+                        if dataset_name is None and not isinstance(src, dict):
+                            dataset_name = str(src)
+
+                        inputs.append(
+                            {
+                                "record_id": record_id,
+                                "dataset": dataset_name,
+                                "value": "<metadata unavailable>",
+                            }
+                        )
+
+            if isinstance(inputs, list):
+                input_records = inputs
+            elif isinstance(inputs, tuple):
+                input_records = list(inputs)
+            else:
+                input_records = []
+
+            serialized_inputs = input_records if input_records else []
 
             # No expected value -> cannot evaluate this row
             if expected_missing and fused_missing:
                 continue
             if expected_missing:
                 continue
+
 
             total_count += 1
 
@@ -770,6 +849,9 @@ class DataFusionEvaluator:
         reason: str,
         error: Optional[str] = None,
     ) -> None:
+        if self._current_mismatch_counter is not None and attribute:
+            self._current_mismatch_counter[str(attribute)] += 1
+
         if not self._debug_enabled or self._debug_file is None:
             return
 
@@ -805,6 +887,7 @@ class DataFusionEvaluator:
             self._logger.debug(
                 "Failed to write evaluation debug entry: %s", exc
             )
+
 
     @staticmethod
     def _format_debug_block(entry: Dict[str, Any]) -> str:

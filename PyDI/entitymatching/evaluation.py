@@ -18,6 +18,10 @@ from typing import Any, Dict, Optional, Set, Tuple
 import networkx as nx
 import pandas as pd
 
+from PyDI.utils.cluster_stats import (
+    cluster_size_distribution_from_sizes,
+    log_cluster_size_distribution,
+)
 from .base import CorrespondenceSet
 from .blocking.base import BaseBlocker
 
@@ -1289,41 +1293,18 @@ class EntityMatchingEvaluator:
         # Find connected components (clusters)
         clusters = list(nx.connected_components(G))
 
-        # Count cluster sizes
-        size_distribution = {}
-        for cluster in clusters:
-            cluster_size = len(cluster)
-            size_distribution[cluster_size] = size_distribution.get(cluster_size, 0) + 1
-
-        # Create distribution DataFrame
-        distribution_data = []
         total_clusters = len(clusters)
+        distribution_df = cluster_size_distribution_from_sizes(
+            len(cluster) for cluster in clusters
+        )
 
-        for cluster_size in sorted(size_distribution.keys()):
-            frequency = size_distribution[cluster_size]
-            percentage = (
-                (frequency / total_clusters * 100) if total_clusters > 0 else 0.0
-            )
-            distribution_data.append(
-                {
-                    "cluster_size": cluster_size,
-                    "frequency": frequency,
-                    "percentage": percentage,
-                }
-            )
-
-        distribution_df = pd.DataFrame(distribution_data)
-
-        # Log distribution to console
-        logging.info(f"Cluster Size Distribution of {total_clusters} clusters:")
-        logging.info("\tCluster Size\t| Frequency\t| Percentage")
-        logging.info("\t" + "─" * 50)
-
-        for _, row in distribution_df.iterrows():
-            size_str = f"{int(row['cluster_size'])}"
-            freq_str = f"{int(row['frequency'])}"
-            perc_str = f"{row['percentage']:.2f}%"
-            logging.info(f"\t\t{size_str}\t|\t{freq_str}\t|\t{perc_str}")
+        # Log distribution to console (shared formatting with fusion engine)
+        log_cluster_size_distribution(
+            distribution_df,
+            logging.getLogger(__name__),
+            header="Cluster Size Distribution",
+            total_clusters=total_clusters,
+        )
 
         # Write to file if output directory provided
         if out_dir is not None:

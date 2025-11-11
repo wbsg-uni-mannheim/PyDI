@@ -195,18 +195,19 @@ class FusionReport:
             analysis["unresolved_conflicts"] = (confidences < 0.5).sum()
         
         # Analyze conflict patterns from source information
-        if "_fusion_sources" in self.fused_df.columns:
+        source_column = "_fusion_source_datasets" if "_fusion_source_datasets" in self.fused_df.columns else "_fusion_sources"
+        if source_column in self.fused_df.columns:
             source_combinations = {}
-            for sources in self.fused_df["_fusion_sources"]:
+            for sources in self.fused_df[source_column]:
                 if isinstance(sources, list) and len(sources) > 1:
-                    # Sort for consistent key
-                    key = tuple(sorted(sources))
+                    normalized = sorted(set(sources))
+                    key = tuple(normalized)
                     source_combinations[key] = source_combinations.get(key, 0) + 1
-            
+
             analysis["conflict_patterns"] = {
                 str(k): v for k, v in source_combinations.items()
             }
-        
+
         return analysis
     
     def print_summary(self):
