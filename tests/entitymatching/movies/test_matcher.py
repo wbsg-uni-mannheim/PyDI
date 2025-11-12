@@ -30,18 +30,18 @@ def assert_correspondence_score():
         assert actual == pytest.approx(expected, rel=1e-6), f"Expected {expected}, got {actual}"
     return _assert
 
-def test_data_import(return_input_data):
-    actors = return_input_data("movies", "actors")
-    golden_globes = return_input_data("movies", "golden_globes")
-    academy_awards = return_input_data("movies", "academy_awards")
+def test_data_import(get_input_data):
+    actors = get_input_data("movies", "actors")
+    golden_globes = get_input_data("movies", "golden_globes")
+    academy_awards = get_input_data("movies", "academy_awards")
 
     assert not actors.empty
     assert not golden_globes.empty
     assert not academy_awards.empty
 
-def test_run_standard_blocking(return_input_data):
-    actors_df = return_input_data("movies", "actors")
-    academy_df = return_input_data("movies", "academy_awards")
+def test_run_standard_blocking(get_input_data):
+    actors_df = get_input_data("movies", "actors")
+    academy_df = get_input_data("movies", "academy_awards")
 
     actors_df['title_prefix'] = actors_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
     academy_df['title_prefix'] = academy_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
@@ -55,9 +55,9 @@ def test_run_standard_blocking(return_input_data):
     
     standard_blocker.materialize()
 
-def test_run_matching(return_input_data):
-    actors_df = return_input_data("movies", "actors")
-    academy_df = return_input_data("movies", "academy_awards")
+def test_run_matching(get_input_data):
+    actors_df = get_input_data("movies", "actors")
+    academy_df = get_input_data("movies", "academy_awards")
 
     actors_df['title_prefix'] = actors_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
     academy_df['title_prefix'] = academy_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
