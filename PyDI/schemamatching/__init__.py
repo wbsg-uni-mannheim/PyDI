@@ -17,7 +17,6 @@ from .llm_based import LLMBasedSchemaMatcher
 
 # Evaluation utilities
 from .evaluation import SchemaMappingEvaluator
-from .wdc_smb import WDCBenchmarkConfig, run_wdc_smb_benchmark
 
 __all__ = [
     "BaseSchemaMatcher",
@@ -28,6 +27,4 @@ __all__ = [
     "DuplicateBasedSchemaMatcher",
     "LLMBasedSchemaMatcher",
     "SchemaMappingEvaluator",
-    "WDCBenchmarkConfig",
-    "run_wdc_smb_benchmark",
 ]
