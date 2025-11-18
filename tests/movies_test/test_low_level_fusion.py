@@ -14,8 +14,6 @@ from PyDI.fusion import (DataFusionStrategy,
 )
 
 from PyDI.fusion import (
-    calculate_consistency_metrics, 
-    calculate_coverage_metrics,
     exact_match,
     tokenized_match,
     year_only_match,

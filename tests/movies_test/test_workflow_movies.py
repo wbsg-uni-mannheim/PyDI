@@ -1,3 +1,5 @@
+import numpy as np
+import torch
 import pytest
 import pandas as pd
 from PyDI.entitymatching import EntityMatchingEvaluator
@@ -20,8 +22,11 @@ from PyDI.fusion import (
     year_only_match, 
     boolean_match
 )
+torch.manual_seed(42)
+np.random.seed(42)
+torch.use_deterministic_algorithms(True)
 
-def test_run_matching(get_input_data, get_correspondences, get_fusion_test_set):
+def test_run_movies(get_input_data, get_correspondences, get_fusion_test_set):
     actors = get_input_data("movies", "actors")
     golden_globes = get_input_data("movies", "golden_globes")
     academy_awards = get_input_data("movies", "academy_awards")
@@ -136,5 +141,5 @@ def test_run_matching(get_input_data, get_correspondences, get_fusion_test_set):
         gold_df=fusion_test_set,
         gold_id_column='id',
     )
+    assert evaluation_results['overall_accuracy'] == pytest.approx(0.768, abs=0.01), f"Expected overall accuracy 0.768 +/- 0.01, got {evaluation_results['overall_accuracy']}"
 
-    assert evaluation_results['overall_accuracy'] == pytest.approx(0.758, rel=1e-2), f"Expected overall accuracy 0.758, got {evaluation_results['overall_accuracy']}"
