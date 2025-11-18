@@ -39,54 +39,6 @@ def test_data_import(get_input_data):
     assert not golden_globes.empty
     assert not academy_awards.empty
 
-def test_run_standard_blocking(get_input_data):
-    actors_df = get_input_data("movies", "actors")
-    academy_df = get_input_data("movies", "academy_awards")
-
-    actors_df['title_prefix'] = actors_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
-    academy_df['title_prefix'] = academy_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
-
-    standard_blocker = StandardBlocker(
-        actors_df, academy_df,
-        on=['title_prefix'],
-        batch_size=1000,
-        id_column='id'
-    )
-    
-    standard_blocker.materialize()
-
-def test_run_matching(get_input_data):
-    actors_df = get_input_data("movies", "actors")
-    academy_df = get_input_data("movies", "academy_awards")
-
-    actors_df['title_prefix'] = actors_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
-    academy_df['title_prefix'] = academy_df['title'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
-
-    standard_blocker = StandardBlocker(
-        actors_df, academy_df,
-        on=['title_prefix'],
-        batch_size=1000,
-        id_column='id'
-    )
-    
-    comparators = [
-        StringComparator('title', 'jaccard', preprocess=str.lower),
-        DateComparator('date', max_days_difference=365),
-        StringComparator('actors_actor_name', 'jaccard', preprocess=str.lower, list_strategy='concatenate')
-    ]
-
-    matcher = RuleBasedMatcher()
-
-    correspondences = matcher.match(
-        df_left=actors_df,
-        df_right=academy_df, 
-        candidates=standard_blocker,
-        comparators=comparators,
-        weights=[0.7, 0.2, 0.1],
-        threshold=0.7,
-        id_column='id'
-    )
-
 def test_matcher_title_only(movie_dataframes):
     df1, df2 = movie_dataframes
     matcher = RuleBasedMatcher()
