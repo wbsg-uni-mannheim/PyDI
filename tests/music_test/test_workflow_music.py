@@ -116,7 +116,7 @@ def test_run_music(get_input_data, get_correspondences, get_fusion_test_set):
         threshold=0.5,
         id_column='id',
     )
-    assert len(correspondences_m2l) == 144, f"Expected 144 correspondences, got {len(correspondences_m2l)}"
+    assert len(correspondences_m2l) == 1415, f"Expected 1415 correspondences, got {len(correspondences_m2l)}"
 
     test_gt_m2d = get_correspondences("music", "musicbrainz", "discogs")
     eval_results = EntityMatchingEvaluator.evaluate_matching(
@@ -124,16 +124,16 @@ def test_run_music(get_input_data, get_correspondences, get_fusion_test_set):
         test_gt_m2d,
         out_dir=None
     )
-    assert eval_results['accuracy'] == pytest.approx(0.768, rel=1e-2), f"Expected accuracy == 0.768, got {eval_results['accuracy']}"
+    assert eval_results['accuracy'] == pytest.approx(0.967, abs=0.01), f"Expected accuracy == 0.967 +/- 0.01, got {eval_results['accuracy']}"
 
     clusterer = MaximumBipartiteMatching()
     correspondences_m2d = clusterer.cluster(correspondences_m2d)
-    assert len(correspondences_m2d) == 80, f"Expected 80 correspondences after MBM, got {len(correspondences_m2d)}"
+    assert len(correspondences_m2d) == 3051, f"Expected 3051 correspondences after MBM, got {len(correspondences_m2d)}"
 
     #### Fusion ####
 
     all_correspondences = pd.concat([correspondences_m2d, correspondences_m2l], ignore_index=True)
-    assert len(all_correspondences) == 230, f"Expected 230 total correspondences, got {len(all_correspondences)}"
+    assert len(all_correspondences) == 4466, f"Expected 4466 total correspondences, got {len(all_correspondences)}"
 
     mbrainz["mbrainz_id"] = mbrainz["id"]
 
@@ -158,7 +158,7 @@ def test_run_music(get_input_data, get_correspondences, get_fusion_test_set):
         id_column="id",
         include_singletons=False,
     )
-    assert len(fused) == 135, f"Expected 135 fused records, got {len(fused)}"
+    assert len(fused) == 3662, f"Expected 3662 fused records, got {len(fused)}"
 
     strategy.add_evaluation_function("name", tokenized_match)
     strategy.add_evaluation_function("artist", tokenized_match)
@@ -177,5 +177,5 @@ def test_run_music(get_input_data, get_correspondences, get_fusion_test_set):
         gold_df=fusion_test_set,
         gold_id_column='id',
     )
-    assert evaluation_results['overall_accuracy'] == pytest.approx(0.768, abs=0.01), f"Expected overall accuracy 0.768 +/- 0.01, got {evaluation_results['overall_accuracy']}"
+    assert evaluation_results['overall_accuracy'] == pytest.approx(0.66, abs=0.01), f"Expected overall accuracy 0.67 +/- 0.01, got {evaluation_results['overall_accuracy']}"
 

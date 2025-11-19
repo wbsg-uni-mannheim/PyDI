@@ -37,8 +37,8 @@ torch.use_deterministic_algorithms(True)
 
 def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
     dbpedia = get_input_data("games", "dbpedia")
-    metacritic = get_input_data("games", "forbes")
-    sales = get_input_data("games", "fullcontact")
+    metacritic = get_input_data("games", "metacritic")
+    sales = get_input_data("games", "sales")
 
     dbpedia['name_prefix'] = dbpedia['name'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
     metacritic['name_prefix'] = metacritic['name'].astype(str).apply(lambda x: ''.join([word[:2].upper() for word in x.split()[:3]]))
@@ -53,7 +53,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         id_column='id'
     )
     standard_candidates_m2d = standard_blocker_m2d.materialize()
-    assert len(standard_candidates_m2d) == 154209, f"Expected 154209 candidates, got {len(standard_candidates_m2d)}"
+    assert len(standard_candidates_m2d) == 240005, f"Expected 240005 candidates, got {len(standard_candidates_m2d)}"
 
     standard_blocker_m2s = StandardBlocker(
         metacritic, sales,
@@ -62,7 +62,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         id_column='id'
     )
     standard_candidates_m2s = standard_blocker_m2s.materialize()
-    assert len(standard_candidates_m2s) == 154209, f"Expected 154209 candidates, got {len(standard_candidates_m2s)}"
+    assert len(standard_candidates_m2s) == 71971, f"Expected 71971 candidates, got {len(standard_candidates_m2s)}"
 
     #### Matching ####
 
@@ -83,7 +83,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         threshold=0.8,
         id_column='id'
     )
-    assert len(correspondences_m2d) == 3873, f"Expected 3873 correspondences, got {len(correspondences_m2d)}"
+    assert len(correspondences_m2d) == 6804, f"Expected 6804 correspondences, got {len(correspondences_m2d)}"
 
     correspondences_m2s = matcher.match(
         df_left=metacritic,
@@ -94,7 +94,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         threshold=0.8,
         id_column='id'
     )
-    assert len(correspondences_m2s) == 144, f"Expected 144 correspondences, got {len(correspondences_m2s)}"
+    assert len(correspondences_m2s) == 6683, f"Expected 6683 correspondences, got {len(correspondences_m2s)}"
 
     test_gt_m2d = get_correspondences("games", "metacritic", "dbpedia")
     eval_results = EntityMatchingEvaluator.evaluate_matching(
@@ -102,16 +102,16 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         test_gt_m2d,
         out_dir=None
     )
-    assert eval_results['accuracy'] == pytest.approx(0.768, rel=1e-2), f"Expected accuracy == 0.768, got {eval_results['accuracy']}"
+    assert eval_results['accuracy'] == pytest.approx(0.933, abs=0.01), f"Expected accuracy == 0.933 +/- 0.01, got {eval_results['accuracy']}"
 
     clusterer = StableMatching()
     correspondences_m2s = clusterer.cluster(correspondences_m2s)
-    assert len(correspondences_m2s) == 80, f"Expected 80 correspondences after MBM, got {len(correspondences_m2s)}"
+    assert len(correspondences_m2s) == 6510, f"Expected 6510 correspondences after Stable Matching, got {len(correspondences_m2s)}"
 
     #### Fusion ####
 
     all_correspondences = pd.concat([correspondences_m2d, correspondences_m2s], ignore_index=True)    
-    assert len(all_correspondences) == 230, f"Expected 230 total correspondences, got {len(all_correspondences)}"
+    assert len(all_correspondences) == 13314, f"Expected 13314 total correspondences, got {len(all_correspondences)}"
 
     metacritic["metacritic_id"] = metacritic["id"]
 
@@ -136,7 +136,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         id_column="id",
         include_singletons=False,
     )
-    assert len(fused) == 135, f"Expected 135 fused records, got {len(fused)}"
+    assert len(fused) == 8157, f"Expected 8157 fused records, got {len(fused)}"
 
     strategy.add_evaluation_function("title", tokenized_match)
     strategy.add_evaluation_function("director_name", tokenized_match)
@@ -153,5 +153,5 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         gold_df=fusion_test_set,
         gold_id_column='id',
     )
-    assert evaluation_results['overall_accuracy'] == pytest.approx(0.768, abs=0.01), f"Expected overall accuracy 0.768 +/- 0.01, got {evaluation_results['overall_accuracy']}"
+    assert evaluation_results['overall_accuracy'] == pytest.approx(0.681, abs=0.01), f"Expected overall accuracy 0.681 +/- 0.01, got {evaluation_results['overall_accuracy']}"
 

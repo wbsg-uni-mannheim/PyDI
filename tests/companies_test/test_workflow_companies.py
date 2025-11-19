@@ -68,7 +68,7 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         id_column='id'
     )
     standard_candidates_f2fc = standard_blocker_f2fc.materialize()
-    assert len(standard_candidates_f2fc) == 154209, f"Expected 154209 candidates, got {len(standard_candidates_f2fc)}"
+    assert len(standard_candidates_f2fc) == 1563, f"Expected 1563 candidates, got {len(standard_candidates_f2fc)}"
 
     #### Matching ####
 
@@ -94,7 +94,7 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         threshold=0.5,
         id_column='id'
     )
-    assert len(correspondences_f2d) == 3873, f"Expected 3873 correspondences, got {len(correspondences_f2d)}"
+    assert len(correspondences_f2d) == 294, f"Expected 294 correspondences, got {len(correspondences_f2d)}"
 
     correspondences_f2fc = matcher.match(
         df_left=forbes,
@@ -105,7 +105,7 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         threshold=0.5,
         id_column='id',
     )
-    assert len(correspondences_f2fc) == 144, f"Expected 144 correspondences, got {len(correspondences_f2fc)}"
+    assert len(correspondences_f2fc) == 187, f"Expected 187 correspondences, got {len(correspondences_f2fc)}"
 
     test_gt_f2d = get_correspondences("companies", "forbes", "dbpedia")
     eval_results = EntityMatchingEvaluator.evaluate_matching(
@@ -113,16 +113,16 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         test_gt_f2d,
         out_dir=None
     )
-    assert eval_results['accuracy'] == pytest.approx(0.768, rel=1e-2), f"Expected accuracy == 0.768, got {eval_results['accuracy']}"
+    assert eval_results['accuracy'] == pytest.approx(0.786, abs=0.01), f"Expected accuracy == 0.786 +/- 0.01, got {eval_results['accuracy']}"
 
     clusterer = MaximumBipartiteMatching()
     correspondences_f2d = clusterer.cluster(correspondences_f2d)
-    assert len(correspondences_f2d) == 80, f"Expected 80 correspondences after MBM, got {len(correspondences_f2d)}"
+    assert len(correspondences_f2d) == 265, f"Expected 265 correspondences after MBM, got {len(correspondences_f2d)}"
 
     #### Fusion ####
 
     all_correspondences = pd.concat([correspondences_f2d, correspondences_f2fc], ignore_index=True)
-    assert len(all_correspondences) == 230, f"Expected 230 total correspondences, got {len(all_correspondences)}"
+    assert len(all_correspondences) == 452, f"Expected 452 total correspondences, got {len(all_correspondences)}"
 
     forbes["forbes_id"] = forbes["id"]
 
@@ -147,7 +147,7 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         id_column="id",
         include_singletons=False,
     )
-    assert len(fused) == 135, f"Expected 135 fused records, got {len(fused)}"
+    assert len(fused) == 417, f"Expected 417 fused records, got {len(fused)}"
 
     strategy.add_evaluation_function("name", tokenized_match)
     strategy.add_evaluation_function("assets", tokenized_match)
@@ -167,5 +167,5 @@ def test_run_companies(get_input_data, get_correspondences, get_fusion_test_set)
         gold_df=fusion_test_set,
         gold_id_column='id',
     )
-    assert evaluation_results['overall_accuracy'] == pytest.approx(0.768, abs=0.01), f"Expected overall accuracy 0.768 +/- 0.01, got {evaluation_results['overall_accuracy']}"
+    assert evaluation_results['overall_accuracy'] == pytest.approx(0.658, abs=0.01), f"Expected overall accuracy 0.684 +/- 0.01, got {evaluation_results['overall_accuracy']}"
 
