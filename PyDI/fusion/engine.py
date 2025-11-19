@@ -170,19 +170,21 @@ def build_record_groups_from_correspondences(
     id_to_record: Dict[str, pd.Series] = {}
     id_to_dataset: Dict[str, str] = {}
 
-    for df in normalized_datasets:
+    id_to_sort_key: Dict[str, Tuple[int, int]] = {}
+    for dataset_idx, df in enumerate(normalized_datasets):
         dataset_name = df.attrs.get("dataset_name")
         if not dataset_name:
             raise ValueError(
                 "Each dataset must have 'dataset_name' in df.attrs")
 
-        for _, record in df.iterrows():
+        for row_position, (_, record) in enumerate(df.iterrows()):
             record_id = record.get("_id")
             if not record_id:
                 raise ValueError("Each record must have '_id' column")
 
             id_to_record[record_id] = record
             id_to_dataset[record_id] = dataset_name
+            id_to_sort_key[record_id] = (dataset_idx, row_position)
 
     # Build graph of correspondences
     graph = defaultdict(set)
@@ -196,13 +198,17 @@ def build_record_groups_from_correspondences(
     groups = []
     group_counter = 0
 
+    def sort_key(record_id: str) -> Tuple[int, Union[int, str]]:
+        """Consistent ordering for record identifiers."""
+        return id_to_sort_key.get(record_id, (len(normalized_datasets), record_id))
+
     def dfs(node_id: str, component: Set[str]):
         """Depth-first search to find connected component."""
         if node_id in visited:
             return
         visited.add(node_id)
         component.add(node_id)
-        for neighbor in graph.get(node_id, set()):
+        for neighbor in sorted(graph.get(node_id, set()), key=sort_key):
             dfs(neighbor, component)
 
     # Process all nodes that appear in correspondences
@@ -210,7 +216,7 @@ def build_record_groups_from_correspondences(
     for _, corr in normalized_correspondences.iterrows():
         all_correspondence_ids.update([corr["id1"], corr["id2"]])
 
-    for record_id in all_correspondence_ids:
+    for record_id in sorted(all_correspondence_ids, key=sort_key):
         if record_id not in visited:
             component = set()
             dfs(record_id, component)
@@ -219,7 +225,7 @@ def build_record_groups_from_correspondences(
                 group = RecordGroup(group_id=f"group_{group_counter}")
                 group_counter += 1
 
-                for rid in component:
+                for rid in sorted(component, key=sort_key):
                     if rid in id_to_record:
                         group.add_record(id_to_record[rid], id_to_dataset[rid])
 
@@ -228,7 +234,7 @@ def build_record_groups_from_correspondences(
     # Add singleton groups for records not in any correspondence
     all_record_ids = set(id_to_record.keys())
 
-    for record_id in all_record_ids - all_correspondence_ids:
+    for record_id in sorted(all_record_ids - all_correspondence_ids, key=sort_key):
         group = RecordGroup(group_id=f"singleton_{record_id}")
         group.add_record(id_to_record[record_id], id_to_dataset[record_id])
         groups.append(group)
@@ -703,7 +709,7 @@ class DataFusionEngine:
             return record
 
         # Get all attributes present in this group
-        all_attributes = group.get_all_attributes()
+        all_attributes = sorted(group.get_all_attributes())
 
         # Create fusion context
         context = FusionContext(
@@ -771,6 +777,12 @@ class DataFusionEngine:
                         "value": raw_value,
                     }
                 )
+            inputs.sort(
+                key=lambda entry: (
+                    entry.get("record_id") is None,
+                    str(entry.get("record_id", "")),
+                )
+            )
 
             if fuser:
                 # Use registered fuser
