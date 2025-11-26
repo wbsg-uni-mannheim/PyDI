@@ -1,179 +1,149 @@
 """
 Normalization and validation utilities for PyDI.
 
-This subpackage provides comprehensive tools for data normalization, type detection,
-validation, and quality assessment inspired by the Winter framework. It includes 
-automatic type detection, specialized normalizers for different data types, unit 
-handling, advanced text processing, and validation utilities for data quality assurance.
+This subpackage provides tools for data normalization, type detection,
+validation, and quality assessment. It integrates external libraries
+for specific normalization tasks:
+
+- **Pint**: Physical unit conversions (length, weight, temperature, etc.)
+- **pycountry**: Country/currency/language code normalization (ISO standards)
+- **python-stdnum**: Standard number formats (ISBN, IBAN, VAT, etc.)
+- **phonenumbers**: Phone number parsing and formatting
+- **email-validator**: Email validation and normalization
 
 Key Components
 --------------
-- Advanced type detection and pattern matching with Winter framework patterns
-- Comprehensive null/missing value detection and handling 
-- Text normalization with tokenization, stemming, and web table cleaning
-- Numeric normalization with unit detection, parsing, and conversion
-- Date/time parsing and standardization
-- Coordinate parsing and validation
-- URL normalization and validation
-- Enhanced boolean parsing with multi-language support
-- Dataset-level normalization pipelines
-- Data validation and quality checking
-- Pandas-first approach with metadata preservation
 
-Main Classes
-------------
+Profiling
+~~~~~~~~~
+profile_dataframe
+    Analyze DataFrame columns to detect types, units, scale modifiers, etc.
+ColumnProfile, DataFrameProfile
+    Profile result objects with to_dict()/to_json() methods.
 
-Core Normalization
-~~~~~~~~~~~~~~~~~~
-DatasetNormalizer
-    Comprehensive dataset normalization with configurable pipelines and unit-aware value handling.
-
-Type Detection and Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-DataType
-    Enumeration of supported data types.
-TypeDetectionResult
-    Result object containing type detection information and confidence scores.
-NullDetector
-    Comprehensive null/missing value detector with extensive pattern matching.
-TypeConverter
-    Main type converter with unit support and specialized parsers.
-
-Text Normalization
-~~~~~~~~~~~~~~~~~~
-TextNormalizer
-    Basic text cleaning and normalization.
-HeaderNormalizer
-    Specialized normalizer for column headers with HTML cleaning.
-TokenizationNormalizer
-    Advanced text tokenization with stemming and stop word removal.
-WebTableNormalizer
-    Specialized normalizer for web-scraped table data.
-BracketContentHandler
-    Utility for handling content in brackets.
-
-Numeric and Unit Handling
-~~~~~~~~~~~~~~~~~~~~~~~~~
-UnitNormalizer
-    Main normalizer for quantities with units.
-UnitRegistry
-    Registry of known units and their conversion factors.
-UnitDetector
-    Detector for units in text with quantities.
-UnitConverter
-    Converter for units within the same category.
-QuantityParser
-    Parser for extracting numeric quantities from text.
-
-Specialized Type Converters
+Unit Handling (Pint-backed)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-CoordinateParser
-    Parser and validator for geographic coordinates.
-BooleanParser
-    Boolean parser supporting multiple languages and formats.
-LinkNormalizer
-    URL and link normalization and validation.
-NumericParser
-    Numeric parser with locale support and format detection.
+parse_quantity
+    Parse "5 km" → ParsedQuantity(magnitude=5, unit="kilometer")
+convert_units
+    Convert between compatible units (km → miles, celsius → fahrenheit)
+normalize_quantity
+    Parse and optionally convert units + expand scale modifiers
+normalize_column
+    Normalize a pandas Series of quantities
 
-Date and Time
-~~~~~~~~~~~~~
-DateNormalizer
-    Date parsing, formatting, and standardization.
+Scale Modifiers
+~~~~~~~~~~~~~~~
+detect_scale_modifier
+    Detect MEO, MEUR, million, thousand, etc. in text
+expand_scale
+    Expand "5 MEO" → 5,000,000
+parse_scaled_number
+    Parse number with scale modifier
 
-Validation and Quality
-~~~~~~~~~~~~~~~~~~~~~~
-DataQualityChecker
-    Comprehensive data quality assessment tool.
-EmailValidator, RangeValidator, PatternValidator, CompletenessValidator, UniqueValidator
-    Specialized validators for different data quality checks.
-SchemaValidator
-    Validator for DataFrame schema compliance.
-ValidationResult
-    Result object containing validation errors, warnings, and quality metrics.
-
-Dataset-Level Operations
-~~~~~~~~~~~~~~~~~~~~~~~~
-ColumnTypeInference
-    Enhanced column type inference with confidence scoring.
-
-Winter-Equivalent Components
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-AdvancedTypeDetector
-    Sophisticated type detector with majority voting and pattern recognition.
-AdvancedValueNormalizer
-    Advanced value normalizer with unit conversion and quantity scaling.
-ValueDetectionType
-    Comprehensive type detection result with confidence and metadata.
-QuantityModifier
-    Quantity scaling modifiers (thousand, million, billion, etc.).
-
-Convenience Functions
-~~~~~~~~~~~~~~~~~~~~
-normalize_dataset
-    Quick dataset normalization with sensible defaults.
-detect_column_types, detect_dataframe_types
-    Column type detection (basic and advanced).
-parse_quantity, detect_unit, normalize_units, convert_units
-    Unit-related convenience functions.
-parse_coordinate, parse_boolean, normalize_url, parse_number, normalize_date
-    Type-specific parsing functions.
+Integrations (External Libraries)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+normalize_country, normalize_currency, normalize_language
+    ISO code normalization via pycountry
+validate_stdnum, format_stdnum, normalize_stdnum
+    Standard number handling via python-stdnum
+parse_phone, format_phone, validate_phone
+    Phone number handling via phonenumbers
+validate_email, normalize_email
+    Email handling via email-validator
 
 Usage Examples
 --------------
 
-Basic normalization:
->>> import pandas as pd
->>> from PyDI.normalization import normalize_dataset
->>> df = pd.read_csv("data.csv")
->>> normalized_df, result = normalize_dataset(df)
+Profile a DataFrame:
+>>> from PyDI.normalization import profile_dataframe
+>>> profile = profile_dataframe(df)
+>>> print(profile.summary())
 
-Advanced normalization with custom settings:
->>> from PyDI.normalization import DatasetNormalizer, create_normalization_config
->>> config = create_normalization_config(enable_unit_conversion=True, enable_quantity_scaling=True)
->>> normalizer = DatasetNormalizer(config)
->>> normalized_df, result = normalizer.normalize_dataset(df)
+Normalize quantities:
+>>> from PyDI.normalization import normalize_quantity
+>>> normalize_quantity("5 km", target_unit="m")
+(5000.0, 'meter')
+>>> normalize_quantity("10 MEO")
+(10000000.0, 'dimensionless')
 
-Web table normalization:
->>> from PyDI.normalization import WebTableNormalizer
->>> web_normalizer = WebTableNormalizer(remove_brackets_content=True)
->>> cleaned_df = web_normalizer.normalize_dataframe(df)
+Convert units:
+>>> from PyDI.normalization import convert_units
+>>> convert_units(100, "fahrenheit", "celsius")
+37.77...
 
-Unit normalization:
->>> from PyDI.normalization import UnitNormalizer
->>> unit_normalizer = UnitNormalizer()
->>> normalized_value, unit = unit_normalizer.normalize_value("5.2 km")
-
-Type detection:
->>> from PyDI.normalization import AdvancedTypeDetector
->>> detector = AdvancedTypeDetector()
->>> types = detector.detect_dataframe_types(df)
-
-Data quality assessment:
->>> from PyDI.normalization import DataQualityChecker, CompletenessValidator
->>> checker = DataQualityChecker()
->>> checker.add_validator(CompletenessValidator(required_columns=['id', 'name']))
->>> quality_result = checker.assess_quality(df)
-
-Enterprise-grade comprehensive normalization:
->>> from PyDI.normalization import DatasetNormalizer, create_normalization_config
->>> config = create_normalization_config()
->>> normalizer = DatasetNormalizer(config)
->>> normalized_df, result = normalizer.normalize_dataset(df)
-
-Advanced unit handling:
->>> from PyDI.normalization import UnitRegistry, AdvancedValueNormalizer
->>> registry = UnitRegistry(comprehensive=True)
->>> normalizer = AdvancedValueNormalizer(registry)
->>> normalized = normalizer.normalize_value("5.2 thousand km", data_type='numeric')
->>> # Returns normalized value in base units (metres)
-
-For more examples, see the examples/ directory.
+Normalize country codes:
+>>> from PyDI.normalization.integrations import normalize_country
+>>> normalize_country("Germany")
+'DE'
+>>> normalize_country("DEU", output_format="name")
+'Germany'
 """
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Union
+# Profiling
+from .profile import (
+    ColumnProfile,
+    DataFrameProfile,
+    profile_dataframe,
+    profile_column,
+)
+
+# Unit handling (Pint-backed)
+from .units import (
+    ParsedQuantity,
+    parse_quantity,
+    convert_units,
+    detect_unit,
+    normalize_quantity,
+    normalize_column,
+    normalize_to_base,
+    get_dimensionality,
+    are_compatible,
+    list_compatible_units,
+    is_valid_unit,
+    list_units,
+)
+
+# Scale modifiers
+from .scale import (
+    ScaleModifier,
+    ScaleResult,
+    detect_scale_modifier,
+    expand_scale,
+    parse_scaled_number,
+)
+
+# Integrations - re-export commonly used functions
+from .integrations import (
+    # Country/currency/language (pycountry)
+    normalize_country,
+    normalize_currency,
+    normalize_language,
+    lookup_country,
+    lookup_currency,
+    CountryInfo,
+    CurrencyInfo,
+    # Standard numbers (python-stdnum)
+    detect_stdnum_type,
+    validate_stdnum,
+    format_stdnum,
+    normalize_stdnum,
+    is_valid_isbn,
+    is_valid_iban,
+    is_valid_vat,
+    # Phone numbers (phonenumbers)
+    parse_phone,
+    format_phone,
+    validate_phone,
+    PhoneInfo,
+    # Email (email-validator)
+    validate_email,
+    normalize_email,
+    is_valid_email,
+    EmailInfo,
+)
 
 # Text normalization utilities
 from .text import (
@@ -181,24 +151,7 @@ from .text import (
     HeaderNormalizer,
     TokenizationNormalizer,
     WebTableNormalizer,
-    BracketContentHandler
-)
-
-# Unit handling and conversion
-from .units import (
-    UnitCategory,
-    QuantityModifier,
-    Unit,
-    UnitRegistry,
-    QuantityParser,
-    UnitDetector,
-    UnitConverter,
-    UnitNormalizer,
-    # Convenience functions
-    parse_quantity,
-    detect_unit,
-    normalize_units,
-    convert_units
+    BracketContentHandler,
 )
 
 # Type detection and conversion
@@ -209,18 +162,16 @@ from .types import (
     NumericParser,
     DateNormalizer,
     TypeConverter,
-    # Convenience functions
     parse_coordinate,
     parse_boolean,
     normalize_url,
-    parse_number
+    parse_number,
 )
 
 # Value-level normalization
 from .values import (
     AdvancedValueNormalizer,
     NullValueHandler,
-    # Convenience functions
     normalize_numeric,
     normalize_date,
     normalize_boolean,
@@ -233,11 +184,10 @@ from .columns import (
     ValueDetectionType,
     AdvancedTypeDetector,
     ColumnTypeInference,
-    # Convenience functions
     detect_column_types,
     analyze_column_quality,
     detect_dataframe_types,
-    infer_column_types
+    infer_column_types,
 )
 
 # Dataset-level normalization orchestration
@@ -246,14 +196,13 @@ from .datasets import (
     ColumnNormalizationResult,
     DatasetNormalizationResult,
     DatasetNormalizer,
-    # Convenience functions
     normalize_dataset,
     create_normalization_config,
     load_normalization_config,
-    save_normalization_config
+    save_normalization_config,
 )
 
-# Legacy validators (if they exist)
+# Validators (if they exist)
 try:
     from .validators import (
         ValidationResult,
@@ -265,94 +214,112 @@ try:
         UniqueValidator,
         DataQualityChecker,
         SchemaValidator,
-        # Convenience functions
         validate_emails,
         validate_ranges,
         validate_completeness,
-        validate_schema
+        validate_schema,
     )
 except ImportError:
-    # Validators module doesn't exist yet
     pass
 
-# Legacy detectors (if they exist)
+# Detectors (if they exist)
 try:
     from .detectors import DataType, NullDetector, OutlierDetector, DuplicateDetector
 except ImportError:
-    # Detectors module doesn't exist yet
     pass
 
-# Define what gets exported when using "from PyDI.normalization import *"
+
 __all__ = [
-    # Text normalization utilities
-    'TextNormalizer',
-    'HeaderNormalizer',
-    'TokenizationNormalizer',
-    'WebTableNormalizer',
-    'BracketContentHandler',
-
-    # Unit handling and conversion
-    'UnitCategory',
-    'QuantityModifier',
-    'Unit',
-    'UnitRegistry',
-    'QuantityParser',
-    'UnitDetector',
-    'UnitConverter',
-    'UnitNormalizer',
-
-    # Type detection and conversion
-    'CoordinateParser',
-    'BooleanParser',
-    'LinkNormalizer',
-    'NumericParser',
-    'DateNormalizer',
-    'TypeConverter',
-
-    # Value-level normalization
-    'AdvancedValueNormalizer',
-    'NullValueHandler',
-
-    # Column analysis and type detection
-    'DataTypeExtended',
-    'ValueDetectionType',
-    'AdvancedTypeDetector',
-    'ColumnTypeInference',
-
-    # Dataset-level normalization orchestration
-    'NormalizationConfig',
-    'ColumnNormalizationResult',
-    'DatasetNormalizationResult',
-    'DatasetNormalizer',
-
-    # Convenience functions - Unit handling
-    'parse_quantity',
-    'detect_unit',
-    'normalize_units',
-    'convert_units',
-
-    # Convenience functions - Type conversion
-    'parse_coordinate',
-    'parse_boolean',
-    'normalize_url',
-    'parse_number',
-
-    # Convenience functions - Value normalization
-    'normalize_numeric',
-    'normalize_date',
-    'normalize_boolean',
-    'clean_nulls',
-
-    # Convenience functions - Column analysis
-    'detect_column_types',
-    'analyze_column_quality',
-    'detect_dataframe_types',
-    'infer_column_types',
-
-    # Convenience functions - Dataset normalization
-    'normalize_dataset',
-    'create_normalization_config',
-    'load_normalization_config',
-    'save_normalization_config',
-
+    # Profiling
+    "ColumnProfile",
+    "DataFrameProfile",
+    "profile_dataframe",
+    "profile_column",
+    # Unit handling
+    "ParsedQuantity",
+    "parse_quantity",
+    "convert_units",
+    "detect_unit",
+    "normalize_quantity",
+    "normalize_column",
+    "normalize_to_base",
+    "get_dimensionality",
+    "are_compatible",
+    "list_compatible_units",
+    "is_valid_unit",
+    "list_units",
+    # Scale modifiers
+    "ScaleModifier",
+    "ScaleResult",
+    "detect_scale_modifier",
+    "expand_scale",
+    "parse_scaled_number",
+    # Country/currency (pycountry)
+    "normalize_country",
+    "normalize_currency",
+    "normalize_language",
+    "lookup_country",
+    "lookup_currency",
+    "CountryInfo",
+    "CurrencyInfo",
+    # Standard numbers (python-stdnum)
+    "detect_stdnum_type",
+    "validate_stdnum",
+    "format_stdnum",
+    "normalize_stdnum",
+    "is_valid_isbn",
+    "is_valid_iban",
+    "is_valid_vat",
+    # Phone numbers
+    "parse_phone",
+    "format_phone",
+    "validate_phone",
+    "PhoneInfo",
+    # Email
+    "validate_email",
+    "normalize_email",
+    "is_valid_email",
+    "EmailInfo",
+    # Text normalization
+    "TextNormalizer",
+    "HeaderNormalizer",
+    "TokenizationNormalizer",
+    "WebTableNormalizer",
+    "BracketContentHandler",
+    # Type conversion
+    "CoordinateParser",
+    "BooleanParser",
+    "LinkNormalizer",
+    "NumericParser",
+    "DateNormalizer",
+    "TypeConverter",
+    "parse_coordinate",
+    "parse_boolean",
+    "normalize_url",
+    "parse_number",
+    # Value normalization
+    "AdvancedValueNormalizer",
+    "NullValueHandler",
+    "normalize_numeric",
+    "normalize_date",
+    "normalize_boolean",
+    "clean_nulls",
+    # Column analysis
+    "DataTypeExtended",
+    "ValueDetectionType",
+    "AdvancedTypeDetector",
+    "ColumnTypeInference",
+    "detect_column_types",
+    "analyze_column_quality",
+    "detect_dataframe_types",
+    "infer_column_types",
+    # Dataset normalization
+    "NormalizationConfig",
+    "ColumnNormalizationResult",
+    "DatasetNormalizationResult",
+    "DatasetNormalizer",
+    "normalize_dataset",
+    "create_normalization_config",
+    "load_normalization_config",
+    "save_normalization_config",
 ]
