@@ -12,16 +12,15 @@ import logging
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union, Callable
+from typing import Any, Dict, List, Optional, Tuple, Union, Callable
 from dataclasses import dataclass, asdict
 
 import pandas as pd
 
 from .values import AdvancedValueNormalizer, NullValueHandler
-from .columns import AdvancedTypeDetector, ColumnTypeInference, DataTypeExtended
+from .profile import profile_dataframe, profile_column, DataTypeExtended
 from .text import TextNormalizer
 from .transforms import get_transform as _get_builtin_transform
-from .units import UnitRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -293,9 +292,8 @@ class DatasetNormalizer:
 
     Notes
     -----
-    - Type detection uses `AdvancedTypeDetector` (majority voting + patterns).
-    - Unit-aware normalization leverages header-derived unit hints when present
-      (e.g., "Distance (km)") and value-level unit detection otherwise.
+    - Type detection uses profile_dataframe() from the profile module.
+    - Unit-aware normalization uses Pint via the units module.
     - Quantity scaling interprets modifiers like thousand/million/billion.
     - Null standardization maps many web-style null tokens to a single value.
     """
@@ -303,16 +301,11 @@ class DatasetNormalizer:
     def __init__(
         self,
         config: Optional[NormalizationConfig] = None,
-        unit_registry: Optional[UnitRegistry] = None,
-        type_detector: Optional[AdvancedTypeDetector] = None
     ):
         self.config = config or NormalizationConfig()
 
         # Initialize components
-        self.unit_registry = unit_registry or UnitRegistry(comprehensive=True)
-        self.type_detector = type_detector or AdvancedTypeDetector()
         self.value_normalizer = AdvancedValueNormalizer(
-            unit_registry=self.unit_registry,
             enable_unit_conversion=self.config.enable_unit_conversion,
             enable_quantity_scaling=self.config.enable_quantity_scaling
         )
@@ -321,7 +314,6 @@ class DatasetNormalizer:
             lowercase=self.config.lowercase_text,
             strip_whitespace=self.config.remove_extra_whitespace
         )
-        self.column_inference = ColumnTypeInference()
 
         # Normalization statistics
         self.last_result: Optional[DatasetNormalizationResult] = None
@@ -485,28 +477,27 @@ class DatasetNormalizer:
 
         # Sample for type detection if dataset is large
         sample_size = min(len(series), self.config.sample_size_for_detection)
-        sample = series.dropna().head(sample_size) if len(
-            series) > sample_size else series
+        # Detect column type using profile module
+        detected_type = DataTypeExtended.STRING
+        confidence = 0.5
+        unit_category = None
+        specific_unit = None
 
-        # Detect column type and characteristics
-        type_result = None
-        if self.config.enable_type_detection and not sample.empty:
-            type_result = self.type_detector.detect_type_for_column(
-                sample.tolist(),
-                column_name,
-                confidence_threshold=self.config.type_confidence_threshold
-            )
+        if self.config.enable_type_detection:
+            col_profile = profile_column(series, sample_size=sample_size)
+            detected_type = DataTypeExtended.from_detected_type(col_profile.detected_type)
+            # Estimate confidence based on profile info
+            non_null_ratio = 1 - (col_profile.null_count / max(col_profile.total_count, 1))
+            confidence = non_null_ratio * 0.8 + 0.2  # At least 0.2 confidence
 
-        if not type_result:
-            detected_type = DataTypeExtended.STRING
-            confidence = 0.5
-            unit_category = None
-            specific_unit = None
-        else:
-            detected_type = type_result.data_type
-            confidence = type_result.confidence
-            unit_category = type_result.unit_category
-            specific_unit = type_result.specific_unit
+            # Extract unit info if available
+            if col_profile.unit_info:
+                units = col_profile.unit_info.get("units_detected", {})
+                if units:
+                    specific_unit = max(units.keys(), key=lambda u: units[u])
+                    unit_category = col_profile.unit_info.get("dimensionalities", {})
+                    if unit_category:
+                        unit_category = max(unit_category.keys(), key=lambda d: unit_category[d])
 
         # Normalize column name if needed
         normalized_name = self._normalize_column_name(column_name)
@@ -631,15 +622,28 @@ class DatasetNormalizer:
 
     def get_column_quality_report(self, df: pd.DataFrame) -> pd.DataFrame:
         """Generate column quality assessment report."""
-        return self.column_inference.analyze_columns_quality(df)
+        profile = profile_dataframe(df)
+        report_data = []
+        for col_name, col_profile in profile.columns.items():
+            report_data.append({
+                "column": col_name,
+                "dtype": col_profile.dtype,
+                "detected_type": col_profile.detected_type,
+                "total_count": col_profile.total_count,
+                "null_count": col_profile.null_count,
+                "null_pct": col_profile.null_count / max(col_profile.total_count, 1) * 100,
+                "unique_count": col_profile.unique_count,
+                "suggestions": ", ".join(col_profile.suggestions),
+            })
+        return pd.DataFrame(report_data)
 
     def detect_schema_patterns(self, dfs: List[pd.DataFrame]) -> Dict[str, Any]:
         """Detect common schema patterns across multiple datasets."""
-        patterns = {
-            'common_columns': set(),
-            'type_patterns': {},
-            'naming_patterns': set(),
-            'unit_patterns': set()
+        patterns: Dict[str, Any] = {
+            "common_columns": set(),
+            "type_patterns": {},
+            "naming_patterns": set(),
+            "unit_patterns": set(),
         }
 
         if not dfs:
@@ -647,24 +651,16 @@ class DatasetNormalizer:
 
         # Find common columns
         all_columns = [set(df.columns) for df in dfs]
-        patterns['common_columns'] = set.intersection(
-            *all_columns) if all_columns else set()
+        patterns["common_columns"] = set.intersection(*all_columns) if all_columns else set()
 
-        # Analyze type patterns
+        # Analyze type patterns using profile
         for df in dfs:
-            for column in df.columns:
-                if column not in patterns['type_patterns']:
-                    patterns['type_patterns'][column] = []
-
-                # Quick type detection for pattern analysis
-                sample = df[column].dropna().head(100)
-                if not sample.empty:
-                    type_result = self.type_detector.detect_type_for_column(
-                        sample.tolist(), column, confidence_threshold=0.5
-                    )
-                    if type_result:
-                        patterns['type_patterns'][column].append(
-                            type_result.data_type.name)
+            profile = profile_dataframe(df, sample_size=100)
+            for col_name, col_profile in profile.columns.items():
+                if col_name not in patterns["type_patterns"]:
+                    patterns["type_patterns"][col_name] = []
+                detected = DataTypeExtended.from_detected_type(col_profile.detected_type)
+                patterns["type_patterns"][col_name].append(detected.name)
 
         return patterns
 

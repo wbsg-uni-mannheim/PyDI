@@ -76,6 +76,10 @@ def parse_phone(
     if not value:
         return None
 
+    # Convert international dialing prefix 00 to +
+    if value.startswith("00") and len(value) > 2 and value[2].isdigit():
+        value = "+" + value[2:]
+
     try:
         parsed = phonenumbers.parse(value, default_region)
 
@@ -155,8 +159,14 @@ def format_phone(
     if not value or not isinstance(value, str):
         return None
 
+    value = value.strip()
+
+    # Convert international dialing prefix 00 to +
+    if value.startswith("00") and len(value) > 2 and value[2].isdigit():
+        value = "+" + value[2:]
+
     try:
-        parsed = phonenumbers.parse(value.strip(), default_region)
+        parsed = phonenumbers.parse(value, default_region)
 
         format_map = {
             "E164": PhoneNumberFormat.E164,

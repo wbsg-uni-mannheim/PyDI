@@ -16,15 +16,16 @@ from urllib.parse import urlparse
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+from .integrations.babel_numbers import (
+    BABEL_AVAILABLE,
+    CURRENCY_SYMBOLS,
+    DEFAULT_CANDIDATE_LOCALES,
+    is_babel_available,
+    parse_decimal as babel_parse_decimal,
+    infer_locale as babel_infer_locale,
+)
 
-# Optional: Babel for locale-aware numeric parsing
-try:
-    from babel.numbers import parse_decimal as babel_parse_decimal  # type: ignore
-    from babel.numbers import NumberFormatError  # type: ignore
-    BABEL_AVAILABLE = True
-except Exception:
-    BABEL_AVAILABLE = False
+logger = logging.getLogger(__name__)
 
 
 class CoordinateParser:
@@ -386,6 +387,8 @@ class NumericParser:
 
     Handles various numeric formats including different decimal separators,
     thousands separators, scientific notation, and currency formats.
+
+    Uses Babel integration for locale-aware parsing when available.
     """
 
     def __init__(
@@ -407,17 +410,15 @@ class NumericParser:
         self.handle_percentages = handle_percentages
         self.auto_detect_locale = auto_detect_locale
         self.extra_thousands_separators = set(extra_thousands_separators or [
-                                              "'", "’", " ", "\xa0"])  # apostrophe, NBSP, space
+                                              "'", "'", " ", "\xa0"])  # apostrophe, NBSP, space
 
-        # Babel configuration (optional dependency)
+        # Babel configuration (uses integration module)
         self.use_babel = use_babel and BABEL_AVAILABLE
         self.babel_locale = babel_locale
-        self.babel_candidate_locales = babel_candidate_locales or [
-            'en_US', 'de_DE', 'fr_FR', 'it_IT', 'es_ES', 'sv_SE', 'de_CH', 'fr_CH'
-        ]
+        self.babel_candidate_locales = babel_candidate_locales or DEFAULT_CANDIDATE_LOCALES
 
-        # Currency symbols
-        self.currency_symbols = {'$', '€', '£', '¥', '₹', '₽', '₩', '₪'}
+        # Currency symbols (from integration module)
+        self.currency_symbols = CURRENCY_SYMBOLS
 
         # Build patterns
         self._build_patterns()
@@ -465,78 +466,25 @@ class NumericParser:
                 f'[{currency_chars}]?\\s*\\d+(?:{thou_sep}\\d{{3}})*(?:{dec_sep}\\d{{2}})?\\s*[{currency_chars}]?'
             )
 
-    def _ordered_babel_locales_for_value(self, text: str) -> List[str]:
-        """Heuristic ordering of candidate locales for a given value."""
-        # Prefer EU-style first if last punctuation is comma
-        s = str(text)
-        last_comma = s.rfind(',')
-        last_dot = s.rfind('.')
-        eu_first = ['de_DE', 'fr_FR', 'it_IT', 'es_ES',
-                    'sv_SE', 'de_CH', 'fr_CH', 'en_US']
-        us_first = ['en_US', 'de_CH', 'fr_CH', 'de_DE',
-                    'fr_FR', 'it_IT', 'es_ES', 'sv_SE']
-        if last_comma > last_dot:
-            order = eu_first
-        else:
-            order = us_first
-        # Keep only those present in configured candidates, preserve order
-        allowed = set(self.babel_candidate_locales)
-        return [loc for loc in order if loc in allowed] or self.babel_candidate_locales
-
     def _parse_with_babel(self, text: str) -> Optional[Union[int, float]]:
-        """Try parsing using Babel with an optionally known or inferred locale."""
+        """Try parsing using Babel via the integration module."""
         if not self.use_babel:
             return None
         if pd.isna(text) or not text:
             return None
 
-        s = str(text).strip()
+        # Use the Babel integration's parse_decimal which handles
+        # parentheses, percentages, and currency symbols
+        result = babel_parse_decimal(
+            text,
+            locale=self.babel_locale,
+            candidate_locales=self.babel_candidate_locales,
+            strip_currency=True,
+            handle_percent=self.handle_percentages,
+            handle_parentheses=True,
+        )
 
-        # Parentheses negative
-        negative = s.startswith('(') and s.endswith(')')
-        if negative:
-            s = s[1:-1].strip()
-
-        # Percentage
-        is_percent = s.endswith('%')
-        if is_percent:
-            s = s[:-1].strip()
-
-        # Strip currency symbols
-        for symbol in self.currency_symbols:
-            s = s.replace(symbol, '')
-        s = s.strip()
-
-        locales_to_try: List[str]
-        if self.babel_locale:
-            locales_to_try = [self.babel_locale]
-        else:
-            locales_to_try = self._ordered_babel_locales_for_value(s)
-
-        for loc in locales_to_try:
-            try:
-                # Attempt direct parse first
-                val = float(babel_parse_decimal(s, locale=loc))
-                if is_percent:
-                    val /= 100.0
-                if negative:
-                    val = -val
-                return val
-            except Exception:
-                # Fallback: strip common grouping characters and retry
-                try:
-                    sanitized = s
-                    for grp in (" ", "\xa0", "'", "’"):
-                        sanitized = sanitized.replace(grp, '')
-                    val = float(babel_parse_decimal(sanitized, locale=loc))
-                    if is_percent:
-                        val /= 100.0
-                    if negative:
-                        val = -val
-                    return val
-                except Exception:
-                    continue
-        return None
+        return result.value if result.success else None
 
     def infer_babel_locale(
         self,
@@ -545,44 +493,19 @@ class NumericParser:
         *,
         sample_size: int = 500,
     ) -> Optional[str]:
-        """Infer the most likely locale for a collection of numeric strings using Babel.
+        """Infer the most likely locale for a collection of numeric strings.
 
+        Delegates to the Babel integration module.
         Returns the locale with the highest parse success count.
         """
         if not self.use_babel:
             return None
-        locales = candidate_locales or self.babel_candidate_locales
-        if not locales:
-            return None
 
-        # Sample to limit cost
-        data = [str(v) for v in values if isinstance(
-            v, (str, bytes)) and str(v).strip()][:sample_size]
-        if not data:
-            return None
-
-        best_locale = None
-        best_score = -1
-
-        for loc in locales:
-            score = 0
-            for v in data:
-                s = v.strip().replace('\xa0', ' ')
-                # Remove currency and percent for inference
-                if s.endswith('%'):
-                    s = s[:-1].strip()
-                for symbol in self.currency_symbols:
-                    s = s.replace(symbol, '')
-                try:
-                    babel_parse_decimal(s, locale=loc)
-                    score += 1
-                except Exception:
-                    pass
-            if score > best_score:
-                best_score = score
-                best_locale = loc
-
-        return best_locale
+        return babel_infer_locale(
+            values,
+            candidate_locales=candidate_locales or self.babel_candidate_locales,
+            sample_size=sample_size,
+        )
 
     def parse_numeric(self, text: str) -> Optional[Union[int, float]]:
         """Parse numeric value from text."""
@@ -782,7 +705,7 @@ class DateNormalizer:
 
         # First try pandas' built-in parsing
         try:
-            return pd.to_datetime(date_str, infer_datetime_format=True)
+            return pd.to_datetime(date_str)
         except:
             pass
 

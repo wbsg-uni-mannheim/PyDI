@@ -1,9 +1,15 @@
 """
-Comprehensive text normalization utilities for PyDI.
+Text normalization utilities for PyDI.
 
-This module provides all text-related normalization functionality, from basic
-text cleaning to advanced tokenization and web table processing. It includes
-both simple and sophisticated text processing capabilities.
+This module provides text-related normalization functionality:
+- TextNormalizer: Basic text cleaning (HTML, whitespace, unicode)
+- HeaderNormalizer: Column header normalization
+- WebTableNormalizer: Web-scraped table cleaning (delegates to TextNormalizer + HeaderNormalizer)
+- BracketContentHandler: Extract/remove bracket content
+
+For advanced tokenization with stemming/stopwords, use the tokenizers in:
+- PyDI.utils.SimilarityRegistry.TOKENIZATION_STRATEGIES
+- PyDI.entitymatching.blocking.TokenBlocker
 """
 
 from __future__ import annotations
@@ -19,34 +25,13 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-# Try to import optional dependencies for advanced features
-try:
-    import nltk
-    from nltk.corpus import stopwords
-    from nltk.stem import PorterStemmer
-    NLTK_AVAILABLE = True
-
-    # Download required NLTK data if not present
-    try:
-        nltk.data.find('tokenizers/punkt')
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        logger.info("Downloading required NLTK data...")
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-
-except ImportError:
-    NLTK_AVAILABLE = False
-    logger.warning(
-        "NLTK not available. Advanced tokenization features will be limited.")
-
 
 class TextNormalizer:
     """
-    Comprehensive text cleaning and normalization.
+    Text cleaning and normalization.
 
-    Provides both basic and advanced text cleaning capabilities including
-    HTML removal, Unicode normalization, case conversion, and whitespace handling.
+    Provides text cleaning capabilities including HTML removal, Unicode
+    normalization, case conversion, and whitespace handling.
 
     Parameters
     ----------
@@ -59,7 +44,7 @@ class TextNormalizer:
     remove_punctuation : bool, default False
         Remove punctuation characters.
     fix_encoding : bool, default True
-        Fix common encoding issues.
+        Fix common encoding issues (uses ftfy if available).
     normalize_unicode : bool, default True
         Normalize Unicode characters to standard forms.
     """
@@ -323,188 +308,12 @@ class HeaderNormalizer:
         return result
 
 
-class TokenizationNormalizer:
-    """
-    Advanced tokenization and text normalization with stemming support.
-
-    Provides sophisticated text processing including tokenization, stemming,
-    stop word removal, and case change splitting.
-
-    Parameters
-    ----------
-    use_stemming : bool, default False
-        Whether to apply stemming to tokens.
-    remove_stopwords : bool, default True
-        Whether to remove stop words.
-    min_token_length : int, default 1
-        Minimum token length to keep.
-    split_on_case_change : bool, default True
-        Split tokens on case changes (camelCase).
-    split_numbers : bool, default True
-        Split alphanumeric tokens.
-    language : str, default 'english'
-        Language for stop words and stemming.
-    """
-
-    def __init__(
-        self,
-        use_stemming: bool = False,
-        remove_stopwords: bool = True,
-        min_token_length: int = 1,
-        split_on_case_change: bool = True,
-        split_numbers: bool = True,
-        language: str = 'english'
-    ):
-        self.use_stemming = use_stemming
-        self.remove_stopwords = remove_stopwords
-        self.min_token_length = min_token_length
-        self.split_on_case_change = split_on_case_change
-        self.split_numbers = split_numbers
-        self.language = language
-
-        # Initialize NLTK components if available
-        if NLTK_AVAILABLE:
-            try:
-                self.stemmer = PorterStemmer() if use_stemming else None
-                self.stop_words = set(stopwords.words(
-                    language)) if remove_stopwords else set()
-            except OSError:
-                logger.warning(
-                    f"Stop words for '{language}' not available. Disabling stop word removal.")
-                self.stop_words = set()
-                self.stemmer = None
-        else:
-            self.stemmer = None
-            # Fallback English stop words
-            self.stop_words = {
-                'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
-                'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
-                'to', 'was', 'will', 'with', 'the', 'this', 'but', 'they', 'have',
-                'had', 'what', 'said', 'each', 'which', 'their', 'we', 'all'
-            } if remove_stopwords else set()
-
-        # Tokenization patterns
-        self.case_change_pattern = re.compile(r'(?<=[a-z])(?=[A-Z])')
-        self.alphanumeric_split_pattern = re.compile(
-            r'(?<=[a-zA-Z])(?=\d)|(?<=\d)(?=[a-zA-Z])')
-        self.word_boundary_pattern = re.compile(r'\W+')
-
-    def _split_camel_case(self, token: str) -> List[str]:
-        """Split camelCase tokens."""
-        if self.split_on_case_change:
-            return self.case_change_pattern.sub(' ', token).split()
-        return [token]
-
-    def _split_alphanumeric(self, token: str) -> List[str]:
-        """Split alphanumeric tokens."""
-        if self.split_numbers:
-            return self.alphanumeric_split_pattern.sub(' ', token).split()
-        return [token]
-
-    def tokenize(self, text: str) -> List[str]:
-        """
-        Tokenize text with advanced processing.
-
-        Parameters
-        ----------
-        text : str
-            Text to tokenize.
-
-        Returns
-        -------
-        List[str]
-            List of processed tokens.
-        """
-        if pd.isna(text) or not text:
-            return []
-
-        text = str(text)
-
-        # Remove brackets but keep content
-        text = text.replace('(', ' ').replace(')', ' ')
-
-        # Basic tokenization on word boundaries
-        initial_tokens = self.word_boundary_pattern.split(text.strip())
-        initial_tokens = [t for t in initial_tokens if t]
-
-        # Advanced token splitting
-        tokens = []
-        for token in initial_tokens:
-            if not token:
-                continue
-
-            # Split on case changes
-            case_split_tokens = self._split_camel_case(token)
-
-            # Split alphanumeric
-            for case_token in case_split_tokens:
-                alpha_split_tokens = self._split_alphanumeric(case_token)
-                tokens.extend(alpha_split_tokens)
-
-        # Process tokens
-        processed_tokens = []
-        for token in tokens:
-            if len(token) < self.min_token_length:
-                continue
-
-            # Convert to lowercase
-            token = token.lower()
-
-            # Remove stop words
-            if self.remove_stopwords and token in self.stop_words:
-                continue
-
-            # Apply stemming
-            if self.stemmer and self.use_stemming:
-                try:
-                    token = self.stemmer.stem(token)
-                except:
-                    pass  # Keep original token if stemming fails
-
-            processed_tokens.append(token)
-
-        return processed_tokens
-
-    def normalize(self, text: str) -> str:
-        """
-        Tokenize text and rejoin with spaces.
-
-        Parameters
-        ----------
-        text : str
-            Text to normalize.
-
-        Returns
-        -------
-        str
-            Normalized text with tokens rejoined.
-        """
-        tokens = self.tokenize(text)
-        return ' '.join(tokens)
-
-    def normalize_column(self, series: pd.Series) -> pd.Series:
-        """
-        Apply tokenization normalization to a pandas Series.
-
-        Parameters
-        ----------
-        series : pd.Series
-            Series to normalize.
-
-        Returns
-        -------
-        pd.Series
-            Series with normalized text.
-        """
-        return series.apply(self.normalize)
-
-
 class WebTableNormalizer:
     """
     Specialized normalizer for web-scraped table data.
 
-    Combines functionality for cleaning messy web data with extensive
-    HTML entity handling and null value detection.
+    Delegates to TextNormalizer for value cleaning and HeaderNormalizer
+    for header cleaning, with additional null value detection.
 
     Parameters
     ----------
@@ -541,21 +350,24 @@ class WebTableNormalizer:
         if custom_null_patterns:
             self.null_patterns.update(custom_null_patterns)
 
-        # HTML entity patterns
-        self.html_entities = {
-            '&nbsp;': ' ', '&nbsp': ' ', 'nbsp': ' ',
-            '&amp;': '&', '&lt;': '<', '&gt;': '>',
-            '&quot;': '"', '&apos;': "'", '&ndash;': '-',
-            '&mdash;': '-', '&hellip;': '...', '&copy;': '(c)',
-            '&reg;': '(r)', '&trade;': 'tm', '&cent;': 'c',
-            '&pound;': 'GBP', '&yen;': 'JPY', '&euro;': 'EUR'
-        }
+        # Delegate to TextNormalizer for value cleaning
+        self._text_normalizer = TextNormalizer(
+            lowercase=True,
+            strip_whitespace=True,
+            remove_html=handle_html_entities,
+            remove_punctuation=False,
+            fix_encoding=True,
+            normalize_unicode=True,
+        )
 
-        # Compiled patterns
+        # Delegate to HeaderNormalizer for header cleaning
+        self._header_normalizer = HeaderNormalizer(
+            null_value=null_value,
+            remove_brackets=remove_brackets_content,
+        )
+
+        # Bracket pattern for optional content removal
         self.bracket_pattern = re.compile(r'\(.*?\)')
-        self.html_tag_pattern = re.compile(r'<.*?>')
-        self.html_entity_pattern = re.compile(r'&[#\w]+;')
-        self.numeric_entity_pattern = re.compile(r'[&\\?]#[0-9]{1,3};')
 
     def normalize_value(self, value: str) -> str:
         """
@@ -575,40 +387,16 @@ class WebTableNormalizer:
             return self.null_value
 
         try:
-            value = str(value)
-
-            # Remove newlines and normalize whitespace
-            value = value.replace('\n', ' ').replace(
-                '\r', ' ').replace('\t', ' ')
-
-            # Handle HTML entities
-            if self.handle_html_entities:
-                # Replace known entities
-                for entity, replacement in self.html_entities.items():
-                    value = value.replace(entity, replacement)
-
-                # Remove numeric HTML entities
-                value = self.numeric_entity_pattern.sub(' ', value)
-
-                # Final HTML entity decode
-                value = html.unescape(value)
-
-            # Remove HTML tags
-            value = self.html_tag_pattern.sub('', value)
-
-            # Convert to lowercase and trim
-            value = value.lower().strip()
+            # Use TextNormalizer for basic cleaning
+            value = self._text_normalizer.clean_text(value)
 
             # Check for null patterns
-            if value in self.null_patterns:
+            if value.lower().strip() in self.null_patterns:
                 return self.null_value
 
             # Remove bracket content if requested
             if self.remove_brackets_content:
                 value = self.bracket_pattern.sub('', value).strip()
-
-            # Final whitespace normalization
-            value = re.sub(r'\s+', ' ', value).strip()
 
         except Exception as e:
             logger.warning(f"Error normalizing value '{value}': {e}")
@@ -657,17 +445,16 @@ class WebTableNormalizer:
         """
         result = df.copy()
 
-        # Normalize headers if requested
+        # Normalize headers if requested (using HeaderNormalizer)
         if normalize_headers:
-            header_normalizer = HeaderNormalizer(null_value=self.null_value)
-            result = header_normalizer.normalize_dataframe_headers(result)
+            result = self._header_normalizer.normalize_dataframe_headers(result)
 
         # Normalize values
         target_columns = columns if columns else result.columns.tolist()
 
         for col in target_columns:
             if col in result.columns:
-                logger.info(f"Normalizing web table column: {col}")
+                logger.debug(f"Normalizing web table column: {col}")
                 result[col] = self.normalize_column(result[col])
 
         return result
@@ -857,28 +644,6 @@ def clean_headers(headers: Union[List[str], pd.DataFrame], **kwargs) -> Union[Li
         return normalizer.normalize_headers(headers)
     else:
         return normalizer.normalize_dataframe_headers(headers)
-
-
-def tokenize_text(text: str, use_stemming: bool = False, **kwargs) -> List[str]:
-    """
-    Tokenize text with optional stemming.
-
-    Parameters
-    ----------
-    text : str
-        Text to tokenize.
-    use_stemming : bool, default False
-        Whether to apply stemming.
-    **kwargs
-        Additional arguments for TokenizationNormalizer.
-
-    Returns
-    -------
-    List[str]
-        List of tokens.
-    """
-    normalizer = TokenizationNormalizer(use_stemming=use_stemming, **kwargs)
-    return normalizer.tokenize(text)
 
 
 def clean_web_data(df: pd.DataFrame, **kwargs) -> pd.DataFrame:

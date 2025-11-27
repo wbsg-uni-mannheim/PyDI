@@ -22,7 +22,8 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
-from stdnum import iban, isbn, issn, ean, imei, isin, vat
+from stdnum import iban, isbn, issn, ean, imei, isin
+from stdnum.eu import vat
 from stdnum.exceptions import InvalidChecksum, InvalidComponent, InvalidFormat, InvalidLength
 
 logger = logging.getLogger(__name__)

@@ -323,10 +323,12 @@ def is_valid_unit(unit: str) -> bool:
         >>> is_valid_unit("not_a_unit")
         False
     """
+    if not unit or not isinstance(unit, str):
+        return False
     try:
         _ureg(unit)
         return True
-    except pint.UndefinedUnitError:
+    except (pint.UndefinedUnitError, pint.DimensionalityError, AssertionError, Exception):
         return False
 
 

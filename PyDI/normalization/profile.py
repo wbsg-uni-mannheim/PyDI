@@ -18,6 +18,7 @@ import json
 import logging
 from collections import Counter
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Literal
 
 import pandas as pd
@@ -33,6 +34,12 @@ from .integrations import (
     lookup_currency,
 )
 from .scale import detect_scale_modifier
+from .types import (
+    BooleanParser,
+    LinkNormalizer,
+    DateNormalizer,
+    CoordinateParser,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -44,15 +51,64 @@ DetectedType = Literal[
     "email",
     "phone",
     "url",
+    "coordinate",
     "country",
     "currency",
     "unit_quantity",
     "scaled_number",
+    "percentage",
     "stdnum",
     "mixed",
     "empty",
     "unknown",
 ]
+
+
+class DataTypeExtended(Enum):
+    """Extended data types for column analysis.
+
+    This enum provides a richer set of types than DetectedType,
+    including types like COORDINATE, PERCENTAGE, LIST that are
+    detected through pattern matching.
+    """
+
+    NUMERIC = "numeric"
+    STRING = "string"
+    DATE = "date"
+    DATETIME = "datetime"
+    BOOLEAN = "bool"
+    COORDINATE = "coordinate"
+    LINK = "link"
+    EMAIL = "email"
+    PHONE = "phone"
+    CURRENCY = "currency"
+    PERCENTAGE = "percentage"
+    LIST = "list"
+    UNIT = "unit"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def from_detected_type(cls, detected_type: DetectedType) -> "DataTypeExtended":
+        """Convert DetectedType string to DataTypeExtended enum."""
+        mapping = {
+            "numeric": cls.NUMERIC,
+            "text": cls.STRING,
+            "date": cls.DATE,
+            "boolean": cls.BOOLEAN,
+            "email": cls.EMAIL,
+            "phone": cls.PHONE,
+            "url": cls.LINK,
+            "coordinate": cls.COORDINATE,
+            "country": cls.STRING,
+            "currency": cls.CURRENCY,
+            "unit_quantity": cls.UNIT,
+            "scaled_number": cls.NUMERIC,
+            "stdnum": cls.STRING,
+            "mixed": cls.STRING,
+            "empty": cls.UNKNOWN,
+            "unknown": cls.UNKNOWN,
+        }
+        return mapping.get(detected_type, cls.UNKNOWN)
 
 
 @dataclass
@@ -69,6 +125,7 @@ class ColumnProfile:
     # Type-specific details
     unit_info: dict[str, Any] | None = None
     scale_info: dict[str, Any] | None = None
+    percentage_info: dict[str, Any] | None = None
     stdnum_info: dict[str, Any] | None = None
     country_info: dict[str, Any] | None = None
     suggestions: list[str] = field(default_factory=list)
@@ -84,6 +141,7 @@ class ColumnProfile:
             "sample_values": self.sample_values,
             "unit_info": self.unit_info,
             "scale_info": self.scale_info,
+            "percentage_info": self.percentage_info,
             "stdnum_info": self.stdnum_info,
             "country_info": self.country_info,
             "suggestions": self.suggestions,
@@ -117,9 +175,42 @@ class DataFrameProfile:
         for name, col in self.columns.items():
             lines.append(f"\n{name}:")
             lines.append(f"  Type: {col.detected_type}")
-            lines.append(f"  Nulls: {col.null_count}/{col.total_count}")
+
+            # Show sample values
+            if col.sample_values:
+                samples_str = str(col.sample_values[:3])
+                lines.append(f"  Samples: {samples_str}")
+
+            # Show scale modifier details
+            if col.scale_info:
+                lines.append(f"  Scale modifiers: {col.scale_info}")
+
+            # Show percentage info details
+            if col.percentage_info:
+                lines.append(f"  Percentage: {col.percentage_info}")
+
+            # Show unit info details
+            if col.unit_info:
+                lines.append(f"  Units: {col.unit_info}")
+
+            # Show stdnum info details
+            if col.stdnum_info:
+                lines.append(f"  Standard numbers: {col.stdnum_info}")
+
+            # Show country info details
+            if col.country_info:
+                lines.append(f"  Country formats: {col.country_info}")
+
+            # Show null count only if significant
+            if col.null_count > 0:
+                null_pct = col.null_count / col.total_count * 100
+                lines.append(f"  Nulls: {col.null_count}/{col.total_count} ({null_pct:.1f}%)")
+
+            # Show suggestions
             if col.suggestions:
-                lines.append(f"  Suggestions: {', '.join(col.suggestions)}")
+                for suggestion in col.suggestions:
+                    lines.append(f"  Suggestion: {suggestion}")
+
         return "\n".join(lines)
 
 
@@ -181,6 +272,54 @@ def _detect_scale_modifiers(series: pd.Series, sample_size: int = 100) -> dict[s
     return {
         "modifiers_detected": dict(modifiers_found.most_common(5)),
         "coverage": sum(modifiers_found.values()) / len(sample),
+    }
+
+
+def _detect_percentages(series: pd.Series, sample_size: int = 100) -> dict[str, Any] | None:
+    """Detect percentage values in column (e.g., '50%', '0.5', '50 %')."""
+    import re
+
+    sample = series.dropna().astype(str).head(sample_size)
+    if len(sample) == 0:
+        return None
+
+    # Pattern for percentage with % symbol
+    percent_symbol_pattern = re.compile(r'^-?\d+(?:[.,]\d+)?\s*%$')
+    # Pattern for decimal values that look like percentages (0.0-1.0 range)
+    decimal_pattern = re.compile(r'^-?0?\.\d+$|^1\.0*$|^0$|^1$')
+
+    percent_symbol_count = 0
+    decimal_range_count = 0
+
+    for value in sample:
+        v = value.strip()
+
+        # Check for % symbol
+        if percent_symbol_pattern.match(v):
+            percent_symbol_count += 1
+        # Check for decimal values in 0-1 range (potential percentages already as decimals)
+        elif decimal_pattern.match(v):
+            try:
+                num = float(v.replace(',', '.'))
+                if 0 <= num <= 1:
+                    decimal_range_count += 1
+            except ValueError:
+                pass
+
+    total_matches = percent_symbol_count + decimal_range_count
+
+    if total_matches == 0:
+        return None
+
+    coverage = total_matches / len(sample)
+    if coverage < 0.3:  # Less than 30% match - probably not percentage data
+        return None
+
+    return {
+        "with_symbol": percent_symbol_count,
+        "decimal_range": decimal_range_count,
+        "coverage": coverage,
+        "format": "symbol" if percent_symbol_count > decimal_range_count else "decimal",
     }
 
 
@@ -250,6 +389,12 @@ def _detect_column_type(
     """
     Detect the semantic type of a column.
 
+    Uses specialized parsers from types.py for accurate detection of:
+    - Booleans (including string representations like "yes", "no", "true", "false")
+    - URLs (with proper validation)
+    - Coordinates (lat/lon in various formats)
+    - Dates (including string dates not yet parsed)
+
     Returns tuple of (detected_type, extra_info).
     """
     extra_info: dict[str, Any] = {}
@@ -261,15 +406,21 @@ def _detect_column_type(
 
     sample = non_null.astype(str).head(sample_size)
 
-    # Check for emails
+    # Check for emails (using integration)
     email_count = sum(1 for v in sample if is_valid_email(v))
     if email_count / len(sample) > 0.5:
         return ("email", {"coverage": email_count / len(sample)})
 
-    # Check for phone numbers
+    # Check for phone numbers (using integration)
     phone_count = sum(1 for v in sample if validate_phone(v))
     if phone_count / len(sample) > 0.5:
         return ("phone", {"coverage": phone_count / len(sample)})
+
+    # Check for boolean strings early (before country codes which may match "no", "yes")
+    bool_parser = BooleanParser()
+    bool_count = sum(1 for v in sample if bool_parser.parse_boolean(v) is not None)
+    if bool_count / len(sample) > 0.5:
+        return ("boolean", {"coverage": bool_count / len(sample)})
 
     # Check for standard numbers (ISBN, IBAN, etc.)
     stdnum_info = _detect_stdnum(series, sample_size)
@@ -300,7 +451,13 @@ def _detect_column_type(
         extra_info["scale_info"] = scale_info
         return ("scaled_number", extra_info)
 
-    # Check pandas dtype
+    # Check for percentages (e.g., '50%', '0.5')
+    percentage_info = _detect_percentages(series, sample_size)
+    if percentage_info and percentage_info["coverage"] > 0.5:
+        extra_info["percentage_info"] = percentage_info
+        return ("percentage", extra_info)
+
+    # Check pandas dtype first for already-typed columns
     if pd.api.types.is_numeric_dtype(series):
         return ("numeric", extra_info)
 
@@ -310,10 +467,24 @@ def _detect_column_type(
     if pd.api.types.is_bool_dtype(series):
         return ("boolean", extra_info)
 
-    # Check for URL patterns
-    url_count = sum(1 for v in sample if v.startswith(("http://", "https://", "www.")))
+    # Use specialized parsers for string columns
+    # Check for coordinates using CoordinateParser
+    coord_parser = CoordinateParser()
+    coord_count = sum(1 for v in sample if coord_parser.parse_coordinate(v) is not None)
+    if coord_count / len(sample) > 0.5:
+        return ("coordinate", {"coverage": coord_count / len(sample)})
+
+    # Check for URLs using LinkNormalizer (more accurate than prefix check)
+    link_normalizer = LinkNormalizer()
+    url_count = sum(1 for v in sample if link_normalizer.is_valid_url(v))
     if url_count / len(sample) > 0.5:
         return ("url", {"coverage": url_count / len(sample)})
+
+    # Check for date strings using DateNormalizer
+    date_normalizer = DateNormalizer()
+    date_count = sum(1 for v in sample if date_normalizer.parse_date(v) is not None)
+    if date_count / len(sample) > 0.5:
+        return ("date", {"coverage": date_count / len(sample)})
 
     # Default to text
     return ("text", extra_info)
@@ -329,6 +500,12 @@ def _generate_suggestions(col_profile: ColumnProfile) -> list[str]:
     if col_profile.detected_type == "scaled_number":
         suggestions.append("Consider expanding scale modifiers (e.g., '5 MEO' → 5000000)")
 
+    if col_profile.detected_type == "percentage":
+        if col_profile.percentage_info and col_profile.percentage_info.get("format") == "symbol":
+            suggestions.append("Consider converting percentages to decimals (e.g., '50%' → 0.5)")
+        else:
+            suggestions.append("Detected decimal values in 0-1 range (likely percentages)")
+
     if col_profile.detected_type == "stdnum":
         suggestions.append("Consider validating and formatting standard numbers")
 
@@ -343,6 +520,18 @@ def _generate_suggestions(col_profile: ColumnProfile) -> list[str]:
 
     if col_profile.detected_type == "email":
         suggestions.append("Consider validating and normalizing email addresses")
+
+    if col_profile.detected_type == "coordinate":
+        suggestions.append("Consider normalizing to decimal degrees format")
+
+    if col_profile.detected_type == "url":
+        suggestions.append("Consider validating and normalizing URLs")
+
+    if col_profile.detected_type == "boolean":
+        suggestions.append("Consider converting to native boolean type")
+
+    if col_profile.detected_type == "date":
+        suggestions.append("Consider normalizing to ISO 8601 date format")
 
     if col_profile.null_count > 0:
         null_pct = col_profile.null_count / col_profile.total_count * 100
@@ -375,6 +564,7 @@ def profile_column(series: pd.Series, sample_size: int = 100) -> ColumnProfile:
         sample_values=_sample_non_null(series),
         unit_info=extra_info.get("unit_info"),
         scale_info=extra_info.get("scale_info"),
+        percentage_info=extra_info.get("percentage_info"),
         stdnum_info=extra_info.get("stdnum_info"),
         country_info=extra_info.get("country_info"),
     )

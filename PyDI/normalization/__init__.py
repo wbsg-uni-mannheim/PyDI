@@ -52,6 +52,17 @@ parse_phone, format_phone, validate_phone
 validate_email, normalize_email
     Email handling via email-validator
 
+Specification & Transformation (New API)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+NormalizationSpec
+    Define how columns should be normalized
+ColumnSpec
+    Per-column normalization settings
+transform_dataframe
+    Apply transformations according to spec
+normalize_dataframe
+    Main entry point with optional auto-detection
+
 Usage Examples
 --------------
 
@@ -78,6 +89,23 @@ Normalize country codes:
 'DE'
 >>> normalize_country("DEU", output_format="name")
 'Germany'
+
+Full workflow with spec:
+>>> from PyDI.normalization import (
+...     profile_dataframe, NormalizationSpec, transform_dataframe
+... )
+>>> profile = profile_dataframe(df)
+>>> spec = NormalizationSpec.from_profile(profile)
+>>> # Or manually:
+>>> spec = NormalizationSpec()
+>>> spec.set_column("revenue", expand_scale_modifiers=True, output_type="float")
+>>> spec.set_column("country", country_format="alpha_2")
+>>> result = transform_dataframe(df, spec)
+>>> normalized_df = result.dataframe
+
+Auto-normalization:
+>>> from PyDI.normalization import normalize_dataframe
+>>> normalized_df = normalize_dataframe(df, auto=True)
 """
 
 from __future__ import annotations
@@ -86,6 +114,7 @@ from __future__ import annotations
 from .profile import (
     ColumnProfile,
     DataFrameProfile,
+    DataTypeExtended,
     profile_dataframe,
     profile_column,
 )
@@ -149,7 +178,6 @@ from .integrations import (
 from .text import (
     TextNormalizer,
     HeaderNormalizer,
-    TokenizationNormalizer,
     WebTableNormalizer,
     BracketContentHandler,
 )
@@ -178,17 +206,6 @@ from .values import (
     clean_nulls,
 )
 
-# Column analysis and type detection
-from .columns import (
-    DataTypeExtended,
-    ValueDetectionType,
-    AdvancedTypeDetector,
-    ColumnTypeInference,
-    detect_column_types,
-    analyze_column_quality,
-    detect_dataframe_types,
-    infer_column_types,
-)
 
 # Dataset-level normalization orchestration
 from .datasets import (
@@ -202,37 +219,46 @@ from .datasets import (
     save_normalization_config,
 )
 
-# Validators (if they exist)
-try:
-    from .validators import (
-        ValidationResult,
-        BaseValidator,
-        EmailValidator,
-        RangeValidator,
-        PatternValidator,
-        CompletenessValidator,
-        UniqueValidator,
-        DataQualityChecker,
-        SchemaValidator,
-        validate_emails,
-        validate_ranges,
-        validate_completeness,
-        validate_schema,
-    )
-except ImportError:
-    pass
+# Specification and transformation (new API)
+from .spec import (
+    ColumnSpec,
+    NormalizationSpec,
+)
 
-# Detectors (if they exist)
-try:
-    from .detectors import DataType, NullDetector, OutlierDetector, DuplicateDetector
-except ImportError:
-    pass
+from .transform import (
+    TransformResult,
+    DataFrameTransformResult,
+    transform_column,
+    transform_dataframe,
+    normalize_dataframe,
+)
+
+# Validators
+from .validators import (
+    ValidationResult,
+    BaseValidator,
+    EmailValidator,
+    RangeValidator,
+    PatternValidator,
+    CompletenessValidator,
+    UniqueValidator,
+    DataQualityChecker,
+    SchemaValidator,
+    PydanticSchemaValidator,
+    validate_emails,
+    validate_ranges,
+    validate_completeness,
+    validate_schema,
+    validate_with_pydantic,
+)
+
 
 
 __all__ = [
     # Profiling
     "ColumnProfile",
     "DataFrameProfile",
+    "DataTypeExtended",
     "profile_dataframe",
     "profile_column",
     # Unit handling
@@ -283,7 +309,6 @@ __all__ = [
     # Text normalization
     "TextNormalizer",
     "HeaderNormalizer",
-    "TokenizationNormalizer",
     "WebTableNormalizer",
     "BracketContentHandler",
     # Type conversion
@@ -304,15 +329,6 @@ __all__ = [
     "normalize_date",
     "normalize_boolean",
     "clean_nulls",
-    # Column analysis
-    "DataTypeExtended",
-    "ValueDetectionType",
-    "AdvancedTypeDetector",
-    "ColumnTypeInference",
-    "detect_column_types",
-    "analyze_column_quality",
-    "detect_dataframe_types",
-    "infer_column_types",
     # Dataset normalization
     "NormalizationConfig",
     "ColumnNormalizationResult",
@@ -322,4 +338,28 @@ __all__ = [
     "create_normalization_config",
     "load_normalization_config",
     "save_normalization_config",
+    # Specification and transformation (new API)
+    "ColumnSpec",
+    "NormalizationSpec",
+    "TransformResult",
+    "DataFrameTransformResult",
+    "transform_column",
+    "transform_dataframe",
+    "normalize_dataframe",
+    # Validators
+    "ValidationResult",
+    "BaseValidator",
+    "EmailValidator",
+    "RangeValidator",
+    "PatternValidator",
+    "CompletenessValidator",
+    "UniqueValidator",
+    "DataQualityChecker",
+    "SchemaValidator",
+    "PydanticSchemaValidator",
+    "validate_emails",
+    "validate_ranges",
+    "validate_completeness",
+    "validate_schema",
+    "validate_with_pydantic",
 ]

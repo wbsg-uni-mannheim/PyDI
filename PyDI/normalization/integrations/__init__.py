@@ -7,6 +7,9 @@ This module provides unified interfaces to external libraries:
 - stdnum: Standard number formats (ISBN, IBAN, VAT) via python-stdnum
 - phone: Phone number parsing via phonenumbers
 - email: Email validation via email-validator
+- babel_numbers: Locale-aware numeric parsing via Babel
+- pydantic_validation: Schema validation via Pydantic
+- ftfy_text: Text encoding fixing via ftfy
 """
 
 from .pint_units import (
@@ -69,6 +72,27 @@ from .email import (
     is_valid_email,
 )
 
+from .pydantic_validation import (
+    PydanticValidationResult,
+    is_pydantic_available,
+    validate_dataframe as validate_dataframe_pydantic,
+    validate_dict as validate_dict_pydantic,
+    dataframe_to_models,
+    models_to_dataframe,
+    get_model_fields,
+)
+
+from .babel_numbers import (
+    BabelParseResult,
+    BABEL_AVAILABLE,
+    CURRENCY_SYMBOLS,
+    DEFAULT_CANDIDATE_LOCALES,
+    is_babel_available,
+    parse_decimal as parse_decimal_babel,
+    infer_locale as infer_locale_babel,
+    order_locales_for_value,
+)
+
 __all__ = [
     # pint_units
     "ParsedQuantity",
@@ -120,4 +144,21 @@ __all__ = [
     "validate_email",
     "normalize_email",
     "is_valid_email",
+    # pydantic
+    "PydanticValidationResult",
+    "is_pydantic_available",
+    "validate_dataframe_pydantic",
+    "validate_dict_pydantic",
+    "dataframe_to_models",
+    "models_to_dataframe",
+    "get_model_fields",
+    # babel
+    "BabelParseResult",
+    "BABEL_AVAILABLE",
+    "CURRENCY_SYMBOLS",
+    "DEFAULT_CANDIDATE_LOCALES",
+    "is_babel_available",
+    "parse_decimal_babel",
+    "infer_locale_babel",
+    "order_locales_for_value",
 ]
