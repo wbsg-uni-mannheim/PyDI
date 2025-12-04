@@ -121,7 +121,9 @@ def convert_units(
         2.204...
     """
     try:
-        q = value * _ureg(from_unit)
+        # Use Quantity constructor to properly handle offset units like temperature
+        # (see https://pint.readthedocs.io/en/stable/user/nonmult.html)
+        q = _ureg.Quantity(value, from_unit)
         result = q.to(to_unit)
         return float(result.magnitude)
     except (pint.UndefinedUnitError, pint.DimensionalityError) as e:
