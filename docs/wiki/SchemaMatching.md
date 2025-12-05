@@ -102,3 +102,49 @@ The translator:
 - Filters mappings to the relevant dataset (based on `dataset_name` in DataFrame attrs)
 - Picks the best mapping by score when duplicates exist
 - Adds provenance tracking at both DataFrame and column level
+
+### Translation with Value Normalization
+
+`SchemaTranslator` can optionally normalize values after renaming columns. This is useful when the target schema expects specific formats (e.g., ISO country codes, standardized phone numbers).
+
+**Auto-detection:**
+```python
+# Automatically detect and apply normalizations based on data profiling
+df_aligned = translator.translate(source_df, corr, normalize=True)
+
+# Auto-detect with custom failure handling
+df_aligned = translator.translate(source_df, corr, normalize=True, on_failure="null")
+```
+
+**Explicit normalization spec:**
+```python
+from PyDI.normalization import NormalizationSpec
+
+spec = NormalizationSpec()
+spec.set_column("country", country_format="alpha_2")  # Normalize to ISO 2-letter codes
+spec.set_column("revenue", expand_scale_modifiers=True, output_type="float")  # "5 MEO" → 5000000.0
+spec.set_column("email", normalize_email=True)
+
+df_aligned = translator.translate(source_df, corr, normalize=spec)
+```
+
+### Handling Normalization Failures
+
+The `on_failure` parameter controls what happens when a value cannot be normalized. It works with both auto-detection and explicit specs:
+
+| Value | Behavior |
+|-------|----------|
+| `"keep"` | Keep the original value (default) |
+| `"null"` | Replace with `None`/`NaN` |
+| `"raise"` | Raise a `ValueError` |
+
+```python
+# Auto-detect normalizations, set failures to null
+df_aligned = translator.translate(source_df, corr, normalize=True, on_failure="null")
+
+# With explicit spec, individual columns can override the default
+spec = NormalizationSpec()
+spec.set_column("country", country_format="alpha_2", on_failure="null")
+spec.set_column("phone", phone_format="e164", on_failure="keep")  # Keep invalid phones as-is
+df_aligned = translator.translate(source_df, corr, normalize=spec, on_failure="raise")
+```

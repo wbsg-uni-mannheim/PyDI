@@ -6,11 +6,28 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import Dict
+from typing import Dict, Literal, Union
 
 import pandas as pd
 
 from .base import SchemaMapping
+
+# Lazy imports for normalization to avoid circular dependencies
+_normalization_imported = False
+_NormalizationSpec = None
+_transform_dataframe = None
+_profile_dataframe = None
+
+
+def _import_normalization():
+    """Lazy import normalization module components."""
+    global _normalization_imported, _NormalizationSpec, _transform_dataframe, _profile_dataframe
+    if not _normalization_imported:
+        from ..normalization import NormalizationSpec, transform_dataframe, profile_dataframe
+        _NormalizationSpec = NormalizationSpec
+        _transform_dataframe = transform_dataframe
+        _profile_dataframe = profile_dataframe
+        _normalization_imported = True
 
 
 class SchemaTranslator:
@@ -18,10 +35,16 @@ class SchemaTranslator:
 
     This is the final step of schema matching: applying the discovered
     column correspondences to rename columns in the source DataFrame
-    to match the target schema.
+    to match the target schema. Optionally applies value normalization.
     """
 
-    def translate(self, df: pd.DataFrame, mapping: SchemaMapping) -> pd.DataFrame:
+    def translate(
+        self,
+        df: pd.DataFrame,
+        mapping: SchemaMapping,
+        normalize: Union["NormalizationSpec", bool, None] = None,
+        on_failure: Literal["keep", "null", "raise"] = "keep",
+    ) -> pd.DataFrame:
         """Translate column names according to a schema mapping.
 
         Parameters
@@ -32,16 +55,57 @@ class SchemaTranslator:
             Schema mapping DataFrame with columns ``source_dataset``,
             ``source_column``, ``target_dataset``, ``target_column``,
             and optionally ``score``.
+        normalize : NormalizationSpec, bool, or None, optional
+            Controls value normalization after column renaming:
+
+            - ``None`` (default): No normalization, only rename columns.
+            - ``True``: Auto-detect normalizations by profiling the DataFrame
+              and generating a spec via ``NormalizationSpec.from_profile()``.
+            - ``NormalizationSpec``: Use the provided spec for normalization.
+              Column names in the spec should be the **target** column names
+              (after renaming).
+        on_failure : {"keep", "null", "raise"}, default "keep"
+            Default behavior when a value normalization fails:
+
+            - ``"keep"``: Keep the original value unchanged.
+            - ``"null"``: Replace with ``None``/``NaN``.
+            - ``"raise"``: Raise a ``ValueError`` immediately.
+
+            Individual ``ColumnSpec`` entries in the normalization spec can
+            override this default via their own ``on_failure`` setting.
 
         Returns
         -------
         pandas.DataFrame
-            A new DataFrame with columns renamed according to the mapping.
+            A new DataFrame with columns renamed (and optionally normalized)
+            according to the mapping.
 
         Raises
         ------
         ValueError
-            If DataFrame is missing dataset_name or if schema mapping is invalid.
+            If DataFrame is missing dataset_name, if schema mapping is invalid,
+            or if ``on_failure="raise"`` and a normalization fails.
+
+        Examples
+        --------
+        Basic column renaming only:
+
+        >>> translator = SchemaTranslator()
+        >>> df_translated = translator.translate(source_df, mapping)
+
+        With auto-detected normalization:
+
+        >>> df_translated = translator.translate(source_df, mapping, normalize=True)
+
+        With explicit normalization spec:
+
+        >>> from PyDI.normalization import NormalizationSpec
+        >>> spec = NormalizationSpec()
+        >>> spec.set_column("country", country_format="alpha_2")
+        >>> spec.set_column("revenue", expand_scale_modifiers=True)
+        >>> df_translated = translator.translate(
+        ...     source_df, mapping, normalize=spec, on_failure="null"
+        ... )
         """
         dataset_name = df.attrs.get("dataset_name")
         if dataset_name is None:
@@ -122,4 +186,84 @@ class SchemaTranslator:
                     "ts": datetime.now(timezone.utc).isoformat(),
                 })
 
+        # Apply normalization if requested
+        if normalize is not None:
+            translated = self._apply_normalization(translated, normalize, on_failure)
+
         return translated
+
+    def _apply_normalization(
+        self,
+        df: pd.DataFrame,
+        normalize: Union["NormalizationSpec", bool],
+        on_failure: Literal["keep", "null", "raise"],
+    ) -> pd.DataFrame:
+        """Apply value normalization to the DataFrame.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            The DataFrame to normalize (already has renamed columns).
+        normalize : NormalizationSpec or bool
+            If True, auto-detect normalizations. If NormalizationSpec, use it.
+        on_failure : {"keep", "null", "raise"}
+            Default failure behavior for columns without explicit on_failure.
+
+        Returns
+        -------
+        pandas.DataFrame
+            The normalized DataFrame.
+        """
+        _import_normalization()
+
+        # Get or create the normalization spec
+        if normalize is True:
+            # Auto-detect normalizations from profile
+            profile = _profile_dataframe(df)
+            spec = _NormalizationSpec.from_profile(profile)
+            logging.info(f"Auto-detected normalization for {len(spec.columns)} columns")
+        else:
+            # Use provided spec
+            spec = normalize
+
+        # If no columns to normalize, return unchanged
+        if not spec.columns:
+            logging.info("No columns to normalize")
+            return df
+
+        # Apply on_failure default to columns that don't have it explicitly set
+        for col_name, col_spec in spec.columns.items():
+            # ColumnSpec default is "keep", so we only override if user passed
+            # a different default and the spec hasn't been explicitly set
+            # We check if on_failure is still at its default value
+            if col_spec.on_failure == "keep" and on_failure != "keep":
+                col_spec.on_failure = on_failure
+
+        # Transform the DataFrame
+        result = _transform_dataframe(df, spec)
+
+        logging.info(
+            f"Normalization complete: {result.total_transformed} values transformed, "
+            f"{result.total_failed} values failed"
+        )
+
+        # Add normalization provenance
+        normalized_df = result.dataframe
+        provenance_entry = {
+            "op": "value_normalize",
+            "params": {
+                "columns": list(spec.columns.keys()),
+                "on_failure": on_failure,
+                "transformed": result.total_transformed,
+                "failed": result.total_failed,
+            },
+            "ts": datetime.now(timezone.utc).isoformat(),
+        }
+
+        if "provenance" not in normalized_df.attrs:
+            normalized_df.attrs["provenance"] = []
+        elif not isinstance(normalized_df.attrs["provenance"], list):
+            normalized_df.attrs["provenance"] = [normalized_df.attrs["provenance"]]
+        normalized_df.attrs["provenance"].append(provenance_entry)
+
+        return normalized_df
