@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.scale &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.scale</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyDI.normalization.scale</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Scale modifier detection and expansion for numeric values.</span>
+
+<span class="sd">This module handles scale modifiers like:</span>
+<span class="sd">- Generic: thousand, million, billion, k, M, B</span>
+<span class="sd">- Currency-specific: MEO, MEUR, kEUR, MUSD, kUSD</span>
+
+<span class="sd">No existing library handles the reverse direction (parsing &quot;5 million&quot; → 5,000,000)</span>
+<span class="sd">or currency-specific modifiers like MEO, so we implement this ourselves.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="ScaleModifier">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.ScaleModifier">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScaleModifier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A scale modifier pattern and its multiplier.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">pattern</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="ScaleResult">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.ScaleResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScaleResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of scale detection/expansion.&quot;&quot;&quot;</span>
+
+    <span class="n">original</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">scaled_value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">modifier</span><span class="p">:</span> <span class="n">ScaleModifier</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">cleaned_text</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="ScaleResult.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.ScaleResult.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;original&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;scaled_value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled_value</span><span class="p">,</span>
+            <span class="s2">&quot;modifier_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">modifier</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modifier</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;multiplier&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modifier</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;cleaned_text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_text</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<span class="c1"># Currency-specific scale modifiers (checked first, higher priority)</span>
+<span class="n">CURRENCY_SCALES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Euros - Portuguese style</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;MEO&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bMEO\b&quot;</span><span class="p">)),</span>
+    <span class="c1"># Euros - standard abbreviations</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;MEUR&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bM\.?EUR\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;kEUR&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bk\.?EUR\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;TEUR&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bT\.?EUR\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="c1"># USD</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;MUSD&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bM\.?USD\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;kUSD&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bk\.?USD\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="c1"># GBP</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;MGBP&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bM\.?GBP\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;kGBP&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bk\.?GBP\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+<span class="p">]</span>
+
+<span class="c1"># Generic scale words (checked after currency-specific)</span>
+<span class="n">GENERIC_SCALES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;hundred&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bhundreds?\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;thousand&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bthousands?\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;million&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bmillions?\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;billion&quot;</span><span class="p">,</span> <span class="mi">1_000_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bbillions?\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;trillion&quot;</span><span class="p">,</span> <span class="mi">1_000_000_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\btrillions?\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)),</span>
+    <span class="c1"># Abbreviations - only match when standalone (not part of a unit like km)</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;![a-zA-Z])[kK](?![a-zA-Z])&quot;</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;![a-zA-Z])[mM](?![a-zA-Z])&quot;</span><span class="p">)),</span>
+    <span class="n">ScaleModifier</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">1_000_000_000</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;![a-zA-Z])[bB](?![a-zA-Z])&quot;</span><span class="p">)),</span>
+<span class="p">]</span>
+
+<span class="n">ALL_SCALES</span> <span class="o">=</span> <span class="n">CURRENCY_SCALES</span> <span class="o">+</span> <span class="n">GENERIC_SCALES</span>
+
+
+<div class="viewcode-block" id="detect_scale_modifier">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.detect_scale_modifier">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">detect_scale_modifier</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScaleModifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect a scale modifier in text.</span>
+
+<span class="sd">    Currency-specific modifiers are checked first (higher priority).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Text to search for scale modifiers</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ScaleModifier if found, None otherwise</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; detect_scale_modifier(&quot;5 MEO revenue&quot;).name</span>
+<span class="sd">        &#39;MEO&#39;</span>
+<span class="sd">        &gt;&gt;&gt; detect_scale_modifier(&quot;Revenue: 5 million&quot;).name</span>
+<span class="sd">        &#39;million&#39;</span>
+<span class="sd">        &gt;&gt;&gt; detect_scale_modifier(&quot;5 km distance&quot;)  # km is a unit, not scale</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">modifier</span> <span class="ow">in</span> <span class="n">ALL_SCALES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">modifier</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">modifier</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="expand_scale">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.expand_scale">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">expand_scale</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScaleResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expand scale modifier and return scaled value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Original text containing potential scale modifier</span>
+<span class="sd">        value: Numeric value to scale</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ScaleResult with scaled value and cleaned text</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; result = expand_scale(&quot;5 MEO&quot;, 5.0)</span>
+<span class="sd">        &gt;&gt;&gt; result.scaled_value</span>
+<span class="sd">        5000000.0</span>
+<span class="sd">        &gt;&gt;&gt; result = expand_scale(&quot;Revenue: 2.5 million EUR&quot;, 2.5)</span>
+<span class="sd">        &gt;&gt;&gt; result.scaled_value</span>
+<span class="sd">        2500000.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ScaleResult</span><span class="p">(</span>
+            <span class="n">original</span><span class="o">=</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">scaled_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">modifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">cleaned_text</span><span class="o">=</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">modifier</span> <span class="o">=</span> <span class="n">detect_scale_modifier</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modifier</span><span class="p">:</span>
+        <span class="n">scaled_value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span>
+        <span class="n">cleaned_text</span> <span class="o">=</span> <span class="n">modifier</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">cleaned_text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">cleaned_text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ScaleResult</span><span class="p">(</span>
+            <span class="n">original</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">scaled_value</span><span class="o">=</span><span class="n">scaled_value</span><span class="p">,</span>
+            <span class="n">modifier</span><span class="o">=</span><span class="n">modifier</span><span class="p">,</span>
+            <span class="n">cleaned_text</span><span class="o">=</span><span class="n">cleaned_text</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ScaleResult</span><span class="p">(</span>
+        <span class="n">original</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">scaled_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">modifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cleaned_text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_scaled_number">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.scale.parse_scaled_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_scaled_number</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ScaleModifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a number with optional scale modifier from text.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Text containing a number and optional scale modifier</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (scaled_value, modifier) or None if no number found</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; value, mod = parse_scaled_number(&quot;5 MEO&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; value</span>
+<span class="sd">        5000000.0</span>
+<span class="sd">        &gt;&gt;&gt; value, mod = parse_scaled_number(&quot;2.5 million&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; value</span>
+<span class="sd">        2500000.0</span>
+<span class="sd">        &gt;&gt;&gt; value, mod = parse_scaled_number(&quot;100&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; value</span>
+<span class="sd">        100.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Extract number (handles: 5, 5.5, 5,000, 5,000.50, -5, +5)</span>
+    <span class="n">number_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[-+]?\d{1,3}(?:,\d</span><span class="si">{3}</span><span class="s2">)*(?:\.\d+)?|[-+]?\d*\.?\d+&quot;</span><span class="p">)</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">number_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">modifier</span> <span class="o">=</span> <span class="n">detect_scale_modifier</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modifier</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="o">*</span> <span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">modifier</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.transform &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.transform</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyDI.normalization.transform</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DataFrame transformation based on normalization specifications.</span>
+
+<span class="sd">This module applies transformations to DataFrames according to</span>
+<span class="sd">NormalizationSpec configurations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.spec</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalizationSpec</span><span class="p">,</span> <span class="n">ColumnSpec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">profile_dataframe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_quantity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.scale</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_scaled_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.integrations</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">normalize_country</span><span class="p">,</span>
+    <span class="n">normalize_currency</span><span class="p">,</span>
+    <span class="n">format_phone</span><span class="p">,</span>
+    <span class="n">parse_phone</span><span class="p">,</span>
+    <span class="n">normalize_email</span> <span class="k">as</span> <span class="n">email_normalize</span><span class="p">,</span>
+    <span class="n">format_stdnum</span><span class="p">,</span>
+    <span class="n">detect_stdnum_type</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TransformResult">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.TransformResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransformResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of transforming a single column.&quot;&quot;&quot;</span>
+
+    <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">original_dtype</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">new_dtype</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">values_transformed</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">values_failed</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TransformResult.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.TransformResult.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;column_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">,</span>
+            <span class="s2">&quot;original_dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;new_dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;values_transformed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">values_transformed</span><span class="p">,</span>
+            <span class="s2">&quot;values_failed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">values_failed</span><span class="p">,</span>
+            <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DataFrameTransformResult">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.DataFrameTransformResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFrameTransformResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of transforming an entire DataFrame.&quot;&quot;&quot;</span>
+
+    <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TransformResult</span><span class="p">]</span>
+    <span class="n">total_transformed</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">total_failed</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="DataFrameTransformResult.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.DataFrameTransformResult.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="s2">&quot;total_transformed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_transformed</span><span class="p">,</span>
+            <span class="s2">&quot;total_failed&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_failed</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_unit_quantity</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a value with units.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">normalize_quantity</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">,</span>
+        <span class="n">target_unit</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">target_unit</span><span class="p">,</span>
+        <span class="n">expand_scales</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">expand_scale_modifiers</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_scaled_number</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a scaled number (e.g., &#39;5 MEO&#39; → 5000000).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">parse_scaled_number</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">True</span>
+
+    <span class="c1"># Try parsing as plain number</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_percentage</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a percentage value.</span>
+
+<span class="sd">    to_decimal: &#39;50%&#39; → 0.5, 50 → 0.5</span>
+<span class="sd">    to_percent: 0.5 → 50, &#39;50%&#39; → 50</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="c1"># Check if value has % symbol</span>
+    <span class="n">has_percent_symbol</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">has_percent_symbol</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Parse the numeric value</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Handle comma as decimal separator</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="o">==</span> <span class="s2">&quot;to_decimal&quot;</span><span class="p">:</span>
+        <span class="c1"># &#39;50%&#39; → 0.5, or 50 → 0.5 (if it had % symbol)</span>
+        <span class="k">if</span> <span class="n">has_percent_symbol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">num</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="c1"># If no % symbol and value &gt; 1, assume it&#39;s a percentage to convert</span>
+        <span class="k">elif</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">num</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Already in decimal form (0.5)</span>
+            <span class="k">return</span> <span class="n">num</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="o">==</span> <span class="s2">&quot;to_percent&quot;</span><span class="p">:</span>
+        <span class="c1"># 0.5 → 50, or &#39;50%&#39; → 50</span>
+        <span class="k">if</span> <span class="n">has_percent_symbol</span><span class="p">:</span>
+            <span class="c1"># Already a percentage, just return the number</span>
+            <span class="k">return</span> <span class="n">num</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">num</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Looks like a decimal, convert to percentage</span>
+            <span class="k">return</span> <span class="n">num</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Already looks like a percentage</span>
+            <span class="k">return</span> <span class="n">num</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_country</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a country code/name.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">output_format</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">country_format</span> <span class="ow">or</span> <span class="s2">&quot;alpha_2&quot;</span>
+    <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">normalize_country</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_currency</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a currency code/name.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">output_format</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">currency_format</span> <span class="ow">or</span> <span class="s2">&quot;alpha_3&quot;</span>
+    <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">normalize_currency</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_phone</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a phone number.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">phone_format</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">phone_format</span> <span class="ow">or</span> <span class="s2">&quot;e164&quot;</span>
+    <span class="k">if</span> <span class="n">phone_format</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_phone</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">default_region</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">phone_default_region</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">parsed</span><span class="p">:</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="n">format_phone</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">phone_format</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">phone_default_region</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">formatted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">formatted</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_email</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform an email address.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">normalize_email</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">email_normalize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_stdnum</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform a standard number (ISBN, IBAN, etc.).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">stdnum_format</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="c1"># Detect the type first</span>
+    <span class="n">stdnum_type</span> <span class="o">=</span> <span class="n">detect_stdnum_type</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stdnum_type</span><span class="p">:</span>
+        <span class="n">formatted</span> <span class="o">=</span> <span class="n">format_stdnum</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stdnum_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">formatted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">formatted</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_text</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply text transformations.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">transformed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">strip_whitespace</span><span class="p">:</span>
+        <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">new_text</span> <span class="o">!=</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">new_text</span>
+            <span class="n">transformed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">case</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">case</span> <span class="o">==</span> <span class="s2">&quot;lower&quot;</span><span class="p">:</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">case</span> <span class="o">==</span> <span class="s2">&quot;upper&quot;</span><span class="p">:</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">case</span> <span class="o">==</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span>
+
+        <span class="k">if</span> <span class="n">new_text</span> <span class="o">!=</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">new_text</span>
+            <span class="n">transformed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">transformed</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_output_type</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">output_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert value to specified output type.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;bool&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;datetime&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="transform_column">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.transform_column">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_column</span><span class="p">(</span>
+    <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">ColumnSpec</span><span class="p">,</span>
+    <span class="n">detected_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">TransformResult</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transform a single column according to specification.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        series: Pandas Series to transform</span>
+<span class="sd">        spec: Column specification</span>
+<span class="sd">        detected_type: Pre-detected type (optional optimization)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (transformed Series, TransformResult)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">column_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">original_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">values_transformed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">values_failed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">values_skipped</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Null/empty values that don&#39;t need transformation</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">result_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Determine if a transformation was requested</span>
+    <span class="n">transformation_requested</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">spec</span><span class="o">.</span><span class="n">target_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">expand_scale_modifiers</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">country_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">country_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">currency_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">currency_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">phone_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">phone_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">normalize_email</span>
+        <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">stdnum_format</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">series</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">transformed_value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">was_transformed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Skip null/empty values - they don&#39;t count as failures</span>
+            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">values_skipped</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">result_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transformed_value</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Apply type-specific transformation</span>
+            <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">target_unit</span> <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">expand_scale_modifiers</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">target_unit</span><span class="p">:</span>
+                    <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_unit_quantity</span><span class="p">(</span>
+                        <span class="n">value</span><span class="p">,</span> <span class="n">spec</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">expand_scale_modifiers</span><span class="p">:</span>
+                    <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_scaled_number</span><span class="p">(</span>
+                        <span class="n">value</span><span class="p">,</span> <span class="n">spec</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">country_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">country_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_country</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">currency_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">currency_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_currency</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">phone_format</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">phone_format</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_phone</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">normalize_email</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_email</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">stdnum_format</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_stdnum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">convert_percentage</span> <span class="o">!=</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+                <span class="n">attempted_transform</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">_transform_percentage</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+            <span class="c1"># Apply text transformations</span>
+            <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">case</span> <span class="ow">or</span> <span class="n">spec</span><span class="o">.</span><span class="n">strip_whitespace</span><span class="p">:</span>
+                <span class="n">transformed_value</span><span class="p">,</span> <span class="n">text_transformed</span> <span class="o">=</span> <span class="n">_transform_text</span><span class="p">(</span>
+                    <span class="n">transformed_value</span><span class="p">,</span> <span class="n">spec</span>
+                <span class="p">)</span>
+                <span class="n">was_transformed</span> <span class="o">=</span> <span class="n">was_transformed</span> <span class="ow">or</span> <span class="n">text_transformed</span>
+
+            <span class="c1"># Apply output type conversion</span>
+            <span class="n">transformed_value</span> <span class="o">=</span> <span class="n">_apply_output_type</span><span class="p">(</span><span class="n">transformed_value</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">output_type</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">was_transformed</span><span class="p">:</span>
+                <span class="n">values_transformed</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">attempted_transform</span><span class="p">:</span>
+                <span class="c1"># Transformation was attempted but failed (value unchanged)</span>
+                <span class="n">values_failed</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>  <span class="c1"># Limit error messages</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: Could not transform &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Handle failure according to spec</span>
+                <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span>
+                    <span class="n">transformed_value</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="n">spec</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformation failed for value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; in column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Re-raise if it&#39;s our own ValueError from on_failure=&quot;raise&quot;</span>
+            <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">raise</span>
+
+            <span class="n">values_failed</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>  <span class="c1"># Limit error messages</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Transform error at row </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+            <span class="c1"># Handle failure according to spec</span>
+            <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">==</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span>
+                <span class="n">transformed_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">result_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transformed_value</span><span class="p">)</span>
+
+    <span class="n">result_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">result_values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_series</span><span class="p">,</span> <span class="n">TransformResult</span><span class="p">(</span>
+        <span class="n">column_name</span><span class="o">=</span><span class="n">column_name</span><span class="p">,</span>
+        <span class="n">original_dtype</span><span class="o">=</span><span class="n">original_dtype</span><span class="p">,</span>
+        <span class="n">new_dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">result_series</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
+        <span class="n">values_transformed</span><span class="o">=</span><span class="n">values_transformed</span><span class="p">,</span>
+        <span class="n">values_failed</span><span class="o">=</span><span class="n">values_failed</span><span class="p">,</span>
+        <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="transform_dataframe">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.transform_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_dataframe</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">NormalizationSpec</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrameTransformResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transform a DataFrame according to specification.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: DataFrame to transform</span>
+<span class="sd">        spec: Normalization specification</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrameTransformResult with transformed DataFrame and metadata</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; spec = NormalizationSpec()</span>
+<span class="sd">        &gt;&gt;&gt; spec.set_column(&quot;revenue&quot;, expand_scale_modifiers=True, output_type=&quot;float&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; spec.set_column(&quot;country&quot;, country_format=&quot;alpha_2&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; result = transform_dataframe(df, spec)</span>
+<span class="sd">        &gt;&gt;&gt; normalized_df = result.dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">column_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TransformResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">total_transformed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_failed</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">col_spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Column &#39;</span><span class="si">%s</span><span class="s2">&#39; not found in DataFrame&quot;</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">transformed_series</span><span class="p">,</span> <span class="n">col_result</span> <span class="o">=</span> <span class="n">transform_column</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span>
+            <span class="n">col_spec</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">result_df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformed_series</span>
+        <span class="n">column_results</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_result</span>
+        <span class="n">total_transformed</span> <span class="o">+=</span> <span class="n">col_result</span><span class="o">.</span><span class="n">values_transformed</span>
+        <span class="n">total_failed</span> <span class="o">+=</span> <span class="n">col_result</span><span class="o">.</span><span class="n">values_failed</span>
+
+    <span class="k">return</span> <span class="n">DataFrameTransformResult</span><span class="p">(</span>
+        <span class="n">dataframe</span><span class="o">=</span><span class="n">result_df</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">column_results</span><span class="p">,</span>
+        <span class="n">total_transformed</span><span class="o">=</span><span class="n">total_transformed</span><span class="p">,</span>
+        <span class="n">total_failed</span><span class="o">=</span><span class="n">total_failed</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_dataframe">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.transform.normalize_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_dataframe</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">NormalizationSpec</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">auto</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize a DataFrame with optional auto-detection.</span>
+
+<span class="sd">    This is the main entry point for DataFrame normalization.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: DataFrame to normalize</span>
+<span class="sd">        spec: Normalization specification (optional if auto=True)</span>
+<span class="sd">        auto: If True, auto-detect normalizations from profile</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Normalized DataFrame</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        # Manual specification</span>
+<span class="sd">        &gt;&gt;&gt; spec = NormalizationSpec()</span>
+<span class="sd">        &gt;&gt;&gt; spec.set_column(&quot;revenue&quot;, expand_scale_modifiers=True)</span>
+<span class="sd">        &gt;&gt;&gt; normalized = normalize_dataframe(df, spec)</span>
+
+<span class="sd">        # Auto-detection</span>
+<span class="sd">        &gt;&gt;&gt; normalized = normalize_dataframe(df, auto=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">auto</span><span class="p">:</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">profile_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">NormalizationSpec</span><span class="o">.</span><span class="n">from_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># No spec and no auto - return unchanged</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">transform_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">dataframe</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;TransformResult&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DataFrameTransformResult&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;transform_column&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;transform_dataframe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalize_dataframe&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

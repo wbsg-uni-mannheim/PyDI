@@ -1,35 +1,73 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.types &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
-<html lang="en" data-content_root="../../../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PyDI.normalization.types &#8212; PyDI 2025 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
-    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-  
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for PyDI.normalization.types</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Comprehensive type conversion utilities for PyDI.</span>
@@ -49,15 +87,16 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.integrations.babel_numbers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BABEL_AVAILABLE</span><span class="p">,</span>
+    <span class="n">CURRENCY_SYMBOLS</span><span class="p">,</span>
+    <span class="n">DEFAULT_CANDIDATE_LOCALES</span><span class="p">,</span>
+    <span class="n">is_babel_available</span><span class="p">,</span>
+    <span class="n">parse_decimal</span> <span class="k">as</span> <span class="n">babel_parse_decimal</span><span class="p">,</span>
+    <span class="n">infer_locale</span> <span class="k">as</span> <span class="n">babel_infer_locale</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="c1"># Optional: Babel for locale-aware numeric parsing</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">babel.numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_decimal</span> <span class="k">as</span> <span class="n">babel_parse_decimal</span>  <span class="c1"># type: ignore</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">babel.numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumberFormatError</span>  <span class="c1"># type: ignore</span>
-    <span class="n">BABEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-    <span class="n">BABEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CoordinateParser">
@@ -454,6 +493,8 @@
 
 <span class="sd">    Handles various numeric formats including different decimal separators,</span>
 <span class="sd">    thousands separators, scientific notation, and currency formats.</span>
+
+<span class="sd">    Uses Babel integration for locale-aware parsing when available.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -475,17 +516,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_percentages</span> <span class="o">=</span> <span class="n">handle_percentages</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auto_detect_locale</span> <span class="o">=</span> <span class="n">auto_detect_locale</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_thousands_separators</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">extra_thousands_separators</span> <span class="ow">or</span> <span class="p">[</span>
-                                              <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;’&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\xa0</span><span class="s2">&quot;</span><span class="p">])</span>  <span class="c1"># apostrophe, NBSP, space</span>
+                                              <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\xa0</span><span class="s2">&quot;</span><span class="p">])</span>  <span class="c1"># apostrophe, NBSP, space</span>
 
-        <span class="c1"># Babel configuration (optional dependency)</span>
+        <span class="c1"># Babel configuration (uses integration module)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_babel</span> <span class="o">=</span> <span class="n">use_babel</span> <span class="ow">and</span> <span class="n">BABEL_AVAILABLE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">babel_locale</span> <span class="o">=</span> <span class="n">babel_locale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span> <span class="o">=</span> <span class="n">babel_candidate_locales</span> <span class="ow">or</span> <span class="p">[</span>
-            <span class="s1">&#39;en_US&#39;</span><span class="p">,</span> <span class="s1">&#39;de_DE&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_FR&#39;</span><span class="p">,</span> <span class="s1">&#39;it_IT&#39;</span><span class="p">,</span> <span class="s1">&#39;es_ES&#39;</span><span class="p">,</span> <span class="s1">&#39;sv_SE&#39;</span><span class="p">,</span> <span class="s1">&#39;de_CH&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_CH&#39;</span>
-        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span> <span class="o">=</span> <span class="n">babel_candidate_locales</span> <span class="ow">or</span> <span class="n">DEFAULT_CANDIDATE_LOCALES</span>
 
-        <span class="c1"># Currency symbols</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">currency_symbols</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;€&#39;</span><span class="p">,</span> <span class="s1">&#39;£&#39;</span><span class="p">,</span> <span class="s1">&#39;¥&#39;</span><span class="p">,</span> <span class="s1">&#39;₹&#39;</span><span class="p">,</span> <span class="s1">&#39;₽&#39;</span><span class="p">,</span> <span class="s1">&#39;₩&#39;</span><span class="p">,</span> <span class="s1">&#39;₪&#39;</span><span class="p">}</span>
+        <span class="c1"># Currency symbols (from integration module)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency_symbols</span> <span class="o">=</span> <span class="n">CURRENCY_SYMBOLS</span>
 
         <span class="c1"># Build patterns</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_patterns</span><span class="p">()</span>
@@ -533,78 +572,25 @@
                 <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">currency_chars</span><span class="si">}</span><span class="s1">]?</span><span class="se">\\</span><span class="s1">s*</span><span class="se">\\</span><span class="s1">d+(?:</span><span class="si">{</span><span class="n">thou_sep</span><span class="si">}</span><span class="se">\\</span><span class="s1">d</span><span class="se">{{</span><span class="s1">3</span><span class="se">}}</span><span class="s1">)*(?:</span><span class="si">{</span><span class="n">dec_sep</span><span class="si">}</span><span class="se">\\</span><span class="s1">d</span><span class="se">{{</span><span class="s1">2</span><span class="se">}}</span><span class="s1">)?</span><span class="se">\\</span><span class="s1">s*[</span><span class="si">{</span><span class="n">currency_chars</span><span class="si">}</span><span class="s1">]?&#39;</span>
             <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_ordered_babel_locales_for_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Heuristic ordering of candidate locales for a given value.&quot;&quot;&quot;</span>
-        <span class="c1"># Prefer EU-style first if last punctuation is comma</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">last_comma</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="n">last_dot</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">eu_first</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;de_DE&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_FR&#39;</span><span class="p">,</span> <span class="s1">&#39;it_IT&#39;</span><span class="p">,</span> <span class="s1">&#39;es_ES&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;sv_SE&#39;</span><span class="p">,</span> <span class="s1">&#39;de_CH&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_CH&#39;</span><span class="p">,</span> <span class="s1">&#39;en_US&#39;</span><span class="p">]</span>
-        <span class="n">us_first</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;en_US&#39;</span><span class="p">,</span> <span class="s1">&#39;de_CH&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_CH&#39;</span><span class="p">,</span> <span class="s1">&#39;de_DE&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;fr_FR&#39;</span><span class="p">,</span> <span class="s1">&#39;it_IT&#39;</span><span class="p">,</span> <span class="s1">&#39;es_ES&#39;</span><span class="p">,</span> <span class="s1">&#39;sv_SE&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">last_comma</span> <span class="o">&gt;</span> <span class="n">last_dot</span><span class="p">:</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="n">eu_first</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="n">us_first</span>
-        <span class="c1"># Keep only those present in configured candidates, preserve order</span>
-        <span class="n">allowed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">loc</span> <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">order</span> <span class="k">if</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span>
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_with_babel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try parsing using Babel with an optionally known or inferred locale.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try parsing using Babel via the integration module.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_babel</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># Use the Babel integration&#39;s parse_decimal which handles</span>
+        <span class="c1"># parentheses, percentages, and currency symbols</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">babel_parse_decimal</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">,</span>
+            <span class="n">locale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">babel_locale</span><span class="p">,</span>
+            <span class="n">candidate_locales</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span><span class="p">,</span>
+            <span class="n">strip_currency</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">handle_percent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_percentages</span><span class="p">,</span>
+            <span class="n">handle_parentheses</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="c1"># Parentheses negative</span>
-        <span class="n">negative</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># Percentage</span>
-        <span class="n">is_percent</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_percent</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># Strip currency symbols</span>
-        <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency_symbols</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="n">locales_to_try</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">babel_locale</span><span class="p">:</span>
-            <span class="n">locales_to_try</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">babel_locale</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">locales_to_try</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ordered_babel_locales_for_value</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locales_to_try</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># Attempt direct parse first</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">babel_parse_decimal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="n">loc</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">is_percent</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">/=</span> <span class="mf">100.0</span>
-                <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="o">-</span><span class="n">val</span>
-                <span class="k">return</span> <span class="n">val</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="c1"># Fallback: strip common grouping characters and retry</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">s</span>
-                    <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\xa0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;’&quot;</span><span class="p">):</span>
-                        <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">grp</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">babel_parse_decimal</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="n">loc</span><span class="p">))</span>
-                    <span class="k">if</span> <span class="n">is_percent</span><span class="p">:</span>
-                        <span class="n">val</span> <span class="o">/=</span> <span class="mf">100.0</span>
-                    <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
-                        <span class="n">val</span> <span class="o">=</span> <span class="o">-</span><span class="n">val</span>
-                    <span class="k">return</span> <span class="n">val</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="k">continue</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="NumericParser.infer_babel_locale">
 <a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.types.NumericParser.infer_babel_locale">[docs]</a>
@@ -615,44 +601,19 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the most likely locale for a collection of numeric strings using Babel.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the most likely locale for a collection of numeric strings.</span>
 
+<span class="sd">        Delegates to the Babel integration module.</span>
 <span class="sd">        Returns the locale with the highest parse success count.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_babel</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="n">locales</span> <span class="o">=</span> <span class="n">candidate_locales</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">locales</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="c1"># Sample to limit cost</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
-            <span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()][:</span><span class="n">sample_size</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="n">best_locale</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">best_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-
-        <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locales</span><span class="p">:</span>
-            <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
-                <span class="c1"># Remove currency and percent for inference</span>
-                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">):</span>
-                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency_symbols</span><span class="p">:</span>
-                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">babel_parse_decimal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="n">loc</span><span class="p">)</span>
-                    <span class="n">score</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="k">pass</span>
-            <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">best_score</span><span class="p">:</span>
-                <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
-                <span class="n">best_locale</span> <span class="o">=</span> <span class="n">loc</span>
-
-        <span class="k">return</span> <span class="n">best_locale</span></div>
+        <span class="k">return</span> <span class="n">babel_infer_locale</span><span class="p">(</span>
+            <span class="n">values</span><span class="p">,</span>
+            <span class="n">candidate_locales</span><span class="o">=</span><span class="n">candidate_locales</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">babel_candidate_locales</span><span class="p">,</span>
+            <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NumericParser.parse_numeric">
@@ -864,7 +825,7 @@
 
         <span class="c1"># First try pandas&#39; built-in parsing</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date_str</span><span class="p">,</span> <span class="n">infer_datetime_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date_str</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -1062,68 +1023,31 @@
 
 </pre></div>
 
+           </div>
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;2025, Peeters, Steiner, Bizer.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

@@ -1,35 +1,73 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.datasets &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
-<html lang="en" data-content_root="../../../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PyDI.normalization.datasets &#8212; PyDI 2025 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
-    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-  
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.datasets</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for PyDI.normalization.datasets</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Dataset-level normalization orchestration for PyDI.</span>
@@ -45,16 +83,15 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">asdict</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.values</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdvancedValueNormalizer</span><span class="p">,</span> <span class="n">NullValueHandler</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdvancedTypeDetector</span><span class="p">,</span> <span class="n">ColumnTypeInference</span><span class="p">,</span> <span class="n">DataTypeExtended</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">profile_dataframe</span><span class="p">,</span> <span class="n">profile_column</span><span class="p">,</span> <span class="n">DataTypeExtended</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextNormalizer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_transform</span> <span class="k">as</span> <span class="n">_get_builtin_transform</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitRegistry</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -352,9 +389,8 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    - Type detection uses `AdvancedTypeDetector` (majority voting + patterns).</span>
-<span class="sd">    - Unit-aware normalization leverages header-derived unit hints when present</span>
-<span class="sd">      (e.g., &quot;Distance (km)&quot;) and value-level unit detection otherwise.</span>
+<span class="sd">    - Type detection uses profile_dataframe() from the profile module.</span>
+<span class="sd">    - Unit-aware normalization uses Pint via the units module.</span>
 <span class="sd">    - Quantity scaling interprets modifiers like thousand/million/billion.</span>
 <span class="sd">    - Null standardization maps many web-style null tokens to a single value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -362,16 +398,11 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NormalizationConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">unit_registry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">type_detector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AdvancedTypeDetector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">NormalizationConfig</span><span class="p">()</span>
 
         <span class="c1"># Initialize components</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_registry</span> <span class="o">=</span> <span class="n">unit_registry</span> <span class="ow">or</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type_detector</span> <span class="o">=</span> <span class="n">type_detector</span> <span class="ow">or</span> <span class="n">AdvancedTypeDetector</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_normalizer</span> <span class="o">=</span> <span class="n">AdvancedValueNormalizer</span><span class="p">(</span>
-            <span class="n">unit_registry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_registry</span><span class="p">,</span>
             <span class="n">enable_unit_conversion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">enable_unit_conversion</span><span class="p">,</span>
             <span class="n">enable_quantity_scaling</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">enable_quantity_scaling</span>
         <span class="p">)</span>
@@ -380,7 +411,6 @@
             <span class="n">lowercase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">lowercase_text</span><span class="p">,</span>
             <span class="n">strip_whitespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">remove_extra_whitespace</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">column_inference</span> <span class="o">=</span> <span class="n">ColumnTypeInference</span><span class="p">()</span>
 
         <span class="c1"># Normalization statistics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatasetNormalizationResult</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -547,28 +577,27 @@
 
         <span class="c1"># Sample for type detection if dataset is large</span>
         <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sample_size_for_detection</span><span class="p">)</span>
-        <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
-            <span class="n">series</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sample_size</span> <span class="k">else</span> <span class="n">series</span>
+        <span class="c1"># Detect column type using profile module</span>
+        <span class="n">detected_type</span> <span class="o">=</span> <span class="n">DataTypeExtended</span><span class="o">.</span><span class="n">STRING</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">unit_category</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">specific_unit</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Detect column type and characteristics</span>
-        <span class="n">type_result</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">enable_type_detection</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sample</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="n">type_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_detector</span><span class="o">.</span><span class="n">detect_type_for_column</span><span class="p">(</span>
-                <span class="n">sample</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-                <span class="n">column_name</span><span class="p">,</span>
-                <span class="n">confidence_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">type_confidence_threshold</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">enable_type_detection</span><span class="p">:</span>
+            <span class="n">col_profile</span> <span class="o">=</span> <span class="n">profile_column</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">)</span>
+            <span class="n">detected_type</span> <span class="o">=</span> <span class="n">DataTypeExtended</span><span class="o">.</span><span class="n">from_detected_type</span><span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span><span class="p">)</span>
+            <span class="c1"># Estimate confidence based on profile info</span>
+            <span class="n">non_null_ratio</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">null_count</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">total_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="n">non_null_ratio</span> <span class="o">*</span> <span class="mf">0.8</span> <span class="o">+</span> <span class="mf">0.2</span>  <span class="c1"># At least 0.2 confidence</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">type_result</span><span class="p">:</span>
-            <span class="n">detected_type</span> <span class="o">=</span> <span class="n">DataTypeExtended</span><span class="o">.</span><span class="n">STRING</span>
-            <span class="n">confidence</span> <span class="o">=</span> <span class="mf">0.5</span>
-            <span class="n">unit_category</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">specific_unit</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">detected_type</span> <span class="o">=</span> <span class="n">type_result</span><span class="o">.</span><span class="n">data_type</span>
-            <span class="n">confidence</span> <span class="o">=</span> <span class="n">type_result</span><span class="o">.</span><span class="n">confidence</span>
-            <span class="n">unit_category</span> <span class="o">=</span> <span class="n">type_result</span><span class="o">.</span><span class="n">unit_category</span>
-            <span class="n">specific_unit</span> <span class="o">=</span> <span class="n">type_result</span><span class="o">.</span><span class="n">specific_unit</span>
+            <span class="c1"># Extract unit info if available</span>
+            <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">unit_info</span><span class="p">:</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">unit_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;units_detected&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+                    <span class="n">specific_unit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">u</span><span class="p">:</span> <span class="n">units</span><span class="p">[</span><span class="n">u</span><span class="p">])</span>
+                    <span class="n">unit_category</span> <span class="o">=</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">unit_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimensionalities&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="k">if</span> <span class="n">unit_category</span><span class="p">:</span>
+                        <span class="n">unit_category</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">unit_category</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">unit_category</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
 
         <span class="c1"># Normalize column name if needed</span>
         <span class="n">normalized_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_column_name</span><span class="p">(</span><span class="n">column_name</span><span class="p">)</span>
@@ -695,18 +724,31 @@
 <a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.datasets.DatasetNormalizer.get_column_quality_report">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_column_quality_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate column quality assessment report.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_inference</span><span class="o">.</span><span class="n">analyze_columns_quality</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">profile_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">report_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">col_profile</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">report_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="n">col_name</span><span class="p">,</span>
+                <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="s2">&quot;detected_type&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span><span class="p">,</span>
+                <span class="s2">&quot;total_count&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">total_count</span><span class="p">,</span>
+                <span class="s2">&quot;null_count&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">null_count</span><span class="p">,</span>
+                <span class="s2">&quot;null_pct&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">null_count</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">total_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s2">&quot;unique_count&quot;</span><span class="p">:</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">unique_count</span><span class="p">,</span>
+                <span class="s2">&quot;suggestions&quot;</span><span class="p">:</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">suggestions</span><span class="p">),</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">report_data</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DatasetNormalizer.detect_schema_patterns">
 <a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.datasets.DatasetNormalizer.detect_schema_patterns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_schema_patterns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dfs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect common schema patterns across multiple datasets.&quot;&quot;&quot;</span>
-        <span class="n">patterns</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;common_columns&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
-            <span class="s1">&#39;type_patterns&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;naming_patterns&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
-            <span class="s1">&#39;unit_patterns&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">patterns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;common_columns&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="s2">&quot;type_patterns&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;naming_patterns&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="s2">&quot;unit_patterns&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dfs</span><span class="p">:</span>
@@ -714,24 +756,16 @@
 
         <span class="c1"># Find common columns</span>
         <span class="n">all_columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">]</span>
-        <span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;common_columns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
-            <span class="o">*</span><span class="n">all_columns</span><span class="p">)</span> <span class="k">if</span> <span class="n">all_columns</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;common_columns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">all_columns</span><span class="p">)</span> <span class="k">if</span> <span class="n">all_columns</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="c1"># Analyze type patterns</span>
+        <span class="c1"># Analyze type patterns using profile</span>
         <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;type_patterns&#39;</span><span class="p">]:</span>
-                    <span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;type_patterns&#39;</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-                <span class="c1"># Quick type detection for pattern analysis</span>
-                <span class="n">sample</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">sample</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-                    <span class="n">type_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_detector</span><span class="o">.</span><span class="n">detect_type_for_column</span><span class="p">(</span>
-                        <span class="n">sample</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">column</span><span class="p">,</span> <span class="n">confidence_threshold</span><span class="o">=</span><span class="mf">0.5</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">type_result</span><span class="p">:</span>
-                        <span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;type_patterns&#39;</span><span class="p">][</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">type_result</span><span class="o">.</span><span class="n">data_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">profile_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">col_profile</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;type_patterns&quot;</span><span class="p">]:</span>
+                    <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;type_patterns&quot;</span><span class="p">][</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">detected</span> <span class="o">=</span> <span class="n">DataTypeExtended</span><span class="o">.</span><span class="n">from_detected_type</span><span class="p">(</span><span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span><span class="p">)</span>
+                <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;type_patterns&quot;</span><span class="p">][</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">detected</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">patterns</span></div>
 </div>
@@ -834,68 +868,31 @@
 
 </pre></div>
 
+           </div>
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;2025, Peeters, Steiner, Bizer.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

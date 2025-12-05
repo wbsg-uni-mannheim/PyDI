@@ -17,6 +17,24 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
+# Mock imports that may not be available during doc build
+autodoc_mock_imports = [
+    'pandas',
+    'numpy',
+    'pint',
+    'pycountry',
+    'phonenumbers',
+    'email_validator',
+    'textdistance',
+    'langchain_core',
+    'langchain_openai',
+    'sklearn',
+    'scipy',
+    'networkx',
+    'stdnum',
+    'babel',
+]
+
 templates_path = ['_templates']
 exclude_patterns = []
 

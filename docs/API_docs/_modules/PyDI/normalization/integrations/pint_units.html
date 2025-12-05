@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.integrations.pint_units &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/modules.html">PyDI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.integrations.pint_units</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyDI.normalization.integrations.pint_units</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Pint integration for physical unit conversions.</span>
+
+<span class="sd">This module wraps the Pint library to provide:</span>
+<span class="sd">- Quantity parsing from strings (&quot;5 km&quot; -&gt; (5000, &quot;meter&quot;))</span>
+<span class="sd">- Unit conversion (km -&gt; miles)</span>
+<span class="sd">- Base unit normalization (to SI units)</span>
+<span class="sd">- Unit compatibility checking</span>
+<span class="sd">- Unit discovery and listing</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Create a singleton unit registry</span>
+<span class="n">_ureg</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span>
+
+<span class="c1"># Enable string formatting for quantities</span>
+<span class="n">_ureg</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">default_format</span> <span class="o">=</span> <span class="s2">&quot;~P&quot;</span>  <span class="c1"># Short pretty format</span>
+
+
+<div class="viewcode-block" id="ParsedQuantity">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.ParsedQuantity">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParsedQuantity</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of parsing a quantity string.&quot;&quot;&quot;</span>
+
+    <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">original</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">dimensionality</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="ParsedQuantity.to_dict">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.ParsedQuantity.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span>
+            <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+            <span class="s2">&quot;original&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="p">,</span>
+            <span class="s2">&quot;dimensionality&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_registry">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.get_registry">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_registry</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the shared Pint unit registry.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ureg</span></div>
+
+
+
+<div class="viewcode-block" id="parse_quantity">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.parse_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParsedQuantity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a quantity string like &#39;5 km&#39; or &#39;100 miles&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: String containing a number and unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ParsedQuantity with magnitude, unit, and dimensionality, or None if parsing fails</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; parse_quantity(&quot;5 kilometers&quot;)</span>
+<span class="sd">        ParsedQuantity(magnitude=5.0, unit=&#39;kilometer&#39;, ...)</span>
+<span class="sd">        &gt;&gt;&gt; parse_quantity(&quot;100 mph&quot;)</span>
+<span class="sd">        ParsedQuantity(magnitude=100.0, unit=&#39;mile / hour&#39;, ...)</span>
+<span class="sd">        &gt;&gt;&gt; parse_quantity(&quot;25 °C&quot;)</span>
+<span class="sd">        ParsedQuantity(magnitude=25.0, unit=&#39;degree_Celsius&#39;, ...)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">_ureg</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="c1"># Handle dimensionless quantities</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">ParsedQuantity</span><span class="p">(</span>
+                <span class="n">magnitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">q</span><span class="p">),</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span>
+                <span class="n">original</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                <span class="n">dimensionality</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ParsedQuantity</span><span class="p">(</span>
+            <span class="n">magnitude</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">magnitude</span><span class="p">),</span>
+            <span class="n">unit</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+            <span class="n">original</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">dimensionality</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse quantity &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error parsing quantity &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="convert_units">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.convert_units">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_units</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a value from one unit to another.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Numeric value to convert</span>
+<span class="sd">        from_unit: Source unit (e.g., &quot;km&quot;, &quot;miles&quot;, &quot;celsius&quot;)</span>
+<span class="sd">        to_unit: Target unit (e.g., &quot;m&quot;, &quot;km&quot;, &quot;fahrenheit&quot;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Converted value, or None if conversion fails</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; convert_units(5, &quot;km&quot;, &quot;m&quot;)</span>
+<span class="sd">        5000.0</span>
+<span class="sd">        &gt;&gt;&gt; convert_units(100, &quot;fahrenheit&quot;, &quot;celsius&quot;)</span>
+<span class="sd">        37.77...</span>
+<span class="sd">        &gt;&gt;&gt; convert_units(1, &quot;kg&quot;, &quot;lb&quot;)</span>
+<span class="sd">        2.204...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Use Quantity constructor to properly handle offset units like temperature</span>
+        <span class="c1"># (see https://pint.readthedocs.io/en/stable/user/nonmult.html)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">_ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">to_unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">magnitude</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to convert </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">from_unit</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">to_unit</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error in conversion: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_to_base">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.normalize_to_base">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_to_base</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a value to its SI base units.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Numeric value</span>
+<span class="sd">        unit: Source unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (magnitude, base_unit_string), or None if conversion fails</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; normalize_to_base(5, &quot;km&quot;)</span>
+<span class="sd">        (5000.0, &#39;meter&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; normalize_to_base(1, &quot;hour&quot;)</span>
+<span class="sd">        (3600.0, &#39;second&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">_ureg</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">to_base_units</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">magnitude</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">units</span><span class="p">))</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to normalize </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error in normalization: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_unit_dimensionality">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.get_unit_dimensionality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_unit_dimensionality</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the dimensionality of a unit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit: Unit string (e.g., &quot;km&quot;, &quot;m/s&quot;, &quot;kg&quot;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dimensionality string (e.g., &quot;[length]&quot;, &quot;[length] / [time]&quot;), or None</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; get_unit_dimensionality(&quot;km&quot;)</span>
+<span class="sd">        &#39;[length]&#39;</span>
+<span class="sd">        &gt;&gt;&gt; get_unit_dimensionality(&quot;m/s&quot;)</span>
+<span class="sd">        &#39;[length] / [time]&#39;</span>
+<span class="sd">        &gt;&gt;&gt; get_unit_dimensionality(&quot;kg&quot;)</span>
+<span class="sd">        &#39;[mass]&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">_ureg</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="is_compatible">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.is_compatible">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_compatible</span><span class="p">(</span><span class="n">unit1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if two units are compatible (can be converted between).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit1: First unit</span>
+<span class="sd">        unit2: Second unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if units are compatible, False otherwise</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; is_compatible(&quot;km&quot;, &quot;miles&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; is_compatible(&quot;kg&quot;, &quot;lb&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; is_compatible(&quot;km&quot;, &quot;kg&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="n">_ureg</span><span class="p">(</span><span class="n">unit1</span><span class="p">)</span>
+        <span class="n">u2</span> <span class="o">=</span> <span class="n">_ureg</span><span class="p">(</span><span class="n">unit2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u1</span><span class="o">.</span><span class="n">is_compatible_with</span><span class="p">(</span><span class="n">u2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="get_compatible_units">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.get_compatible_units">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_compatible_units</span><span class="p">(</span><span class="n">unit_or_dimensionality</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all units compatible with a given unit or dimensionality.</span>
+
+<span class="sd">    Uses Pint&#39;s built-in get_compatible_units method.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit_or_dimensionality: Either a unit string (e.g., &quot;meter&quot;) or</span>
+<span class="sd">                                a dimensionality string (e.g., &quot;[length]&quot;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Frozenset of compatible unit names</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; &quot;mile&quot; in get_compatible_units(&quot;meter&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; &quot;kilogram&quot; in get_compatible_units(&quot;[mass]&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="n">_ureg</span><span class="o">.</span><span class="n">get_compatible_units</span><span class="p">(</span><span class="n">unit_or_dimensionality</span><span class="p">)</span>
+        <span class="c1"># Extract unit names from Unit objects</span>
+        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">compatible</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">frozenset</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="list_units">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.list_units">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_units</span><span class="p">(</span><span class="n">dimensionality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List available units, optionally filtered by dimensionality.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dimensionality: Filter by dimensionality (e.g., &quot;[length]&quot;, &quot;[mass]&quot;)</span>
+<span class="sd">                       If None, returns units for common dimensionalities</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of unit names</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; &quot;meter&quot; in list_units(&quot;[length]&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; &quot;kilogram&quot; in list_units(&quot;[mass]&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dimensionality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_compatible_units</span><span class="p">(</span><span class="n">dimensionality</span><span class="p">))</span>
+
+    <span class="c1"># Return units for common dimensionalities</span>
+    <span class="n">common_dims</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;[length]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[mass]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[time]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[temperature]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[substance]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[current]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[luminosity]&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">all_units</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">common_dims</span><span class="p">:</span>
+        <span class="n">all_units</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_compatible_units</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_units</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="list_dimensionalities">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.list_dimensionalities">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_dimensionalities</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List common dimensionalities supported by Pint.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of dimensionality strings</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; &quot;[length]&quot; in list_dimensionalities()</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; &quot;[mass]&quot; in list_dimensionalities()</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="s2">&quot;[length]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[mass]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[time]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[temperature]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[current]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[substance]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[luminosity]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;[length] ** 2&quot;</span><span class="p">,</span>  <span class="c1"># area</span>
+        <span class="s2">&quot;[length] ** 3&quot;</span><span class="p">,</span>  <span class="c1"># volume</span>
+        <span class="s2">&quot;[length] / [time]&quot;</span><span class="p">,</span>  <span class="c1"># velocity</span>
+        <span class="s2">&quot;[length] / [time] ** 2&quot;</span><span class="p">,</span>  <span class="c1"># acceleration</span>
+        <span class="s2">&quot;[mass] * [length] ** 2 / [time] ** 2&quot;</span><span class="p">,</span>  <span class="c1"># energy</span>
+        <span class="s2">&quot;[mass] * [length] ** 2 / [time] ** 3&quot;</span><span class="p">,</span>  <span class="c1"># power</span>
+        <span class="s2">&quot;[mass] / [length] / [time] ** 2&quot;</span><span class="p">,</span>  <span class="c1"># pressure</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="is_valid_unit">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.is_valid_unit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a string is a valid unit in Pint&#39;s registry.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit: Unit string to check</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if valid, False otherwise</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; is_valid_unit(&quot;meter&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; is_valid_unit(&quot;not_a_unit&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">unit</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_ureg</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="ne">AssertionError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="detect_unit_in_text">
+<a class="viewcode-back" href="../../../../api/PyDI.normalization.integrations.html#PyDI.normalization.units.detect_unit_in_text">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">detect_unit_in_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attempt to detect a unit mentioned in text using Pint&#39;s parser.</span>
+
+<span class="sd">    This tries to extract the unit portion from a quantity string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Text that may contain a unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Detected unit string, or None</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; detect_unit_in_text(&quot;The distance is 5 km&quot;)</span>
+<span class="sd">        &#39;kilometer&#39;</span>
+<span class="sd">        &gt;&gt;&gt; detect_unit_in_text(&quot;Speed: 100 mph&quot;)</span>
+<span class="sd">        &#39;mile / hour&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Try parsing the full text as a quantity</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parsed</span> <span class="ow">and</span> <span class="n">parsed</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dimensionless&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parsed</span><span class="o">.</span><span class="n">unit</span>
+
+    <span class="c1"># Try to find numeric + unit patterns</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+    <span class="c1"># Look for number followed by potential unit</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;[\d.,]+\s*([a-zA-Z°/²³]+(?:\s*/\s*[a-zA-Z°²³]+)?)&quot;</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_valid_unit</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">_ureg</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

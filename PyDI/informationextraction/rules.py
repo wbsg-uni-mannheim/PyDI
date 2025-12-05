@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 # Import normalization components
 from PyDI.normalization.types import NumericParser, LinkNormalizer, parse_coordinate as _parse_coord_tuple
 from PyDI.normalization.values import normalize_date
-from PyDI.normalization.units import normalize_units, parse_quantity
+from PyDI.normalization.units import normalize_quantity, parse_quantity
 
 
 def parse_money(text: str) -> Optional[float]:
@@ -75,7 +75,11 @@ def normalize_units_wrapper(text: str) -> Optional[str]:
     """Normalize units using normalization module."""
     if not text or not isinstance(text, str):
         return None
-    return normalize_units(text)
+    result = normalize_quantity(text)
+    if result:
+        value, unit = result
+        return f"{value} {unit}" if unit != "dimensionless" else str(value)
+    return None
 
 
 def parse_quantity_scalar(text: str) -> Optional[float]:
@@ -84,7 +88,7 @@ def parse_quantity_scalar(text: str) -> Optional[float]:
         return None
     try:
         result = parse_quantity(text)
-        return result.value if result else None
+        return result.magnitude if result else None
     except Exception:
         return None
 

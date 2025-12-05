@@ -1,0 +1,743 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.profile &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.profile</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for PyDI.normalization.profile</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DataFrame profiling for normalization.</span>
+
+<span class="sd">This module analyzes DataFrame columns to detect:</span>
+<span class="sd">- Data types and patterns</span>
+<span class="sd">- Units and scale modifiers</span>
+<span class="sd">- Standard number formats (ISBN, IBAN, etc.)</span>
+<span class="sd">- Country/currency codes</span>
+<span class="sd">- Phone numbers and emails</span>
+
+<span class="sd">The profile report helps users understand their data and specify</span>
+<span class="sd">how columns should be normalized.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.integrations</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">parse_quantity</span><span class="p">,</span>
+    <span class="n">detect_unit_in_text</span><span class="p">,</span>
+    <span class="n">is_valid_unit</span><span class="p">,</span>
+    <span class="n">detect_stdnum_type</span><span class="p">,</span>
+    <span class="n">validate_phone</span><span class="p">,</span>
+    <span class="n">is_valid_email</span><span class="p">,</span>
+    <span class="n">lookup_country</span><span class="p">,</span>
+    <span class="n">lookup_currency</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.scale</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_scale_modifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BooleanParser</span><span class="p">,</span>
+    <span class="n">LinkNormalizer</span><span class="p">,</span>
+    <span class="n">DateNormalizer</span><span class="p">,</span>
+    <span class="n">CoordinateParser</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DetectedType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;numeric&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;phone&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;url&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;coordinate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;country&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;currency&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unit_quantity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scaled_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;percentage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;stdnum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mixed&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;empty&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="DataTypeExtended">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataTypeExtended">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataTypeExtended</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extended data types for column analysis.</span>
+
+<span class="sd">    This enum provides a richer set of types than DetectedType,</span>
+<span class="sd">    including types like COORDINATE, PERCENTAGE, LIST that are</span>
+<span class="sd">    detected through pattern matching.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">NUMERIC</span> <span class="o">=</span> <span class="s2">&quot;numeric&quot;</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">&quot;string&quot;</span>
+    <span class="n">DATE</span> <span class="o">=</span> <span class="s2">&quot;date&quot;</span>
+    <span class="n">DATETIME</span> <span class="o">=</span> <span class="s2">&quot;datetime&quot;</span>
+    <span class="n">BOOLEAN</span> <span class="o">=</span> <span class="s2">&quot;bool&quot;</span>
+    <span class="n">COORDINATE</span> <span class="o">=</span> <span class="s2">&quot;coordinate&quot;</span>
+    <span class="n">LINK</span> <span class="o">=</span> <span class="s2">&quot;link&quot;</span>
+    <span class="n">EMAIL</span> <span class="o">=</span> <span class="s2">&quot;email&quot;</span>
+    <span class="n">PHONE</span> <span class="o">=</span> <span class="s2">&quot;phone&quot;</span>
+    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="s2">&quot;currency&quot;</span>
+    <span class="n">PERCENTAGE</span> <span class="o">=</span> <span class="s2">&quot;percentage&quot;</span>
+    <span class="n">LIST</span> <span class="o">=</span> <span class="s2">&quot;list&quot;</span>
+    <span class="n">UNIT</span> <span class="o">=</span> <span class="s2">&quot;unit&quot;</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
+
+<div class="viewcode-block" id="DataTypeExtended.from_detected_type">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataTypeExtended.from_detected_type">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_detected_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">detected_type</span><span class="p">:</span> <span class="n">DetectedType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataTypeExtended&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert DetectedType string to DataTypeExtended enum.&quot;&quot;&quot;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;numeric&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">NUMERIC</span><span class="p">,</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span>
+            <span class="s2">&quot;boolean&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">EMAIL</span><span class="p">,</span>
+            <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PHONE</span><span class="p">,</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LINK</span><span class="p">,</span>
+            <span class="s2">&quot;coordinate&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">COORDINATE</span><span class="p">,</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">CURRENCY</span><span class="p">,</span>
+            <span class="s2">&quot;unit_quantity&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNIT</span><span class="p">,</span>
+            <span class="s2">&quot;scaled_number&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">NUMERIC</span><span class="p">,</span>
+            <span class="s2">&quot;stdnum&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+            <span class="s2">&quot;mixed&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+            <span class="s2">&quot;empty&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
+            <span class="s2">&quot;unknown&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">detected_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ColumnProfile">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.ColumnProfile">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ColumnProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Profile information for a single column.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">total_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">null_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">unique_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">detected_type</span><span class="p">:</span> <span class="n">DetectedType</span>
+    <span class="n">sample_values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="c1"># Type-specific details</span>
+    <span class="n">unit_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scale_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">percentage_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stdnum_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">country_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">suggestions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ColumnProfile.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.ColumnProfile.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="s2">&quot;total_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_count</span><span class="p">,</span>
+            <span class="s2">&quot;null_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_count</span><span class="p">,</span>
+            <span class="s2">&quot;unique_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_count</span><span class="p">,</span>
+            <span class="s2">&quot;detected_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">detected_type</span><span class="p">,</span>
+            <span class="s2">&quot;sample_values&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_values</span><span class="p">,</span>
+            <span class="s2">&quot;unit_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_info</span><span class="p">,</span>
+            <span class="s2">&quot;scale_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_info</span><span class="p">,</span>
+            <span class="s2">&quot;percentage_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">percentage_info</span><span class="p">,</span>
+            <span class="s2">&quot;stdnum_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdnum_info</span><span class="p">,</span>
+            <span class="s2">&quot;country_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">country_info</span><span class="p">,</span>
+            <span class="s2">&quot;suggestions&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">suggestions</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DataFrameProfile">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataFrameProfile">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFrameProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Profile information for an entire DataFrame.&quot;&quot;&quot;</span>
+
+    <span class="n">row_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">column_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ColumnProfile</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DataFrameProfile.to_dict">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataFrameProfile.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;row_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_count</span><span class="p">,</span>
+            <span class="s2">&quot;column_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_count</span><span class="p">,</span>
+            <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="DataFrameProfile.to_json">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataFrameProfile.to_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataFrameProfile.summary">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.DataFrameProfile.summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a human-readable summary.&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;DataFrame Profile: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_count</span><span class="si">}</span><span class="s2"> rows, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column_count</span><span class="si">}</span><span class="s2"> columns&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Type: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">detected_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show sample values</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">sample_values</span><span class="p">:</span>
+                <span class="n">samples_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">sample_values</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Samples: </span><span class="si">{</span><span class="n">samples_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show scale modifier details</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">scale_info</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Scale modifiers: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">scale_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show percentage info details</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">percentage_info</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Percentage: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">percentage_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show unit info details</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">unit_info</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Units: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">unit_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show stdnum info details</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">stdnum_info</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Standard numbers: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">stdnum_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show country info details</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">country_info</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Country formats: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">country_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show null count only if significant</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">null_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">null_pct</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">null_count</span> <span class="o">/</span> <span class="n">col</span><span class="o">.</span><span class="n">total_count</span> <span class="o">*</span> <span class="mi">100</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nulls: </span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">null_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">col</span><span class="o">.</span><span class="n">total_count</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">null_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Show suggestions</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Suggestion: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_sample_non_null</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get sample non-null values from a series.&quot;&quot;&quot;</span>
+    <span class="n">non_null</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_null</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">non_null</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">]</span>  <span class="c1"># Truncate long values</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_units</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect units in column values.&quot;&quot;&quot;</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">units_found</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+    <span class="n">dimensionalities</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parsed</span> <span class="ow">and</span> <span class="n">parsed</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dimensionless&quot;</span><span class="p">:</span>
+            <span class="n">units_found</span><span class="p">[</span><span class="n">parsed</span><span class="o">.</span><span class="n">unit</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">dimensionalities</span><span class="p">[</span><span class="n">parsed</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Try detecting unit in text</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">detect_unit_in_text</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unit</span><span class="p">:</span>
+                <span class="n">units_found</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">units_found</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;units_detected&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">units_found</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)),</span>
+        <span class="s2">&quot;dimensionalities&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dimensionalities</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">units_found</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_scale_modifiers</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect scale modifiers (MEO, million, etc.) in column values.&quot;&quot;&quot;</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">modifiers_found</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">modifier</span> <span class="o">=</span> <span class="n">detect_scale_modifier</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">modifier</span><span class="p">:</span>
+            <span class="n">modifiers_found</span><span class="p">[</span><span class="n">modifier</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">modifiers_found</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;modifiers_detected&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">modifiers_found</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)),</span>
+        <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">modifiers_found</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_percentages</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect percentage values in column (e.g., &#39;50%&#39;, &#39;0.5&#39;, &#39;50 %&#39;).&quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Pattern for percentage with % symbol</span>
+    <span class="n">percent_symbol_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^-?\d+(?:[.,]\d+)?\s*%$&#39;</span><span class="p">)</span>
+    <span class="c1"># Pattern for decimal values that look like percentages (0.0-1.0 range)</span>
+    <span class="n">decimal_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^-?0?\.\d+$|^1\.0*$|^0$|^1$&#39;</span><span class="p">)</span>
+
+    <span class="n">percent_symbol_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">decimal_range_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># Check for % symbol</span>
+        <span class="k">if</span> <span class="n">percent_symbol_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="n">percent_symbol_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Check for decimal values in 0-1 range (potential percentages already as decimals)</span>
+        <span class="k">elif</span> <span class="n">decimal_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">num</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">decimal_range_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="n">total_matches</span> <span class="o">=</span> <span class="n">percent_symbol_count</span> <span class="o">+</span> <span class="n">decimal_range_count</span>
+
+    <span class="k">if</span> <span class="n">total_matches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">coverage</span> <span class="o">=</span> <span class="n">total_matches</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">coverage</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>  <span class="c1"># Less than 30% match - probably not percentage data</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;with_symbol&quot;</span><span class="p">:</span> <span class="n">percent_symbol_count</span><span class="p">,</span>
+        <span class="s2">&quot;decimal_range&quot;</span><span class="p">:</span> <span class="n">decimal_range_count</span><span class="p">,</span>
+        <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">coverage</span><span class="p">,</span>
+        <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;symbol&quot;</span> <span class="k">if</span> <span class="n">percent_symbol_count</span> <span class="o">&gt;</span> <span class="n">decimal_range_count</span> <span class="k">else</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_stdnum</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect standard number formats (ISBN, IBAN, etc.).&quot;&quot;&quot;</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">types_found</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">stdnum_type</span> <span class="o">=</span> <span class="n">detect_stdnum_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stdnum_type</span><span class="p">:</span>
+            <span class="n">types_found</span><span class="p">[</span><span class="n">stdnum_type</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">types_found</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;types_detected&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">types_found</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)),</span>
+        <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">types_found</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_country_codes</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect country codes or names.&quot;&quot;&quot;</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">matches</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">formats_found</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">lookup_country</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">:</span>
+            <span class="n">matches</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Determine input format</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">formats_found</span><span class="p">[</span><span class="s2">&quot;alpha_2&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+                <span class="n">formats_found</span><span class="p">[</span><span class="s2">&quot;alpha_3&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">formats_found</span><span class="p">[</span><span class="s2">&quot;numeric&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">formats_found</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">matches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">coverage</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">coverage</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>  <span class="c1"># Less than 30% match - probably not country data</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;formats_detected&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">formats_found</span><span class="o">.</span><span class="n">most_common</span><span class="p">()),</span>
+        <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">coverage</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_column_type</span><span class="p">(</span>
+    <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+    <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">DetectedType</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect the semantic type of a column.</span>
+
+<span class="sd">    Uses specialized parsers from types.py for accurate detection of:</span>
+<span class="sd">    - Booleans (including string representations like &quot;yes&quot;, &quot;no&quot;, &quot;true&quot;, &quot;false&quot;)</span>
+<span class="sd">    - URLs (with proper validation)</span>
+<span class="sd">    - Coordinates (lat/lon in various formats)</span>
+<span class="sd">    - Dates (including string dates not yet parsed)</span>
+
+<span class="sd">    Returns tuple of (detected_type, extra_info).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">extra_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Check for empty</span>
+    <span class="n">non_null</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_null</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;empty&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">non_null</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
+
+    <span class="c1"># Check for emails (using integration)</span>
+    <span class="n">email_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">is_valid_email</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">email_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">email_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for phone numbers (using integration)</span>
+    <span class="n">phone_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">validate_phone</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">phone_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;phone&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">phone_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for boolean strings early (before country codes which may match &quot;no&quot;, &quot;yes&quot;)</span>
+    <span class="n">bool_parser</span> <span class="o">=</span> <span class="n">BooleanParser</span><span class="p">()</span>
+    <span class="n">bool_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">bool_parser</span><span class="o">.</span><span class="n">parse_boolean</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bool_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">bool_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for standard numbers (ISBN, IBAN, etc.)</span>
+    <span class="n">stdnum_info</span> <span class="o">=</span> <span class="n">_detect_stdnum</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stdnum_info</span> <span class="ow">and</span> <span class="n">stdnum_info</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;stdnum_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdnum_info</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;stdnum&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Check for country codes</span>
+    <span class="n">country_info</span> <span class="o">=</span> <span class="n">_detect_country_codes</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">country_info</span> <span class="ow">and</span> <span class="n">country_info</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;country_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">country_info</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Check for currency codes</span>
+    <span class="n">currency_matches</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">lookup_currency</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">currency_matches</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;currency&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">currency_matches</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for units</span>
+    <span class="n">unit_info</span> <span class="o">=</span> <span class="n">_detect_units</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unit_info</span> <span class="ow">and</span> <span class="n">unit_info</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="p">:</span>
+        <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;unit_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit_info</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;unit_quantity&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Check for scale modifiers</span>
+    <span class="n">scale_info</span> <span class="o">=</span> <span class="n">_detect_scale_modifiers</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale_info</span> <span class="ow">and</span> <span class="n">scale_info</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="p">:</span>
+        <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;scale_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_info</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;scaled_number&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Check for percentages (e.g., &#39;50%&#39;, &#39;0.5&#39;)</span>
+    <span class="n">percentage_info</span> <span class="o">=</span> <span class="n">_detect_percentages</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">percentage_info</span> <span class="ow">and</span> <span class="n">percentage_info</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;percentage_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">percentage_info</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;percentage&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Check pandas dtype first for already-typed columns</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_datetime64_any_dtype</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+    <span class="c1"># Use specialized parsers for string columns</span>
+    <span class="c1"># Check for coordinates using CoordinateParser</span>
+    <span class="n">coord_parser</span> <span class="o">=</span> <span class="n">CoordinateParser</span><span class="p">()</span>
+    <span class="n">coord_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">coord_parser</span><span class="o">.</span><span class="n">parse_coordinate</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">coord_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;coordinate&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">coord_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for URLs using LinkNormalizer (more accurate than prefix check)</span>
+    <span class="n">link_normalizer</span> <span class="o">=</span> <span class="n">LinkNormalizer</span><span class="p">()</span>
+    <span class="n">url_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">link_normalizer</span><span class="o">.</span><span class="n">is_valid_url</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">url_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">url_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Check for date strings using DateNormalizer</span>
+    <span class="n">date_normalizer</span> <span class="o">=</span> <span class="n">DateNormalizer</span><span class="p">()</span>
+    <span class="n">date_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span> <span class="k">if</span> <span class="n">date_normalizer</span><span class="o">.</span><span class="n">parse_date</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">date_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="n">date_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)})</span>
+
+    <span class="c1"># Default to text</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_suggestions</span><span class="p">(</span><span class="n">col_profile</span><span class="p">:</span> <span class="n">ColumnProfile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate normalization suggestions based on detected type.&quot;&quot;&quot;</span>
+    <span class="n">suggestions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;unit_quantity&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing units to a standard (e.g., meters, kilograms)&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;scaled_number&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider expanding scale modifiers (e.g., &#39;5 MEO&#39; → 5000000)&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;percentage&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">percentage_info</span> <span class="ow">and</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">percentage_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;symbol&quot;</span><span class="p">:</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider converting percentages to decimals (e.g., &#39;50%&#39; → 0.5)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Detected decimal values in 0-1 range (likely percentages)&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;stdnum&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider validating and formatting standard numbers&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;country&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing to ISO 3166 alpha-2 codes&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;currency&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing to ISO 4217 codes&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;phone&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing to E.164 format&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;email&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider validating and normalizing email addresses&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;coordinate&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing to decimal degrees format&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider validating and normalizing URLs&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;boolean&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider converting to native boolean type&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">detected_type</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
+        <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Consider normalizing to ISO 8601 date format&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">null_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">null_pct</span> <span class="o">=</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">null_count</span> <span class="o">/</span> <span class="n">col_profile</span><span class="o">.</span><span class="n">total_count</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="n">null_pct</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;High null rate (</span><span class="si">{</span><span class="n">null_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%) - consider handling missing values&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">suggestions</span>
+
+
+<div class="viewcode-block" id="profile_column">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.profile_column">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">profile_column</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Profile a single column.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        series: Pandas Series to profile</span>
+<span class="sd">        sample_size: Number of values to sample for type detection</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ColumnProfile with detected information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">detected_type</span><span class="p">,</span> <span class="n">extra_info</span> <span class="o">=</span> <span class="n">_detect_column_type</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">)</span>
+
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">ColumnProfile</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
+        <span class="n">total_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">),</span>
+        <span class="n">null_count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span>
+        <span class="n">unique_count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">nunique</span><span class="p">()),</span>
+        <span class="n">detected_type</span><span class="o">=</span><span class="n">detected_type</span><span class="p">,</span>
+        <span class="n">sample_values</span><span class="o">=</span><span class="n">_sample_non_null</span><span class="p">(</span><span class="n">series</span><span class="p">),</span>
+        <span class="n">unit_info</span><span class="o">=</span><span class="n">extra_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unit_info&quot;</span><span class="p">),</span>
+        <span class="n">scale_info</span><span class="o">=</span><span class="n">extra_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scale_info&quot;</span><span class="p">),</span>
+        <span class="n">percentage_info</span><span class="o">=</span><span class="n">extra_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;percentage_info&quot;</span><span class="p">),</span>
+        <span class="n">stdnum_info</span><span class="o">=</span><span class="n">extra_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stdnum_info&quot;</span><span class="p">),</span>
+        <span class="n">country_info</span><span class="o">=</span><span class="n">extra_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country_info&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">profile</span><span class="o">.</span><span class="n">suggestions</span> <span class="o">=</span> <span class="n">_generate_suggestions</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">profile</span></div>
+
+
+
+<div class="viewcode-block" id="profile_dataframe">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.profile.profile_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">profile_dataframe</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrameProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Profile an entire DataFrame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: DataFrame to profile</span>
+<span class="sd">        sample_size: Number of values to sample per column for type detection</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrameProfile with column-level information</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({</span>
+<span class="sd">        ...     &quot;revenue&quot;: [&quot;5 MEO&quot;, &quot;10 MEO&quot;, &quot;2.5 MEO&quot;],</span>
+<span class="sd">        ...     &quot;country&quot;: [&quot;DE&quot;, &quot;FR&quot;, &quot;US&quot;],</span>
+<span class="sd">        ... })</span>
+<span class="sd">        &gt;&gt;&gt; profile = profile_dataframe(df)</span>
+<span class="sd">        &gt;&gt;&gt; profile.columns[&quot;revenue&quot;].detected_type</span>
+<span class="sd">        &#39;scaled_number&#39;</span>
+<span class="sd">        &gt;&gt;&gt; profile.columns[&quot;country&quot;].detected_type</span>
+<span class="sd">        &#39;country&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">columns</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_column</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">sample_size</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">DataFrameProfile</span><span class="p">(</span>
+        <span class="n">row_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+        <span class="n">column_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

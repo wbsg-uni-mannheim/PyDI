@@ -1,142 +1,966 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html lang="en" data-content_root="../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.schemamatching package &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
-    <title>PyDI.schemamatching package &#8212; PyDI 2025 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=cb975c41"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="PyDI.utils package" href="PyDI.utils.html" />
-    <link rel="prev" title="PyDI.profiling package" href="PyDI.profiling.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
+    <link rel="prev" title="PyDI.profiling package" href="PyDI.profiling.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
-
-          <div class="body" role="main">
-            
-  <section id="pydi-schemamatching-package">
-<h1>PyDI.schemamatching package<a class="headerlink" href="#pydi-schemamatching-package" title="Link to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-base-module">
-<h2>PyDI.schemamatching.base module<a class="headerlink" href="#pydi-schemamatching-base-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-duplicate-based-module">
-<h2>PyDI.schemamatching.duplicate_based module<a class="headerlink" href="#pydi-schemamatching-duplicate-based-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-evaluation-module">
-<h2>PyDI.schemamatching.evaluation module<a class="headerlink" href="#pydi-schemamatching-evaluation-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-instance-based-module">
-<h2>PyDI.schemamatching.instance_based module<a class="headerlink" href="#pydi-schemamatching-instance-based-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-label-based-module">
-<h2>PyDI.schemamatching.label_based module<a class="headerlink" href="#pydi-schemamatching-label-based-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-llm-based-module">
-<h2>PyDI.schemamatching.llm_based module<a class="headerlink" href="#pydi-schemamatching-llm-based-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="pydi-schemamatching-translator-module">
-<h2>PyDI.schemamatching.translator module<a class="headerlink" href="#pydi-schemamatching-translator-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
-</section>
-</section>
-
-
-          </div>
           
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">PyDI</a></h1>
-
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+          <a href="../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">PyDI</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="PyDI.html">PyDI package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="PyDI.html">PyDI package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="PyDI.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="PyDI.entitymatching.html">PyDI.entitymatching package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.fusion.html">PyDI.fusion package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.informationextraction.html">PyDI.informationextraction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.io.html">PyDI.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.normalization.html">PyDI.normalization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.profiling.html">PyDI.profiling package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PyDI.schemamatching package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PyDI.utils.html">PyDI.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="PyDI.html#module-PyDI">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">PyDI</a><ul>
-  <li><a href="PyDI.html">PyDI package</a><ul>
-      <li>Previous: <a href="PyDI.profiling.html" title="previous chapter">PyDI.profiling package</a></li>
-      <li>Next: <a href="PyDI.utils.html" title="next chapter">PyDI.utils package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;2025, Peeters, Steiner, Bizer.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-      |
-      <a href="../_sources/api/PyDI.schemamatching.rst.txt"
-          rel="nofollow">Page source</a>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">PyDI</a></li>
+          <li class="breadcrumb-item"><a href="PyDI.html">PyDI package</a></li>
+      <li class="breadcrumb-item active">PyDI.schemamatching package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/PyDI.schemamatching.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pydi-schemamatching-package">
+<h1>PyDI.schemamatching package<a class="headerlink" href="#pydi-schemamatching-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-PyDI.schemamatching.base">
+<span id="pydi-schemamatching-base-module"></span><h2>PyDI.schemamatching.base module<a class="headerlink" href="#module-PyDI.schemamatching.base" title="Link to this heading"></a></h2>
+<p>Base classes for schema matching.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.base.BaseSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.base.</span></span><span class="sig-name descname"><span class="pre">BaseSchemaMatcher</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#BaseSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for schema matchers.</p>
+<p>Schema matchers take two DataFrames and return a
+<code class="docutils literal notranslate"><span class="pre">SchemaMapping</span></code> containing column correspondences.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.base.BaseSchemaMatcher.match">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#BaseSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.base.BaseSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find attribute correspondences between two datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset. Must have a meaningful <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> entry in <code class="docutils literal notranslate"><span class="pre">df.attrs</span></code>.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset. Must have a meaningful <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> entry in <code class="docutils literal notranslate"><span class="pre">df.attrs</span></code>.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function applied to values before comparison (e.g., <code class="docutils literal notranslate"><span class="pre">str.lower</span></code>).
+Applied to column names in label-based matching, to data values in
+instance-based matching, and to record values in duplicate-based matching.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity/confidence score required to include a mapping.
+Default is 0.8.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments specific to the matcher implementation.
+For example, DuplicateBasedSchemaMatcher requires a <code class="docutils literal notranslate"><span class="pre">correspondences</span></code>
+parameter, and LabelBasedSchemaMatcher accepts a <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame with columns <code class="docutils literal notranslate"><span class="pre">source_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">source_column</span></code>,
+<code class="docutils literal notranslate"><span class="pre">target_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">target_column</span></code>, <code class="docutils literal notranslate"><span class="pre">score</span></code> and optional <code class="docutils literal notranslate"><span class="pre">notes</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.schemamatching.base.get_schema_columns">
+<span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.base.</span></span><span class="sig-name descname"><span class="pre">get_schema_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#get_schema_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.base.get_schema_columns" title="Link to this definition"></a></dt>
+<dd><p>Get columns from a DataFrame excluding PyDI-generated ID columns.</p>
+<p>PyDI automatically adds unique identifier columns during data loading
+(typically named {dataset_name}_id). These should be excluded from
+schema matching as they are not part of the original data schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame to extract schema columns from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of column names excluding PyDI ID columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.duplicate_based">
+<span id="pydi-schemamatching-duplicate-based-module"></span><h2>PyDI.schemamatching.duplicate_based module<a class="headerlink" href="#module-PyDI.schemamatching.duplicate_based" title="Link to this heading"></a></h2>
+<p>Duplicate-based schema matching using known record correspondences.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.duplicate_based.</span></span><span class="sig-name descname"><span class="pre">DuplicateBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vote_aggregation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'majority'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_comparison</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'exact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_votes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_zero_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/duplicate_based.html#DuplicateBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Duplicate-based schema matcher using known record correspondences.</p>
+<p>This matcher uses known duplicate records (correspondences) between datasets
+to determine schema correspondences. For each pair of duplicate records,
+it compares attribute values and aggregates votes to determine which
+attributes correspond across schemas.</p>
+<p>Supports both exact and fuzzy string matching using the textdistance package,
+enabling more flexible matching of similar but not identical values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vote_aggregation</strong> (<em>str</em>)</p></li>
+<li><p><strong>value_comparison</strong> (<em>str</em>)</p></li>
+<li><p><strong>min_votes</strong> (<em>int</em>)</p></li>
+<li><p><strong>ignore_zero_values</strong> (<em>bool</em>)</p></li>
+<li><p><strong>similarity_function</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>similarity_threshold</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correspondences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/duplicate_based.html#DuplicateBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.duplicate_based.DuplicateBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using duplicate-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to preprocess values before comparison.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum confidence score for correspondences.</p></li>
+<li><p><strong>correspondences</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Record correspondences between the datasets. Must contain columns
+identifying matching records (e.g., ‘id1’, ‘id2’ or ‘source_id’, ‘target_id’).</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If correspondences are not provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.evaluation">
+<span id="pydi-schemamatching-evaluation-module"></span><h2>PyDI.schemamatching.evaluation module<a class="headerlink" href="#module-PyDI.schemamatching.evaluation" title="Link to this heading"></a></h2>
+<p>Schema mapping evaluation utilities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.evaluation.SchemaMappingEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.evaluation.</span></span><span class="sig-name descname"><span class="pre">SchemaMappingEvaluator</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.evaluation.SchemaMappingEvaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Evaluate schema mapping quality against an evaluation set.</p>
+<p>Methods in this class compute precision, recall and F1 scores
+comparing an automatically produced mapping against a reference
+(evaluation) mapping.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.evaluation.SchemaMappingEvaluator.evaluate">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_set</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.evaluation.SchemaMappingEvaluator.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Compute precision, recall and F1 for a mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>SchemaMapping</em>) – The correspondences produced by a matcher.</p></li>
+<li><p><strong>evaluation_set</strong> (<em>SchemaMapping</em>) – The evaluation mapping. Can contain both positive and negative examples.
+If it has a label column with True/False values, negatives will be used.
+Otherwise, all correspondences are assumed to be positive examples.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – If provided, ignore correspondences with a score below this value.</p></li>
+<li><p><strong>complete</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether the evaluation_set represents a complete evaluation set. If True,
+any correspondence not in the evaluation_set is considered a negative.
+If False, only explicit negatives in evaluation_set are used.</p></li>
+<li><p><strong>label_column</strong> (<em>str</em><em>, </em><em>default &quot;label&quot;</em>) – Name of the column containing True/False labels for positive/negative examples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with precision, recall, F1, and detailed counts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.evaluation.SchemaMappingEvaluator.sweep_thresholds">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sweep_thresholds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_set</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator.sweep_thresholds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.evaluation.SchemaMappingEvaluator.sweep_thresholds" title="Link to this definition"></a></dt>
+<dd><p>Compute precision and recall for multiple thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>SchemaMapping</em>) – The correspondences produced by a matcher.</p></li>
+<li><p><strong>evaluation_set</strong> (<em>SchemaMapping</em>) – The evaluation mapping.</p></li>
+<li><p><strong>thresholds</strong> (<em>iterable</em><em> of </em><em>float</em>) – A sequence of threshold values to evaluate.</p></li>
+<li><p><strong>complete</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether the evaluation_set represents a complete evaluation set.</p></li>
+<li><p><strong>label_column</strong> (<em>str</em><em>, </em><em>default &quot;label&quot;</em>) – Name of the column containing True/False labels for positive/negative examples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame with columns <code class="docutils literal notranslate"><span class="pre">threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">precision</span></code>, <code class="docutils literal notranslate"><span class="pre">recall</span></code>, <code class="docutils literal notranslate"><span class="pre">f1</span></code>,
+and additional evaluation metrics.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.instance_based">
+<span id="pydi-schemamatching-instance-based-module"></span><h2>PyDI.schemamatching.instance_based module<a class="headerlink" href="#module-PyDI.schemamatching.instance_based" title="Link to this heading"></a></h2>
+<p>Instance-based schema matching using value distributions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.instance_based.InstanceBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.instance_based.</span></span><span class="sig-name descname"><span class="pre">InstanceBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector_creation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'term_frequencies'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_non_null_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/instance_based.html#InstanceBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.instance_based.InstanceBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Instance-based schema matcher using value distributions.</p>
+<p>This matcher analyzes the actual values in columns to determine
+correspondences. It creates vector representations of columns based
+on their value distributions and uses similarity measures from the
+textdistance package for improved performance and consistency.</p>
+<p>For binary vectors, textdistance functions are used directly.
+For weighted vectors (term frequencies, TF-IDF), custom implementations
+are retained for accuracy with weighted calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector_creation_method</strong> (<em>str</em>)</p></li>
+<li><p><strong>similarity_function</strong> (<em>str</em>)</p></li>
+<li><p><strong>max_sample_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>min_non_null_ratio</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.instance_based.InstanceBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/instance_based.html#InstanceBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.instance_based.InstanceBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using instance-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to preprocess string values before analysis.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity score for correspondences.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.label_based">
+<span id="pydi-schemamatching-label-based-module"></span><h2>PyDI.schemamatching.label_based module<a class="headerlink" href="#module-PyDI.schemamatching.label_based" title="Link to this heading"></a></h2>
+<p>Label-based schema matching using string similarity metrics.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.label_based.LabelBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.label_based.</span></span><span class="sig-name descname"><span class="pre">LabelBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jaccard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/label_based.html#LabelBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.label_based.LabelBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Label-based schema matcher using string similarity metrics.</p>
+<p>This matcher compares column names using various string similarity
+functions including Jaccard, Levenshtein, and other metrics from
+textdistance. It supports preprocessing and configurable similarity
+thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>similarity_function</strong> (<em>str</em>)</p></li>
+<li><p><strong>preprocess</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>tokenize</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.label_based.LabelBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/label_based.html#LabelBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.label_based.LabelBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using label-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Preprocessing function (overrides instance setting).</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity score for correspondences.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Matching method. Only “label” is supported.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.llm_based">
+<span id="pydi-schemamatching-llm-based-module"></span><h2>PyDI.schemamatching.llm_based module<a class="headerlink" href="#module-PyDI.schemamatching.llm_based" title="Link to this heading"></a></h2>
+<p>LLM-based schema matching using Large Language Models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.llm_based.LLMBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.llm_based.</span></span><span class="sig-name descname"><span class="pre">LLMBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_model</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_prompt_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output/schemamatching'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/llm_based.html#LLMBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.llm_based.LLMBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>LLM-based schema matcher using Large Language Models.</p>
+<p>This matcher uses LangChain’s BaseChatModel interface to match schemas
+by showing the LLM both datasets in markdown format and asking it to
+identify column correspondences based on column names, data types, and
+sample values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_model</strong> (<em>langchain_core.language_models.chat_models.BaseChatModel</em>) – LangChain chat model instance (e.g., ChatOpenAI, ChatAnthropic)</p></li>
+<li><p><strong>num_rows</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of sample rows to show to the LLM, by default 5</p></li>
+<li><p><strong>system_prompt</strong> (<em>str</em><em>, </em><em>optional</em>) – Custom system prompt for the LLM. If None, uses default prompt.</p></li>
+<li><p><strong>user_prompt_template</strong> (<em>str</em><em>, </em><em>optional</em>) – Template for the user prompt. If None, uses default template.</p></li>
+<li><p><strong>temperature</strong> (<em>float</em><em>, </em><em>optional</em>) – Model temperature for generation, by default 0.0</p></li>
+<li><p><strong>max_retries</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of retry attempts on failure, by default 1</p></li>
+<li><p><strong>out_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Output directory for artifacts, by default “output/schemamatching”</p></li>
+<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable debug mode with detailed artifacts, by default False</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">PyDI.schemamatching</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMBasedSchemaMatcher</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chat</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">LLMBasedSchemaMatcher</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">chat_model</span><span class="o">=</span><span class="n">chat</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mappings</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">target_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.llm_based.LLMBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/llm_based.html#LLMBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.llm_based.LLMBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using LLM analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Preprocessing function (not used in LLM matching)</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored)</p></li>
+<li><p><strong>num_rows</strong> (<em>int</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching.translator">
+<span id="pydi-schemamatching-translator-module"></span><h2>PyDI.schemamatching.translator module<a class="headerlink" href="#module-PyDI.schemamatching.translator" title="Link to this heading"></a></h2>
+<p>Schema translation using explicit column mappings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.translator.SchemaTranslator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.translator.</span></span><span class="sig-name descname"><span class="pre">SchemaTranslator</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/translator.html#SchemaTranslator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.translator.SchemaTranslator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Translate column names based on a schema mapping.</p>
+<p>This is the final step of schema matching: applying the discovered
+column correspondences to rename columns in the source DataFrame
+to match the target schema. Optionally applies value normalization.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.translator.SchemaTranslator.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'keep'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/translator.html#SchemaTranslator.translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.translator.SchemaTranslator.translate" title="Link to this definition"></a></dt>
+<dd><p>Translate column names according to a schema mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – The DataFrame to translate. Must have <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> in attrs.</p></li>
+<li><p><strong>mapping</strong> (<em>SchemaMapping</em>) – Schema mapping DataFrame with columns <code class="docutils literal notranslate"><span class="pre">source_dataset</span></code>,
+<code class="docutils literal notranslate"><span class="pre">source_column</span></code>, <code class="docutils literal notranslate"><span class="pre">target_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">target_column</span></code>,
+and optionally <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><strong>normalize</strong> (<a class="reference internal" href="PyDI.normalization.html#PyDI.normalization.spec.NormalizationSpec" title="PyDI.normalization.spec.NormalizationSpec"><em>NormalizationSpec</em></a><em>, </em><em>bool</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – <p>Controls value normalization after column renaming:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (default): No normalization, only rename columns.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: Auto-detect normalizations by profiling the DataFrame
+and generating a spec via <code class="docutils literal notranslate"><span class="pre">NormalizationSpec.from_profile()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NormalizationSpec</span></code>: Use the provided spec for normalization.
+Column names in the spec should be the <strong>target</strong> column names
+(after renaming).</p></li>
+</ul>
+</p></li>
+<li><p><strong>on_failure</strong> (<em>{&quot;keep&quot;</em><em>, </em><em>&quot;null&quot;</em><em>, </em><em>&quot;raise&quot;}</em><em>, </em><em>default &quot;keep&quot;</em>) – <p>Default behavior when a value normalization fails:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;keep&quot;</span></code>: Keep the original value unchanged.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;null&quot;</span></code>: Replace with <code class="docutils literal notranslate"><span class="pre">None</span></code>/<code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;raise&quot;</span></code>: Raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> immediately.</p></li>
+</ul>
+<p>Individual <code class="docutils literal notranslate"><span class="pre">ColumnSpec</span></code> entries in the normalization spec can
+override this default via their own <code class="docutils literal notranslate"><span class="pre">on_failure</span></code> setting.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with columns renamed (and optionally normalized)
+according to the mapping.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If DataFrame is missing dataset_name, if schema mapping is invalid,
+    or if <code class="docutils literal notranslate"><span class="pre">on_failure=&quot;raise&quot;</span></code> and a normalization fails.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Basic column renaming only:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">translator</span> <span class="o">=</span> <span class="n">SchemaTranslator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With auto-detected normalization:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With explicit normalization spec:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">PyDI.normalization</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalizationSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">NormalizationSpec</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="n">country_format</span><span class="o">=</span><span class="s2">&quot;alpha_2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="n">expand_scale_modifiers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">on_failure</span><span class="o">=</span><span class="s2">&quot;null&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-PyDI.schemamatching">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-PyDI.schemamatching" title="Link to this heading"></a></h2>
+<p>Schema matching tools for PyDI.</p>
+<p>This module provides schema matching algorithms for finding correspondences
+between database schemas. It includes label-based, instance-based, and
+duplicate-based matching strategies, plus translation to apply the mappings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.BaseSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">BaseSchemaMatcher</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#BaseSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.BaseSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for schema matchers.</p>
+<p>Schema matchers take two DataFrames and return a
+<code class="docutils literal notranslate"><span class="pre">SchemaMapping</span></code> containing column correspondences.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.BaseSchemaMatcher.match">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#BaseSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.BaseSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find attribute correspondences between two datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset. Must have a meaningful <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> entry in <code class="docutils literal notranslate"><span class="pre">df.attrs</span></code>.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset. Must have a meaningful <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> entry in <code class="docutils literal notranslate"><span class="pre">df.attrs</span></code>.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function applied to values before comparison (e.g., <code class="docutils literal notranslate"><span class="pre">str.lower</span></code>).
+Applied to column names in label-based matching, to data values in
+instance-based matching, and to record values in duplicate-based matching.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity/confidence score required to include a mapping.
+Default is 0.8.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments specific to the matcher implementation.
+For example, DuplicateBasedSchemaMatcher requires a <code class="docutils literal notranslate"><span class="pre">correspondences</span></code>
+parameter, and LabelBasedSchemaMatcher accepts a <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame with columns <code class="docutils literal notranslate"><span class="pre">source_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">source_column</span></code>,
+<code class="docutils literal notranslate"><span class="pre">target_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">target_column</span></code>, <code class="docutils literal notranslate"><span class="pre">score</span></code> and optional <code class="docutils literal notranslate"><span class="pre">notes</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.DuplicateBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">DuplicateBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vote_aggregation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'majority'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_comparison</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'exact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_votes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_zero_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/duplicate_based.html#DuplicateBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.DuplicateBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Duplicate-based schema matcher using known record correspondences.</p>
+<p>This matcher uses known duplicate records (correspondences) between datasets
+to determine schema correspondences. For each pair of duplicate records,
+it compares attribute values and aggregates votes to determine which
+attributes correspond across schemas.</p>
+<p>Supports both exact and fuzzy string matching using the textdistance package,
+enabling more flexible matching of similar but not identical values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vote_aggregation</strong> (<em>str</em>)</p></li>
+<li><p><strong>value_comparison</strong> (<em>str</em>)</p></li>
+<li><p><strong>min_votes</strong> (<em>int</em>)</p></li>
+<li><p><strong>ignore_zero_values</strong> (<em>bool</em>)</p></li>
+<li><p><strong>similarity_function</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>similarity_threshold</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.DuplicateBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correspondences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/duplicate_based.html#DuplicateBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.DuplicateBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using duplicate-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to preprocess values before comparison.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum confidence score for correspondences.</p></li>
+<li><p><strong>correspondences</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Record correspondences between the datasets. Must contain columns
+identifying matching records (e.g., ‘id1’, ‘id2’ or ‘source_id’, ‘target_id’).</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If correspondences are not provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.InstanceBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">InstanceBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector_creation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'term_frequencies'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_non_null_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/instance_based.html#InstanceBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.InstanceBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Instance-based schema matcher using value distributions.</p>
+<p>This matcher analyzes the actual values in columns to determine
+correspondences. It creates vector representations of columns based
+on their value distributions and uses similarity measures from the
+textdistance package for improved performance and consistency.</p>
+<p>For binary vectors, textdistance functions are used directly.
+For weighted vectors (term frequencies, TF-IDF), custom implementations
+are retained for accuracy with weighted calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector_creation_method</strong> (<em>str</em>)</p></li>
+<li><p><strong>similarity_function</strong> (<em>str</em>)</p></li>
+<li><p><strong>max_sample_size</strong> (<em>int</em>)</p></li>
+<li><p><strong>min_non_null_ratio</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.InstanceBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/instance_based.html#InstanceBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.InstanceBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using instance-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to preprocess string values before analysis.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity score for correspondences.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.LLMBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">LLMBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_model</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_prompt_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output/schemamatching'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/llm_based.html#LLMBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.LLMBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>LLM-based schema matcher using Large Language Models.</p>
+<p>This matcher uses LangChain’s BaseChatModel interface to match schemas
+by showing the LLM both datasets in markdown format and asking it to
+identify column correspondences based on column names, data types, and
+sample values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_model</strong> (<em>langchain_core.language_models.chat_models.BaseChatModel</em>) – LangChain chat model instance (e.g., ChatOpenAI, ChatAnthropic)</p></li>
+<li><p><strong>num_rows</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of sample rows to show to the LLM, by default 5</p></li>
+<li><p><strong>system_prompt</strong> (<em>str</em><em>, </em><em>optional</em>) – Custom system prompt for the LLM. If None, uses default prompt.</p></li>
+<li><p><strong>user_prompt_template</strong> (<em>str</em><em>, </em><em>optional</em>) – Template for the user prompt. If None, uses default template.</p></li>
+<li><p><strong>temperature</strong> (<em>float</em><em>, </em><em>optional</em>) – Model temperature for generation, by default 0.0</p></li>
+<li><p><strong>max_retries</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of retry attempts on failure, by default 1</p></li>
+<li><p><strong>out_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Output directory for artifacts, by default “output/schemamatching”</p></li>
+<li><p><strong>debug</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable debug mode with detailed artifacts, by default False</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">PyDI.schemamatching</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMBasedSchemaMatcher</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chat</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matcher</span> <span class="o">=</span> <span class="n">LLMBasedSchemaMatcher</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">chat_model</span><span class="o">=</span><span class="n">chat</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">num_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mappings</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">target_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.LLMBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/llm_based.html#LLMBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.LLMBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using LLM analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Preprocessing function (not used in LLM matching)</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored)</p></li>
+<li><p><strong>num_rows</strong> (<em>int</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.LabelBasedSchemaMatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">LabelBasedSchemaMatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jaccard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/label_based.html#LabelBasedSchemaMatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.LabelBasedSchemaMatcher" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyDI.schemamatching.base.BaseSchemaMatcher" title="PyDI.schemamatching.base.BaseSchemaMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchemaMatcher</span></code></a></p>
+<p>Label-based schema matcher using string similarity metrics.</p>
+<p>This matcher compares column names using various string similarity
+functions including Jaccard, Levenshtein, and other metrics from
+textdistance. It supports preprocessing and configurable similarity
+thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>similarity_function</strong> (<em>str</em>)</p></li>
+<li><p><strong>preprocess</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>tokenize</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.LabelBasedSchemaMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/label_based.html#LabelBasedSchemaMatcher.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.LabelBasedSchemaMatcher.match" title="Link to this definition"></a></dt>
+<dd><p>Find schema correspondences using label-based matching.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dataset</strong> (<em>pandas.DataFrame</em>) – The source dataset.</p></li>
+<li><p><strong>target_dataset</strong> (<em>pandas.DataFrame</em>) – The target dataset.</p></li>
+<li><p><strong>preprocess</strong> (<em>callable</em><em>, </em><em>optional</em>) – Preprocessing function (overrides instance setting).</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum similarity score for correspondences.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Matching method. Only “label” is supported.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with schema correspondences.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SchemaMapping</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.SchemaMappingEvaluator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">SchemaMappingEvaluator</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.SchemaMappingEvaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Evaluate schema mapping quality against an evaluation set.</p>
+<p>Methods in this class compute precision, recall and F1 scores
+comparing an automatically produced mapping against a reference
+(evaluation) mapping.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.SchemaMappingEvaluator.evaluate">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_set</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.SchemaMappingEvaluator.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Compute precision, recall and F1 for a mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>SchemaMapping</em>) – The correspondences produced by a matcher.</p></li>
+<li><p><strong>evaluation_set</strong> (<em>SchemaMapping</em>) – The evaluation mapping. Can contain both positive and negative examples.
+If it has a label column with True/False values, negatives will be used.
+Otherwise, all correspondences are assumed to be positive examples.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – If provided, ignore correspondences with a score below this value.</p></li>
+<li><p><strong>complete</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether the evaluation_set represents a complete evaluation set. If True,
+any correspondence not in the evaluation_set is considered a negative.
+If False, only explicit negatives in evaluation_set are used.</p></li>
+<li><p><strong>label_column</strong> (<em>str</em><em>, </em><em>default &quot;label&quot;</em>) – Name of the column containing True/False labels for positive/negative examples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with precision, recall, F1, and detailed counts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.SchemaMappingEvaluator.sweep_thresholds">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sweep_thresholds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_set</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/evaluation.html#SchemaMappingEvaluator.sweep_thresholds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.SchemaMappingEvaluator.sweep_thresholds" title="Link to this definition"></a></dt>
+<dd><p>Compute precision and recall for multiple thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>SchemaMapping</em>) – The correspondences produced by a matcher.</p></li>
+<li><p><strong>evaluation_set</strong> (<em>SchemaMapping</em>) – The evaluation mapping.</p></li>
+<li><p><strong>thresholds</strong> (<em>iterable</em><em> of </em><em>float</em>) – A sequence of threshold values to evaluate.</p></li>
+<li><p><strong>complete</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether the evaluation_set represents a complete evaluation set.</p></li>
+<li><p><strong>label_column</strong> (<em>str</em><em>, </em><em>default &quot;label&quot;</em>) – Name of the column containing True/False labels for positive/negative examples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame with columns <code class="docutils literal notranslate"><span class="pre">threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">precision</span></code>, <code class="docutils literal notranslate"><span class="pre">recall</span></code>, <code class="docutils literal notranslate"><span class="pre">f1</span></code>,
+and additional evaluation metrics.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="PyDI.schemamatching.SchemaTranslator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">SchemaTranslator</span></span><a class="reference internal" href="../_modules/PyDI/schemamatching/translator.html#SchemaTranslator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.SchemaTranslator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Translate column names based on a schema mapping.</p>
+<p>This is the final step of schema matching: applying the discovered
+column correspondences to rename columns in the source DataFrame
+to match the target schema. Optionally applies value normalization.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PyDI.schemamatching.SchemaTranslator.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'keep'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/translator.html#SchemaTranslator.translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.SchemaTranslator.translate" title="Link to this definition"></a></dt>
+<dd><p>Translate column names according to a schema mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – The DataFrame to translate. Must have <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> in attrs.</p></li>
+<li><p><strong>mapping</strong> (<em>SchemaMapping</em>) – Schema mapping DataFrame with columns <code class="docutils literal notranslate"><span class="pre">source_dataset</span></code>,
+<code class="docutils literal notranslate"><span class="pre">source_column</span></code>, <code class="docutils literal notranslate"><span class="pre">target_dataset</span></code>, <code class="docutils literal notranslate"><span class="pre">target_column</span></code>,
+and optionally <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><strong>normalize</strong> (<a class="reference internal" href="PyDI.normalization.html#PyDI.normalization.spec.NormalizationSpec" title="PyDI.normalization.spec.NormalizationSpec"><em>NormalizationSpec</em></a><em>, </em><em>bool</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – <p>Controls value normalization after column renaming:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (default): No normalization, only rename columns.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: Auto-detect normalizations by profiling the DataFrame
+and generating a spec via <code class="docutils literal notranslate"><span class="pre">NormalizationSpec.from_profile()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NormalizationSpec</span></code>: Use the provided spec for normalization.
+Column names in the spec should be the <strong>target</strong> column names
+(after renaming).</p></li>
+</ul>
+</p></li>
+<li><p><strong>on_failure</strong> (<em>{&quot;keep&quot;</em><em>, </em><em>&quot;null&quot;</em><em>, </em><em>&quot;raise&quot;}</em><em>, </em><em>default &quot;keep&quot;</em>) – <p>Default behavior when a value normalization fails:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;keep&quot;</span></code>: Keep the original value unchanged.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;null&quot;</span></code>: Replace with <code class="docutils literal notranslate"><span class="pre">None</span></code>/<code class="docutils literal notranslate"><span class="pre">NaN</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;raise&quot;</span></code>: Raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> immediately.</p></li>
+</ul>
+<p>Individual <code class="docutils literal notranslate"><span class="pre">ColumnSpec</span></code> entries in the normalization spec can
+override this default via their own <code class="docutils literal notranslate"><span class="pre">on_failure</span></code> setting.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame with columns renamed (and optionally normalized)
+according to the mapping.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If DataFrame is missing dataset_name, if schema mapping is invalid,
+    or if <code class="docutils literal notranslate"><span class="pre">on_failure=&quot;raise&quot;</span></code> and a normalization fails.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Basic column renaming only:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">translator</span> <span class="o">=</span> <span class="n">SchemaTranslator</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With auto-detected normalization:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With explicit normalization spec:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">PyDI.normalization</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalizationSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">NormalizationSpec</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="n">country_format</span><span class="o">=</span><span class="s2">&quot;alpha_2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">set_column</span><span class="p">(</span><span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="n">expand_scale_modifiers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_translated</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">source_df</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">on_failure</span><span class="o">=</span><span class="s2">&quot;null&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PyDI.schemamatching.get_schema_columns">
+<span class="sig-prename descclassname"><span class="pre">PyDI.schemamatching.</span></span><span class="sig-name descname"><span class="pre">get_schema_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PyDI/schemamatching/base.html#get_schema_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#PyDI.schemamatching.get_schema_columns" title="Link to this definition"></a></dt>
+<dd><p>Get columns from a DataFrame excluding PyDI-generated ID columns.</p>
+<p>PyDI automatically adds unique identifier columns during data loading
+(typically named {dataset_name}_id). These should be excluded from
+schema matching as they are not part of the original data schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame to extract schema columns from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of column names excluding PyDI ID columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="PyDI.profiling.html" class="btn btn-neutral float-left" title="PyDI.profiling package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="PyDI.utils.html" class="btn btn-neutral float-right" title="PyDI.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
-    
+  <hr/>
 
-    
-  </body>
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

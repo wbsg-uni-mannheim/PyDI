@@ -1,968 +1,411 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyDI.normalization.units &mdash; PyDI 2025 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
-<html lang="en" data-content_root="../../../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PyDI.normalization.units &#8212; PyDI 2025 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
-    <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=cb975c41"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-  
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">PyDI.normalization.units</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for PyDI.normalization.units</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Comprehensive unit detection, parsing, and conversion utilities for PyDI.</span>
+<span class="sd">Unit detection, parsing, and conversion utilities for PyDI.</span>
 
-<span class="sd">This module provides all unit-related functionality including unit registries,</span>
-<span class="sd">detection, parsing, conversion, and normalization. It supports extensive</span>
-<span class="sd">unit categories and provides both simple and comprehensive unit handling.</span>
+<span class="sd">This module provides unit-related functionality using Pint as the backend</span>
+<span class="sd">for physical unit conversions. It handles:</span>
+<span class="sd">- Quantity parsing from text</span>
+<span class="sd">- Unit detection and conversion</span>
+<span class="sd">- Scale modifier expansion (via the scale module)</span>
+
+<span class="sd">For physical units, this module delegates to Pint which provides:</span>
+<span class="sd">- Comprehensive unit database</span>
+<span class="sd">- Correct temperature conversions</span>
+<span class="sd">- Compound unit support (m/s, km/h, etc.)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">InvalidOperation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.integrations.pint_units</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ParsedQuantity</span><span class="p">,</span>
+    <span class="n">parse_quantity</span> <span class="k">as</span> <span class="n">pint_parse_quantity</span><span class="p">,</span>
+    <span class="n">convert_units</span> <span class="k">as</span> <span class="n">pint_convert_units</span><span class="p">,</span>
+    <span class="n">normalize_to_base</span><span class="p">,</span>
+    <span class="n">get_unit_dimensionality</span><span class="p">,</span>
+    <span class="n">is_compatible</span><span class="p">,</span>
+    <span class="n">is_valid_unit</span><span class="p">,</span>
+    <span class="n">detect_unit_in_text</span><span class="p">,</span>
+    <span class="n">get_compatible_units</span><span class="p">,</span>
+    <span class="n">list_units</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.scale</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">detect_scale_modifier</span><span class="p">,</span>
+    <span class="n">expand_scale</span><span class="p">,</span>
+    <span class="n">parse_scaled_number</span><span class="p">,</span>
+    <span class="n">ScaleModifier</span><span class="p">,</span>
+    <span class="n">ScaleResult</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="UnitCategory">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitCategory">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnitCategory</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Categories of measurement units.&quot;&quot;&quot;</span>
-    <span class="n">LENGTH</span> <span class="o">=</span> <span class="s2">&quot;length&quot;</span>
-    <span class="n">WEIGHT</span> <span class="o">=</span> <span class="s2">&quot;weight&quot;</span>
-    <span class="n">VOLUME</span> <span class="o">=</span> <span class="s2">&quot;volume&quot;</span>
-    <span class="n">AREA</span> <span class="o">=</span> <span class="s2">&quot;area&quot;</span>
-    <span class="n">TIME</span> <span class="o">=</span> <span class="s2">&quot;time&quot;</span>
-    <span class="n">TEMPERATURE</span> <span class="o">=</span> <span class="s2">&quot;temperature&quot;</span>
-    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="s2">&quot;currency&quot;</span>
-    <span class="n">SPEED</span> <span class="o">=</span> <span class="s2">&quot;speed&quot;</span>
-    <span class="n">ENERGY</span> <span class="o">=</span> <span class="s2">&quot;energy&quot;</span>
-    <span class="n">POWER</span> <span class="o">=</span> <span class="s2">&quot;power&quot;</span>
-    <span class="n">PRESSURE</span> <span class="o">=</span> <span class="s2">&quot;pressure&quot;</span>
-    <span class="n">FORCE</span> <span class="o">=</span> <span class="s2">&quot;force&quot;</span>
-    <span class="n">FREQUENCY</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
-    <span class="n">INFORMATION</span> <span class="o">=</span> <span class="s2">&quot;information&quot;</span>
-    <span class="n">ANGLE</span> <span class="o">=</span> <span class="s2">&quot;angle&quot;</span>
-    <span class="n">DENSITY</span> <span class="o">=</span> <span class="s2">&quot;density&quot;</span>
-    <span class="n">PERCENTAGE</span> <span class="o">=</span> <span class="s2">&quot;percentage&quot;</span>
-    <span class="n">COUNT</span> <span class="o">=</span> <span class="s2">&quot;count&quot;</span>
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="QuantityModifier">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.QuantityModifier">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">QuantityModifier</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Quantity scaling modifiers.&quot;&quot;&quot;</span>
-    <span class="n">HUNDRED</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;hundred&quot;</span><span class="p">,</span> <span class="s2">&quot;hundreds&quot;</span><span class="p">])</span>
-    <span class="n">THOUSAND</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1_000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;thousand&quot;</span><span class="p">,</span> <span class="s2">&quot;thousands&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">])</span>
-    <span class="n">MILLION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;million&quot;</span><span class="p">,</span> <span class="s2">&quot;millions&quot;</span><span class="p">,</span> <span class="s2">&quot;mil&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">])</span>
-    <span class="n">BILLION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1_000_000_000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;billion&quot;</span><span class="p">,</span> <span class="s2">&quot;billions&quot;</span><span class="p">,</span> <span class="s2">&quot;bil&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">])</span>
-    <span class="n">TRILLION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1_000_000_000_000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;trillion&quot;</span><span class="p">,</span> <span class="s2">&quot;trillions&quot;</span><span class="p">,</span> <span class="s2">&quot;tril&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">])</span>
-    <span class="n">QUADRILLION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1_000_000_000_000_000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;quadrillion&quot;</span><span class="p">,</span> <span class="s2">&quot;quadrillions&quot;</span><span class="p">])</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">keywords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span> <span class="o">=</span> <span class="n">multiplier</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">keywords</span></div>
-
-
-
-<div class="viewcode-block" id="Quantity">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.Quantity">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Quantity</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a numeric quantity extracted from text.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">],</span>
-        <span class="n">original_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">end_pos</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">original_text</span> <span class="o">=</span> <span class="n">original_text</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span> <span class="o">=</span> <span class="n">start_pos</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_pos</span> <span class="o">=</span> <span class="n">end_pos</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_text</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Quantity(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Quantity(value=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, text=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">original_text</span><span class="si">}</span><span class="s2">&#39;)&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="Unit">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.Unit">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Unit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a unit of measurement.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">category</span><span class="p">:</span> <span class="n">UnitCategory</span><span class="p">,</span>
-        <span class="n">base_conversion_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">base_unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="n">category</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_conversion_factor</span> <span class="o">=</span> <span class="n">base_conversion_factor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_unit</span> <span class="o">=</span> <span class="n">base_unit</span> <span class="ow">or</span> <span class="n">symbol</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Unit(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="UnitRegistry">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitRegistry">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnitRegistry</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registry of known units and their properties.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize unit registry.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        comprehensive : bool, default False</span>
-<span class="sd">            Whether to load comprehensive unit set (500+ units) or basic set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">UnitCategory</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="n">comprehensive</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_comprehensive_units</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_basic_units</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_basic_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize with basic commonly-used units.&quot;&quot;&quot;</span>
-
-        <span class="c1"># Length units (base: meter)</span>
-        <span class="n">length_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span> <span class="s1">&#39;millimeter&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cm&#39;</span><span class="p">,</span> <span class="s1">&#39;centimeter&#39;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;meter&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;km&#39;</span><span class="p">,</span> <span class="s1">&#39;kilometer&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;inch&#39;</span><span class="p">,</span> <span class="mf">0.0254</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ft&#39;</span><span class="p">,</span> <span class="s1">&#39;foot&#39;</span><span class="p">,</span> <span class="mf">0.3048</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;yd&#39;</span><span class="p">,</span> <span class="s1">&#39;yard&#39;</span><span class="p">,</span> <span class="mf">0.9144</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;mi&#39;</span><span class="p">,</span> <span class="s1">&#39;mile&#39;</span><span class="p">,</span> <span class="mf">1609.34</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">LENGTH</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">LENGTH</span><span class="p">,</span> <span class="n">length_units</span><span class="p">)</span>
-
-        <span class="c1"># Weight/Mass units (base: kilogram)</span>
-        <span class="n">weight_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;mg&#39;</span><span class="p">,</span> <span class="s1">&#39;milligram&#39;</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;gram&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;kg&#39;</span><span class="p">,</span> <span class="s1">&#39;kilogram&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;oz&#39;</span><span class="p">,</span> <span class="s1">&#39;ounce&#39;</span><span class="p">,</span> <span class="mf">0.0283495</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;lb&#39;</span><span class="p">,</span> <span class="s1">&#39;pound&#39;</span><span class="p">,</span> <span class="mf">0.453592</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;ton&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">,</span> <span class="n">weight_units</span><span class="p">)</span>
-
-        <span class="c1"># Volume units (base: liter)</span>
-        <span class="n">volume_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;ml&#39;</span><span class="p">,</span> <span class="s1">&#39;milliliter&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;liter&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;gal&#39;</span><span class="p">,</span> <span class="s1">&#39;gallon&#39;</span><span class="p">,</span> <span class="mf">3.78541</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;qt&#39;</span><span class="p">,</span> <span class="s1">&#39;quart&#39;</span><span class="p">,</span> <span class="mf">0.946353</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="s1">&#39;pint&#39;</span><span class="p">,</span> <span class="mf">0.473176</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cup&#39;</span><span class="p">,</span> <span class="s1">&#39;cup&#39;</span><span class="p">,</span> <span class="mf">0.236588</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">VOLUME</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;l&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">VOLUME</span><span class="p">,</span> <span class="n">volume_units</span><span class="p">)</span>
-
-        <span class="c1"># Time units (base: second)</span>
-        <span class="n">time_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">,</span> <span class="s1">&#39;millisecond&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="mf">3600.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="mf">86400.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="mf">604800.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="mf">31556952.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">TIME</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">time_units</span><span class="p">)</span>
-
-        <span class="c1"># Temperature units (base: celsius)</span>
-        <span class="n">temp_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;°C&#39;</span><span class="p">,</span> <span class="s1">&#39;celsius&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;°F&#39;</span><span class="p">,</span> <span class="s1">&#39;fahrenheit&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;kelvin&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;celsius&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">TEMPERATURE</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;°C&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">TEMPERATURE</span><span class="p">,</span> <span class="n">temp_units</span><span class="p">)</span>
-
-        <span class="c1"># Basic currency units</span>
-        <span class="n">currency_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;dollar&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;US dollar&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;€&#39;</span><span class="p">,</span> <span class="s1">&#39;euro&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;EUR&#39;</span><span class="p">,</span> <span class="s1">&#39;euro&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;£&#39;</span><span class="p">,</span> <span class="s1">&#39;pound&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;GBP&#39;</span><span class="p">,</span> <span class="s1">&#39;british pound&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">CURRENCY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">CURRENCY</span><span class="p">,</span> <span class="n">currency_units</span><span class="p">)</span>
-
-        <span class="c1"># Speed units (base: m/s)</span>
-        <span class="n">speed_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;m/s&#39;</span><span class="p">,</span> <span class="s1">&#39;meter per second&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;km/h&#39;</span><span class="p">,</span>
-                                               <span class="s1">&#39;kilometer per hour&#39;</span><span class="p">,</span> <span class="mf">0.277778</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;mph&#39;</span><span class="p">,</span> <span class="s1">&#39;miles per hour&#39;</span><span class="p">,</span> <span class="mf">0.44704</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;knot&#39;</span><span class="p">,</span> <span class="s1">&#39;knot&#39;</span><span class="p">,</span> <span class="mf">0.514444</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">SPEED</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">SPEED</span><span class="p">,</span> <span class="n">speed_units</span><span class="p">)</span>
-
-        <span class="c1"># Percentage</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;%&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unit</span><span class="p">(</span>
-            <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;percent&#39;</span><span class="p">,</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">PERCENTAGE</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;percent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;%&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">PERCENTAGE</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;%&#39;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_comprehensive_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize comprehensive unit registry with 500+ units.&quot;&quot;&quot;</span>
-
-        <span class="c1"># Start with basic units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_basic_units</span><span class="p">()</span>
-
-        <span class="c1"># Extended Length units</span>
-        <span class="n">extended_length</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;μm&#39;</span><span class="p">,</span> <span class="s1">&#39;micrometer&#39;</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;nanometer&#39;</span><span class="p">,</span> <span class="mf">0.000000001</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;mil&#39;</span><span class="p">,</span> <span class="s1">&#39;mil&#39;</span><span class="p">,</span> <span class="mf">0.0000254</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fathom&#39;</span><span class="p">,</span> <span class="s1">&#39;fathom&#39;</span><span class="p">,</span> <span class="mf">1.8288</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;nmi&#39;</span><span class="p">,</span> <span class="s1">&#39;nautical mile&#39;</span><span class="p">,</span> <span class="mf">1852.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;au&#39;</span><span class="p">,</span>
-                                               <span class="s1">&#39;astronomical unit&#39;</span><span class="p">,</span> <span class="mf">149597870700.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;ly&#39;</span><span class="p">,</span> <span class="s1">&#39;light year&#39;</span><span class="p">,</span> <span class="mf">9.461e15</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;pc&#39;</span><span class="p">,</span> <span class="s1">&#39;parsec&#39;</span><span class="p">,</span> <span class="mf">3.086e16</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">LENGTH</span><span class="p">,</span> <span class="n">extended_length</span><span class="p">)</span>
-
-        <span class="c1"># Extended Weight/Mass units</span>
-        <span class="n">extended_weight</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;st&#39;</span><span class="p">,</span> <span class="s1">&#39;stone&#39;</span><span class="p">,</span> <span class="mf">6.35029</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cwt&#39;</span><span class="p">,</span> <span class="s1">&#39;hundredweight&#39;</span><span class="p">,</span> <span class="mf">50.8023</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;ozt&#39;</span><span class="p">,</span> <span class="s1">&#39;troy ounce&#39;</span><span class="p">,</span> <span class="mf">0.0311035</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;grain&#39;</span><span class="p">,</span> <span class="s1">&#39;grain&#39;</span><span class="p">,</span> <span class="mf">0.0000647989</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;mt&#39;</span><span class="p">,</span> <span class="s1">&#39;metric ton&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">,</span> <span class="n">extended_weight</span><span class="p">)</span>
-
-        <span class="c1"># Extended Volume units</span>
-        <span class="n">extended_volume</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;cl&#39;</span><span class="p">,</span> <span class="s1">&#39;centiliter&#39;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;dl&#39;</span><span class="p">,</span> <span class="s1">&#39;deciliter&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;hl&#39;</span><span class="p">,</span> <span class="s1">&#39;hectoliter&#39;</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;m³&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic meter&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;cm³&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic centimeter&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;fl oz&#39;</span><span class="p">,</span> <span class="s1">&#39;fluid ounce&#39;</span><span class="p">,</span> <span class="mf">0.0284131</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;us gal&#39;</span><span class="p">,</span> <span class="s1">&#39;us gallon&#39;</span><span class="p">,</span> <span class="mf">3.78541</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;tbsp&#39;</span><span class="p">,</span> <span class="s1">&#39;tablespoon&#39;</span><span class="p">,</span> <span class="mf">0.0147868</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;tsp&#39;</span><span class="p">,</span> <span class="s1">&#39;teaspoon&#39;</span><span class="p">,</span> <span class="mf">0.00492892</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">VOLUME</span><span class="p">,</span> <span class="n">extended_volume</span><span class="p">)</span>
-
-        <span class="c1"># Area units (base: square meter)</span>
-        <span class="n">area_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;mm²&#39;</span><span class="p">,</span> <span class="s1">&#39;square millimeter&#39;</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cm²&#39;</span><span class="p">,</span>
-                                                     <span class="s1">&#39;square centimeter&#39;</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;m²&#39;</span><span class="p">,</span> <span class="s1">&#39;square meter&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;km²&#39;</span><span class="p">,</span> <span class="s1">&#39;square kilometer&#39;</span><span class="p">,</span> <span class="mf">1000000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;hectare&#39;</span><span class="p">,</span> <span class="mf">10000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;acre&#39;</span><span class="p">,</span> <span class="s1">&#39;acre&#39;</span><span class="p">,</span> <span class="mf">4046.86</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;sq ft&#39;</span><span class="p">,</span> <span class="s1">&#39;square foot&#39;</span><span class="p">,</span> <span class="mf">0.092903</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sq mi&#39;</span><span class="p">,</span> <span class="s1">&#39;square mile&#39;</span><span class="p">,</span> <span class="mf">2589988.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">AREA</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m²&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">AREA</span><span class="p">,</span> <span class="n">area_units</span><span class="p">)</span>
-
-        <span class="c1"># Energy units (base: joule)</span>
-        <span class="n">energy_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;joule&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;kJ&#39;</span><span class="p">,</span> <span class="s1">&#39;kilojoule&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;MJ&#39;</span><span class="p">,</span> <span class="s1">&#39;megajoule&#39;</span><span class="p">,</span> <span class="mf">1000000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cal&#39;</span><span class="p">,</span> <span class="s1">&#39;calorie&#39;</span><span class="p">,</span> <span class="mf">4.184</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;kcal&#39;</span><span class="p">,</span> <span class="s1">&#39;kilocalorie&#39;</span><span class="p">,</span> <span class="mf">4184.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;BTU&#39;</span><span class="p">,</span>
-                                              <span class="s1">&#39;british thermal unit&#39;</span><span class="p">,</span> <span class="mf">1055.06</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;Wh&#39;</span><span class="p">,</span> <span class="s1">&#39;watt hour&#39;</span><span class="p">,</span> <span class="mf">3600.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;kWh&#39;</span><span class="p">,</span> <span class="s1">&#39;kilowatt hour&#39;</span><span class="p">,</span> <span class="mf">3600000.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">ENERGY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;J&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">ENERGY</span><span class="p">,</span> <span class="n">energy_units</span><span class="p">)</span>
-
-        <span class="c1"># Power units (base: watt)</span>
-        <span class="n">power_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;watt&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;kW&#39;</span><span class="p">,</span> <span class="s1">&#39;kilowatt&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;MW&#39;</span><span class="p">,</span> <span class="s1">&#39;megawatt&#39;</span><span class="p">,</span> <span class="mf">1000000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;hp&#39;</span><span class="p">,</span> <span class="s1">&#39;horsepower&#39;</span><span class="p">,</span> <span class="mf">745.7</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">POWER</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;W&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">POWER</span><span class="p">,</span> <span class="n">power_units</span><span class="p">)</span>
-
-        <span class="c1"># Pressure units (base: pascal)</span>
-        <span class="n">pressure_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;Pa&#39;</span><span class="p">,</span> <span class="s1">&#39;pascal&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;kPa&#39;</span><span class="p">,</span> <span class="s1">&#39;kilopascal&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="mf">100000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;atm&#39;</span><span class="p">,</span> <span class="s1">&#39;atmosphere&#39;</span><span class="p">,</span> <span class="mf">101325.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;psi&#39;</span><span class="p">,</span> <span class="s1">&#39;pounds per square inch&#39;</span><span class="p">,</span> <span class="mf">6895.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;torr&#39;</span><span class="p">,</span> <span class="s1">&#39;torr&#39;</span><span class="p">,</span> <span class="mf">133.322</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">PRESSURE</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Pa&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">PRESSURE</span><span class="p">,</span> <span class="n">pressure_units</span><span class="p">)</span>
-
-        <span class="c1"># Information units (base: byte)</span>
-        <span class="n">info_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;bit&#39;</span><span class="p">,</span> <span class="s1">&#39;bit&#39;</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;byte&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;kB&#39;</span><span class="p">,</span> <span class="s1">&#39;kilobyte&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MB&#39;</span><span class="p">,</span> <span class="s1">&#39;megabyte&#39;</span><span class="p">,</span> <span class="mf">1000000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;GB&#39;</span><span class="p">,</span> <span class="s1">&#39;gigabyte&#39;</span><span class="p">,</span> <span class="mf">1000000000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;TB&#39;</span><span class="p">,</span> <span class="s1">&#39;terabyte&#39;</span><span class="p">,</span> <span class="mf">1000000000000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;KiB&#39;</span><span class="p">,</span> <span class="s1">&#39;kibibyte&#39;</span><span class="p">,</span> <span class="mf">1024.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MiB&#39;</span><span class="p">,</span> <span class="s1">&#39;mebibyte&#39;</span><span class="p">,</span> <span class="mf">1048576.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;GiB&#39;</span><span class="p">,</span> <span class="s1">&#39;gibibyte&#39;</span><span class="p">,</span> <span class="mf">1073741824.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">INFORMATION</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">INFORMATION</span><span class="p">,</span> <span class="n">info_units</span><span class="p">)</span>
-
-        <span class="c1"># Extended Currency units</span>
-        <span class="n">extended_currency</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;¥&#39;</span><span class="p">,</span> <span class="s1">&#39;yen&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;JPY&#39;</span><span class="p">,</span> <span class="s1">&#39;japanese yen&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;₹&#39;</span><span class="p">,</span> <span class="s1">&#39;rupee&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;INR&#39;</span><span class="p">,</span> <span class="s1">&#39;indian rupee&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;₽&#39;</span><span class="p">,</span> <span class="s1">&#39;ruble&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;RUB&#39;</span><span class="p">,</span> <span class="s1">&#39;russian ruble&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;₩&#39;</span><span class="p">,</span> <span class="s1">&#39;won&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;KRW&#39;</span><span class="p">,</span> <span class="s1">&#39;korean won&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;CAD&#39;</span><span class="p">,</span> <span class="s1">&#39;canadian dollar&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="s1">&#39;australian dollar&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;CHF&#39;</span><span class="p">,</span> <span class="s1">&#39;swiss franc&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CNY&#39;</span><span class="p">,</span> <span class="s1">&#39;chinese yuan&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">CURRENCY</span><span class="p">,</span> <span class="n">extended_currency</span><span class="p">)</span>
-
-        <span class="c1"># Frequency units (base: hertz)</span>
-        <span class="n">frequency_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span> <span class="s1">&#39;hertz&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;kHz&#39;</span><span class="p">,</span> <span class="s1">&#39;kilohertz&#39;</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;MHz&#39;</span><span class="p">,</span> <span class="s1">&#39;megahertz&#39;</span><span class="p">,</span> <span class="mf">1000000.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;GHz&#39;</span><span class="p">,</span> <span class="s1">&#39;gigahertz&#39;</span><span class="p">,</span> <span class="mf">1000000000.0</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">FREQUENCY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Hz&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">FREQUENCY</span><span class="p">,</span> <span class="n">frequency_units</span><span class="p">)</span>
-
-        <span class="c1"># Angle units (base: radian)</span>
-        <span class="n">angle_units</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="s1">&#39;radian&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="mf">0.0174533</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;°&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="mf">0.0174533</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;grad&#39;</span><span class="p">,</span> <span class="s1">&#39;gradian&#39;</span><span class="p">,</span> <span class="mf">0.0157080</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">ANGLE</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rad&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units</span><span class="p">(</span><span class="n">UnitCategory</span><span class="o">.</span><span class="n">ANGLE</span><span class="p">,</span> <span class="n">angle_units</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="n">UnitCategory</span><span class="p">,</span> <span class="n">unit_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add units to registry with aliases.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">unit_list</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">symbol</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Unit</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span>
-                                              <span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">category</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Unit</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span>
-                                            <span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">category</span><span class="p">])</span>
-            <span class="c1"># Add plural forms</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Unit</span><span class="p">(</span>
-                    <span class="n">symbol</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">[</span><span class="n">category</span><span class="p">])</span>
-
-<div class="viewcode-block" id="UnitRegistry.get_unit">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitRegistry.get_unit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get unit by symbol or name.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
-
-
-<div class="viewcode-block" id="UnitRegistry.add_unit">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitRegistry.add_unit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">aliases</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a custom unit to the registry.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">symbol</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">unit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">unit</span>
-
-        <span class="k">if</span> <span class="n">aliases</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">alias</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">unit</span></div>
-
-
-<div class="viewcode-block" id="UnitRegistry.get_units_by_category">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitRegistry.get_units_by_category">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_units_by_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="n">UnitCategory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all units in a category.&quot;&quot;&quot;</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">seen_symbols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">unit</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">category</span> <span class="ow">and</span> <span class="n">unit</span><span class="o">.</span><span class="n">symbol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen_symbols</span><span class="p">:</span>
-                <span class="n">units</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-                <span class="n">seen_symbols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">units</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="QuantityParser">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.QuantityParser">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">QuantityParser</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser for extracting numeric quantities from text.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Comprehensive numeric patterns</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numeric_patterns</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="c1"># Scientific notation</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[-+]?\d*\.?\d+[eE][-+]?\d+&#39;</span><span class="p">),</span>
-            <span class="c1"># Decimal numbers with thousands separators</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[-+]?\d{1,3}(?:,\d</span><span class="si">{3}</span><span class="s1">)*(?:\.\d+)?&#39;</span><span class="p">),</span>
-            <span class="c1"># Simple decimals</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[-+]?\d*\.\d+&#39;</span><span class="p">),</span>
-            <span class="c1"># Integers with thousands separators</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[-+]?\d{1,3}(?:,\d</span><span class="si">{3}</span><span class="s1">)+&#39;</span><span class="p">),</span>
-            <span class="c1"># Simple integers</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[-+]?\d+&#39;</span><span class="p">),</span>
-            <span class="c1"># Percentages</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+(?:\.\d+)?%&#39;</span><span class="p">),</span>
-            <span class="c1"># Basic fractions</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+/\d+&#39;</span><span class="p">),</span>
-        <span class="p">]</span>
-
-<div class="viewcode-block" id="QuantityParser.parse_quantity">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.QuantityParser.parse_quantity">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the first quantity found in text.&quot;&quot;&quot;</span>
-        <span class="n">quantities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_quantities</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">quantities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">quantities</span> <span class="k">else</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="QuantityParser.parse_quantities">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.QuantityParser.parse_quantities">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_quantities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse all quantities found in text.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-
-        <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">quantities</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">numeric_patterns</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-                <span class="n">value_text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="c1"># Handle percentages</span>
-                    <span class="k">if</span> <span class="n">value_text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">):</span>
-                        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value_text</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mf">100.0</span>
-                    <span class="c1"># Handle fractions</span>
-                    <span class="k">elif</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">value_text</span> <span class="ow">and</span> <span class="s1">&#39;e&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_text</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                        <span class="n">parts</span> <span class="o">=</span> <span class="n">value_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">continue</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># Try different numeric types</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value_text</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value_text</span><span class="p">)</span>
-
-                    <span class="n">quantity</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span>
-                        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-                        <span class="n">original_text</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(),</span>
-                        <span class="n">start_pos</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">(),</span>
-                        <span class="n">end_pos</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
-                    <span class="p">)</span>
-                    <span class="n">quantities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
-
-                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ZeroDivisionError</span><span class="p">):</span>
-                    <span class="k">continue</span>
-
-        <span class="c1"># Sort by position and remove overlaps</span>
-        <span class="n">quantities</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span><span class="o">.</span><span class="n">start_pos</span><span class="p">)</span>
-        <span class="n">non_overlapping</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">last_end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-
-        <span class="k">for</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="n">quantities</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">start_pos</span> <span class="o">&gt;=</span> <span class="n">last_end</span><span class="p">:</span>
-                <span class="n">non_overlapping</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
-                <span class="n">last_end</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">end_pos</span>
-
-        <span class="k">return</span> <span class="n">non_overlapping</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="UnitDetector">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitDetector">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnitDetector</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detector for units in text with quantities.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">registry</span> <span class="ow">or</span> <span class="n">UnitRegistry</span><span class="p">()</span>
-
-        <span class="c1"># Build pattern for unit detection</span>
-        <span class="n">unit_symbols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="c1"># Sort by length descending to match longer units first</span>
-        <span class="n">unit_symbols</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># Escape special regex characters</span>
-        <span class="n">escaped_symbols</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span> <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">unit_symbols</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s1">&#39;\b(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">escaped_symbols</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;)\b&#39;</span><span class="p">,</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="UnitDetector.detect_unit">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitDetector.detect_unit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect unit in text, optionally near a quantity.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># If quantity provided, search near it first</span>
-        <span class="k">if</span> <span class="n">quantity</span><span class="p">:</span>
-            <span class="c1"># Search right after quantity</span>
-            <span class="n">search_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">quantity</span><span class="o">.</span><span class="n">end_pos</span><span class="p">:</span><span class="n">quantity</span><span class="o">.</span><span class="n">end_pos</span> <span class="o">+</span> <span class="mi">20</span><span class="p">]</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_text</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-                <span class="n">unit_text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">unit_text</span><span class="p">)</span>
-
-            <span class="c1"># Search right before quantity</span>
-            <span class="n">search_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">quantity</span><span class="o">.</span><span class="n">start_pos</span> <span class="o">-</span> <span class="mi">20</span><span class="p">)</span>
-            <span class="n">search_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">search_start</span><span class="p">:</span><span class="n">quantity</span><span class="o">.</span><span class="n">start_pos</span><span class="p">]</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_text</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-                <span class="n">unit_text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">unit_text</span><span class="p">)</span>
-
-        <span class="c1"># General search in entire text</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-            <span class="n">unit_text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">unit_text</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="UnitDetector.detect_category">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitDetector.detect_category">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitCategory</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect unit category from text.&quot;&quot;&quot;</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_unit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">unit</span><span class="o">.</span><span class="n">category</span> <span class="k">if</span> <span class="n">unit</span> <span class="k">else</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">UNKNOWN</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="UnitConverter">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitConverter">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnitConverter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converter for units within the same category.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">registry</span> <span class="ow">or</span> <span class="n">UnitRegistry</span><span class="p">()</span>
-
-<div class="viewcode-block" id="UnitConverter.can_convert">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitConverter.can_convert">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">can_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if units can be converted.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">from_unit</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">to_unit</span><span class="o">.</span><span class="n">category</span></div>
-
-
-<div class="viewcode-block" id="UnitConverter.convert">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitConverter.convert">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value between units.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_convert</span><span class="p">(</span><span class="n">from_unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="c1"># Special handling for temperature</span>
-        <span class="k">if</span> <span class="n">from_unit</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">TEMPERATURE</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_temperature</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">)</span>
-
-        <span class="c1"># Standard conversion through base unit</span>
-        <span class="n">base_value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">from_unit</span><span class="o">.</span><span class="n">base_conversion_factor</span>
-        <span class="n">converted_value</span> <span class="o">=</span> <span class="n">base_value</span> <span class="o">/</span> <span class="n">to_unit</span><span class="o">.</span><span class="n">base_conversion_factor</span>
-
-        <span class="k">return</span> <span class="n">converted_value</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert temperature values with special handling.&quot;&quot;&quot;</span>
-        <span class="c1"># Convert to Celsius first</span>
-        <span class="k">if</span> <span class="n">from_unit</span><span class="o">.</span><span class="n">symbol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;°F&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">]:</span>
-            <span class="n">celsius_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="o">/</span><span class="mi">9</span>
-        <span class="k">elif</span> <span class="n">from_unit</span><span class="o">.</span><span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span><span class="p">:</span>
-            <span class="n">celsius_value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="mf">273.15</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Already Celsius</span>
-            <span class="n">celsius_value</span> <span class="o">=</span> <span class="n">value</span>
-
-        <span class="c1"># Convert from Celsius to target</span>
-        <span class="k">if</span> <span class="n">to_unit</span><span class="o">.</span><span class="n">symbol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;°F&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">celsius_value</span> <span class="o">*</span> <span class="mi">9</span><span class="o">/</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">32</span>
-        <span class="k">elif</span> <span class="n">to_unit</span><span class="o">.</span><span class="n">symbol</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">celsius_value</span> <span class="o">+</span> <span class="mf">273.15</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Target is Celsius</span>
-            <span class="k">return</span> <span class="n">celsius_value</span></div>
-
-
-
-<div class="viewcode-block" id="UnitNormalizer">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitNormalizer">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnitNormalizer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main normalizer for quantities with units.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">registry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">target_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">UnitCategory</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">registry</span> <span class="ow">or</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="n">comprehensive</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">quantity_parser</span> <span class="o">=</span> <span class="n">QuantityParser</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit_detector</span> <span class="o">=</span> <span class="n">UnitDetector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">UnitConverter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">)</span>
-
-        <span class="c1"># Default target units for normalization</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_units</span> <span class="o">=</span> <span class="n">target_units</span> <span class="ow">or</span> <span class="p">{</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">LENGTH</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">WEIGHT</span><span class="p">:</span> <span class="s1">&#39;kg&#39;</span><span class="p">,</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">VOLUME</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">TEMPERATURE</span><span class="p">:</span> <span class="s1">&#39;°C&#39;</span><span class="p">,</span>
-            <span class="n">UnitCategory</span><span class="o">.</span><span class="n">SPEED</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
-        <span class="p">}</span>
-
-        <span class="c1"># Quantity modifiers (word-boundary constrained to avoid unit collisions like &#39;km&#39;)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">quantity_modifiers</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_quantity_modifier_patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">modifier</span> <span class="ow">in</span> <span class="n">QuantityModifier</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">modifier</span><span class="o">.</span><span class="n">keywords</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="n">keyword</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">quantity_modifiers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span>
-                <span class="c1"># Whole word match, case-insensitive</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;\b</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s2">\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_quantity_modifier_patterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span><span class="p">))</span>
-
-<div class="viewcode-block" id="UnitNormalizer.normalize_value">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitNormalizer.normalize_value">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize a value with units.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># Parse quantity</span>
-        <span class="n">quantity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantity_parser</span><span class="o">.</span><span class="n">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">quantity</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="c1"># Look for quantity modifiers with whole-word matching</span>
-        <span class="n">numeric_value</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">value</span>
-        <span class="n">lowered</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">multiplier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantity_modifier_patterns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">lowered</span><span class="p">):</span>
-                <span class="n">numeric_value</span> <span class="o">*=</span> <span class="n">multiplier</span>
-                <span class="k">break</span>
-
-        <span class="c1"># Detect unit</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_detector</span><span class="o">.</span><span class="n">detect_unit</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">unit</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numeric_value</span><span class="p">,</span> <span class="s2">&quot;dimensionless&quot;</span>
-
-        <span class="c1"># Get target unit for this category</span>
-        <span class="n">target_unit_symbol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_units</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">category</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_unit_symbol</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numeric_value</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">symbol</span>
-
-        <span class="n">target_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">target_unit_symbol</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_unit</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numeric_value</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">symbol</span>
-
-        <span class="c1"># Convert to target unit</span>
-        <span class="n">converted_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
-            <span class="n">numeric_value</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">target_unit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">converted_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">converted_value</span><span class="p">,</span> <span class="n">target_unit</span><span class="o">.</span><span class="n">symbol</span>
-
-        <span class="k">return</span> <span class="n">numeric_value</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">symbol</span></div>
-
-
-<div class="viewcode-block" id="UnitNormalizer.normalize_column">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitNormalizer.normalize_column">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize a column containing quantities with units.&quot;&quot;&quot;</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">series</span><span class="p">:</span>
-            <span class="n">normalized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s1">&#39;original&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="p">})</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;original&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="p">})</span>
-
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="UnitNormalizer.detect_units_in_dataframe">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.UnitNormalizer.detect_units_in_dataframe">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_units_in_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitCategory</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect unit categories in DataFrame columns.&quot;&quot;&quot;</span>
-        <span class="n">column_categories</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="c1"># Sample some values to detect units</span>
-            <span class="n">sample_values</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-            <span class="n">categories_found</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample_values</span><span class="p">:</span>
-                <span class="n">category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_detector</span><span class="o">.</span><span class="n">detect_category</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">category</span> <span class="o">!=</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span>
-                    <span class="n">categories_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">categories_found</span><span class="p">:</span>
-                <span class="c1"># Use most common category</span>
-                <span class="n">most_common</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">categories_found</span><span class="p">),</span>
-                                  <span class="n">key</span><span class="o">=</span><span class="n">categories_found</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
-                <span class="n">column_categories</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">most_common</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">column_categories</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">UNKNOWN</span>
-
-        <span class="k">return</span> <span class="n">column_categories</span></div>
-</div>
-
-
-
-<span class="c1"># Header-derived unit parsing (inspired by Winter)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_extract_unit_token_from_header</span><span class="p">(</span><span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a potential unit token from a header string.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">    - &quot;Speed (km/h)&quot; -&gt; &quot;km/h&quot;</span>
-<span class="sd">    - &quot;Area (m²)&quot; -&gt; &quot;m²&quot;</span>
-<span class="sd">    - &quot;Weight_kg&quot; -&gt; &quot;kg&quot;</span>
-<span class="sd">    - &quot;Temperature [°C]&quot; -&gt; &quot;°C&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="c1"># Prefer tokens inside brackets first</span>
-    <span class="n">bracket_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[\(\[]\s*([^\)\]]+?)\s*[\)\]]&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">bracket_match</span><span class="p">:</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="n">bracket_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">token</span> <span class="k">if</span> <span class="n">token</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="c1"># Fallbacks: trailing tokens separated by common delimiters</span>
-    <span class="c1"># e.g., &quot;Weight_kg&quot;, &quot;Weight-kg&quot;, &quot;Weight kg&quot;</span>
-    <span class="n">tail_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s2">&quot;(?:^|[\s_\-\/])([A-Za-z°$€£¥₹₽₩₪%][A-Za-z0-9°$€£¥₹₽₩₪%\/\^]*)$&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tail_match</span><span class="p">:</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="n">tail_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">token</span> <span class="k">if</span> <span class="n">token</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="k">return</span> <span class="kc">None</span>
-
-
-<div class="viewcode-block" id="parse_unit_from_header">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.parse_unit_from_header">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_unit_from_header</span><span class="p">(</span>
-    <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">registry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitRegistry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a unit from a column header, if present.</span>
-
-<span class="sd">    Tries bracketed tokens first (e.g., &quot;(km)&quot;, &quot;[°C]&quot;), then falls back to</span>
-<span class="sd">    a trailing token heuristic. Returns a matching `Unit` from the provided or</span>
-<span class="sd">    default registry, or None if no unit can be determined.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="n">reg</span> <span class="o">=</span> <span class="n">registry</span> <span class="ow">or</span> <span class="n">UnitRegistry</span><span class="p">()</span>
-
-    <span class="n">token</span> <span class="o">=</span> <span class="n">_extract_unit_token_from_header</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="c1"># Try exact match</span>
-    <span class="n">unit</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">unit</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">unit</span>
-
-    <span class="c1"># Try lower-cased version</span>
-    <span class="n">unit</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">unit</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">unit</span>
-
-    <span class="c1"># Try to split composite tokens like &quot;km/h&quot; into parts</span>
-    <span class="c1"># and match any part as a known unit (common in speed units)</span>
-    <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-            <span class="n">unit</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">or</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">unit</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">unit</span>
-
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<span class="c1"># Convenience functions for easy usage</span>
-
-
 <div class="viewcode-block" id="parse_quantity">
 <a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.parse_quantity">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse quantity from text.&quot;&quot;&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">QuantityParser</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParsedQuantity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a quantity string like &#39;5 km&#39; or &#39;100 miles&#39;.</span>
 
+<span class="sd">    This delegates to Pint for parsing.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        text: String containing a number and unit</span>
 
-<div class="viewcode-block" id="detect_unit">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.detect_unit">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">detect_unit</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect unit in text.&quot;&quot;&quot;</span>
-    <span class="n">registry</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="n">comprehensive</span><span class="p">)</span>
-    <span class="n">detector</span> <span class="o">=</span> <span class="n">UnitDetector</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect_unit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+<span class="sd">    Returns:</span>
+<span class="sd">        ParsedQuantity with magnitude, unit, and dimensionality, or None if parsing fails</span>
 
-
-
-<div class="viewcode-block" id="normalize_units">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.normalize_units">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">normalize_units</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize quantity with units.&quot;&quot;&quot;</span>
-    <span class="n">normalizer</span> <span class="o">=</span> <span class="n">UnitNormalizer</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="n">comprehensive</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">normalizer</span><span class="o">.</span><span class="n">normalize_value</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; result = parse_quantity(&quot;5 kilometers&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; result.magnitude</span>
+<span class="sd">        5.0</span>
+<span class="sd">        &gt;&gt;&gt; result.unit</span>
+<span class="sd">        &#39;kilometer&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pint_parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="convert_units">
 <a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.convert_units">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">convert_units</span><span class="p">(</span>
-    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">from_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">to_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert value between unit symbols.&quot;&quot;&quot;</span>
-    <span class="n">registry</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="n">comprehensive</span><span class="p">)</span>
-    <span class="n">converter</span> <span class="o">=</span> <span class="n">UnitConverter</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a value from one unit to another.</span>
 
-    <span class="n">from_unit_obj</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">from_unit</span><span class="p">)</span>
-    <span class="n">to_unit_obj</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_unit</span><span class="p">(</span><span class="n">to_unit</span><span class="p">)</span>
+<span class="sd">    This delegates to Pint for conversion.</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">from_unit_obj</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">to_unit_obj</span><span class="p">:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: Numeric value to convert</span>
+<span class="sd">        from_unit: Source unit (e.g., &quot;km&quot;, &quot;miles&quot;, &quot;celsius&quot;)</span>
+<span class="sd">        to_unit: Target unit (e.g., &quot;m&quot;, &quot;km&quot;, &quot;fahrenheit&quot;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Converted value, or None if conversion fails</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; convert_units(5, &quot;km&quot;, &quot;m&quot;)</span>
+<span class="sd">        5000.0</span>
+<span class="sd">        &gt;&gt;&gt; convert_units(100, &quot;fahrenheit&quot;, &quot;celsius&quot;)</span>
+<span class="sd">        37.77...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pint_convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="detect_unit">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.detect_unit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">detect_unit</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect a unit in text.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Text that may contain a unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Detected unit string, or None</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; detect_unit(&quot;The distance is 5 km&quot;)</span>
+<span class="sd">        &#39;kilometer&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">detect_unit_in_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_quantity">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.normalize_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_quantity</span><span class="p">(</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">target_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">expand_scales</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize a quantity with optional unit conversion and scale expansion.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: Text containing a quantity (e.g., &quot;5 km&quot;, &quot;10 MEO&quot;)</span>
+<span class="sd">        target_unit: Target unit for conversion (if None, keeps original or converts to base)</span>
+<span class="sd">        expand_scales: Whether to expand scale modifiers (MEO, million, etc.)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (value, unit) or None if parsing fails</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; normalize_quantity(&quot;5 km&quot;, target_unit=&quot;m&quot;)</span>
+<span class="sd">        (5000.0, &#39;meter&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; normalize_quantity(&quot;10 MEO&quot;, expand_scales=True)</span>
+<span class="sd">        (10000000.0, &#39;dimensionless&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">from_unit_obj</span><span class="p">,</span> <span class="n">to_unit_obj</span><span class="p">)</span></div>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># First, try to parse as a quantity with units</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">parsed</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">magnitude</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">unit</span>
+
+        <span class="c1"># Check for scale modifiers in the text</span>
+        <span class="k">if</span> <span class="n">expand_scales</span><span class="p">:</span>
+            <span class="n">modifier</span> <span class="o">=</span> <span class="n">detect_scale_modifier</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">modifier</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">*=</span> <span class="n">modifier</span><span class="o">.</span><span class="n">multiplier</span>
+
+        <span class="c1"># Convert to target unit if specified</span>
+        <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">and</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dimensionless&quot;</span><span class="p">:</span>
+            <span class="n">converted</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">target_unit</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">converted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">converted</span><span class="p">,</span> <span class="n">target_unit</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+    <span class="c1"># If Pint couldn&#39;t parse, try scale modifier parsing</span>
+    <span class="k">if</span> <span class="n">expand_scales</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">parse_scaled_number</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">modifier</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;dimensionless&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
 
 
 
-<div class="viewcode-block" id="get_supported_units">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.get_supported_units">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_supported_units</span><span class="p">(</span><span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">comprehensive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get list of supported unit symbols.&quot;&quot;&quot;</span>
-    <span class="n">registry</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">comprehensive</span><span class="o">=</span><span class="n">comprehensive</span><span class="p">)</span>
+<div class="viewcode-block" id="normalize_column">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.normalize_column">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_column</span><span class="p">(</span>
+    <span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+    <span class="n">target_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">expand_scales</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize a column containing quantities.</span>
 
-    <span class="k">if</span> <span class="n">category</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">unit_category</span> <span class="o">=</span> <span class="n">UnitCategory</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-            <span class="n">units</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_units_by_category</span><span class="p">(</span><span class="n">unit_category</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">registry</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+<span class="sd">    Args:</span>
+<span class="sd">        series: Pandas Series with quantity values</span>
+<span class="sd">        target_unit: Target unit for conversion</span>
+<span class="sd">        expand_scales: Whether to expand scale modifiers</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame with columns: value, unit, original</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; s = pd.Series([&quot;5 km&quot;, &quot;10 miles&quot;, &quot;2.5 MEO&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; df = normalize_column(s, target_unit=&quot;m&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">series</span><span class="p">:</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">normalized</span> <span class="o">=</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">target_unit</span><span class="p">,</span> <span class="n">expand_scales</span><span class="p">)</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;original&quot;</span><span class="p">:</span> <span class="n">original</span><span class="p">,</span>
+            <span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;original&quot;</span><span class="p">:</span> <span class="n">original</span><span class="p">,</span>
+            <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div>
 
 
 
-<div class="viewcode-block" id="get_supported_categories">
-<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.get_supported_categories">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_supported_categories</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get list of supported unit categories.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">category</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">UnitCategory</span> <span class="k">if</span> <span class="n">category</span> <span class="o">!=</span> <span class="n">UnitCategory</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">]</span></div>
+<div class="viewcode-block" id="get_dimensionality">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.get_dimensionality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dimensionality</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the dimensionality of a unit.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        unit: Unit string</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dimensionality string (e.g., &quot;[length]&quot;)</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; get_dimensionality(&quot;km&quot;)</span>
+<span class="sd">        &#39;[length]&#39;</span>
+<span class="sd">        &gt;&gt;&gt; get_dimensionality(&quot;m/s&quot;)</span>
+<span class="sd">        &#39;[length] / [time]&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_unit_dimensionality</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="are_compatible">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.are_compatible">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">are_compatible</span><span class="p">(</span><span class="n">unit1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if two units can be converted between each other.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit1: First unit</span>
+<span class="sd">        unit2: Second unit</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if compatible</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; are_compatible(&quot;km&quot;, &quot;miles&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; are_compatible(&quot;kg&quot;, &quot;miles&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">is_compatible</span><span class="p">(</span><span class="n">unit1</span><span class="p">,</span> <span class="n">unit2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="list_compatible_units">
+<a class="viewcode-back" href="../../../api/PyDI.normalization.html#PyDI.normalization.units.list_compatible_units">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_compatible_units</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List all units compatible with the given unit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        unit: Unit to find compatible units for</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of compatible unit names</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; &quot;mile&quot; in list_compatible_units(&quot;meter&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_compatible_units</span><span class="p">(</span><span class="n">unit</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># Re-export from integrations for convenience</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Main functions</span>
+    <span class="s2">&quot;parse_quantity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;convert_units&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;detect_unit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalize_quantity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalize_column&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_dimensionality&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;are_compatible&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;list_compatible_units&quot;</span><span class="p">,</span>
+    <span class="c1"># From integrations</span>
+    <span class="s2">&quot;ParsedQuantity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalize_to_base&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_valid_unit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;list_units&quot;</span><span class="p">,</span>
+    <span class="c1"># Scale handling</span>
+    <span class="s2">&quot;detect_scale_modifier&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;expand_scale&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;parse_scaled_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ScaleModifier&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ScaleResult&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 </pre></div>
 
+           </div>
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Peeters, Steiner, Bizer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../../index.html">PyDI</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">PyDI</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;2025, Peeters, Steiner, Bizer.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>
