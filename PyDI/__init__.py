@@ -3,7 +3,7 @@ PyDI: Python Data Integration Framework
 =======================================
 
 This package provides tools for end‑to‑end data integration, including profiling,
-schema matching, blocking, entity matching, data translation, information extraction,
+schema matching, blocking, entity matching, information extraction,
 normalization and validation, and data fusion. It is inspired by the WInte.r Java framework but takes a
 pandas‑first approach. All modules aim to expose simple, composable functions
 and classes with stable signatures and rich docstrings.
@@ -14,11 +14,9 @@ Subpackages
 ``profiling``
     Wrappers around ydata‑profiling and Sweetviz for dataset profiling.
 ``schemamatching``
-    Schema matching algorithms and evaluation utilities.
+    Schema matching algorithms, evaluation utilities, and translation.
 ``entitymatching``
     Blocking and entity matching strategies.
-``datatranslation``
-    Translation components for schema mapping.
 ``informationextraction``
     Extraction components for feature engineering.
 ``normalization``
@@ -37,7 +35,6 @@ __all__ = [
     "profiling",
     "schemamatching",
     "entitymatching",
-    "datatranslation",
     "informationextraction",
     "normalization",
     "fusion",

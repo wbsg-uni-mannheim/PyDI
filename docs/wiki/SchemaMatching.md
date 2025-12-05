@@ -1,14 +1,15 @@
-# Schema Matching 
+# Schema Matching
 
-This module contains methods to automatically find 1-to-1 correspondences between columns across two datasets using label-, instance-, or duplicate-based schema matching methods. The discovered correspondences can be used afterwards to translate data from the one schema into the other.
+This module contains methods to automatically find 1-to-1 correspondences between columns across two datasets using label-, instance-, or duplicate-based schema matching methods. The discovered correspondences can be used afterwards to translate data from one schema into the other.
 
 ## Available Matchers
-The module `PyDI.schemamatching` provides the following matchers and evaluators:
+The module `PyDI.schemamatching` provides the following matchers, evaluators, and translators:
 - `LabelBasedSchemaMatcher`: compares the labels of the columns using similarity metrics to find schema correspondences. Fast and accurate when column labels are meaningful.
 - `InstanceBasedSchemaMatcher`: compares the distributions of values per column via TF/TF‑IDF/binary vectors and cosine/Jaccard/containment similarity. Better suited than LabelBasedMatcher if column labels are ambigous.
 - `DuplicateBasedSchemaMatcher`: leverage known record correspondences to infer column alignments from co‑occurring values in columns of the corresponding records. Great when a labeled set of matching records between datasets exists.
 - `LLMBasedSchemaMatcher`: the matcher prompts hosted large language models, such as GPT or Gemini, to find corespondences. Using the matcher requires a valid API key from a LLM provider.
 - `SchemaMappingEvaluator`: offers methods for evaluating a generated schema mapping given a labeled set of schema correspondences.
+- `SchemaTranslator`: renames DataFrame columns to target names using schema correspondences, preparing datasets for entity matching and data fusion.
 
 ## Schema Matching Example 
 ```python
@@ -85,3 +86,19 @@ the provided evaluation splits for on-demand benchmarking.
 
 Artifacts
 - Schema correspondences written to file
+
+## Schema Translation
+
+After matching, use `SchemaTranslator` to apply the discovered correspondences and rename columns in your source DataFrame to match the target schema:
+
+```python
+from PyDI.schemamatching import SchemaTranslator
+
+translator = SchemaTranslator()
+df_aligned = translator.translate(source_df, corr)
+```
+
+The translator:
+- Filters mappings to the relevant dataset (based on `dataset_name` in DataFrame attrs)
+- Picks the best mapping by score when duplicates exist
+- Adds provenance tracking at both DataFrame and column level

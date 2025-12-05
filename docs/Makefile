@@ -17,7 +17,7 @@ help:
 
 # Generate API documentation from source code
 apidoc:
-	@$(SPHINXAPIDOC) -f -o "$(SOURCEDIR)/api" ../src
+	@$(SPHINXAPIDOC) -f -o "$(SOURCEDIR)/api" ../PyDI
 
 # Build HTML docs directly into API_docs/ (no nesting)
 html: apidoc

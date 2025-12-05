@@ -3,7 +3,7 @@ Schema matching tools for PyDI.
 
 This module provides schema matching algorithms for finding correspondences
 between database schemas. It includes label-based, instance-based, and
-duplicate-based matching strategies.
+duplicate-based matching strategies, plus translation to apply the mappings.
 """
 
 # Base classes and types
@@ -18,6 +18,9 @@ from .llm_based import LLMBasedSchemaMatcher
 # Evaluation utilities
 from .evaluation import SchemaMappingEvaluator
 
+# Translation
+from .translator import SchemaTranslator
+
 __all__ = [
     "BaseSchemaMatcher",
     "SchemaMapping",
@@ -27,4 +30,5 @@ __all__ = [
     "DuplicateBasedSchemaMatcher",
     "LLMBasedSchemaMatcher",
     "SchemaMappingEvaluator",
+    "SchemaTranslator",
 ]

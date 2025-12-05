@@ -1,25 +1,25 @@
 # Welcome to the PyDI Wiki
 
-PyDI (Python Data Integration) is an end to end data integration framework covering the complete integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern embedding- and LLM-based techniques for these tasks. 
+PyDI (Python Data Integration) is an end to end data integration framework covering the complete integration process, including schema matching, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern embedding- and LLM-based techniques for these tasks.
+
 ## General features:
 - PyDI consists of composable modules that can be used independently or as a pipeline.
 - All modules rely on pandas DataFrames as underlying data structure, ensuring interoperability with third-party packages that also rely on pandas.
 - Each module supports result evaluation and can generate detailed logs of its operations. These logs can serve as starting point for debugging and improving data integration pipelines.
 
-## The PyDI Data Integration Pipeline 
-PyDI supports the following steps of the data integration pipeline: 
+## The PyDI Data Integration Pipeline
+PyDI supports the following steps of the data integration pipeline:
 1. Load data and add provenance metadata
-2. Data profiling 
-3. Schema matching and data translation
+2. Data profiling
+3. Schema matching and translation
 4. Information extraction
 5. Attribute value normalization
 6. Entity matching including blocking
-8. Data fusion including conflict resolution
+7. Data fusion including conflict resolution
 
 ## The PyDI Modules
 PyDI consists of the following modules:
-- [Schema Matching](SchemaMatching.md) provides matchers to automatically find correspondences between the columns of two datasets. The matchers implement label-based, instance-based, and LLM-based schema matching methods.
-- [Data Translation](DataTranslation.md) translates a dataset into a target schema using a set of schema correspondences resulting from schema matching or provided by the user.
+- [Schema Matching](SchemaMatching.md) provides matchers to automatically find correspondences between the columns of two datasets, plus translation to apply the mappings. The matchers implement label-based, instance-based, and LLM-based schema matching methods.
 - [Information Extraction](InformationExtraction.md) provides functionality for splitting a string into attribute values using regex-, code-, or LLM-based information extraction methods.
 - [Normalization](Normalization.md) provides methods for standardizing attribute vales including normalizing of units of measurement.
 - [Entity Matching](EntityMatching.md) this module allows you to identify records in multiple datasets that describe the same real-world entity. For this, the module implements various blocking techniques as well as different matchers (rule-based, ML-based, LLM-based).
