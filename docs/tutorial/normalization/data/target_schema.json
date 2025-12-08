@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Movie Database Record",
+  "description": "Target schema for integrated movie data from target.xml. Each record represents a movie with its associated actor who won an Oscar.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique movie identifier"
+    },
+    "title": {
+      "type": "string",
+      "description": "Movie title"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Release/award year in ISO 8601 format (YYYY-MM-DD)"
+    },
+    "studio": {
+      "type": "string",
+      "description": "Production studio name"
+    },
+    "genre": {
+      "type": "string",
+      "description": "Movie genre"
+    },
+    "budget": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Production budget in millions USD"
+    },
+    "gross": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Box office gross in millions USD"
+    },
+    "oscar": {
+      "type": "boolean",
+      "description": "Whether the movie won an Oscar"
+    },
+    "globe": {
+      "type": "boolean",
+      "description": "Whether the movie won a Golden Globe"
+    },
+    "actor_name": {
+      "type": "string",
+      "description": "Full name of the Oscar-winning actor"
+    },
+    "actor_birthday": {
+      "type": "string",
+      "format": "date",
+      "description": "Actor's birthday in ISO 8601 format (YYYY-MM-DD)"
+    },
+    "actor_birthplace": {
+      "type": "string",
+      "description": "Actor's place of birth (city, state/country)"
+    }
+  },
+  "required": ["id", "title"]
+}

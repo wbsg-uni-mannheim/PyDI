@@ -55,6 +55,9 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
         Output directory for artifacts, by default "output/schemamatching"
     debug : bool, optional
         Enable debug mode with detailed artifacts, by default False
+    target_schema : dict, optional
+        JSON Schema dict describing target fields. When provided, the LLM
+        sees field names, types, and descriptions for better matching.
 
     Examples
     --------
@@ -65,7 +68,7 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
     >>> matcher = LLMBasedSchemaMatcher(
     ...     chat_model=chat,
     ...     num_rows=10,
-    ...     debug=True
+    ...     target_schema={"properties": {"name": {"type": "string", "description": "Full name"}}}
     ... )
     >>> mappings = matcher.match(source_df, target_df)
     """
@@ -80,7 +83,8 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
         temperature: float = 0.0,
         max_retries: int = 1,
         out_dir: str = "output/schemamatching",
-        debug: bool = False
+        debug: bool = False,
+        target_schema: Optional[Union[str, Dict[str, Any]]] = None,
     ):
         if not LANGCHAIN_AVAILABLE:
             raise ImportError(
@@ -93,6 +97,7 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
         self.temperature = temperature
         self.max_retries = max_retries
         self.debug = debug
+        self.target_schema = target_schema
 
         # Set up output directory for artifacts
         if debug:
@@ -115,6 +120,38 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
 
         logger.info(f"Initialized LLMBasedSchemaMatcher with {num_rows} sample rows")
 
+    def _format_target_schema(self) -> str:
+        """Format target schema as readable text for LLM prompt.
+
+        Returns
+        -------
+        str
+            Formatted schema description or empty string
+        """
+        if not self.target_schema:
+            return ""
+
+        lines = []
+        title = self.target_schema.get("title", "Target Schema")
+        description = self.target_schema.get("description", "")
+
+        lines.append(f"**{title}**")
+        if description:
+            lines.append(f"{description}")
+        lines.append("")
+        lines.append("**Target Fields:**")
+
+        properties = self.target_schema.get("properties", {})
+        for field_name, field_spec in properties.items():
+            field_type = field_spec.get("type", "any")
+            field_desc = field_spec.get("description", "")
+            if field_desc:
+                lines.append(f"- `{field_name}` ({field_type}): {field_desc}")
+            else:
+                lines.append(f"- `{field_name}` ({field_type})")
+
+        return "\n".join(lines)
+
     def _get_default_system_prompt(self) -> str:
         """Get the default system prompt for schema matching."""
         return """You are an expert at aligning table schemas.
@@ -134,7 +171,7 @@ Table A (source: {source_name})
 
 Table B (source: {target_name})
 {target_metadata}
-{target_table}
+{target_schema_info}{target_table}
 
 Return the final result as JSON in the format {{"column_mappings": [["Table A column", "Table B column"], ["Table A column", null], ...]}}."""
 
@@ -214,6 +251,11 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         if not schema_columns:
             return f"Dataset '{dataset_name}' has no analyzable columns."
 
+        # Map string column names back to original column types for DataFrame access
+        # get_schema_columns returns strings, but df may have int columns (headerless CSV)
+        str_to_orig = {str(col): col for col in df.columns}
+        original_columns = [str_to_orig[col] for col in schema_columns if col in str_to_orig]
+
         # Determine how many rows to include
         row_limit = num_rows if num_rows is not None else self.num_rows
         try:
@@ -224,7 +266,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
             row_limit_int = max(1, min(len(df), self.num_rows or 1))
 
         # Sample rows prioritizing well-populated records
-        sample_df = self._select_sample_rows(df, schema_columns, row_limit_int)
+        sample_df = self._select_sample_rows(df, original_columns, row_limit_int)
 
         # Build markdown table
         return sample_df.to_markdown()
@@ -432,6 +474,11 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
 
         for attempt in range(self.max_retries + 1):
             try:
+                # Format target schema info if available
+                target_schema_info = self._format_target_schema()
+                if target_schema_info:
+                    target_schema_info = target_schema_info + "\n\n"
+
                 # Format prompt
                 messages = prompt_template.format_messages(
                     source_name=source_name,
@@ -439,6 +486,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
                     source_table=source_markdown,
                     target_name=target_name,
                     target_metadata=target_metadata,
+                    target_schema_info=target_schema_info,
                     target_table=target_markdown
                 )
 
@@ -449,6 +497,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
                         "target_name": target_name,
                         "source_metadata": source_metadata,
                         "target_metadata": target_metadata,
+                        "target_schema_info": target_schema_info,
                         "source_table": source_markdown,
                         "target_table": target_markdown,
                         "attempt": attempt

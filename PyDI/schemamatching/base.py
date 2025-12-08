@@ -14,29 +14,35 @@ SchemaMapping = pd.DataFrame
 
 def get_schema_columns(df: pd.DataFrame) -> List[str]:
     """Get columns from a DataFrame excluding PyDI-generated ID columns.
-    
+
     PyDI automatically adds unique identifier columns during data loading
-    (typically named {dataset_name}_id). These should be excluded from 
+    (typically named {dataset_name}_id). These should be excluded from
     schema matching as they are not part of the original data schema.
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
         DataFrame to extract schema columns from.
-        
+
     Returns
     -------
     List[str]
-        List of column names excluding PyDI ID columns.
+        List of column names as strings, excluding PyDI ID columns.
+        Non-string column names (e.g., integers from headerless CSVs)
+        are converted to strings.
     """
-    columns = list(df.columns)
-    
+    # Convert all column names to strings for consistent matching
+    # This handles integer columns from headerless CSVs (0, 1, 2, ...)
+    columns = [str(col) for col in df.columns]
+
     # Check provenance metadata for the ID column name
     provenance = df.attrs.get("provenance", {})
     id_column_name = provenance.get("id_column_name")
-    
-    if id_column_name and id_column_name in columns:
-        columns.remove(id_column_name)
+
+    if id_column_name:
+        id_str = str(id_column_name)
+        if id_str in columns:
+            columns.remove(id_str)
     else:
         # Fallback: remove columns that match {dataset_name}_id pattern
         dataset_name = df.attrs.get("dataset_name")
@@ -44,7 +50,7 @@ def get_schema_columns(df: pd.DataFrame) -> List[str]:
             expected_id_col = f"{dataset_name}_id"
             if expected_id_col in columns:
                 columns.remove(expected_id_col)
-    
+
     return columns
 
 

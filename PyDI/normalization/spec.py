@@ -2,14 +2,18 @@
 Normalization specification for user-defined transformations.
 
 This module allows users to specify how columns should be normalized
-based on the profile report. Specifications can be created manually
-or auto-generated from profile suggestions.
+based on the profile report. Specifications can be created manually,
+auto-generated from profile suggestions, or imported from JSON Schema.
+
+Note: Validation is handled separately by the validators module.
+This module focuses only on data transformation.
 """
 
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Literal
 
 from .profile import DataFrameProfile
@@ -17,45 +21,107 @@ from .profile import DataFrameProfile
 
 @dataclass
 class ColumnSpec:
-    """Specification for normalizing a single column."""
+    """
+    Specification for normalizing a single column.
 
-    # General options
+    This class defines how a column should be transformed. It focuses purely
+    on data transformation - validation is handled separately by the
+    validators module.
+
+    Attributes:
+        output_type: Target data type for the column.
+        on_failure: What to do when transformation fails.
+        target_unit: Target unit for unit conversion (e.g., "m", "kg").
+        expand_scale_modifiers: Expand scale modifiers like "5 MEO" -> 5000000.
+        convert_percentage: How to handle percentage values.
+        country_format: Output format for country codes.
+        currency_format: Output format for currency codes.
+        phone_format: Output format for phone numbers.
+        phone_default_region: Default region for phone parsing.
+        normalize_email: Whether to normalize email addresses.
+        stdnum_format: Whether to format standard numbers.
+        case: Text case transformation.
+        strip_whitespace: Whether to strip leading/trailing whitespace.
+
+    Examples:
+        >>> # Basic type conversion
+        >>> spec = ColumnSpec(output_type="float")
+
+        >>> # Country normalization
+        >>> spec = ColumnSpec(country_format="alpha_2")
+    """
+
     output_type: Literal["string", "float", "int", "bool", "datetime", "keep"] = "keep"
+    """Target data type for the column. 'keep' preserves original type."""
 
-    # Failure handling
-    # keep: Keep original value when transformation fails (default)
-    # null: Set to None when transformation fails
-    # raise: Raise an error when transformation fails
     on_failure: Literal["keep", "null", "raise"] = "keep"
+    """
+    What to do when transformation fails.
+
+    - 'keep': Keep original value (default)
+    - 'null': Set to None
+    - 'raise': Raise an error
+    """
 
     # Unit handling
     target_unit: str | None = None
+    """Target unit for unit conversion (e.g., 'm', 'kg', 'USD')."""
+
     expand_scale_modifiers: bool = False
+    """Expand scale modifiers like '5 MEO' -> 5000000, '3 MEUR' -> 3000000."""
 
     # Percentage handling
-    # to_decimal: '50%' → 0.5, or keeps 0.5 as-is
-    # to_percent: 0.5 → 50, or '50%' → 50 (removes % symbol)
     convert_percentage: Literal["to_decimal", "to_percent", "keep"] | None = None
+    """
+    How to handle percentage values.
+
+    - 'to_decimal': '50%' -> 0.5, or keeps 0.5 as-is
+    - 'to_percent': 0.5 -> 50, or '50%' -> 50 (removes % symbol)
+    - 'keep': No conversion
+    """
 
     # Country/currency normalization
-    country_format: Literal["alpha_2", "alpha_3", "numeric", "name", "keep"] | None = None
+    country_format: Literal["alpha_2", "alpha_3", "numeric", "name", "keep"] | None = (
+        None
+    )
+    """Output format for country codes (ISO 3166)."""
+
     currency_format: Literal["alpha_3", "name", "keep"] | None = None
+    """Output format for currency codes (ISO 4217)."""
 
     # Phone number formatting
     phone_format: Literal["e164", "international", "national", "keep"] | None = None
+    """Output format for phone numbers."""
+
     phone_default_region: str = "US"
+    """Default region for parsing phone numbers without country code."""
 
     # Email normalization
     normalize_email: bool = False
+    """Whether to normalize email addresses (lowercase, etc.)."""
 
     # Standard number formatting
-    stdnum_format: bool = False  # Format to canonical form
+    stdnum_format: bool = False
+    """Whether to format standard numbers (ISBN, IBAN, VAT, etc.)."""
+
+    # Date/datetime options
+    date_format: str | None = None
+    """Format string for parsing dates (e.g., '%Y' for year-only, '%Y-%m-%d')."""
 
     # Text options
     case: Literal["lower", "upper", "title", "keep"] | None = None
+    """Text case transformation to apply."""
+
     strip_whitespace: bool = False
+    """Whether to strip leading/trailing whitespace."""
 
     def to_dict(self) -> dict[str, Any]:
+        """
+        Convert to dictionary representation.
+
+        Returns:
+            Dictionary with all field values.
+        """
         return {
             "output_type": self.output_type,
             "on_failure": self.on_failure,
@@ -68,12 +134,22 @@ class ColumnSpec:
             "phone_default_region": self.phone_default_region,
             "normalize_email": self.normalize_email,
             "stdnum_format": self.stdnum_format,
+            "date_format": self.date_format,
             "case": self.case,
             "strip_whitespace": self.strip_whitespace,
         }
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ColumnSpec:
+        """
+        Create ColumnSpec from dictionary.
+
+        Args:
+            data: Dictionary with ColumnSpec fields.
+
+        Returns:
+            New ColumnSpec instance.
+        """
         return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
 
 
@@ -195,6 +271,7 @@ class NormalizationSpec:
                 spec.columns[col_name] = col_spec
 
         return spec
+
 
 
 __all__ = [

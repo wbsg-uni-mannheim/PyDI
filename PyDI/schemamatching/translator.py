@@ -127,19 +127,25 @@ class SchemaTranslator:
         best_scores: Dict[str, float] = {}
         has_score = "score" in relevant.columns
 
+        # Build a mapping from string column names to actual column names
+        # This handles integer columns (0, 1, 2) that may be referenced as strings
+        col_str_to_actual = {str(col): col for col in df.columns}
+
         for _, row in relevant.iterrows():
             src = row["source_column"]
             tgt = row["target_column"]
             score = row.get("score", 1.0) if has_score else 1.0
 
-            if src not in df.columns:
+            # Look up the actual column name (handles int columns referenced as strings)
+            actual_src = col_str_to_actual.get(str(src))
+            if actual_src is None:
                 logging.warning(f"Column '{src}' not found in dataset '{dataset_name}'")
                 continue
 
-            if src not in rename_map or (has_score and score > best_scores.get(src, 0)):
-                rename_map[src] = tgt
+            if actual_src not in rename_map or (has_score and score > best_scores.get(actual_src, 0)):
+                rename_map[actual_src] = tgt
                 if has_score:
-                    best_scores[src] = score
+                    best_scores[actual_src] = score
 
         if not rename_map:
             logging.info(f"No applicable mappings for dataset '{dataset_name}'")
@@ -155,6 +161,16 @@ class SchemaTranslator:
         }
 
         translated = df.rename(columns=rename_map, copy=True)
+
+        # Check for duplicate columns (can happen if multiple source cols map to same target)
+        if translated.columns.duplicated().any():
+            dup_cols = translated.columns[translated.columns.duplicated(keep=False)].unique().tolist()
+            logging.warning(
+                f"Multiple source columns mapped to same target: {dup_cols}. "
+                "Keeping first occurrence of each duplicate."
+            )
+            translated = translated.loc[:, ~translated.columns.duplicated(keep='first')]
+
         translated.attrs = df.attrs.copy()
 
         # Add provenance

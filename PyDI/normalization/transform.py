@@ -2,12 +2,14 @@
 DataFrame transformation based on normalization specifications.
 
 This module applies transformations to DataFrames according to
-NormalizationSpec configurations.
+NormalizationSpec configurations. It handles data transformation only -
+validation is handled separately by the validators module.
 """
 
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -332,7 +334,7 @@ def _transform_text(
     return text, transformed
 
 
-def _apply_output_type(value: Any, output_type: str) -> Any:
+def _apply_output_type(value: Any, output_type: str, date_format: str | None = None) -> Any:
     """Convert value to specified output type."""
     if pd.isna(value):
         return value
@@ -364,6 +366,9 @@ def _apply_output_type(value: Any, output_type: str) -> Any:
 
     if output_type == "datetime":
         try:
+            if date_format:
+                # Convert to string first for format parsing
+                return pd.to_datetime(str(value), format=date_format)
             return pd.to_datetime(value)
         except (ValueError, TypeError):
             return value
@@ -464,7 +469,9 @@ def transform_column(
                 was_transformed = was_transformed or text_transformed
 
             # Apply output type conversion
-            transformed_value = _apply_output_type(transformed_value, spec.output_type)
+            transformed_value = _apply_output_type(
+                transformed_value, spec.output_type, spec.date_format
+            )
 
             if was_transformed:
                 values_transformed += 1
@@ -498,7 +505,7 @@ def transform_column(
 
     result_series = pd.Series(result_values, index=series.index, name=series.name)
 
-    return result_series, TransformResult(
+    transform_result = TransformResult(
         column_name=column_name,
         original_dtype=original_dtype,
         new_dtype=str(result_series.dtype),
@@ -506,6 +513,8 @@ def transform_column(
         values_failed=values_failed,
         errors=errors,
     )
+
+    return result_series, transform_result
 
 
 def transform_dataframe(

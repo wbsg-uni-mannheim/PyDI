@@ -225,6 +225,13 @@ from .spec import (
     NormalizationSpec,
 )
 
+# JSON Schema integration
+from .json_schema import (
+    load_schema,
+    load_normalization_spec,
+    load_validation_spec,
+)
+
 from .transform import (
     TransformResult,
     DataFrameTransformResult,
@@ -346,6 +353,10 @@ __all__ = [
     "transform_column",
     "transform_dataframe",
     "normalize_dataframe",
+    # JSON Schema integration
+    "load_schema",
+    "load_normalization_spec",
+    "load_validation_spec",
     # Validators
     "ValidationResult",
     "BaseValidator",
