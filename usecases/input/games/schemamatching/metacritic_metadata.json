@@ -1,0 +1,98 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Best Video Games of All Time - Metacritic",
+  "description": "Dataset derived from the Kaggle dataset 'Best Video Games of All Time - Metacritic'. It contains around 20,500 videogames with information about their release date, developer, platform, genres, number of players, ESRB rating, metascore, user score.",
+  "url": "https://www.kaggle.com/datasets/darianogina/best-video-games-of-all-time-metacritic",
+  "keywords": [
+    "Kaggle",
+    "Metacritic",
+    "videogames",
+    "developer",
+    "platform",
+    "genres",
+    "ESRB",
+    "metascore",
+    "user score"
+  ],
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "identifier": "best-video-games-of-all-time-metacritic",
+  "version": "2",
+  "datePublished": "2023-09-01",
+  "dateModified": "2024-01-05",
+  "numberOfItems": 20500,
+  "temporalCoverage": "1970-01-01/2023-09-01",
+  "creator": {
+    "@type": "Person",
+    "name": "Daria Nogina",
+    "url": "https://www.kaggle.com/darianogina"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Kaggle",
+    "url": "https://www.kaggle.com/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "metacritic.csv"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "name",
+      "description": "Official name of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "release_date",
+      "description": "Date on which the videogame was released",
+      "unitText": "string: MMM DD, YYYY"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "platform",
+      "description": "Platform on which the videogame was released",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "developer",
+      "description": "Developer of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "genres",
+      "description": "Genres of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "number_of_players",
+      "description": "Number of players supported by the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "rating",
+      "description": "ESRB rating of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "metascore",
+      "description": "Metascore of the videogame as given by Metacritic",
+      "unitText": "float, range 0-100"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "user_score",
+      "description": "User score of the videogame as given by Metacritic",
+      "unitText": "float, range 0-10"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "DBpedia Videogames Subset (65k Videogames)",
+  "description": "Subset of the DBpedia knowledge base describing approximately 65,000 videogames. For each videogame, the dataset includes information about the release date, the platform, the developer, the genre, and the series the game belongs to. The DBpedia knowledge base been automatically extracted from Wikipedia. The dataset has been created by query the DBpedia SPARQL endpoint.",
+  "url": "https://www.dbpedia.org/", 
+  "keywords": [
+    "DBpedia",
+    "Wikipedia",
+    "knowledge base",
+    "videogames",
+    "developer",
+    "platform",
+    "genre",
+    "series"
+  ],
+  "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "identifier": "dbpedia-videogames-subset-65k-2023",
+  "version": "1.0",
+  "datePublished": "2023-10-11",
+  "numberOfItems": 65000,
+  "temporalCoverage": "1970-01-01/2023-10-11",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://wiki.dbpedia.org/",
+    "name": "DBpedia Association"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DBpedia Association",
+    "url": "https://wiki.dbpedia.org/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/xml",
+      "contentUrl": "dbpedia.xml"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "gameLabel",
+      "description": "Official name of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "releaseDate",
+      "description": "Date on which the videogame was released",
+      "unitText": "ISO 8601 date"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "platform",
+      "description": "Platform on which the videogame was released",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "developer",
+      "description": "Developer of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "genre",
+      "description": "Genre of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "series",
+      "description": "Series the videogame belongs to",
+      "unitText": "string"
+    }
+  ]
+}

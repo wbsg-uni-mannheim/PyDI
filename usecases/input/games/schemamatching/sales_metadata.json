@@ -1,0 +1,141 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Video Game Ratings and Sales",
+  "description": "Dataset derived from the dataset 'Video Game Ratings and Sales' on Zenodo. It contains around 8,000 videogames with information about their sales, developer, publisher, platform, release year, genre, ESRB rating, critic score and user score.",
+  "url": "https://zenodo.org/records/2454579#.Y9Y2c9JBwUE",
+  "keywords": [
+    "Kaggle",
+    "sales",
+    "videogames",
+    "ratings",
+    "platform",
+    "genres",
+    "ESRB",
+    "critic score",
+    "user score",
+    "developer"
+  ],
+  "license": "https://creativecommons.org/licenses/by/4.0/legalcode",
+  "DOI": "https://doi.org/10.5281/zenodo.2454579",
+  "identifier": "global-video-game-sales-ratings",
+  "version": "1.0",
+  "datePublished": "2018-12-20",
+  "dateModified": "2018-12-20",
+  "numberOfItems": 20500,
+  "temporalCoverage": "1970-01-01/2023-09-01",
+  "creator": {
+    "@type": "Person",
+    "name": "Timo Poutanen"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Helsinki",
+    "url": "https://www.helsinki.fi/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "sales.json"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "Name",
+      "description": "Official name of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Year_of_Release",
+      "description": "Year in which the videogame was released",
+      "unitText": "YYYY"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Platform",
+      "description": "Platform on which the videogame was released",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Developer",
+      "description": "Developer of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Genre",
+      "description": "Genre of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Publisher",
+      "description": "Publisher of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Rating",
+      "description": "ESRB rating of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Critic_Score",
+      "description": "Critic score of the videogame as given by Metacritic",
+      "unitText": "float, range 0-100"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "User_Score",
+      "description": "User score of the videogame as given by Metacritic",
+      "unitText": "float, range 0-10"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Critic_Count",
+      "description": "Number of critic reviews for the videogame",
+      "unitText": "integer"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "User_Count",
+      "description": "Number of user reviews for the videogame",
+      "unitText": "integer"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Global_Sales",
+      "description": "Total sales of the videogame across all regions (in million units)",
+      "unitText": "million units"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "NA_Sales",
+      "description": "Sales of the videogame in North America (in million units)",
+      "unitText": "million units"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "EU_Sales",
+      "description": "Sales of the videogame in Europe (in million units)",
+      "unitText": "million units"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "JP_Sales",
+      "description": "Sales of the videogame in Japan (in million units)",
+      "unitText": "million units"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Other_Sales",
+      "description": "Sales of the videogame in other regions (in million units)",
+      "unitText": "million units"
+    }
+  ]
+}
