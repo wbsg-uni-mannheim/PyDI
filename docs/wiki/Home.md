@@ -25,8 +25,7 @@ PyDI consists of the following modules:
 - [Entity Matching](EntityMatching.md) this module allows you to identify records in multiple datasets that describe the same real-world entity. For this, the module implements various blocking techniques as well as different matchers (rule-based, ML-based, LLM-based).
 - [Data Fusion](DataFusion.md) merges sets of records describing the same real-world entity into a single consolidated dataset. Provides methods for resolving data conflicts using attribute-level conflict resolution heuristics.
 - [IO](IO.md) offers readers for loading data in different formats, adding identifiers to records, and adding provenance metadata to datasets.
-- [Profiling](Profiling.md) provides methods for profiling datasets in order to identify data quality problems such as missing values or heterogeneous value formats.
-- [Utils](Utils.md) implements functionality that is used by multiple modules, such as logging and similarity computation.
+- [Utils](Utils.md) implements functionality that is used by multiple modules, such as data profiling, logging, and similarity computation.
 
 ## Tutorial
 
