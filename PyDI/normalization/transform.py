@@ -381,9 +381,11 @@ def _apply_output_type(value: Any, output_type: str, date_format: str | None = N
         return bool(value)
 
     if output_type == "datetime":
+        # Skip if already a datetime (handled by _transform_datetime)
+        if isinstance(value, (pd.Timestamp, pd.DatetimeTZDtype)) or pd.api.types.is_datetime64_any_dtype(type(value)):
+            return value
         try:
             if date_format:
-                # Convert to string first for format parsing
                 return pd.to_datetime(str(value), format=date_format)
             return pd.to_datetime(value)
         except (ValueError, TypeError):
