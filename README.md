@@ -2,7 +2,7 @@
 
 The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 
-This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md)!
+This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/EntityMatchingAndFusion/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md)!
 
 ## Installing PyDI
 
@@ -64,7 +64,7 @@ The PyDI framework covers all steps of the data integration process, including d
 
 ## Contact
 
-If you have questions or need help, please first consult the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/PyDI_Tutorial.ipynb), the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
+If you have questions or need help, please first consult the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/EntityMatchingAndFusion/PyDI_Tutorial.ipynb), the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
 
 ## Acknowledgements
 
