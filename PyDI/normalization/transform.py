@@ -300,6 +300,22 @@ def _transform_stdnum(
     return value, False
 
 
+def _transform_datetime(
+    value: Any,
+    spec: ColumnSpec,
+) -> tuple[Any, bool]:
+    """Transform a value to datetime."""
+    if pd.isna(value):
+        return value, False
+
+    try:
+        if spec.date_format:
+            return pd.to_datetime(str(value), format=spec.date_format), True
+        return pd.to_datetime(value), True
+    except (ValueError, TypeError):
+        return value, False
+
+
 def _transform_text(
     value: Any,
     spec: ColumnSpec,
@@ -411,6 +427,7 @@ def transform_column(
         or spec.normalize_email
         or spec.stdnum_format
         or (spec.convert_percentage and spec.convert_percentage != "keep")
+        or spec.output_type == "datetime"
     )
 
     for idx, value in series.items():
@@ -460,6 +477,10 @@ def transform_column(
             elif spec.convert_percentage and spec.convert_percentage != "keep":
                 attempted_transform = True
                 transformed_value, was_transformed = _transform_percentage(value, spec)
+
+            elif spec.output_type == "datetime":
+                attempted_transform = True
+                transformed_value, was_transformed = _transform_datetime(value, spec)
 
             # Apply text transformations
             if spec.case or spec.strip_whitespace:

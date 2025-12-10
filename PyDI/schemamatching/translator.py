@@ -44,7 +44,8 @@ class SchemaTranslator:
         mapping: SchemaMapping,
         normalize: Union["NormalizationSpec", bool, None] = None,
         on_failure: Literal["keep", "null", "raise"] = "keep",
-    ) -> pd.DataFrame:
+        return_result: bool = False,
+    ) -> Union[pd.DataFrame, tuple[pd.DataFrame, "DataFrameTransformResult"]]:
         """Translate column names according to a schema mapping.
 
         Parameters
@@ -73,12 +74,16 @@ class SchemaTranslator:
 
             Individual ``ColumnSpec`` entries in the normalization spec can
             override this default via their own ``on_failure`` setting.
+        return_result : bool, default False
+            If True, return a tuple of (DataFrame, DataFrameTransformResult)
+            to access per-column transformation errors and statistics.
 
         Returns
         -------
-        pandas.DataFrame
+        pandas.DataFrame or tuple
             A new DataFrame with columns renamed (and optionally normalized)
-            according to the mapping.
+            according to the mapping. If ``return_result=True``, returns
+            ``(DataFrame, DataFrameTransformResult)``.
 
         Raises
         ------
@@ -204,7 +209,9 @@ class SchemaTranslator:
 
         # Apply normalization if requested
         if normalize is not None:
-            translated = self._apply_normalization(translated, normalize, on_failure)
+            translated, transform_result = self._apply_normalization(translated, normalize, on_failure)
+            if return_result:
+                return translated, transform_result
 
         return translated
 
@@ -213,7 +220,7 @@ class SchemaTranslator:
         df: pd.DataFrame,
         normalize: Union["NormalizationSpec", bool],
         on_failure: Literal["keep", "null", "raise"],
-    ) -> pd.DataFrame:
+    ) -> tuple[pd.DataFrame, "DataFrameTransformResult"]:
         """Apply value normalization to the DataFrame.
 
         Parameters
@@ -227,8 +234,8 @@ class SchemaTranslator:
 
         Returns
         -------
-        pandas.DataFrame
-            The normalized DataFrame.
+        tuple
+            (normalized DataFrame, DataFrameTransformResult)
         """
         _import_normalization()
 
@@ -245,7 +252,9 @@ class SchemaTranslator:
         # If no columns to normalize, return unchanged
         if not spec.columns:
             logging.info("No columns to normalize")
-            return df
+            # Return empty result
+            from ..normalization import DataFrameTransformResult
+            return df, DataFrameTransformResult(df, {}, 0, 0)
 
         # Apply on_failure default to columns that don't have it explicitly set
         for col_name, col_spec in spec.columns.items():
@@ -282,4 +291,4 @@ class SchemaTranslator:
             normalized_df.attrs["provenance"] = [normalized_df.attrs["provenance"]]
         normalized_df.attrs["provenance"].append(provenance_entry)
 
-        return normalized_df
+        return normalized_df, result
