@@ -1,0 +1,71 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "FullContact Company Profiles Sample (Large Companies)",
+  "description": "Dataset of approximately 2,000 large companies obtained via the FullContact API. For each company, the dataset includes year of founding, detailed contact information (postal address, web site, phone), and information about key persons in the company, partly including the founders. Due to the commercial origin of the data, a high data quality is expected. The dataset is meant to complement other company datasets for market research.",
+  "keywords": [
+    "companies",
+    "company profiles",
+    "founding year",
+    "contact information",
+    "key persons",
+    "founders",
+    "FullContact API"
+  ],
+  "identifier": "fullcontact-company-profiles-2014-large-brands",
+  "sameAs": "https://www.fullcontact.com/",
+  "datePublished": "2016-06-09",
+  "dateModified": "2016-06-09",
+  "numberOfItems": 2000,
+  "temporalCoverage": "2014-01-01/2014-06-01",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://www.fullcontact.com/",
+    "name": "FullContact Inc."  
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/xml",
+      "contentUrl": "fullcontact.xml"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "companyName",
+      "description": "Official name of the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "foundingYear",
+      "description": "Year in which the company was founded",
+      "unitText": "year"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "address",
+      "description": "Postal address of the company headquarters, including city and country",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "website",
+      "description": "Homepage URL of the company",
+      "unitText": "URL"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "phone",
+      "description": "Main contact phone number of the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "keyPersons",
+      "description": "List of key persons of the company, including partly the founders",
+      "unitText": "string list"
+    }
+  ]
+}
