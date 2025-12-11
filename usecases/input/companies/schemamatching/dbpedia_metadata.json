@@ -1,0 +1,92 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "DBpedia Companies Subset (10k Companies)",
+  "description": "Subset of the DBpedia knowledge base describing approximately 10,000 companies. For each company, the dataset includes information about the founding date and place, the industry, the founders, as well as numerical attributes such as income, revenue, and assets. The DBpedia knowledge base been automatically extracted from Wikipedia. The dataset has been created by query the DBpedia SPARQL endpoint.",
+  "url": "https://www.dbpedia.org/", 
+  "keywords": [
+    "DBpedia",
+    "Wikipedia",
+    "knowledge base",
+    "companies",
+    "founding place",
+    "revenue",
+    "income",
+    "assets",
+    "industry",
+    "founders"
+  ],
+  "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "identifier": "dbpedia-companies-subset-10k-2014",
+  "version": "1.0",
+  "datePublished": "2016-06-09",
+  "numberOfItems": 10000,
+  "temporalCoverage": "2012-01-01/2014-04-30",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://wiki.dbpedia.org/",
+    "name": "DBpedia Association"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DBpedia Association",
+    "url": "https://wiki.dbpedia.org/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "dbpedia.json"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "companyName",
+      "description": "Official name of the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "foundingDate",
+      "description": "Date on which the company was founded",
+      "unitText": "ISO 8601 date"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "foundingPlace",
+      "description": "Place (city, region, country) in which the company was founded",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "industry",
+      "description": "Industry in which the company operates",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "founders",
+      "description": "List of persons who founded the company",
+      "unitText": "string list"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "income",
+      "description": "Income of the company",
+      "unitText": "monetary amount"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "revenue",
+      "description": "Revenue of the company",
+      "unitText": "monetary amount"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "assets",
+      "description": "Assets of the company",
+      "unitText": "monetary amount"
+    }
+  ]
+}

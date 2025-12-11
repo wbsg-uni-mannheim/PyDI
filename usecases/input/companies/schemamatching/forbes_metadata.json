@@ -1,0 +1,94 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Forbes Global 2000 Most Valuable Brands Dataset",
+  "description": "Dataset derived from the Forbes list of the globally most valuable brands. It contains around 2,000 large companies with information about their market value, sales, profits, assets (in billion US$), industry, sector, and the country in which the company is located (3-letter country code).",
+  "url": "https://www.forbes.com/lists/global2000/",
+  "keywords": [
+    "companies",
+    "brands",
+    "market value",
+    "sales",
+    "profits",
+    "assets",
+    "industry",
+    "sector",
+    "Forbes list"
+  ],
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "identifier": "forbes-global-brands-2014",
+  "version": "2014",
+  "datePublished": "2016-06-09",
+  "dateModified": "2016-06-09",
+  "numberOfItems": 2000,
+  "temporalCoverage": "2013-01-01/2013-12-31",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://www.forbes.com/",
+    "name": "Forbes Media LLC"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Forbes Media LLC",
+    "url": "https://www.forbes.com/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "forbes.csv"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "companyName",
+      "description": "Official name of the company",
+      "unitText": "string",
+      "valueReference": "https://schema.org/name"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "countryCode3",
+      "description": "Three-letter country code of the company headquarters",
+      "unitText": "ISO 3166-1 alpha-3",
+      "valueReference": "https://schema.org/addressCountry"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "industry",
+      "description": "Industry classification of the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sector",
+      "description": "Sector classification of the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "marketValue",
+      "description": "Market value of the company",
+      "unitText": "billion USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sales",
+      "description": "Annual sales of the company",
+      "unitText": "billion USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "profits",
+      "description": "Annual profits of the company",
+      "unitText": "billion USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "assets",
+      "description": "Total assets of the company",
+      "unitText": "billion USD"
+    }
+  ]
+}
