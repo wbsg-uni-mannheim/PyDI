@@ -148,3 +148,7 @@ spec.set_column("country", country_format="alpha_2", on_failure="null")
 spec.set_column("phone", phone_format="e164", on_failure="keep")  # Keep invalid phones as-is
 df_aligned = translator.translate(source_df, corr, normalize=spec, on_failure="raise")
 ```
+
+## Tutorials
+
+- [Schema Matching Tutorial](../tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) - End-to-end workflow: LLM-based matching with JSON Schema integration

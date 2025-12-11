@@ -206,3 +206,7 @@ report = FusionReport(fused, [df_a, df_b, df_c], strategy.name, correspondences=
 report.print_summary()
 open("fusion_report.html", "w").write(report.to_html())
 ```
+
+## Tutorials
+
+- [Data Integration Tutorial](../tutorial/entity_matching_and_fusion/data_integration_tutorial.ipynb) - Complete pipeline including data fusion with conflict resolution strategies and evaluation

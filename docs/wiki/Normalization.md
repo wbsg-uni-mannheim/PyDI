@@ -383,3 +383,8 @@ checker = DataQualityChecker(df)
 report = checker.run_all_checks()
 print(report.summary())
 ```
+
+## Tutorials
+
+- [Value Normalization Tutorial](../tutorial/normalization/value_normalization/value_normalization_tutorial.ipynb) - Full workflow: profiling, specs, transformations with a messy company dataset
+- [Schema Matching Tutorial](../tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) - JSON Schema integration with LLM-based schema matching

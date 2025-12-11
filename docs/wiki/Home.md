@@ -27,6 +27,10 @@ PyDI consists of the following modules:
 - [IO](IO.md) offers readers for loading data in different formats, adding identifiers to records, and adding provenance metadata to datasets.
 - [Utils](Utils.md) implements functionality that is used by multiple modules, such as data profiling, logging, and similarity computation.
 
-## Tutorial
+## Tutorials
 
-For a fully implemented example of a data integration workflow for integrating movie datasets from data loading, profiling, over entity matching and data fusion, refer to the [Tutorial Notebook](../tutorial/EntityMatchingAndFusion/PyDI_Tutorial.ipynb)
+For hands-on examples, see the [Tutorials](../tutorial/README.md):
+
+- [Data Integration Tutorial](../tutorial/entity_matching_and_fusion/data_integration_tutorial.ipynb) - End-to-end pipeline with movie datasets
+- [Value Normalization Tutorial](../tutorial/normalization/value_normalization/value_normalization_tutorial.ipynb) - Profiling, specs, and transformations
+- [Schema Matching Tutorial](../tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) - LLM-based matching with JSON Schema

@@ -2,7 +2,7 @@
 
 The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 
-This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/EntityMatchingAndFusion/PyDI_Tutorial.ipynb) or have a look at the code examples in our [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md)!
+This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) or have a look at the code examples in our [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md)!
 
 ## Installing PyDI
 
@@ -16,22 +16,28 @@ pip install uma-pydi
 
 The PyDI framework covers all steps of the data integration process, including data loading, schema matching, data translation, entity matching, and data fusion. This section gives an overview of the functionality and the alternative algorithms that are provided for each of these steps.
 
-**Schema Matching**: Schema matching identifies attributes in multiple schemata that have the same meaning. PyDI provides three schema matching methods which either rely on attribute labels or data values, or exploit an existing mapping of records (duplicate-based schema matching) in order to find attribute correspondences. PyDI's schema matching module offers:
+**Schema Matching**: Schema matching identifies attributes in multiple schemata that have the same meaning. PyDI provides four schema matching methods which either rely on attribute labels or data values, or exploit an existing mapping of records (duplicate-based schema matching) in order to find attribute correspondences. PyDI's schema matching module offers:
 
 -   Label-based schema matching
 -   Instance-based schema matching
 -   Duplicate-based schema matching
--   LLM-based schema matching
+-   LLM-based schema matching (with optional target schema context via JSON Schema)
+-   Schema translation with optional value normalization
 -   Evaluation of schema matching results
 -   Debug reports about the matching process
 
-**Data Translation**: Translates data from a source schema into a target schema. The translation process may include value normalization and information extraction. PyDI provides the following methods for value normalization and information extraction:
+**Data Translation**: Translates data from a source schema into a target schema. The translation process includes value normalization and information extraction. PyDI provides the following methods:
 
 -   Value normalization
-    -   Data type detection
-    -   Value & header normalization
-    -   Unit of measurement conversion
-    -   Data validation
+    -   Data profiling with automatic type and pattern detection
+    -   Unit of measurement conversion (length, weight, temperature, area, etc.)
+    -   Scale modifier expansion (MEO, MEUR, million, billion → numeric values)
+    -   Country, currency, and language code normalization (ISO standards)
+    -   Phone number parsing and formatting (E.164 format)
+    -   Email validation and normalization
+    -   Standard number validation (IBAN, VAT, ISBN)
+    -   JSON Schema integration for loading normalization specs
+    -   Data quality validation (ranges, patterns, completeness, uniqueness)
 -   Information extraction via
     -   Regex
     -   Python functions
@@ -55,17 +61,35 @@ The PyDI framework covers all steps of the data integration process, including d
 
 **Data Fusion**: Data fusion combines data from multiple sources into a single, consolidated dataset. Different sources may provide conflicting data values. PyDI allows you to resolve such data conflicts (decide which value to include in the final dataset) by applying different conflict resolution functions. PyDI's fusion module offers the following:
 
--   13 value-based conflict resolution functions for strings, numbers, and sets
--   4 metadata-based conflict resolution functions.
+-   15 conflict resolution functions
+    -   Strings: longest_string, shortest_string, most_complete
+    -   Numbers: average, median, maximum, minimum, sum_values
+    -   Dates: most_recent, earliest
+    -   Lists: union, intersection, intersection_k_sources
+    -   Metadata-based: voting, weighted_voting, favour_sources, prefer_higher_trust
+-   Configurable evaluation functions with tolerance (tokenized_match, numeric_tolerance, year_only_match)
 -   Evaluation of data fusion results against ground truth
+-   Provenance tracking for fused values
 -   Debug reports about the fusion process
 
-**IO**: PyDI provides methods for reading standard data formats such as JSON, XML, and CSV into pandas DataFrames. All read methods can optionally add unique identifiers and provenance metadata to the DataFrames.
+**IO**: PyDI provides methods for reading standard data formats into pandas DataFrames with provenance tracking:
+
+-   Supported formats: CSV, JSON, XML, Excel, Parquet, Feather, HTML tables, fixed-width files
+-   Automatic provenance metadata (source path, timestamps, checksums)
+-   Optional unique identifier generation for downstream matching and fusion
+
+## Tutorials
+
+| Tutorial | Description |
+|----------|-------------|
+| [Data Integration Tutorial](docs/tutorial/entity_matching_and_fusion/data_integration_tutorial.ipynb) | End-to-end pipeline: loading, blocking, matching, fusion |
+| [Value Normalization Tutorial](docs/tutorial/normalization/value_normalization/value_normalization_tutorial.ipynb) | Profiling, specs, unit conversion, data cleaning |
+| [Schema Matching Tutorial](docs/tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) | LLM-based schema matching with JSON Schema |
 
 ## Contact
 
-If you have questions or need help, please first consult the [PyDI Tutorial](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/EntityMatchingAndFusion/PyDI_Tutorial.ipynb), the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
+If you have questions or need help, please first consult the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md), the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
 
 ## Acknowledgements
 
-PyDI is developed by the [Web-based Systems Group](https://www.uni-mannheim.de/dws/research/focus-groups/web-based-systems-prof-bizer/) at the [University of Mannheim](http://www.uni-mannheim.de/).
+PyDI is developed by the [Web-based Systems Group](https://www.uni-mannheim.de/dws/research/focus-groups/web-based-systems-prof-bizer/) at the [University of Mannheim](http://www.uni-mannheim.de/). The framework has been used in projects of the [Web Data Integration course](https://www.uni-mannheim.de/dws/teaching/course-details/courses-for-master-candidates/ie-670-web-data-integration/) at the University of Mannheim.

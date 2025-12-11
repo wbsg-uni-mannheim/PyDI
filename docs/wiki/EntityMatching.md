@@ -672,3 +672,7 @@ evaluator = EntityMatchingEvaluator()
 metrics_blocker = evaluator.evaluate_blocking(candidate_set, evaluation_set)
 metrics_matcher = evaluator.evaluate_matching(refined, evaluation_set)
 ```
+
+## Tutorials
+
+- [Data Integration Tutorial](../tutorial/entity_matching_and_fusion/data_integration_tutorial.ipynb) - Complete pipeline: blocking, matching (rule-based and ML), post-clustering, and evaluation with movie datasets
