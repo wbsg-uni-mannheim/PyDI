@@ -1,8 +1,8 @@
 # Value Normalization
 
-Value Normalization transforms messy, inconsistent data into clean, standardized formats. The input is a DataFrame with columns containing values in varying formats (e.g., "5 MEO", "Germany", "DEU", "+1-555-123-4567"). The output is a DataFrame with normalized values in consistent formats (e.g., `5000000`, "DE", "+15551234567").
+Value Normalization transforms messy, inconsistent data into clean and standardized formats. The input is a DataFrame with columns containing values in varying formats (e.g., "5 MEO", "Germany", "DEU", "+1-555-123-4567"). The output is a DataFrame with normalized values in consistent formats (e.g., `5000000`, "DE", "+15551234567").
 
-PyDI's normalization module provides `profile_dataframe` for auto-detecting column types and suggesting transformations, `NormalizationSpec` for defining how columns should be normalized, and `transform_dataframe` for applying the transformations. The module integrates external libraries for specific normalization tasks (Pint for units, pycountry for country codes, python-stdnum for standard numbers, etc.).
+PyDI's normalization module provides `profile_dataframe` for auto-detecting column types and suggesting transformations, `NormalizationSpec` for defining how columns should be normalized, and `transform_dataframe` for applying the specified transformations. The module integrates external libraries for specific normalization tasks (Pint for units, pycountry for country codes, python-stdnum for standard numbers, etc.).
 
 ## Requirements
 
@@ -49,7 +49,7 @@ vat_number:
   Suggestion: Consider validating and formatting standard numbers
 ```
 
-### Detected Types
+### Supported Data Types
 
 The profiler detects the following column types:
 - `numeric`, `string`, `date`, `boolean` - Basic types
@@ -63,7 +63,7 @@ The profiler detects the following column types:
 
 ## Normalization Specification
 
-The `NormalizationSpec` defines how columns should be normalized. Create a spec manually or generate one from a profile.
+The `NormalizationSpec` defines how columns should be normalized. You can create a spec manually or generate a spec from a profile if you want to translate heterogenious data into this target profile.
 
 ### Manual Specification
 
@@ -80,7 +80,7 @@ spec.set_column("vat_number", stdnum_format=True, on_failure="null")
 spec.set_column("percentage", convert_percentage="to_decimal", output_type="float")
 ```
 
-### From Profile (Auto-Detection)
+### Generate Specification from Profile
 
 ```python
 from PyDI.normalization import profile_dataframe, NormalizationSpec
@@ -124,7 +124,7 @@ spec.set_column("vat_number", stdnum_format=True, on_failure="null")
 spec.set_column("email", normalize_email=True, on_failure="raise")
 ```
 
-## Transformation
+## Data Transformation
 
 The `transform_dataframe` function applies the spec to a DataFrame and returns detailed results.
 
@@ -164,7 +164,7 @@ normalized_df = normalize_dataframe(df, auto=True)
 
 ## Unit Conversions
 
-The module uses Pint for physical unit conversions (length, weight, temperature, etc.).
+The module uses Pint for unit of measurement conversions (length, weight, temperature, etc.).
 
 ```python
 from PyDI.normalization import normalize_quantity, convert_units
@@ -181,7 +181,7 @@ convert_units(5, "km", "miles")                     # 3.10...
 
 ### Supported Scale Modifiers
 
-Scale modifiers are expanded automatically:
+The following scale modifiers are expanded automatically:
 - `MEO`, `MEUR` → ×1,000,000 (million euros)
 - `kEUR`, `KEUR` → ×1,000 (thousand euros)
 - `million`, `mio`, `mn` → ×1,000,000
@@ -387,4 +387,4 @@ print(report.summary())
 ## Tutorials
 
 - [Value Normalization Tutorial](../tutorial/normalization/value_normalization/value_normalization_tutorial.ipynb) - Full workflow: profiling, specs, transformations with a messy company dataset
-- [Schema Matching Tutorial](../tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) - JSON Schema integration with LLM-based schema matching
+- [Schema Matching Tutorial](../tutorial/normalization/schema_matching/schema_matching_tutorial.ipynb) - demonstrates how value normalization is used as part of a overall pipeline which matches different datasets to a JSON target schema and translates the datasets into this target schema afterwards.

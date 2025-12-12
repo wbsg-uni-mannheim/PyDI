@@ -10,12 +10,12 @@ This directory contains tutorials demonstrating PyDI's data integration capabili
 |----------|-------------|----------------|
 | [data_integration_tutorial.ipynb](entity_matching_and_fusion/data_integration_tutorial.ipynb) | End-to-end data integration with movie datasets | Data loading, blocking, entity matching (rule-based, ML-based), post-clustering, data fusion, evaluation |
 
-### Normalization and Schema Matching
+### Schema Matching and Value Normalization
 
 | Tutorial | Description | Topics Covered |
 |----------|-------------|----------------|
-| [value_normalization_tutorial.ipynb](normalization/value_normalization/value_normalization_tutorial.ipynb) | Full normalization workflow with messy company data | Profiling, NormalizationSpec, transformations, unit conversion, country/currency codes, phone/email normalization |
 | [schema_matching_tutorial.ipynb](normalization/schema_matching/schema_matching_tutorial.ipynb) | Schema matching with JSON Schema-driven normalization | LLM-based schema matching, JSON Schema integration, SchemaTranslator |
+| [value_normalization_tutorial.ipynb](normalization/value_normalization/value_normalization_tutorial.ipynb) | Full normalization workflow with messy company data | Profiling, NormalizationSpec, transformations, unit conversion, country/currency codes, phone/email normalization |
 
 ## Directory Structure
 
@@ -53,7 +53,7 @@ tutorial/
 
 ## Related Documentation
 
-For API references and additional details, see the [Wiki](../wiki/):
+The PyDI [Wiki](../wiki/) covers the complete functionality of each module:
 
 - [IO](../wiki/IO.md) - Data loading with provenance
 - [Schema Matching](../wiki/SchemaMatching.md) - Column correspondence discovery

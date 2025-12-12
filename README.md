@@ -2,7 +2,7 @@
 
 The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 
-This page provides an overview of the functionality of the PyDI framework. As alternatives to familiarizing yourself with the framework, you can also read the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) or have a look at the code examples in our [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md)!
+This page provides an overview of the PyDI framework. Further details about the functionality of the framework are found  in the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md). To learn how to use the framework, please read the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) or have a look at the [Use Cases](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/usecases/README.md) that illustrate how PyDI is used for end-to-end data integration!
 
 ## Installing PyDI
 
@@ -14,29 +14,27 @@ pip install uma-pydi
 
 ## Functionality
 
-The PyDI framework covers all steps of the data integration process, including data loading, schema matching, data translation, entity matching, and data fusion. This section gives an overview of the functionality and the alternative algorithms that are provided for each of these steps.
+The PyDI framework covers all steps of the data integration process, including data loading, schema matching, data translation, entity matching, and data fusion. This section gives an overview of the functionality and the alternative methods that are provided for each of these steps.
 
-**Schema Matching**: Schema matching identifies attributes in multiple schemata that have the same meaning. PyDI provides four schema matching methods which either rely on attribute labels or data values, or exploit an existing mapping of records (duplicate-based schema matching) in order to find attribute correspondences. PyDI's schema matching module offers:
+**Schema Matching**: Schema matching identifies attributes in multiple schemata that have the same meaning. PyDI provides four schema matching methods which either rely on attribute labels or data values, or exploit an existing mapping of records in order to find attribute correspondences (duplicate-based schema matching). PyDI's schema matching module offers:
 
 -   Label-based schema matching
 -   Instance-based schema matching
 -   Duplicate-based schema matching
--   LLM-based schema matching (with optional target schema context via JSON Schema)
--   Schema translation with optional value normalization
+-   LLM-based schema matching
+-   Data translation with optional value normalization
 -   Evaluation of schema matching results
 -   Debug reports about the matching process
 
-**Data Translation**: Translates data from a source schema into a target schema. The translation process includes value normalization and information extraction. PyDI provides the following methods:
+**Data Translation**: Translates data from a source schema into a target schema. The translation process may include value normalization and information extraction. PyDI provides the following data translaton methods:
 
 -   Value normalization
     -   Data profiling with automatic type and pattern detection
-    -   Unit of measurement conversion (length, weight, temperature, area, etc.)
-    -   Scale modifier expansion (MEO, MEUR, million, billion → numeric values)
-    -   Country, currency, and language code normalization (ISO standards)
-    -   Phone number parsing and formatting (E.164 format)
-    -   Email validation and normalization
-    -   Standard number validation (IBAN, VAT, ISBN)
-    -   JSON Schema integration for loading normalization specs
+    -   Unit of measurement conversion (length, weight, temperature, etc.)
+    -   Scale modifier expansion (MEO, MEUR, million, billion)
+    -   Country, currency, and language code normalization
+    -   Number validation (phone, IBAN, VAT, ISBN)
+    -   JSON Schema support for specifying normalization specs
     -   Data quality validation (ranges, patterns, completeness, uniqueness)
 -   Information extraction via
     -   Regex
@@ -67,7 +65,6 @@ The PyDI framework covers all steps of the data integration process, including d
     -   Dates: most_recent, earliest
     -   Lists: union, intersection, intersection_k_sources
     -   Metadata-based: voting, weighted_voting, favour_sources, prefer_higher_trust
--   Configurable evaluation functions with tolerance (tokenized_match, numeric_tolerance, year_only_match)
 -   Evaluation of data fusion results against ground truth
 -   Provenance tracking for fused values
 -   Debug reports about the fusion process
@@ -88,8 +85,8 @@ The PyDI framework covers all steps of the data integration process, including d
 
 ## Contact
 
-If you have questions or need help, please first consult the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md), the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md), and the project documentation. For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information, please email the maintainers of the framework.
+For issues, feature requests, or contributions, please open a GitHub **Issue** or submit a **Pull Request**. For further information about PyDI, please email the maintainers of the framework.
 
 ## Acknowledgements
 
-PyDI is developed by the [Web-based Systems Group](https://www.uni-mannheim.de/dws/research/focus-groups/web-based-systems-prof-bizer/) at the [University of Mannheim](http://www.uni-mannheim.de/). The framework has been used in projects of the [Web Data Integration course](https://www.uni-mannheim.de/dws/teaching/course-details/courses-for-master-candidates/ie-670-web-data-integration/) at the University of Mannheim.
+PyDI is developed by the [Web-based Systems Group](https://www.uni-mannheim.de/dws/research/focus-groups/web-based-systems-prof-bizer/) at the [University of Mannheim](http://www.uni-mannheim.de/). The framework is used for projects and exercises in the course [Web Data Integration](https://www.uni-mannheim.de/dws/teaching/course-details/courses-for-master-candidates/ie-670-web-data-integration/) at the University of Mannheim.
