@@ -2,7 +2,7 @@
 
 The PyDI framework provides methods for end-to-end data integration. The framework covers all steps of the integration process, including schema matching, data translation, entity matching, and data fusion. The framework offers both traditional string-based methods as well as modern LLM- and embedding-based techniques for these tasks. PyDI is designed as a set of independent, composable modules that operate on pandas DataFrames as the underlying data structure, ensuring interoperability with third-party packages that rely on pandas. 
 
-This page provides an overview of the PyDI framework. Further details about the functionality of the framework are found  in the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md). To learn how to use the framework, please read the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) or have a look at the [Use Cases](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/usecases/README.md) that illustrate how PyDI is used for end-to-end data integration!
+This page provides an overview of the PyDI framework. Further details about the functionality of the framework are found  in the [Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md). In order to learn how to use the framework, please read the [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) or have a look at the [Use Cases](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/usecases/README.md) which illustrate how PyDI is used for end-to-end data integration.
 
 ## Installing PyDI
 
@@ -34,7 +34,7 @@ The PyDI framework covers all steps of the data integration process, including d
     -   Scale modifier expansion (MEO, MEUR, million, billion)
     -   Country, currency, and language code normalization
     -   Number validation (phone, IBAN, VAT, ISBN)
-    -   JSON Schema support for specifying normalization specs
+    -   JSON Schema support for defining normalization specs
     -   Data quality validation (ranges, patterns, completeness, uniqueness)
 -   Information extraction via
     -   Regex
