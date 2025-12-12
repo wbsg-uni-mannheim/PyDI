@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "$id": "https://example.com/schemas/release.schema.json",
+  "title": "release",
+  "description": "Information about a single music release and its tracks.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "id",
+      "description": "Identifier of the release."
+    },
+    "name": {
+      "type": "string",
+      "title": "name",
+      "description": "Name of the release."
+    },
+    "artist": {
+      "type": "string",
+      "title": "artist",
+      "description": "Name of the artist for this release."
+    },
+    "release-date": {
+      "type": "string",
+      "title": "release-date",
+      "description": "Date when the release was published."
+    },
+    "release-country": {
+      "type": "string",
+      "title": "release-country",
+      "description": "Country where this release was issued."
+    },
+    "duration": {
+      "type": "string",
+      "title": "duration",
+      "description": "Total duration of the release."
+    },
+    "label": {
+      "type": "string",
+      "title": "label",
+      "description": "Record label that published the release."
+    },
+    "genre": {
+      "type": "string",
+      "title": "genre",
+      "description": "Primary genre of the release."
+    },
+    "tracks_track_name": {
+      "type": "array",
+      "title": "tracks",
+      "description": "List of track names on this release."
+    },
+    "tracks_track_duration": {
+      "type": "array",
+      "title": "tracks",
+      "description": "List of track durations on this release."
+    },
+      "tracks_track_position": {
+      "type": "array",
+      "title": "tracks",
+      "description": "List of track positions on this release."
+    }
+  },
+    "required": [
+            "id",
+            "name",
+            "artist",
+            "release-date",
+            "release-country",
+            "duration",
+            "label",
+            "genre",
+            "tracks_track_name",
+            "tracks_track_duration",
+            "tracks_track_position"
+        ],
+    "additionalProperties": false
+}
