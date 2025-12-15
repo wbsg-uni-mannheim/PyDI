@@ -120,20 +120,26 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
 
         logger.info(f"Initialized LLMBasedSchemaMatcher with {num_rows} sample rows")
 
-    def _format_target_schema(self) -> str:
+    def _format_target_schema(self, schema: Optional[Dict[str, Any]] = None) -> str:
         """Format target schema as readable text for LLM prompt.
+
+        Parameters
+        ----------
+        schema : dict, optional
+            JSON Schema to format. If not provided, uses self.target_schema.
 
         Returns
         -------
         str
             Formatted schema description or empty string
         """
-        if not self.target_schema:
+        effective_schema = schema if schema is not None else self.target_schema
+        if not effective_schema:
             return ""
 
         lines = []
-        title = self.target_schema.get("title", "Target Schema")
-        description = self.target_schema.get("description", "")
+        title = effective_schema.get("title", "Target Schema")
+        description = effective_schema.get("description", "")
 
         lines.append(f"**{title}**")
         if description:
@@ -141,7 +147,7 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
         lines.append("")
         lines.append("**Target Fields:**")
 
-        properties = self.target_schema.get("properties", {})
+        properties = effective_schema.get("properties", {})
         for field_name, field_spec in properties.items():
             field_type = field_spec.get("type", "any")
             field_desc = field_spec.get("description", "")
@@ -151,6 +157,56 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
                 lines.append(f"- `{field_name}` ({field_type})")
 
         return "\n".join(lines)
+
+    def _format_source_metadata(self, metadata: Optional[Dict[str, Any]]) -> str:
+        """Format Schema.org dataset metadata for LLM prompt.
+
+        Supports Schema.org Dataset format with variableMeasured for column descriptions.
+
+        Parameters
+        ----------
+        metadata : dict, optional
+            Schema.org metadata dict with @type "Dataset"
+
+        Returns
+        -------
+        str
+            Formatted metadata description or empty string
+        """
+        if not metadata:
+            return ""
+
+        lines = []
+
+        # Dataset-level info
+        name = metadata.get("name", "")
+        description = metadata.get("description", "")
+
+        if name:
+            lines.append(f"**{name}**")
+        if description:
+            lines.append(f"{description}")
+
+        # Variable/column descriptions from variableMeasured
+        variables = metadata.get("variableMeasured", [])
+        if variables:
+            lines.append("")
+            lines.append("**Source Fields:**")
+            for var in variables:
+                if isinstance(var, dict):
+                    var_name = var.get("name", "")
+                    var_desc = var.get("description", "")
+                    var_unit = var.get("unitText", "")
+
+                    if var_name:
+                        parts = [f"- `{var_name}`"]
+                        if var_unit:
+                            parts.append(f"({var_unit})")
+                        if var_desc:
+                            parts.append(f": {var_desc}")
+                        lines.append(" ".join(parts) if len(parts) > 1 else parts[0])
+
+        return "\n".join(lines) if lines else ""
 
     def _get_default_system_prompt(self) -> str:
         """Get the default system prompt for schema matching."""
@@ -165,13 +221,27 @@ Return the final answer strictly as JSON in the format {{"column_mappings": [["T
         return """Description: Please identify the matching columns between Table A and Table B. For each column in Table A, specify the corresponding column in Table B. If a column in Table A has no corresponding column in Table B, map it to null. Represent every mapping using a pair [Table A column, Table B column or null]. Provide a mapping for each column in Table A.
 
 Question:
-Table A (source: {source_name})
+## Table A (source: {source_name})
+
+### Dataset Description
+{source_schema_info}
+
+### Provenance
 {source_metadata}
+
+### Sample Data
 {source_table}
 
-Table B (source: {target_name})
+## Table B (source: {target_name})
+
+### Dataset Description
+{target_schema_info}
+
+### Provenance
 {target_metadata}
-{target_schema_info}{target_table}
+
+### Sample Data
+{target_table}
 
 Return the final result as JSON in the format {{"column_mappings": [["Table A column", "Table B column"], ["Table A column", null], ...]}}."""
 
@@ -414,6 +484,8 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         preprocess: Optional[Callable[[str], str]] = None,
         *,
         num_rows: Optional[int] = None,
+        source_metadata: Optional[Dict[str, Any]] = None,
+        target_schema: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> SchemaMapping:
         """Find schema correspondences using LLM analysis.
@@ -426,6 +498,17 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
             The target dataset
         preprocess : callable, optional
             Preprocessing function (not used in LLM matching)
+        num_rows : int, optional
+            Override for number of sample rows to show
+        source_metadata : dict, optional
+            Schema.org metadata for the source dataset. When provided, the LLM
+            sees dataset description and column definitions from variableMeasured.
+            Example: {"name": "Companies", "variableMeasured": [{"name": "revenue", "description": "Annual revenue"}]}
+        target_schema : dict, optional
+            JSON Schema for the target dataset. Overrides the target_schema set in
+            the constructor. When provided, the LLM sees field names, types, and
+            descriptions for better matching.
+            Example: {"properties": {"name": {"type": "string", "description": "Full name"}}}
         **kwargs
             Additional keyword arguments (ignored)
 
@@ -453,9 +536,9 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         if effective_num_rows is None or effective_num_rows <= 0:
             effective_num_rows = max(1, self.num_rows or 1)
 
-        # Extract metadata and convert DataFrames to markdown
-        source_metadata = self._extract_dataset_metadata(source_dataset)
-        target_metadata = self._extract_dataset_metadata(target_dataset)
+        # Extract provenance metadata and convert DataFrames to markdown
+        source_provenance = self._extract_dataset_metadata(source_dataset)
+        target_provenance = self._extract_dataset_metadata(target_dataset)
         source_markdown = self._dataframe_to_markdown(
             source_dataset,
             source_name,
@@ -474,19 +557,29 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
 
         for attempt in range(self.max_retries + 1):
             try:
-                # Format target schema info if available
-                target_schema_info = self._format_target_schema()
+                # Format source schema info from Schema.org metadata if available
+                source_schema_info = self._format_source_metadata(source_metadata)
+                if source_schema_info:
+                    source_schema_info = source_schema_info + "\n\n"
+                else:
+                    source_schema_info = "(No dataset description available)\n\n"
+
+                # Format target schema info - use parameter override if provided
+                target_schema_info = self._format_target_schema(target_schema)
                 if target_schema_info:
                     target_schema_info = target_schema_info + "\n\n"
+                else:
+                    target_schema_info = "(No dataset description available)\n\n"
 
                 # Format prompt
                 messages = prompt_template.format_messages(
                     source_name=source_name,
-                    source_metadata=source_metadata,
+                    source_schema_info=source_schema_info,
+                    source_metadata=source_provenance,
                     source_table=source_markdown,
                     target_name=target_name,
-                    target_metadata=target_metadata,
                     target_schema_info=target_schema_info,
+                    target_metadata=target_provenance,
                     target_table=target_markdown
                 )
 
@@ -495,14 +588,15 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
                     prompt_data = {
                         "source_name": source_name,
                         "target_name": target_name,
-                        "source_metadata": source_metadata,
-                        "target_metadata": target_metadata,
+                        "source_schema_info": source_schema_info,
+                        "source_provenance": source_provenance,
                         "target_schema_info": target_schema_info,
+                        "target_provenance": target_provenance,
                         "source_table": source_markdown,
                         "target_table": target_markdown,
-                        "attempt": attempt
+                        "attempt": attempt,
+                        "effective_num_rows": effective_num_rows
                     }
-                    prompt_data["effective_num_rows"] = effective_num_rows
                     self._write_artifact(f"prompt_attempt_{attempt}.json", prompt_data)
 
                     # Also save as readable text

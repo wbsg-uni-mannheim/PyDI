@@ -49,6 +49,39 @@ vat_number:
   Suggestion: Consider validating and formatting standard numbers
 ```
 
+### What a Profile Contains
+
+A `DataFrameProfile` contains `row_count`, `column_count`, and a `ColumnProfile` for each column. Each `ColumnProfile` includes:
+
+- `name`, `dtype` - Column name and pandas dtype
+- `total_count`, `null_count`, `unique_count` - Basic statistics
+- `detected_type` - Semantic type (see [Supported Data Types](#supported-data-types))
+- `sample_values` - Up to 5 sample values
+- `suggestions` - Recommended normalizations
+
+Depending on the detected type, additional detail fields are populated:
+
+| Field | When Present | Contains |
+|-------|--------------|----------|
+| `unit_info` | `unit_quantity` | `units_detected`, `dimensionalities`, `coverage` |
+| `scale_info` | `scaled_number` | `modifiers_detected`, `coverage` |
+| `percentage_info` | `percentage` | `with_symbol`, `decimal_range`, `format`, `coverage` |
+| `stdnum_info` | `stdnum` | `types_detected`, `coverage` |
+| `country_info` | `country` | `formats_detected` (alpha_2/alpha_3/numeric/name), `coverage` |
+
+You can access the profile programmatically or export it:
+
+```python
+# Access column profiles
+for col_name, col_profile in profile.columns.items():
+    print(f"{col_name}: {col_profile.detected_type}")
+    print(f"  Suggestions: {col_profile.suggestions}")
+
+# Export
+profile_dict = profile.to_dict()
+profile_json = profile.to_json(indent=2)
+```
+
 ### Supported Data Types
 
 The profiler detects the following column types:
@@ -63,7 +96,103 @@ The profiler detects the following column types:
 
 ## Normalization Specification
 
-The `NormalizationSpec` defines how columns should be normalized. You can create a spec manually or generate a spec from a profile if you want to translate heterogenious data into this target profile.
+The `NormalizationSpec` defines how columns should be normalized. You can create a spec manually, generate one from a profile, or derive it from a JSON schema.
+
+### From JSON Schema
+
+Use `load_normalization_spec()` to derive a spec from a JSON schema. This is useful when you have a target schema that defines the expected output format.
+
+```python
+from PyDI.normalization import load_normalization_spec
+
+# From file
+spec = load_normalization_spec("target_schema.json")
+
+# From dict
+spec = load_normalization_spec(schema_dict)
+
+# From nested schema (access specific path)
+spec = load_normalization_spec(schema, property_path="definitions.movie")
+```
+
+The function reads the schema properties and maps them to normalization options:
+
+**Type Mappings**
+
+| JSON Schema `type` | `output_type` |
+|--------------------|---------------|
+| `"string"` | `"string"` |
+| `"integer"` | `"int"` |
+| `"number"` | `"float"` |
+| `"boolean"` | `"bool"` |
+
+**Format Mappings**
+
+| JSON Schema `format` | Normalization Setting |
+|----------------------|-----------------------|
+| `"date"`, `"date-time"`, `"time"` | `output_type="datetime"` |
+| `"email"`, `"idn-email"` | `normalize_email=True` |
+| `"country-alpha2"` | `country_format="alpha_2"` |
+| `"country-alpha3"` | `country_format="alpha_3"` |
+| `"country-name"` | `country_format="name"` |
+| `"currency-alpha3"` | `currency_format="alpha_3"` |
+| `"currency-name"` | `currency_format="name"` |
+| `"phone-e164"` | `phone_format="e164"` |
+| `"phone-international"` | `phone_format="international"` |
+| `"phone-national"` | `phone_format="national"` |
+| `"percentage"` | `convert_percentage="to_decimal"` |
+| `"stdnum"` | `stdnum_format=True` |
+
+**PyDI Custom Extensions**
+
+For settings not covered by standard JSON Schema, use `x-pydi-*` extensions:
+
+| Extension | Maps To | Example |
+|-----------|---------|---------|
+| `x-pydi-target-unit` | `target_unit` | `"m"`, `"kg"`, `"USD"` |
+| `x-pydi-expand-scale` | `expand_scale_modifiers` | `true` |
+| `x-pydi-convert-percentage` | `convert_percentage` | `"to_decimal"` |
+| `x-pydi-on-failure` | `on_failure` | `"null"`, `"keep"`, `"raise"` |
+| `x-pydi-phone-region` | `phone_default_region` | `"US"`, `"DE"` |
+| `x-pydi-case` | `case` | `"lower"`, `"upper"` |
+| `x-pydi-strip-whitespace` | `strip_whitespace` | `true` |
+
+Example JSON schema with PyDI extensions:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "revenue": {
+      "type": "number",
+      "x-pydi-expand-scale": true
+    },
+    "country": {
+      "type": "string",
+      "format": "country-alpha2"
+    },
+    "contact_email": {
+      "type": "string",
+      "format": "email"
+    }
+  }
+}
+```
+
+Note: Nested structures (`object` and `array` types) are skipped. Only flat properties are processed.
+
+### From Profile (Auto-Detection)
+
+Use the profile from the [Profiling](#profiling) step to auto-generate a normalization spec:
+
+```python
+from PyDI.normalization import profile_dataframe, NormalizationSpec
+
+profile = profile_dataframe(df)
+spec = NormalizationSpec.from_profile(profile)
+```
+
+This derives column specs from the detected types and suggestions. For example, a column detected as `country` gets `country_format="alpha_2"`, a `scaled_number` column gets `expand_scale_modifiers=True`, etc.
 
 ### Manual Specification
 
@@ -78,15 +207,6 @@ spec.set_column("phone", phone_format="e164", phone_default_region="US")
 spec.set_column("email", normalize_email=True)
 spec.set_column("vat_number", stdnum_format=True, on_failure="null")
 spec.set_column("percentage", convert_percentage="to_decimal", output_type="float")
-```
-
-### Generate Specification from Profile
-
-```python
-from PyDI.normalization import profile_dataframe, NormalizationSpec
-
-profile = profile_dataframe(df)
-spec = NormalizationSpec.from_profile(profile)
 ```
 
 ### Column Spec Options
