@@ -5,9 +5,26 @@ All notable changes to PyDI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2025-12-15
 
 ### Added
+
+- **LLM-Based Schema Matching Enhancements**:
+  - `source_metadata` parameter in `match()` for Schema.org Dataset metadata
+  - `target_schema` parameter in `match()` to override constructor-level schema
+  - Structured prompt template with clear sections (Dataset Description, Provenance, Sample Data)
+  - Support for `variableMeasured` field descriptions from Schema.org metadata
+
+- **JSON Schema Integration**:
+  - `load_normalization_spec()` derives normalization rules from JSON Schema
+  - `load_validation_spec()` extracts validation constraints from JSON Schema
+  - Support for `type`, `format`, and custom `x-pydi-*` extensions
+  - Target schema descriptions passed to LLM for better matching context
+
+- **SchemaTranslator with Normalization**:
+  - `normalize` parameter accepts `NormalizationSpec`, `True` (auto-detect), or `False`
+  - `on_failure` parameter controls handling of normalization failures
+  - Combined translation and normalization in a single step
 
 - **New Spec/Transform API** for declarative normalization:
   - `NormalizationSpec` - Define DataFrame-level normalization rules
@@ -30,6 +47,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New validators**:
   - `PydanticSchemaValidator` - Validate DataFrames using Pydantic models
   - `validate_with_pydantic()` - Convenience function for Pydantic validation
+
+- **Documentation**:
+  - Schema Matching Wiki with Target Schema and Source Dataset Metadata sections
+  - Normalization Wiki with JSON Schema integration guide and type/format mapping tables
+  - Updated tutorials with proper content ordering and cross-references
+  - End-to-end use cases for companies, games, movies, and music domains
 
 ### Changed
 
