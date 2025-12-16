@@ -12,7 +12,6 @@ from .base import BasePostClusterer
 
 # Clustering-based methods
 from .connected_components import ConnectedComponentClusterer
-from .centre_clusterer import CentreClusterer
 from .hierarchical_clusterer import HierarchicalClusterer
 
 # Global optimization methods
@@ -23,7 +22,6 @@ from .stable_matching import StableMatching
 __all__ = [
     "BasePostClusterer",
     "ConnectedComponentClusterer",
-    "CentreClusterer",
     "HierarchicalClusterer",
     "GreedyOneToOneMatchingAlgorithm",
     "MaximumBipartiteMatching",
