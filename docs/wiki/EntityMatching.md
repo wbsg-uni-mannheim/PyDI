@@ -434,7 +434,7 @@ The matcher writes artifacts to `out_dir`: prompts, responses, errors, and stati
 
 ## Post-Filtering Correspondences
 
-Post-filtering algorithms refine correspondences by enforcing **one-to-one constraints** between correspondences of **two** datasets, ensuring each entity matches at most one other entity. PyDI provides three algorithms with different optimization strategies.
+Post-filtering algorithms refine correspondences by enforcing **one-to-one constraints** between correspondences of **two** datasets, ensuring each record from one dataset matches at most one record from the other dataset. PyDI provides three algorithms with different optimization strategies.
 
 **When to Use:** Apply post-filtering when (you are reasonably certain) both input datasets are already deduplicated (contain no internal duplicates). Enforcing the one-to-one constraint in these cases can increase precision. Do not use when you expect duplicates inside source datasets.
 
@@ -447,7 +447,7 @@ Built-in one-to-one matching algorithms:
 
 ### Greedy One-to-One Matching
 
-Iteratively selects the highest-scoring correspondence first. Sorts all correspondences by similarity score and picks matches from highest to lowest, removing pairs where either entity is already matched.
+Iteratively selects the highest-scoring correspondence first. Sorts all correspondences by similarity score and picks matches from highest to lowest, removing correspondences where either record is already matched.
 
 Fast heuristic that prioritizes high scores but doesn't guarantee the globally optimal solution. 
 
@@ -462,7 +462,7 @@ greedy_matches = greedy.cluster(correspondences)
 
 ### Maximum Weighted Bipartite Matching
 
-Formulates matching as a graph optimization problem and finds the globally optimal one-to-one matching that maximizes total similarity score of remaining matches. Constructs a bipartite graph where entities are nodes and correspondences are weighted edges, then solves for maximum weight matching.
+Formulates matching as a graph optimization problem and finds the globally optimal one-to-one matching that maximizes total similarity score of remaining correspondences. Constructs a bipartite graph where records are nodes and correspondences are weighted edges, then solves for maximum weight matching. Edge weights are the similarity scores as given by the input correspondences.
 
 Is computationally more expensive compared to Greedy matching. Uses the Hungarian algorithm.
 
@@ -477,7 +477,7 @@ mbm_matches = mbm.cluster(correspondences)
 
 ### Stable Matching
 
-Ensures mutual preference satisfaction using a stable marriage algorithm. For each record, builds a preference list of matches sorted by similarity scores. Only selects matches where both records mutually prefer each other among available options: no pair of entities would rather be matched with each other than their assigned partners.
+Ensures mutual preference satisfaction using a stable marriage algorithm. For each record, builds a preference list of matches sorted by similarity score as given by the input correspondences. Only selects correspondences where both records mutually prefer each other among available options: no pair of records would rather be matched with each other than their assigned partners.
 
 Faster than Maximum Weighted Bipartite Matching but slower than Greedy One-to-One Matching.
 
@@ -514,7 +514,7 @@ Built-in post-processing algorithms:
 
 ### Connected Component Clustering
 
-Groups all transitively connected entities. If record A matches B and B matches C, all three are clustered even if A and C were not discovered as a correspondence.
+Groups all transitively connected records. If record A matches B and B matches C, all three are clustered even if A and C were not discovered as a correspondence.
 
 Applies transitive closure by treating correspondences as edges in a graph and finding all connected components. Expands the correspondence set to include all pairs within each component, creating fully connected clusters.
 
@@ -568,7 +568,7 @@ refined = clusterer.cluster(correspondences_all)
 
 ## Evaluation
 
-The evaluator supports blocking evaluation: pass candidate pairs and gold standard to measure blocking recall and reduction ratio.
+The entity matching evaluator supports blocking evaluation: pass candidate pairs and labeled evaluation set to measure blocking recall and reduction ratio.
 
 ```python
 from PyDI.entitymatching import EntityMatchingEvaluator
@@ -588,7 +588,7 @@ blocking_metrics = evaluator.evaluate_blocking(
 )
 ```
 
-The evaluator also supports evaluating a matching against an evaluation set. Returns precision, recall, F1.
+The entity matching evaluator also supports evaluating a correspondence set against a labeled evaluation set. Returns precision, recall, F1.
 
 ```python
 metrics = evaluator.evaluate_matching(
