@@ -495,7 +495,7 @@ refined = clusterer.cluster(correspondences)
 
 Bottom-up agglomerative clustering that iteratively merges the most similar clusters. Supports three linkage modes: MIN (single-linkage), MAX (complete-linkage), and AVG (average-linkage).
 
-**Approach:** Starts with each entity as its own cluster and repeatedly merges the closest pair based on the linkage criterion. MIN uses the minimum distance between any two members, MAX uses the maximum distance, and AVG uses the average distance. Stops when reaching the target number of clusters or when similarity falls below threshold.
+Starts with each entity as its own cluster and repeatedly merges the closest pair based on the linkage criterion. MIN uses the minimum distance between any two members, MAX uses the maximum distance, and AVG uses the average distance. Stops when reaching the target number of clusters or when similarity falls below threshold.
 
 **Use when:** You want hierarchical grouping with control over cluster tightness. Use MIN for chain-like clusters, MAX for compact clusters, and AVG as a balanced middle ground.
 
