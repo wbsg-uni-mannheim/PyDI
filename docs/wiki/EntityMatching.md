@@ -499,9 +499,15 @@ Stop merging when `num_clusters` is reached or when similarity falls below `thre
 
 ### One-to-one matching
 
-Enforce one-to-one constraint: each entity matches at most one other entity.
+Enforce one-to-one constraint: each entity matches at most one other entity. PyDI provides three algorithms with different optimization strategies.
 
-Greedy matching:
+#### Greedy One-to-One Matching
+
+Iteratively selects the highest-scoring correspondence first. Sorts all correspondences by similarity score and picks matches from highest to lowest, skipping pairs where either entity is already matched.
+
+Fast heuristic that prioritizes high scores but doesn't guarantee the best overall solution. High-scoring matches chosen early may block better combinations later.
+
+**Use when:** You have large datasets (thousands of correspondences), speed is critical, or similarity scores clearly distinguish good matches from bad ones.
 
 ```python
 from PyDI.entitymatching import GreedyOneToOneMatchingAlgorithm
@@ -510,18 +516,28 @@ greedy = GreedyOneToOneMatchingAlgorithm()
 greedy_matches = greedy.cluster(correspondences)
 ```
 
-Maximum weighted bipartite matching:
+#### Maximum Weighted Bipartite Matching
+
+Formulates matching as a graph optimization problem and finds the globally optimal solution that maximizes total similarity score. Constructs a bipartite graph where entities are nodes and correspondences are weighted edges, then solves for maximum weight matching.
+
+Guarantees the mathematically optimal solution but is computationally more expensive. Uses the Hungarian algorithm via NetworkX.
+
+**Use when:** You need the best solution, dataset size is manageable (hundreds to thousands of correspondences), and quality is more important than speed.
 
 ```python
 from PyDI.entitymatching import MaximumBipartiteMatching
 
-mbp = MaximumBipartiteMatching()
-mbp_matches = mbp.cluster(correspondences)
+mbm = MaximumBipartiteMatching()
+mbm_matches = mbm.cluster(correspondences)
 ```
 
-Stable matching:
+#### Stable Matching
 
-Finds stable pairs based on preference (similarity) lists. A matching is stable if no two entities prefer each other over their assigned matches.
+Ensures mutual preference satisfaction using a stable marriage-style algorithm. For each entity, builds a preference list sorted by similarity scores. Only selects matches where both entities mutually prefer each other among available options: no pair of entities would rather be matched with each other than their assigned partners.
+
+Focuses on mutual satisfaction rather than maximizing total score. Guarantees stability (no "blocking pairs") but may produce fewer matches than greedy or optimal algorithms.
+
+**Use when:** Mutual preference matters more than total score, you're modeling bilateral assignments (e.g., reviewer-paper matching), or unstable pairings could cause downstream issues.
 
 ```python
 from PyDI.entitymatching import StableMatching
@@ -529,6 +545,15 @@ from PyDI.entitymatching import StableMatching
 stable = StableMatching()
 stable_matches = stable.cluster(correspondences)
 ```
+
+#### Comparison and Selection Guide
+
+
+| Algorithm | Optimization Goal | Speed | Guarantees | Best For |
+|-----------|------------------|-------|------------|----------|
+| Greedy | High scores first | Fastest | None | Large datasets, speed-critical applications |
+| Maximum Bipartite | Max total weight | Slowest | Globally optimal | Quality-critical, medium-sized datasets |
+| Stable Matching | Mutual preferences | Medium | No blocking pairs | Bilateral assignments, mutual satisfaction |
 
 ## Evaluation
 
