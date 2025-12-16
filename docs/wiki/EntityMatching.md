@@ -433,20 +433,28 @@ The matcher writes artifacts to `out_dir`: prompts, responses, errors, and stati
 
 ## Post-Clustering
 
-Post-clustering algorithms refine correspondences by enforcing constraints (e.g., transitivity, one-to-one) or optimizing global objectives. Apply post-clustering after matching to improve precision or satisfy problem requirements.
+Post-clustering algorithms refine correspondences by enforcing constraints (e.g., transitivity, one-to-one) or optimizing global objectives.
 
-Built-in algorithms
-- `ConnectedComponentClusterer` – transitive closure (if A↔B and B↔C, then A↔C)
-- `CentreClusterer` – star-shaped clusters with max diameter 2
-- `HierarchicalClusterer` – agglomerative clustering with configurable linkage
-- `GreedyOneToOneMatchingAlgorithm` – fast one-to-one greedy selection
-- `MaximumBipartiteMatching` – optimal one-to-one via Hungarian algorithm
-- `StableMatching` – preference-based one-to-one stable matching
+Built-in algorithms:
+
+**Clustering algorithms** (many-to-many):
+- `ConnectedComponentClusterer` - transitive closure, groups all connected entities
+- `CentreClusterer` - star-shaped clusters with one center and multiple leaves
+- `HierarchicalClusterer` - agglomerative clustering with configurable linkage modes
+
+**One-to-one matching algorithms**:
+- `GreedyOneToOneMatchingAlgorithm` - fast heuristic, prioritizes high scores first
+- `MaximumBipartiteMatching` - globally optimal solution, maximizes total similarity score
+- `StableMatching` - mutual preference satisfaction, ensures no blocking pairs
 
 
-### Connected component clustering
+### Connected Component Clustering
 
 Groups all transitively connected entities. If record A matches B and B matches C, all three are clustered even if A and C were not directly compared.
+
+Applies transitive closure by treating correspondences as edges in a graph and finding all connected components. Expands the correspondence set to include all pairs within each component, creating fully connected clusters.
+
+**Use when:** Transitivity is a reasonable assumption for your data (e.g., product deduplication, person name resolution), and you want to ensure all indirectly related entities are grouped together.
 
 ```python
 from PyDI.entitymatching import ConnectedComponentClusterer
@@ -459,12 +467,16 @@ clusterer = ConnectedComponentClusterer(
 refined = clusterer.cluster(correspondences)
 ```
 
-Output is all-pairs within each cluster (fully connected graph). Use when transitivity is desired.
+**Note:** Output includes all pairs within each cluster. Can significantly increase the number of correspondences if clusters are large.
 
 
 ### Centre clustering
 
-Creates star-shaped clusters: one center connected to multiple leaves. Max cluster diameter is 2.
+Creates star-shaped clusters where one central entity connects to multiple leaf entities. Maximum cluster diameter is 2, meaning all entities connect through the center.
+
+Selects high-degree entities as cluster centers and groups their direct neighbors. Each cluster has a hub-and-spoke topology. The center is typically the entity with the most connections or highest total similarity score.
+
+**Use when:** Your data has natural hub entities (e.g., master product records with variants, canonical papers with citations).
 
 ```python
 from PyDI.entitymatching import CentreClusterer
@@ -476,12 +488,16 @@ clusterer = CentreClusterer(
 refined = clusterer.cluster(correspondences)
 ```
 
-Use for hub-based grouping (e.g., citations to a canonical paper, product variants to a master record).
+**Note:** Does not enforce transitivity among leaf nodes. Only the center-to-leaf connections are preserved.
 
 
 ### Hierarchical clustering
 
-Bottom-up agglomerative clustering with linkage modes: MIN (single-linkage), MAX (complete-linkage), AVG (average-linkage).
+Bottom-up agglomerative clustering that iteratively merges the most similar clusters. Supports three linkage modes: MIN (single-linkage), MAX (complete-linkage), and AVG (average-linkage).
+
+**Approach:** Starts with each entity as its own cluster and repeatedly merges the closest pair based on the linkage criterion. MIN uses the minimum distance between any two members, MAX uses the maximum distance, and AVG uses the average distance. Stops when reaching the target number of clusters or when similarity falls below threshold.
+
+**Use when:** You want hierarchical grouping with control over cluster tightness. Use MIN for chain-like clusters, MAX for compact clusters, and AVG as a balanced middle ground.
 
 ```python
 from PyDI.entitymatching import HierarchicalClusterer, LinkageMode
@@ -494,7 +510,7 @@ clusterer = HierarchicalClusterer(
 refined = clusterer.cluster(correspondences)
 ```
 
-Stop merging when `num_clusters` is reached or when similarity falls below `threshold`.
+**Note:** Can specify either `num_clusters` (stop at fixed count) or `threshold` (stop at quality level), or both for dual stopping criteria.
 
 
 ### One-to-one matching
