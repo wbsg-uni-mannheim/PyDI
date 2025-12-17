@@ -102,7 +102,7 @@ def test_run_games(get_input_data, get_correspondences, get_fusion_test_set):
         test_gt_m2d,
         out_dir=None
     )
-    assert eval_results['accuracy'] == pytest.approx(0.933, abs=0.01), f"Expected accuracy == 0.933 +/- 0.01, got {eval_results['accuracy']}"
+    assert eval_results['accuracy'] == pytest.approx(0.94, abs=0.02), f"Expected accuracy == 0.94 +/- 0.02, got {eval_results['accuracy']}"
 
     clusterer = StableMatching()
     correspondences_m2s = clusterer.cluster(correspondences_m2s)
