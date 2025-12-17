@@ -1,4 +1,15 @@
-# Building the Documentation
+# PyDI Documentation
+
+The PyDI documentation consists of the
+
++ [PyDI Wiki](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/wiki/Home.md) which describes the functionality of the different modules and contains short code examples.
++ [API Documentation](https://wbsg-uni-mannheim.github.io/PyDI/) systematically describes all classes, methods, and their parameters.
++ [Tutorials](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/docs/tutorial/README.md) which explain the usage of PyDI using complete integration tasks as running examples.  
++ [Use Cases](https://github.com/wbsg-uni-mannheim/PyDI/blob/main/usecases/README.md) which further illustrate how PyDI is used to perform end-to-end data integration.
+
+
+
+## Building the API Documentation
 
 The API documentation is hosted at: **https://wbsg-uni-mannheim.github.io/PyDI/**
 
