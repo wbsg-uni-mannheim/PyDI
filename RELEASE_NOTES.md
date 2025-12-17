@@ -1,12 +1,12 @@
 # PyDI 0.2.0 Release Notes
 
-We're excited to announce PyDI 0.2.0, a major update that completely rewrites the normalization module and adds a new schema translation component. This release brings a declarative, specification-based approach to data transformation.
+We're excited to announce PyDI 0.2.0, a major update that completely rewrites the normalization module and adds a new schema translation component. This release brings a declarative, JSON Schema-based approach to data translation.
 
 ## Highlights
 
-- **Rewritten normalization module** with a new Spec/Transform API
-- **New SchemaTranslator** for applying schema mappings with optional normalization
-- **JSON Schema integration** for defining normalization rules
+- **Rewritten value normalization module** with a new Spec/Transform API
+- **JSON Schema integration** for defining target schemata and normalization rules
+- **New SchemaTranslator** for applying schema mappings and value normalization 
 - **Improved LLM schema matching** with source metadata and target schema context
 - **Four end-to-end use cases** demonstrating complete data integration workflows
 
@@ -14,7 +14,7 @@ We're excited to announce PyDI 0.2.0, a major update that completely rewrites th
 
 ### Declarative Normalization API
 
-The normalization module has been completely rewritten around a specification-based approach:
+The value normalization module has been completely rewritten around a specification-based approach:
 
 ```python
 from PyDI.normalization import (
@@ -38,7 +38,7 @@ spec = NormalizationSpec.from_profile(profile)
 spec = load_normalization_spec("target_schema.json")
 ```
 
-Supported normalizations include:
+The supported value normalization operations include:
 - **Units**: Convert between units of measurement (length, weight, temperature, etc.)
 - **Scale modifiers**: Expand "5M", "2.5 billion", "100K" to numeric values
 - **Countries**: Normalize to ISO alpha-2, alpha-3, numeric, or full names
@@ -49,7 +49,7 @@ Supported normalizations include:
 
 ### Schema Translation
 
-New `SchemaTranslator` class applies schema correspondences to rename columns and optionally normalize values in one step:
+New `SchemaTranslator` class applies schema correspondences to rename columns and optionally also normalizes values in the same step:
 
 ```python
 from PyDI.schemamatching import SchemaTranslator
@@ -69,7 +69,7 @@ df_normalized = translator.translate(
 
 ### JSON Schema Integration
 
-Define your target schema once and use it for both matching and normalization:
+Allows you to specify your target schema using the JSON Schema language and use the specification for both matching and normalization:
 
 ```python
 # Load JSON Schema
@@ -90,7 +90,7 @@ Supported JSON Schema constructs:
 
 ### Improved LLM Schema Matching
 
-The LLM-based matcher now accepts richer context:
+The LLM-based matcher now accepts rich context information, such as table metadata represented using the schema.org vocabulary:
 
 ```python
 # Source metadata (Schema.org Dataset format)
@@ -107,7 +107,7 @@ mapping = matcher.match(
 
 ### Data Profiling
 
-New profiling module detects column types and suggests normalizations:
+New profiling module detects column types and suggests normalization operations:
 
 ```python
 from PyDI.normalization import profile_dataframe
@@ -135,7 +135,7 @@ results = validate_with_pydantic(df, MovieRecord)
 
 ## Use Cases
 
-Four complete end-to-end workflows demonstrate PyDI's capabilities:
+We illustrate the usage of PyDI along four complete end-to-end integration workflows:
 
 | Use Case | Domain | Datasets | Features Demonstrated |
 |----------|--------|----------|----------------------|
