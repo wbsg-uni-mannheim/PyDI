@@ -12,4 +12,4 @@ User guide and API reference for the PyDI package.
    :maxdepth: 2
    :caption: Contents:
 
-   api/modules
+   api/PyDI
