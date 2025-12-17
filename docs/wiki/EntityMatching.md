@@ -15,7 +15,8 @@ PyDI's Entity Matching module identifies records describing the same real-world 
 - [Blocking](#blocking)
 - [Comparators](#comparators)
 - [Matchers](#matchers)
-- [Post-Clustering](#post-clustering)
+- [Post-Filtering Correspondences](#post-filtering-correspondences)
+- [Post-Processing Correspondences](#post-processing-correspondences)
 - [Evaluation](#evaluation)
 - [Debug Logs and Tuning](#debug-logs-and-tuning)
 - [Example: End-to-End](#example-end-to-end)
@@ -431,99 +432,26 @@ correspondences = matcher.match(
 The matcher writes artifacts to `out_dir`: prompts, responses, errors, and statistics. These can be used for debugging and cost tracking.
 
 
-## Post-Clustering
+## Post-Filtering Correspondences
 
-Post-clustering algorithms refine correspondences by enforcing constraints (e.g., transitivity, one-to-one) or optimizing global objectives.
+Post-filtering algorithms refine correspondences by enforcing **one-to-one constraints** between correspondences of **two** datasets, ensuring each record from one dataset matches at most one record from the other dataset. PyDI provides three algorithms with different optimization strategies.
 
-Built-in algorithms:
+**When to Use:** Apply post-filtering when (you are reasonably certain) both input datasets are already deduplicated (contain no internal duplicates). Enforcing the one-to-one constraint in these cases can increase precision. Do not use when you expect duplicates inside source datasets.
 
-**Clustering algorithms** (many-to-many):
-- `ConnectedComponentClusterer` - transitive closure, groups all connected entities
-- `CentreClusterer` - star-shaped clusters with one center and multiple leaves
-- `HierarchicalClusterer` - agglomerative clustering with configurable linkage modes
+**Output:** Each algorithm outputs a refined set of pair-wise correspondences.
 
-**One-to-one matching algorithms**:
-- `GreedyOneToOneMatchingAlgorithm` - fast heuristic, prioritizes high scores first
-- `MaximumBipartiteMatching` - globally optimal solution, maximizes total similarity score
-- `StableMatching` - mutual preference satisfaction, ensures no blocking pairs
+Built-in one-to-one matching algorithms:
+- `GreedyOneToOneMatchingAlgorithm`
+- `MaximumBipartiteMatching`
+- `StableMatching`
 
+### Greedy One-to-One Matching
 
-### Connected Component Clustering
+Iteratively selects the highest-scoring correspondence first. Sorts all correspondences by similarity score and picks matches from highest to lowest, removing correspondences where either record is already matched.
 
-Groups all transitively connected entities. If record A matches B and B matches C, all three are clustered even if A and C were not directly compared.
+Fast heuristic that prioritizes high scores but doesn't guarantee the globally optimal solution. 
 
-Applies transitive closure by treating correspondences as edges in a graph and finding all connected components. Expands the correspondence set to include all pairs within each component, creating fully connected clusters.
-
-**Use when:** Transitivity is a reasonable assumption for your data (e.g., product deduplication, person name resolution), and you want to ensure all indirectly related entities are grouped together.
-
-```python
-from PyDI.entitymatching import ConnectedComponentClusterer
-
-clusterer = ConnectedComponentClusterer(
-    threshold=0.6,
-    min_cluster_size=2,
-    preserve_scores=True
-)
-refined = clusterer.cluster(correspondences)
-```
-
-**Note:** Output includes all pairs within each cluster. Can significantly increase the number of correspondences if clusters are large.
-
-
-### Centre clustering
-
-Creates star-shaped clusters where one central entity connects to multiple leaf entities. Maximum cluster diameter is 2, meaning all entities connect through the center.
-
-Selects high-degree entities as cluster centers and groups their direct neighbors. Each cluster has a hub-and-spoke topology. The center is typically the entity with the most connections or highest total similarity score.
-
-**Use when:** Your data has natural hub entities (e.g., master product records with variants, canonical papers with citations).
-
-```python
-from PyDI.entitymatching import CentreClusterer
-
-clusterer = CentreClusterer(
-    threshold=0.7,
-    min_cluster_size=2
-)
-refined = clusterer.cluster(correspondences)
-```
-
-**Note:** Does not enforce transitivity among leaf nodes. Only the center-to-leaf connections are preserved.
-
-
-### Hierarchical clustering
-
-Bottom-up agglomerative clustering that iteratively merges the most similar clusters. Supports three linkage modes: MIN (single-linkage), MAX (complete-linkage), and AVG (average-linkage).
-
-Starts with each entity as its own cluster and repeatedly merges the closest pair based on the linkage criterion. MIN uses the minimum distance between any two members, MAX uses the maximum distance, and AVG uses the average distance. Stops when reaching the target number of clusters or when similarity falls below threshold.
-
-**Use when:** You want hierarchical grouping with control over cluster tightness. Use MIN for chain-like clusters, MAX for compact clusters, and AVG as a balanced middle ground.
-
-```python
-from PyDI.entitymatching import HierarchicalClusterer, LinkageMode
-
-clusterer = HierarchicalClusterer(
-    linkage_mode=LinkageMode.AVG,
-    num_clusters=10,
-    threshold=0.5
-)
-refined = clusterer.cluster(correspondences)
-```
-
-**Note:** Can specify either `num_clusters` (stop at fixed count) or `threshold` (stop at quality level), or both for dual stopping criteria.
-
-
-### One-to-one matching
-
-Enforce one-to-one constraint: each entity matches at most one other entity. PyDI provides three algorithms with different optimization strategies.
-
-#### Greedy One-to-One Matching
-
-Iteratively selects the highest-scoring correspondence first. Sorts all correspondences by similarity score and picks matches from highest to lowest, skipping pairs where either entity is already matched.
-
-Fast heuristic that prioritizes high scores but doesn't guarantee the best overall solution. High-scoring matches chosen early may block better combinations later.
-
-**Use when:** You have large datasets (thousands of correspondences), speed is critical, or similarity scores clearly distinguish good matches from bad ones.
+Useful for large datasets and when speed is critical.
 
 ```python
 from PyDI.entitymatching import GreedyOneToOneMatchingAlgorithm
@@ -532,13 +460,13 @@ greedy = GreedyOneToOneMatchingAlgorithm()
 greedy_matches = greedy.cluster(correspondences)
 ```
 
-#### Maximum Weighted Bipartite Matching
+### Maximum Weighted Bipartite Matching
 
-Formulates matching as a graph optimization problem and finds the globally optimal solution that maximizes total similarity score. Constructs a bipartite graph where entities are nodes and correspondences are weighted edges, then solves for maximum weight matching.
+Formulates matching as a graph optimization problem and finds the globally optimal one-to-one matching that maximizes total similarity score of remaining correspondences. Constructs a bipartite graph where records are nodes and correspondences are weighted edges, then solves for maximum weight matching. Edge weights are the similarity scores as given by the input correspondences.
 
-Guarantees the mathematically optimal solution but is computationally more expensive. Uses the Hungarian algorithm via NetworkX.
+Is computationally more expensive compared to Greedy matching. Uses the Hungarian algorithm.
 
-**Use when:** You need the best solution, dataset size is manageable (hundreds to thousands of correspondences), and quality is more important than speed.
+Useful when dataset size is manageable, and quality is more important than speed.
 
 ```python
 from PyDI.entitymatching import MaximumBipartiteMatching
@@ -547,13 +475,11 @@ mbm = MaximumBipartiteMatching()
 mbm_matches = mbm.cluster(correspondences)
 ```
 
-#### Stable Matching
+### Stable Matching
 
-Ensures mutual preference satisfaction using a stable marriage-style algorithm. For each entity, builds a preference list sorted by similarity scores. Only selects matches where both entities mutually prefer each other among available options: no pair of entities would rather be matched with each other than their assigned partners.
+Ensures mutual preference satisfaction using a stable marriage algorithm. For each record, builds a preference list of matches sorted by similarity score as given by the input correspondences. Only selects correspondences where both records mutually prefer each other among available options: no pair of records would rather be matched with each other than their assigned partners.
 
-Focuses on mutual satisfaction rather than maximizing total score. Guarantees stability (no "blocking pairs") but may produce fewer matches than greedy or optimal algorithms.
-
-**Use when:** Mutual preference matters more than total score, you're modeling bilateral assignments (e.g., reviewer-paper matching), or unstable pairings could cause downstream issues.
+Faster than Maximum Weighted Bipartite Matching but slower than Greedy One-to-One Matching.
 
 ```python
 from PyDI.entitymatching import StableMatching
@@ -562,18 +488,87 @@ stable = StableMatching()
 stable_matches = stable.cluster(correspondences)
 ```
 
-#### Comparison and Selection Guide
+
+### Comparison and Selection Guide
 
 
-| Algorithm | Optimization Goal | Speed | Guarantees | Best For |
-|-----------|------------------|-------|------------|----------|
-| Greedy | High scores first | Fastest | None | Large datasets, speed-critical applications |
-| Maximum Bipartite | Max total weight | Slowest | Globally optimal | Quality-critical, medium-sized datasets |
-| Stable Matching | Mutual preferences | Medium | No blocking pairs | Bilateral assignments, mutual satisfaction |
+| Algorithm | Optimization Goal | Speed | Useful For |
+|-----------|------------------|-------|----------|
+| Greedy | Highest scoring pairs first | Fastest | Large datasets, speed-critical applications |
+| Maximum Bipartite | Maximize sum of similarities | Slowest | Small to medium datasets, quality-critical applications |
+| Stable Matching | Mutual preference of records | Medium | Medium datasets, quality-critical applications |
+
+
+## Post-Processing Correspondences
+
+Post-processing algorithms refine correspondences by enforcing constraints such as transitivity or optimizing global objectives to create entity groups. These algorithms are usually applied to the merged correspondence sets of **three or more** input datasets but can also be useful to discover additional matches in two input datasets that internally contain duplicates.
+
+**When to Use:** Apply post-processing when you applied a precision-oriented matcher that may have missed correspondences. Post-processing algorithms can improve the recall by post-hoc addition of such matches. Merge correspondence sets of three or more input datasets before applying the algorithms.
+
+**Output:** Each algorithm outputs a refined set of pair-wise correspondences.
+
+Built-in post-processing algorithms:
+- `ConnectedComponentClusterer`
+- `HierarchicalClusterer`
+
+
+### Connected Component Clustering
+
+Groups all transitively connected records. If record A matches B and B matches C, all three are clustered even if A and C were not discovered as a correspondence.
+
+Applies transitive closure by treating correspondences as edges in a graph and finding all connected components. Expands the correspondence set to include all pairs within each component, creating fully connected clusters.
+
+**Note:** Output includes all pairwise correspondences within each cluster. Can significantly increase the number of correspondences if clusters are large.
+
+```python
+from PyDI.entitymatching import ConnectedComponentClusterer
+import pandas as pd
+
+# Merge correspondences from multiple sources
+correspondences_all = pd.concat([
+    correspondences_dataset_a_b,
+    correspondences_dataset_b_c,
+    correspondences_dataset_a_c
+], ignore_index=True)
+
+clusterer = ConnectedComponentClusterer(
+    threshold=0.6,
+    min_cluster_size=2,
+    preserve_scores=True
+)
+refined = clusterer.cluster(correspondences_all)
+```
+
+### Hierarchical Clustering
+
+Bottom-up agglomerative clustering that iteratively merges the most similar clusters. Supports three linkage modes: MIN (single-linkage), MAX (complete-linkage), and AVG (average-linkage).
+
+Starts with each record as its own cluster and repeatedly merges the closest pair of clusters based on the linkage criterion and the similarity matrix populated by the correspondence similarity scores. MIN uses the minimum distance between any two members, MAX uses the maximum distance, and AVG uses the average distance. Stops when reaching the target number of clusters and/or when similarity falls below threshold (both hyperparameters set by the user).
+
+**Note:** Can specify either `num_clusters` (stop at fixed count) or `threshold` (stop at quality level), or both for dual stopping criteria.  Output includes all pairwise correspondences within each cluster.
+
+```python
+from PyDI.entitymatching import HierarchicalClusterer, LinkageMode
+import pandas as pd
+
+# Merge correspondences from multiple sources
+correspondences_all = pd.concat([
+    correspondences_dataset_a_b,
+    correspondences_dataset_b_c,
+    correspondences_dataset_a_c
+], ignore_index=True)
+
+clusterer = HierarchicalClusterer(
+    linkage_mode=LinkageMode.AVG,
+    num_clusters=10,
+    threshold=0.5
+)
+refined = clusterer.cluster(correspondences_all)
+```
 
 ## Evaluation
 
-The evaluator supports blocking evaluation: pass candidate pairs and gold standard to measure blocking recall and reduction ratio.
+The entity matching evaluator supports blocking evaluation: pass candidate pairs and labeled evaluation set to measure blocking recall and reduction ratio.
 
 ```python
 from PyDI.entitymatching import EntityMatchingEvaluator
@@ -593,7 +588,7 @@ blocking_metrics = evaluator.evaluate_blocking(
 )
 ```
 
-The evaluator also supports evaluating a matching against an evaluation set. Returns precision, recall, F1.
+The entity matching evaluator also supports evaluating a correspondence set against a labeled evaluation set. Returns precision, recall, F1.
 
 ```python
 metrics = evaluator.evaluate_matching(

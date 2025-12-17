@@ -40,7 +40,6 @@ from .evaluation import EntityMatchingEvaluator
 from .post_clustering import (
     BasePostClusterer,
     ConnectedComponentClusterer,
-    CentreClusterer,
     HierarchicalClusterer,
     GreedyOneToOneMatchingAlgorithm,
     MaximumBipartiteMatching,
@@ -72,7 +71,6 @@ __all__ = [
     "EntityMatchingEvaluator",
     "BasePostClusterer",
     "ConnectedComponentClusterer",
-    "CentreClusterer",
     "HierarchicalClusterer",
     "GreedyOneToOneMatchingAlgorithm",
     "MaximumBipartiteMatching",
