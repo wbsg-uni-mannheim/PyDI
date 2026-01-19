@@ -1,0 +1,87 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "LastFM Album Metadata (22k Entries)",
+  "description": "Album-level metadata retrieved from Last.fm using the Last.fm API. The API was queried using album names from the MusicBrainz dataset as query strings. The original retrieval contains over 85,000 entities. A reduced version contains around 22,000 entries and provides album name and artist, as well as tracklists including track title, duration, and position on the album. Additional fields present in the CSV include the Last.fm URL for the album and popularity indicators returned by the API (listeners and playcount).",
+  "url": "https://www.last.fm/api",
+  "keywords": [
+    "Last.fm",
+    "LastFM API",
+    "music metadata",
+    "albums",
+    "tracklist",
+    "track duration",
+    "MusicBrainz"
+  ],
+  "license": "https://www.last.fm/api/tos",
+  "numberOfItems": 22000,
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "lastfm.csv"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "artist",
+      "description": "Artist name associated with the album entry, as stored in the dataset.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "name",
+      "description": "Album name (title) as stored in the dataset (used as the query string to the Last.fm API).",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "url",
+      "description": "Last.fm URL for the album entry.",
+      "unitText": "URL"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "id",
+      "description": "Internal dataset identifier for the LastFM album record (e.g., 'lastFM_24').",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "listeners",
+      "description": "Listener count returned by the Last.fm API for the album entry.",
+      "unitText": "integer"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "playcount",
+      "description": "Play count returned by the Last.fm API for the album entry.",
+      "unitText": "integer"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_name",
+      "description": "Track titles for the album entry, stored as a string representation of a list in the CSV (e.g., \"['Track A', 'Track B']\").",
+      "unitText": "string (list-encoded)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_rank",
+      "description": "Track positions/ranks corresponding to tracks_track_name, stored as a string representation of a list in the CSV.",
+      "unitText": "string (list-encoded)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_duration",
+      "description": "Track durations corresponding to tracks_track_name, stored as a string representation of a list in the CSV. Example entries indicate values in seconds.",
+      "unitText": "string (list-encoded; seconds)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_artist",
+      "description": "Track artist names corresponding to tracks_track_name, stored as a string representation of a list in the CSV.",
+      "unitText": "string (list-encoded)"
+    }
+  ]
+}
