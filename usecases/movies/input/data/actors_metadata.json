@@ -1,0 +1,60 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Movies and Actors Dataset (actors.xml)",
+  "description": "XML dataset of movies with associated actor biographical information. Each movie entry contains an internal identifier, a movie title, a date, and a list of actors. For each actor, the dataset records the actor's name and may additionally include the actor's birthday and birthplace.",
+  "keywords": [
+    "movies",
+    "actors",
+    "film history",
+    "biographical data",
+    "birthday",
+    "birthplace",
+    "XML"
+  ],
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/xml",
+      "contentUrl": "actors.xml"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "movie/id",
+      "description": "Internal dataset identifier for the movie entry (e.g., 'actors_1').",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/title",
+      "description": "Movie title.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/actors/actor/name",
+      "description": "Actor name associated with the movie. This element may occur multiple times per movie.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/actors/actor/birthday",
+      "description": "Actor birthday when provided in the dataset.",
+      "unitText": "ISO 8601 date"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/actors/actor/birthplace",
+      "description": "Actor birthplace when provided in the dataset.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/date",
+      "description": "Date associated with the movie entry as stored in the dataset (format appears as YYYY-MM-DD).",
+      "unitText": "ISO 8601 date"
+    }
+  ]
+}

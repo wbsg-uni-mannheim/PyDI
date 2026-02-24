@@ -1,0 +1,60 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Golden Globe Awards Movies Dataset (golden_globes.xml)",
+  "description": "XML dataset of movie entries associated with the Golden Globe Awards. Each movie record contains an internal identifier, a title, an optional director element (which may be empty), a list of actor names, and a date. Provenance note: This dataset is based on lists of Golden Globe nominees and winners historically published by AggData and referenced via publicly available URLs. At the time of metadata creation, these URLs redirect to a commercial storefront and no longer provide direct public access to the original datasets; provenance is therefore recorded as historical derivation rather than current availability.",
+  "keywords": [
+    "Golden Globe Awards",
+    "movies",
+    "film awards",
+    "nominees",
+    "winners",
+    "XML"
+  ],
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/xml",
+      "contentUrl": "golden_globes.xml"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "movie/id",
+      "description": "Internal dataset identifier for the movie entry (e.g., 'golden_globes_1').",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/title",
+      "description": "Movie title.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/director/name",
+      "description": "Director name when provided. The director element may be present but empty.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/actors/actor/name",
+      "description": "Actor name associated with the movie. This element may occur multiple times per movie.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "movie/date",
+      "description": "Date associated with the movie entry as stored in the dataset (format appears as YYYY-MM-DD).",
+      "unitText": "ISO 8601 date"
+    }
+  ],
+  "isBasedOn": [
+    {
+      "@type": "CreativeWork",
+      "name": "Golden Globe nominees and winners lists (AggData)",
+      "url": "http://aggdata.com/awards/golden_globes"
+    }
+  ]
+}

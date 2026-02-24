@@ -22,7 +22,6 @@ The PyDI framework covers all steps of the data integration process, including d
 -   Instance-based schema matching
 -   Duplicate-based schema matching
 -   LLM-based schema matching
--   Data translation with optional value normalization
 -   Evaluation of schema matching results
 -   Debug reports about the matching process
 

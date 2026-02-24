@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Videogame Record",
+  "description": "Schema representing a single videogame entry.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique videogame identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Title of the videogame"
+    },
+    "releaseYear": {
+      "type": "string",
+      "format": "date",
+      "description": "Release date in ISO 8601 format (YYYY-MM-DD)"
+    },
+    "developer": {
+      "type": "string",
+      "description": "Name of the game's developer"
+    },
+    "genres": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of genres the game belongs to"
+    },
+    "publisher": {
+      "type": "string",
+      "description": "Publisher of the videogame"
+    },
+    "platform": {
+      "type": "string",
+      "description": "Primary release platform (e.g., PlayStation, PC, Xbox, Switch)"
+    },
+    "criticScore": {
+      "type": "number",
+      "description": "Critic score for the videogame (typically 0–10, 0–100, etc.)"
+    },
+    "userScore": {
+      "type": "number",
+      "description": "User score for the videogame (typically 0–10, 0–100, etc.)"
+    },
+    "ESRB": {
+      "type": "string",
+      "description": "ESRB age rating for the videogame (e.g., E, T, M)"
+    },
+    "globalSales": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total global sales in millions of units"
+    },
+    "series": {
+      "type": "string",
+      "description": "Franchise or series the game belongs to"
+    }
+  },
+  "required": ["id", "name"]
+}

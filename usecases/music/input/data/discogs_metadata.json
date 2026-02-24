@@ -1,0 +1,102 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Discogs Releases Subset (22k Releases)",
+  "description": "A large subset of the Discogs music database describing over 22,000 music releases. The dataset includes structured metadata for each release such as title, artists, labels, release year, genres, styles, formats, and country of release. The data was derived from the Discogs public database dumps and transformed into a research-friendly structured format. Discogs content is crowdsourced and curated by its user community.",
+  "url": "https://www.discogs.com/developers#database-dumps",
+  "keywords": [
+    "Discogs",
+    "music metadata",
+    "music releases",
+    "albums",
+    "artists",
+    "labels",
+    "genres",
+    "styles",
+    "vinyl",
+    "CD",
+    "music database"
+  ],
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "datePublished": "2016-06-01",
+  "numberOfItems": 22000,
+  "creator": {
+    "@type": "Organization",
+    "name": "Discogs",
+    "url": "https://www.discogs.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Discogs",
+    "url": "https://www.discogs.com/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "discogs.json"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "id",
+      "description": "Internal dataset identifier for the release record (Discogs-derived).",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "artist",
+      "description": "Primary credited artist for the release (single string as provided in the dataset).",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "name",
+      "description": "Release title as provided in the dataset (may include multiple tracks or A/B sides separated by '/').",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "country",
+      "description": "Country where the release was issued.",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "genre",
+      "description": "High-level genre associated with the release (single value in this dataset).",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "label",
+      "description": "Record label associated with the release (single value in this dataset).",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "released",
+      "description": "Release date in a dataset-specific ISO-like format. Unknown month/day may be encoded as '00' (e.g., '1996-00-00' or '2000-06-00').",
+      "unitText": "YYYY-MM-DD (with '00' placeholders allowed)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_name",
+      "description": "Ordered list of track titles for the release.",
+      "unitText": "string list"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_rank",
+      "description": "Track position/rank corresponding to each entry in tracks_track_name.",
+      "unitText": "string list (numeric values)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tracks_track_duration",
+      "description": "Track duration corresponding to each entry in tracks_track_name. May be null when unavailable.",
+      "unitText": "string list (mm:ss) or null"
+    }
+  ]
+}
