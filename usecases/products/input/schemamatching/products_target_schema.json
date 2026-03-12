@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "$id": "https://example.com/schemas/hardware_trimmed.schema.json",
+  "title": "Hardware Product",
+  "description": "Trimmed schema including only relevant fields with units.",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "title": "ID", "description": "Unique record identifier." },
+    "brand": { "type": "string", "title": "Brand" },
+    "title": { "type": "string", "title": "Title" },
+    "description": { "type": "string", "title": "Description" },
+    "price": { "type": "number", "title": "Price", "minimum": 0 },
+    "priceCurrency": { "type": "string", "title": "Currency" },
+    "cluster_id": { "type": "string", "title": "Cluster ID" },
+    "url": { "type": "string", "title": "URL", "format": "uri" },
+    "title_description": { "type": "string", "title": "Title & Description Combined" },
+    "model": { "type": "string", "title": "Model Name" },
+    "model_number": { "type": "string", "title": "Model Number" },
+    "product_type": { 
+      "type": "string", 
+      "title": "Product Type", 
+      "enum": ["GPU", "SSD", "HDD", "USB_STICK"] 
+    },
+    "chipset_name": { "type": "string", "title": "Chipset Name" },
+    "vram_gb": { "type": "number", "title": "VRAM (GB)" },
+    "storage_gb": { "type": "number", "title": "Storage (GB)" },
+    "read_speed_mb_s": { "type": "number", "title": "Read Speed (MB/s)" },
+    "write_speed_mb_s": { "type": "number", "title": "Write Speed (MB/s)" },
+    "bus_type": { "type": "string", "title": "Bus Type" },
+    "interface_type": { "type": "string", "title": "Interface Type" },
+    "width_mm": { "type": "number", "title": "Width (mm)" },
+    "length_mm": { "type": "number", "title": "Length (mm)" },
+    "height_mm": { "type": "number", "title": "Height (mm)" },
+    "weight_g": { "type": "number", "title": "Weight (g)" },
+    "storage_connection_type": { "type": "string", "title": "Storage Connection Type" },
+    "memory_type": { "type": "string", "title": "Memory Type" },
+    "color": { "type": "string", "title": "Color" },
+    "form_factor": { "type": "string", "title": "Form Factor" }
+  },
+  "required": ["id", "product_type", "brand", "title"],
+  "additionalProperties": false
+}
