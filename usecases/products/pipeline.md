@@ -1,7 +1,7 @@
 # Normalization Pipeline Summary
 
 ## Attribute Filtering
-- Applied a **15% coverage threshold** to 66 initial columns. Now have 26 columns
+- Applied a **15% coverage threshold** to 66 initial columns. Now have 27 columns
 
 ### Exceptions
 - Retained `write_speed` (for symmetry).
