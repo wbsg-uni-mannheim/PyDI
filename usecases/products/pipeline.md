@@ -186,38 +186,27 @@ evaluation_results = evaluator.evaluate(
 
 ## File Structure
 
-```
-products/
+```products/
 ├── input/
-│   ├── data/
-│   │   ├── products_1.json
-│   │   ├── products_2.json
-│   │   ├── products_3.json
-│   │   └── products_4.json
-│   ├── few_shot_examples.json
-│   ├── schemamatching/
-│   │   └── products_target_schema.json
-│   ├── entitymatching/
-│   │   └── per_file_splits/
-│   │       ├── prod1_to_prod2_{train,val,test}.csv
-│   │       ├── prod1_to_prod3_{train,val,test}.csv
-│   │       └── prod1_to_prod4_{train,val,test}.csv
-│   └── fusion/
-│       ├── fusion_validation_set.csv
-│       └── fusion_test_set.csv
-└── output/
-    ├── informationextraction/
-    │   └── LLM_extracted_products_data/
-    ├── informationextraction_then_dropped_columns/
-    ├── normalized_products_after_drp_cols_and_extractions/
-    ├── dataset-profiles/
-    ├── Blocking/
-    │   ├── standard_blocker_on_product_type/
-    │   └── blocking_eval_prod1_prod{2,3,4}/
-    ├── debug_results_entity_matching/
-    ├── cluster_analysis/
-    ├── logs/
-    └── data_fusion/
-        ├── hardware_fusion_debug.jsonl
-        └── hardware_eval_debug.jsonl
+│   ├── data/                           # Raw source datasets (products_1-4)
+│   ├── data_cleaned_final/             # Final normalized datasets
+│   ├── entity_matching_gt/             # EM ground truth (train/val/test splits)
+│   ├── fusion/                         # Data fusion evaluation sets
+│   ├── schemamatching/                 # Target schema definitions
+│   └── few_shot_examples.json          # LLM few-shot prompt examples
+├── output/
+│   ├── informationextraction/          # LLM-extracted attributes
+│   ├── dataset-profiles/               # HTML profiling reports
+│   ├── Blocking/                       # Candidate pair generation results
+│   ├── cluster_analysis/               # Cluster distribution metrics
+│   ├── debug_results_entity_matching/   # EM evaluation summaries
+│   ├── dbscan_results/                 # Clustering products for EM train test sets
+│   ├── data_fusion/                    # Final fusion evaluation logs
+│   └── logs/                           # System and PyDI logs
+├── utils/                              # Helper notebooks
+│   ├── preprocessing.ipynb             # Extraction & normalization logic
+│   ├── dbscan-clustering.ipynb         # Candidate pool generation
+│   └── EM_and_fusion_data_creation.ipynb # GT split generation
+├── products_workflow_v2.ipynb          # MAIN end-to-end pipeline
+└── pipeline.md                         # Documentation of the process
 ```
