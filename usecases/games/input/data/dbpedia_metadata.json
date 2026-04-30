@@ -3,7 +3,7 @@
   "@type": "Dataset",
   "name": "DBpedia Videogames Subset (65k Videogames)",
   "description": "Subset of the DBpedia knowledge base describing approximately 65,000 videogames. For each videogame, the dataset includes information about the release date, the platform, the developer, the genre, and the series the game belongs to. The DBpedia knowledge base been automatically extracted from Wikipedia. The dataset has been created by query the DBpedia SPARQL endpoint.",
-  "url": "https://www.dbpedia.org/", 
+  "url": "https://www.dbpedia.org/",
   "keywords": [
     "DBpedia",
     "Wikipedia",
@@ -18,7 +18,7 @@
   "identifier": "dbpedia-videogames-subset-65k-2023",
   "version": "1.0",
   "datePublished": "2023-10-11",
-  "numberOfItems": 65000,
+  "numberOfItems": 46580,
   "temporalCoverage": "1970-01-01/2023-10-11",
   "creator": {
     "@type": "Organization",
@@ -33,33 +33,39 @@
   "distribution": [
     {
       "@type": "DataDownload",
-      "encodingFormat": "application/xml",
-      "contentUrl": "dbpedia.xml"
+      "encodingFormat": "text/csv",
+      "contentUrl": "dbpedia.csv"
     }
   ],
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "gameLabel",
-      "description": "Official name of the videogame",
+      "name": "wiki_ref",
+      "description": "DBpedia-derived record identifier for the videogame",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "releaseDate",
-      "description": "Date on which the videogame was released",
+      "name": "title",
+      "description": "Official or common title of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "launch_yr",
+      "description": "Release date normalized to YYYY-MM-DD where available",
       "unitText": "ISO 8601 date"
     },
     {
       "@type": "PropertyValue",
-      "name": "platform",
-      "description": "Platform on which the videogame was released",
+      "name": "studio",
+      "description": "Developer or studio associated with the videogame",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "developer",
-      "description": "Developer of the videogame",
+      "name": "system",
+      "description": "Platform or system on which the videogame was released",
       "unitText": "string"
     },
     {
@@ -70,8 +76,8 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "series",
-      "description": "Series the videogame belongs to",
+      "name": "franchise",
+      "description": "Series or franchise the videogame belongs to",
       "unitText": "string"
     }
   ]

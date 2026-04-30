@@ -13,206 +13,68 @@
     "XML",
     "MMD 2.0"
   ],
-  "numberOfItems": 10000,
+  "numberOfItems": 4763,
   "distribution": [
     {
       "@type": "DataDownload",
-      "encodingFormat": "application/xml",
-      "contentUrl": "musicbrainz.xml"
+      "encodingFormat": "text/csv",
+      "contentUrl": "musicbrainz.csv"
     }
   ],
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "metadata@xmlns",
-      "description": "XML namespace used in the document (MMD 2.0 namespace).",
-      "unitText": "URL"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release@id",
-      "description": "MusicBrainz Identifier (MBID) for the release (UUID in the release element's id attribute).",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/title",
-      "description": "Title of the release.",
+      "name": "id",
+      "description": "MusicBrainz-derived record identifier for the music release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/rel_id",
-      "description": "Internal dataset identifier for the release record (e.g., 'mbrainz_1').",
+      "name": "name",
+      "description": "Title of the music release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/status",
-      "description": "Release status text (e.g., 'Official').",
+      "name": "artist",
+      "description": "Artist or group credited for the release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/status@id",
-      "description": "Identifier attribute for the release status element when present.",
-      "unitText": "UUID"
+      "name": "release-date",
+      "description": "Release date normalized to YYYY-MM-DD where available",
+      "unitText": "ISO 8601 date"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/quality",
-      "description": "Quality value for the release record (e.g., 'normal', 'high').",
+      "name": "release-country",
+      "description": "Country where the release was published",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/artist",
-      "description": "Artist name as provided in the dataset for the release.",
+      "name": "duration",
+      "description": "Total duration of the release in seconds",
+      "unitText": "seconds"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "label",
+      "description": "Record label associated with the release where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/date",
-      "description": "Release date value as provided in the dataset. Example values include a year only (e.g., '1996') or a full date (e.g., '1998-12-14').",
-      "unitText": "string (year or YYYY-MM-DD)"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/country",
-      "description": "Release country code as provided in the dataset (e.g., 'GB', 'US').",
-      "unitText": "string (country code)"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/barcode",
-      "description": "Barcode value for the release when present.",
+      "name": "genre",
+      "description": "Primary genre associated with the release where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release/asin",
-      "description": "Amazon Standard Identification Number (ASIN) for the release when present.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/packaging",
-      "description": "Packaging description for the release when present.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/packaging@id",
-      "description": "Identifier attribute for the packaging element when present.",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list@count",
-      "description": "Number of media items listed for the release (from medium-list count attribute).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/position",
-      "description": "Medium position number within the release (e.g., disc 1).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/title",
-      "description": "Medium title when present.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/format",
-      "description": "Medium format text (e.g., '12\" Vinyl', 'CD').",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/format@id",
-      "description": "Identifier attribute for the medium format element when present.",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list@count",
-      "description": "Number of tracks listed for the medium (from track-list count attribute).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list@offset",
-      "description": "Offset attribute for the track-list element when present (seen as '0' in examples).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track@id",
-      "description": "MusicBrainz Identifier (MBID) for the track entry (UUID in the track element's id attribute).",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/position",
-      "description": "Track position number within the medium.",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/number",
-      "description": "Track number as printed on the release (e.g., 'A', 'B', 'A1', '1').",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/length",
-      "description": "Track length value when present (numeric values in examples).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording@id",
-      "description": "MusicBrainz Identifier (MBID) for the recording associated with the track (UUID in the recording element's id attribute).",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/title",
-      "description": "Recording title associated with the track.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/length",
-      "description": "Recording length value when present (numeric values in examples).",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/artist-credit/name-credit/artist@id",
-      "description": "MusicBrainz Identifier (MBID) for an artist credited on the recording (UUID in the artist element's id attribute).",
-      "unitText": "UUID"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/artist-credit/name-credit/artist/name",
-      "description": "Credited artist name for the recording.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/artist-credit/name-credit/artist/sort-name",
-      "description": "Artist sort name for the credited artist.",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release/medium-list/medium/track-list/track/recording/artist-credit/name-credit/artist/disambiguation",
-      "description": "Artist disambiguation text when present.",
-      "unitText": "string"
+      "name": "tracks",
+      "description": "List of track titles on the release",
+      "unitText": "string list"
     }
   ]
 }

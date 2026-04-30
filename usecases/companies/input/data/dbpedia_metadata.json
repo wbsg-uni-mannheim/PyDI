@@ -3,7 +3,7 @@
   "@type": "Dataset",
   "name": "DBpedia Companies Subset (10k Companies)",
   "description": "Subset of the DBpedia knowledge base describing approximately 10,000 companies. For each company, the dataset includes information about the founding date and place, the industry, the founders, as well as numerical attributes such as income, revenue, and assets. The DBpedia knowledge base been automatically extracted from Wikipedia. The dataset has been created by query the DBpedia SPARQL endpoint.",
-  "url": "https://www.dbpedia.org/", 
+  "url": "https://www.dbpedia.org/",
   "keywords": [
     "DBpedia",
     "Wikipedia",
@@ -20,7 +20,7 @@
   "identifier": "dbpedia-companies-subset-10k-2014",
   "version": "1.0",
   "datePublished": "2016-06-09",
-  "numberOfItems": 10000,
+  "numberOfItems": 10085,
   "temporalCoverage": "2012-01-01/2014-04-30",
   "creator": {
     "@type": "Organization",
@@ -35,57 +35,63 @@
   "distribution": [
     {
       "@type": "DataDownload",
-      "encodingFormat": "application/json",
-      "contentUrl": "dbpedia.json"
+      "encodingFormat": "text/csv",
+      "contentUrl": "dbpedia.csv"
     }
   ],
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "companyName",
-      "description": "Official name of the company",
+      "name": "entity_uri",
+      "description": "DBpedia resource URI identifying the company",
+      "unitText": "URI"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "org_name",
+      "description": "Official or common name of the company",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "foundingDate",
-      "description": "Date on which the company was founded",
-      "unitText": "ISO 8601 date"
+      "name": "established",
+      "description": "Date or year in which the company was founded",
+      "unitText": "date/year"
     },
     {
       "@type": "PropertyValue",
-      "name": "foundingPlace",
-      "description": "Place (city, region, country) in which the company was founded",
+      "name": "nation",
+      "description": "Country associated with the company",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "industry",
-      "description": "Industry in which the company operates",
+      "name": "headquarters",
+      "description": "Headquarters location of the company",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "founders",
-      "description": "List of persons who founded the company",
-      "unitText": "string list"
+      "name": "sector",
+      "description": "Industry or business sector in which the company operates",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "income",
-      "description": "Income of the company",
+      "name": "keypeople_name",
+      "description": "Key person associated with the company",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "total_assets_val",
+      "description": "Total assets of the company",
       "unitText": "monetary amount"
     },
     {
       "@type": "PropertyValue",
-      "name": "revenue",
-      "description": "Revenue of the company",
-      "unitText": "monetary amount"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "assets",
-      "description": "Assets of the company",
+      "name": "annual_income",
+      "description": "Annual income of the company",
       "unitText": "monetary amount"
     }
   ]

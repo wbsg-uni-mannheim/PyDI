@@ -7,8 +7,8 @@ This folder contains example notebooks implementing end-to-end data integration 
 | Use Case | Datasets | Total Records | Pipeline Steps |
 |----------|----------|---------------|----------------|
 | [Movies](movies/movies_workflow.ipynb) | Academy Awards (4,580), Actors (151), Golden Globes (2,279) | ~7,000 | Profiling → Blocking → Entity Matching → Data Fusion |
-| [Companies](companies/companies_workflow.ipynb) | DBpedia (10,092), Forbes (2,000), FullContact (1,931) | ~14,000 | Schema Matching → Normalization → Profiling → Entity Matching → Data Fusion |
-| [Games](games/games_workflow.ipynb) | DBpedia (65,000), Metacritic (20,494), Sales (7,878) | ~93,000 | Schema Matching → Normalization → Profiling → Entity Matching → Data Fusion |
+| [Companies](companies/companies_workflow.ipynb) | DBpedia (10,085), Forbes (2,000), FullContact (1,931) | ~14,000 | Schema Matching → Normalization → Profiling → Entity Matching → Data Fusion |
+| [Games](games/games_workflow.ipynb) | DBpedia (46,580), Metacritic (20,494), Sales (7,877) | ~75,000 | Schema Matching → Normalization → Profiling → Entity Matching → Data Fusion |
 | [Music](music/music_workflow.ipynb) | MusicBrainz (4,763), Discogs (22,627), Last.fm (9,865) | ~37,000 | Schema Matching → Normalization → Profiling → Entity Matching → Data Fusion |
 
 ## Test Sets

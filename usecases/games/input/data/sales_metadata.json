@@ -22,7 +22,7 @@
   "version": "1.0",
   "datePublished": "2018-12-20",
   "dateModified": "2018-12-20",
-  "numberOfItems": 20500,
+  "numberOfItems": 7877,
   "temporalCoverage": "1970-01-01/2023-09-01",
   "creator": {
     "@type": "Person",
@@ -36,105 +36,75 @@
   "distribution": [
     {
       "@type": "DataDownload",
-      "encodingFormat": "application/json",
-      "contentUrl": "sales.json"
+      "encodingFormat": "text/csv",
+      "contentUrl": "sales.csv"
     }
   ],
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "Name",
-      "description": "Official name of the videogame",
+      "name": "rec_id",
+      "description": "Sales dataset record identifier for the videogame",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "Year_of_Release",
-      "description": "Year in which the videogame was released",
-      "unitText": "YYYY"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Platform",
-      "description": "Platform on which the videogame was released",
+      "name": "prod_title",
+      "description": "Videogame product title",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "Developer",
-      "description": "Developer of the videogame",
+      "name": "launch_dt",
+      "description": "Release date normalized to YYYY-MM-DD where available",
+      "unitText": "ISO 8601 date"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "studio",
+      "description": "Developer or studio associated with the videogame",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "Genre",
+      "name": "dist",
+      "description": "Publisher or distributor of the videogame",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "hw",
+      "description": "Platform or hardware on which the videogame was released",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "genre",
       "description": "Genre of the videogame",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "Publisher",
-      "description": "Publisher of the videogame",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Rating",
-      "description": "ESRB rating of the videogame",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Critic_Score",
-      "description": "Critic score of the videogame as given by Metacritic",
+      "name": "press_score",
+      "description": "Critic score for the videogame",
       "unitText": "float, range 0-100"
     },
     {
       "@type": "PropertyValue",
-      "name": "User_Score",
-      "description": "User score of the videogame as given by Metacritic",
+      "name": "comm_rating",
+      "description": "User/community rating for the videogame",
       "unitText": "float, range 0-10"
     },
     {
       "@type": "PropertyValue",
-      "name": "Critic_Count",
-      "description": "Number of critic reviews for the videogame",
-      "unitText": "integer"
+      "name": "age_classification",
+      "description": "ESRB age rating",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "User_Count",
-      "description": "Number of user reviews for the videogame",
-      "unitText": "integer"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Global_Sales",
-      "description": "Total sales of the videogame across all regions (in million units)",
-      "unitText": "million units"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "NA_Sales",
-      "description": "Sales of the videogame in North America (in million units)",
-      "unitText": "million units"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "EU_Sales",
-      "description": "Sales of the videogame in Europe (in million units)",
-      "unitText": "million units"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "JP_Sales",
-      "description": "Sales of the videogame in Japan (in million units)",
-      "unitText": "million units"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Other_Sales",
-      "description": "Sales of the videogame in other regions (in million units)",
+      "name": "units_sold_mm",
+      "description": "Total global sales in millions of units",
       "unitText": "million units"
     }
   ]

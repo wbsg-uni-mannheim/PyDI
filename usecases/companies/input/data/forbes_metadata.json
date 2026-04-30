@@ -42,52 +42,44 @@
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "companyName",
-      "description": "Official name of the company",
-      "unitText": "string",
-      "valueReference": "https://schema.org/name"
+      "name": "forbes_url",
+      "description": "Forbes URL identifying the company entry",
+      "unitText": "URL"
     },
     {
       "@type": "PropertyValue",
-      "name": "countryCode3",
-      "description": "Three-letter country code of the company headquarters",
-      "unitText": "ISO 3166-1 alpha-3",
-      "valueReference": "https://schema.org/addressCountry"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "industry",
-      "description": "Industry classification of the company",
+      "name": "company",
+      "description": "Company name as listed by Forbes",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "sector",
-      "description": "Sector classification of the company",
+      "name": "url",
+      "description": "Company website or related URL",
+      "unitText": "URL"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "region",
+      "description": "Country or region associated with the company",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "marketValue",
-      "description": "Market value of the company",
-      "unitText": "billion USD"
+      "name": "business_segment",
+      "description": "Business segment or sector classification",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "sales",
-      "description": "Annual sales of the company",
-      "unitText": "billion USD"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "profits",
-      "description": "Annual profits of the company",
-      "unitText": "billion USD"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "assets",
+      "name": "asset_value",
       "description": "Total assets of the company",
+      "unitText": "billion USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sales_figure",
+      "description": "Annual sales figure of the company",
       "unitText": "billion USD"
     }
   ]
