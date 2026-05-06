@@ -1,60 +1,148 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Videogame Record",
-  "description": "Schema representing a single videogame entry.",
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "description": "Unique videogame identifier"
+    "title": "Videogames",
+    "description": "A collection of videogames with basic information and sales data.",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Game ID",
+            "description": "Unique identifier of the videogame. Typically unique within this dataset.",
+            "examples": [
+                "12345",
+                "game-001",
+                "dataset-ID/game-ID"
+            ]
+        },
+        "name": {
+            "type": "string",
+            "title": "Game Name",
+            "description": "Title of the videogame.",
+            "examples": [
+                "The Legend of Zelda: Breath of the Wild",
+                "Grand Theft Auto V"
+            ]
+        },
+        "releaseYear": {
+            "type": "string",
+            "title": "Release Date",
+            "description": "Release date of the videogame in ISO 8601 format (YYYY-MM-DD).",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "examples": [
+                "2017-03-03",
+                "2013-09-17"
+            ]
+        },
+        "developer": {
+            "type": "string",
+            "title": "Developer",
+            "description": "Name of the game's developer studio or company.",
+            "examples": [
+                "Nintendo EPD",
+                "Rockstar North"
+            ]
+        },
+        "genres": {
+            "type": "array",
+            "title": "Genres",
+            "description": "List of genres the game belongs to.",
+            "items": {
+                "type": "string"
+            },
+            "x-pydi-taxonomy": "Video_Game_Genres_Taxonomy.csv",
+            "x-pydi-taxonomy-column": "Subgenre Name",
+            "examples": [
+                ["Action", "Adventure"],
+                ["Role-Playing", "Open World"]
+            ]
+        },
+        "publisher": {
+            "type": "string",
+            "title": "Publisher",
+            "description": "Publisher of the videogame.",
+            "examples": [
+                "Nintendo",
+                "Rockstar Games"
+            ]
+        },
+        "platform": {
+            "type": "string",
+            "title": "Platform",
+            "description": "Primary release platform of the videogame.",
+            "x-pydi-taxonomy": "Gaming_Platforms_Taxonomy.csv",
+            "x-pydi-taxonomy-column": "Platform Name",
+            "examples": [
+                "PlayStation 5",
+                "Nintendo Switch",
+                "PC"
+            ]
+        },
+        "criticScore": {
+            "type": "number",
+            "title": "Critic Score",
+            "description": "Critic score for the videogame (typically 0-100).",
+            "minimum": 0,
+            "maximum": 100,
+            "examples": [
+                97,
+                85
+            ]
+        },
+        "userScore": {
+            "type": "number",
+            "title": "User Score",
+            "description": "User score for the videogame (typically 0-10).",
+            "minimum": 0,
+            "maximum": 10,
+            "examples": [
+                8.7,
+                9.2
+            ]
+        },
+        "ESRB": {
+            "type": "string",
+            "title": "ESRB Rating",
+            "description": "ESRB age rating for the videogame.",
+            "x-pydi-taxonomy": "ESRB_Rating_Taxonomy.csv",
+            "x-pydi-taxonomy-column": "Rating Code",
+            "examples": [
+                "E",
+                "T",
+                "M"
+            ]
+        },
+        "globalSales": {
+            "type": "integer",
+            "title": "Global Sales",
+            "description": "Total global sales in millions of units.",
+            "minimum": 0,
+            "examples": [
+                30,
+                170
+            ]
+        },
+        "series": {
+            "type": "string",
+            "title": "Series",
+            "description": "Franchise or series the game belongs to.",
+            "examples": [
+                "The Legend of Zelda",
+                "Grand Theft Auto"
+            ]
+        }
     },
-    "name": {
-      "type": "string",
-      "description": "Title of the videogame"
-    },
-    "releaseYear": {
-      "type": "string",
-      "format": "date",
-      "description": "Release date in ISO 8601 format (YYYY-MM-DD)"
-    },
-    "developer": {
-      "type": "string",
-      "description": "Name of the game's developer"
-    },
-    "genres": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "List of genres the game belongs to"
-    },
-    "publisher": {
-      "type": "string",
-      "description": "Publisher of the videogame"
-    },
-    "platform": {
-      "type": "string",
-      "description": "Primary release platform (e.g., PlayStation, PC, Xbox, Switch)"
-    },
-    "criticScore": {
-      "type": "number",
-      "description": "Critic score for the videogame (typically 0–10, 0–100, etc.)"
-    },
-    "userScore": {
-      "type": "number",
-      "description": "User score for the videogame (typically 0–10, 0–100, etc.)"
-    },
-    "ESRB": {
-      "type": "string",
-      "description": "ESRB age rating for the videogame (e.g., E, T, M)"
-    },
-    "globalSales": {
-      "type": "integer",
-      "minimum": 0,
-      "description": "Total global sales in millions of units"
-    },
-    "series": {
-      "type": "string",
-      "description": "Franchise or series the game belongs to"
-    }
-  },
-  "required": ["id", "name"]
+    "required": [
+        "id",
+        "name",
+        "releaseYear",
+        "developer",
+        "genres",
+        "publisher",
+        "platform",
+        "criticScore",
+        "userScore",
+        "ESRB",
+        "globalSales",
+        "series"
+    ]
 }
