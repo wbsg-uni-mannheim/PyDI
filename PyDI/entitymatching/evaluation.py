@@ -39,6 +39,32 @@ class EntityMatchingEvaluator:
     """
 
     @staticmethod
+    def _pair_set(df: pd.DataFrame) -> Set[Tuple[Any, Any]]:
+        """Create an id-pair set without row-wise pandas iteration."""
+        if df.empty:
+            return set()
+        return set(zip(df["id1"].to_numpy(), df["id2"].to_numpy()))
+
+    @staticmethod
+    def _labeled_pair_sets(
+        test_pairs: pd.DataFrame,
+    ) -> Tuple[Set[Tuple[Any, Any]], Set[Tuple[Any, Any]]]:
+        """Split test pairs into positive and negative pair sets."""
+        positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(
+            test_pairs
+        )
+        has_labels = "label" in test_pairs.columns
+
+        if has_labels:
+            positive_set = EntityMatchingEvaluator._pair_set(test_pairs[positive_mask])
+            negative_set = EntityMatchingEvaluator._pair_set(test_pairs[negative_mask])
+        else:
+            positive_set = EntityMatchingEvaluator._pair_set(test_pairs)
+            negative_set = set()
+
+        return positive_set, negative_set
+
+    @staticmethod
     def _normalize_labels(test_pairs: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Normalize label column to handle various formats (1/0, "1"/"0", True/False, "True"/"False").
 
@@ -104,8 +130,9 @@ class EntityMatchingEvaluator:
     def evaluate_blocking(
         candidate_pairs: pd.DataFrame,
         test_pairs: pd.DataFrame,
-        blocker: "BaseBlocker",
+        blocker: Optional["BaseBlocker"] = None,
         *,
+        total_possible_pairs: Optional[int] = None,
         out_dir: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Evaluate blocking strategy performance.
@@ -123,8 +150,12 @@ class EntityMatchingEvaluator:
             Ground truth test pairs. Should have columns id1, id2, and
             optionally a label column (1 for positive, 0 for negative).
             If no label column, assumes all pairs are positive matches.
-        blocker : BaseBlocker
+        blocker : BaseBlocker, optional
             Blocker instance used to calculate total_possible_pairs automatically.
+            Either blocker or total_possible_pairs must be provided.
+        total_possible_pairs : int, optional
+            Total number of possible pairs in the search space. If omitted,
+            calculated from blocker.df_left and blocker.df_right.
         out_dir : str, optional
             Directory to write blocking evaluation results.
 
@@ -146,8 +177,10 @@ class EntityMatchingEvaluator:
         ValueError
             If required columns are missing or data formats are invalid.
         """
-        # Calculate total_possible_pairs from blocker
-        total_possible_pairs = len(blocker.df_left) * len(blocker.df_right)
+        if total_possible_pairs is None:
+            if blocker is None:
+                raise ValueError("Either blocker or total_possible_pairs must be provided")
+            total_possible_pairs = len(blocker.df_left) * len(blocker.df_right)
 
         # Input validation
         if candidate_pairs.empty:
@@ -170,38 +203,10 @@ class EntityMatchingEvaluator:
             if col not in test_pairs.columns:
                 raise ValueError(f"Test pairs missing required column: {col}")
 
-        # Convert pairs to list of tuples for set operations
-        candidate_pairs_norm = [
-            (row["id1"], row["id2"])
-            for _, row in candidate_pairs[["id1", "id2"]].iterrows()
-        ]
-        candidate_set = set(candidate_pairs_norm)
-
-        # Process test pairs using flexible label handling
-        positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(
+        candidate_set = EntityMatchingEvaluator._pair_set(candidate_pairs)
+        positive_set, negative_set = EntityMatchingEvaluator._labeled_pair_sets(
             test_pairs
         )
-        has_labels = "label" in test_pairs.columns
-
-        if has_labels:
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
-            ]
-        else:
-            # Assume all test pairs are positive
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = []
-
-        positive_set = set(positive_pairs)
-        negative_set = set(negative_pairs) if has_labels else set()
 
         # Compute blocking metrics
         true_positives_found = len(positive_set & candidate_set)
@@ -312,31 +317,9 @@ class EntityMatchingEvaluator:
             if col not in test_pairs.columns:
                 raise ValueError(f"Test pairs missing required column: {col}")
 
-        # Process test pairs using flexible label handling
-        positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(
+        positive_set, negative_set = EntityMatchingEvaluator._labeled_pair_sets(
             test_pairs
         )
-        has_labels = "label" in test_pairs.columns
-
-        if has_labels:
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
-            ]
-        else:
-            # Assume all test pairs are positive
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = []
-
-        positive_set = set(positive_pairs)
-        negative_set = set(negative_pairs) if has_labels else set()
 
         # Initialize counters for batch processing
         total_candidates = 0
@@ -359,11 +342,7 @@ class EntityMatchingEvaluator:
                 if col not in batch.columns:
                     raise ValueError(f"Candidate batch missing required column: {col}")
 
-            # Convert pairs in this batch to list of tuples
-            batch_pairs_norm = [
-                (row["id1"], row["id2"]) for _, row in batch[["id1", "id2"]].iterrows()
-            ]
-            batch_set = set(batch_pairs_norm)
+            batch_set = EntityMatchingEvaluator._pair_set(batch)
 
             # Update counters
             total_candidates += len(batch_set)
@@ -531,39 +510,11 @@ class EntityMatchingEvaluator:
             filtered_count = len(corr_filtered)
             threshold = 0.0  # For reporting
 
-        # Convert pairs to list of tuples for set operations
-        predicted_pairs = [
-            (row["id1"], row["id2"])
-            for _, row in corr_filtered[["id1", "id2"]].iterrows()
-        ]
-
-        # Process test pairs using flexible label handling
-        positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(
+        predicted_set = EntityMatchingEvaluator._pair_set(corr_filtered)
+        positive_set, negative_set = EntityMatchingEvaluator._labeled_pair_sets(
             test_pairs
         )
         has_labels = "label" in test_pairs.columns
-
-        if has_labels:
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
-            ]
-        else:
-            # Assume all test pairs are positive
-            positive_pairs = [
-                (row["id1"], row["id2"])
-                for _, row in test_pairs[["id1", "id2"]].iterrows()
-            ]
-            negative_pairs = []
-
-        # Convert to sets for efficient operations
-        predicted_set = set(predicted_pairs)
-        positive_set = set(positive_pairs)
-        negative_set = set(negative_pairs) if has_labels else set()
 
         # Create a set of all test pairs (both positive and negative) for debug logging
         all_test_pairs = positive_set | negative_set
@@ -1600,27 +1551,9 @@ class EntityMatchingEvaluator:
         negative_set = set()
 
         if test_pairs is not None and not test_pairs.empty:
-            # Use the same label normalization logic as in other methods
-            positive_mask, negative_mask = EntityMatchingEvaluator._normalize_labels(test_pairs)
-
-            if "label" in test_pairs.columns:
-                positive_pairs = [
-                    (row["id1"], row["id2"])
-                    for _, row in test_pairs[positive_mask][["id1", "id2"]].iterrows()
-                ]
-                negative_pairs = [
-                    (row["id1"], row["id2"])
-                    for _, row in test_pairs[negative_mask][["id1", "id2"]].iterrows()
-                ]
-                positive_set = set(positive_pairs)
-                negative_set = set(negative_pairs)
-            else:
-                # Assume all test pairs are positive
-                positive_pairs = [
-                    (row["id1"], row["id2"])
-                    for _, row in test_pairs[["id1", "id2"]].iterrows()
-                ]
-                positive_set = set(positive_pairs)
+            positive_set, negative_set = EntityMatchingEvaluator._labeled_pair_sets(
+                test_pairs
+            )
 
         # Get unique comparators and pairs
         unique_comparators = sorted(debug_results["comparator_name"].unique())

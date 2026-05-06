@@ -115,6 +115,16 @@ class ColumnSpec:
     strip_whitespace: bool = False
     """Whether to strip leading/trailing whitespace."""
 
+    # Taxonomy normalization
+    taxonomy_path: str | None = None
+    """Path to CSV file containing taxonomy values for categorical normalization."""
+
+    taxonomy_column: str | None = None
+    """Column name in taxonomy CSV to use for mapping values. If None, uses first column."""
+
+    taxonomy_mapping_path: str | None = None
+    """Path to JSON file for caching the source-to-taxonomy mapping."""
+
     def to_dict(self) -> dict[str, Any]:
         """
         Convert to dictionary representation.
@@ -137,6 +147,9 @@ class ColumnSpec:
             "date_format": self.date_format,
             "case": self.case,
             "strip_whitespace": self.strip_whitespace,
+            "taxonomy_path": self.taxonomy_path,
+            "taxonomy_column": self.taxonomy_column,
+            "taxonomy_mapping_path": self.taxonomy_mapping_path,
         }
 
     @classmethod

@@ -240,6 +240,16 @@ from .transform import (
     normalize_dataframe,
 )
 
+# Taxonomy normalization
+from .taxonomy import (
+    TaxonomyMappingResult,
+    TaxonomyLoader,
+    TaxonomyMapper,
+    load_mapping_cache,
+    save_mapping_cache,
+    apply_taxonomy_mapping,
+)
+
 # Validators
 from .validators import (
     ValidationResult,
@@ -353,6 +363,13 @@ __all__ = [
     "transform_column",
     "transform_dataframe",
     "normalize_dataframe",
+    # Taxonomy normalization
+    "TaxonomyMappingResult",
+    "TaxonomyLoader",
+    "TaxonomyMapper",
+    "load_mapping_cache",
+    "save_mapping_cache",
+    "apply_taxonomy_mapping",
     # JSON Schema integration
     "load_schema",
     "load_normalization_spec",

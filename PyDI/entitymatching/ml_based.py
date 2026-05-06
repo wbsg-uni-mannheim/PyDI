@@ -177,6 +177,11 @@ class MLBasedMatcher(BaseMatcher):
         
         results = []
         debug_results = [] if debug else None
+        cached_left_lookup = None
+        cached_right_lookup = None
+        if isinstance(self.feature_extractor, FeatureExtractor):
+            cached_left_lookup = df_left.set_index(id_column).to_dict("index")
+            cached_right_lookup = df_right.set_index(id_column).to_dict("index")
 
         # Process candidate batches
         for batch in candidate_list:
@@ -193,6 +198,8 @@ class MLBasedMatcher(BaseMatcher):
                     threshold,
                     use_probabilities,
                     debug=True,
+                    left_lookup=cached_left_lookup,
+                    right_lookup=cached_right_lookup,
                 )
                 debug_results.extend(batch_debug)
             else:
@@ -205,6 +212,8 @@ class MLBasedMatcher(BaseMatcher):
                     threshold,
                     use_probabilities,
                     debug=False,
+                    left_lookup=cached_left_lookup,
+                    right_lookup=cached_right_lookup,
                 )
             results.extend(batch_results)
 
@@ -249,6 +258,8 @@ class MLBasedMatcher(BaseMatcher):
         threshold: float,
         use_probabilities: bool,
         debug: bool = False,
+        left_lookup: Optional[dict] = None,
+        right_lookup: Optional[dict] = None,
     ) -> Union[list, Tuple[list, list]]:
         """Process a batch of candidate pairs using the trained classifier.
 
@@ -268,6 +279,10 @@ class MLBasedMatcher(BaseMatcher):
             Whether to use probabilistic scores.
         debug : bool, optional
             Whether to capture debug information. Default is False.
+        left_lookup : dict, optional
+            Cached ``{id: record_dict}`` lookup for the left dataset.
+        right_lookup : dict, optional
+            Cached ``{id: record_dict}`` lookup for the right dataset.
 
         Returns
         -------
@@ -277,8 +292,18 @@ class MLBasedMatcher(BaseMatcher):
         """
         try:
             # Extract features for this batch
+            feature_kwargs = {}
+            if left_lookup is not None or right_lookup is not None:
+                feature_kwargs["left_lookup"] = left_lookup
+                feature_kwargs["right_lookup"] = right_lookup
+
             feature_df = self.feature_extractor.create_features(
-                df_left, df_right, batch, id_column, labels=None
+                df_left,
+                df_right,
+                batch,
+                id_column,
+                labels=None,
+                **feature_kwargs,
             )
 
             if feature_df.empty:

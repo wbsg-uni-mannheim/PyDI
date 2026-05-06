@@ -1,124 +1,116 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema#",
-  "$id": "https://example.com/schemas/companies.schema.json",
-  "title": "Companies",
-  "description": "A collection of companies with basic profile and financial information.",
-  "type": "object",
-  "properties": {
-    "companies": {
-      "type": "array",
-      "title": "Companies",
-      "description": "List of companies.",
-      "items": {
-        "$ref": "#/$defs/Company"
-      },
-      "examples": [
-        [
-          {
-            "id": "forbes/0023",
-            "name": "SAP SE",
-            "website": "http://www.sap.com",
-            "founded": "1972-01-01",
-            "country": "Germany",
-            "city": "Walldorf",
-            "industry": "Software",
-            "assets": 74230000000,
-            "revenue": 34312000000,
-            "founders": [
-              "Hasso Plattner",
-              "Hans-Werner Hector",
-              "Klaus Tschira"
-            ]
-          }
-        ]
-      ]
-    }
-  },
-  "required": ["companies"],
-  "additionalProperties": false,
-  "$defs": {
-    "Company": {
-      "title": "Company",
-      "description": "Information about a single company.",
-      "type": "object",
-      "properties": {
+    "title": "Companies",
+    "description": "A collection of companies with basic profile and financial information.",
+    "type": "object",
+    "properties": {
         "id": {
-          "type": "string",
-          "title": "Company ID",
-          "description": "Identifier of the company. Typically unique within this dataset.",
-          "examples": ["03546", "sap-001", "dataset-ID/company-ID", "http://www.forbes.com/companies/swatch-group/"]
+            "type": "string",
+            "title": "Company ID",
+            "description": "Identifier of the company. Typically unique within this dataset.",
+            "examples": [
+                "03546",
+                "sap-001",
+                "dataset-ID/company-ID"
+            ]
         },
         "name": {
-          "type": "string",
-          "title": "Company Name",
-          "description": "Official name of the company including company suffixes such as Ltd, Inc, Corp, LLC, SE, GmbH, AG, SARL, or SAS.",
-          "examples": ["SAP SE", "Acme Corp"]
+            "type": "string",
+            "title": "Company Name",
+            "description": "Official name of the company including company suffixes such as Ltd, Inc, Corp, LLC, SE, GmbH, AG, SARL, or SAS.",
+            "examples": [
+                "SAP SE",
+                "Acme Corp"
+            ]
         },
         "website": {
-          "type": "string",
-          "title": "Website",
-          "description": "Public website of the company.",
-          "format": "uri",
-          "examples": ["http://www.sap.com", "https://www.example.com"]
+            "type": "string",
+            "title": "Website",
+            "description": "Public website of the company.",
+            "format": "uri",
+            "examples": [
+                "http://www.sap.com",
+                "https://www.example.com"
+            ]
         },
         "founded": {
-          "type": "string",
-          "title": "Founding Date",
-          "description": "Date when the company was founded in ISO 8601 format (YYYY-MM-DD).",
-          "format": "date",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-          "examples": ["1972-01-01", "2000-05-15"]
+            "type": "string",
+            "title": "Founding Date",
+            "description": "Date when the company was founded in ISO 8601 format (YYYY-MM-DD).",
+            "format": "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "examples": [
+                "1972-01-01",
+                "2000-05-15"
+            ]
         },
         "country": {
-          "type": "string",
-          "title": "Country",
-          "description": "Name of the country where the company is headquartered. The names should be expressed using the CLDR standard.",
-          "examples": ["Germany", "United States"]
+            "type": "string",
+            "title": "Country",
+            "description": "Name of the country where the company is headquartered. The names should be expressed using the CLDR standard.",
+            "examples": [
+                "Germany",
+                "United States"
+            ]
         },
         "city": {
-          "type": "string",
-          "title": "City",
-          "description": "City where the company is headquartered.",
-          "examples": ["Walldorf", "Berlin", "New York"]
+            "type": "string",
+            "title": "City",
+            "description": "City where the company is headquartered.",
+            "examples": [
+                "Walldorf",
+                "Berlin",
+                "New York"
+            ]
         },
         "industry": {
-          "type": "string",
-          "title": "Industry",
-          "description": "Primary industry in which the company operates.",
-          "examples": ["Software", "Manufacturing", "Finance"]
+            "type": "string",
+            "title": "Industry",
+            "description": "Primary industry in which the company operates.",
+            "x-pydi-taxonomy": "input/schemamatching/GICS_Industry_Taxonomy.csv",
+            "x-pydi-taxonomy-column": "Industry Name",
+            "examples": [
+                "Software",
+                "Manufacturing",
+                "Finance"
+            ]
         },
         "assets": {
-          "type": "integer",
-          "title": "Assets",
-          "description": "Total assets of the company in US$, represented as a non-negative integer.",
-          "minimum": 0,
-          "examples": [3730000123, 5000000000]
+            "type": "integer",
+            "title": "Assets",
+            "description": "Total assets of the company in US$, represented as a non-negative integer.",
+            "minimum": 0,
+            "examples": [
+                3730000123,
+                5000000000
+            ]
         },
         "revenue": {
-          "type": "integer",
-          "title": "Revenue",
-          "description": "Total revenue of the company in US$, represented as a non-negative integer.",
-          "minimum": 0,
-          "examples": [34312344221, 1200000000]
+            "type": "integer",
+            "title": "Revenue",
+            "description": "Total revenue of the company in US$, represented as a non-negative integer.",
+            "minimum": 0,
+            "examples": [
+                34312344221,
+                1200000000
+            ]
         },
         "founders": {
-          "type": "array",
-          "title": "Founders",
-          "description": "List of the founders of the company. The list should only contain the founders and not other key persons associated with the company.",
-          "items": {
-            "$ref": "#/$defs/FounderName"
-          },
-		  "uniqueitems": true,
-          "examples": [
-            [
-              "Hasso Plattner",
-              "Hans-Werner Hector",
-              "Klaus Tschira"
+            "type": "array",
+            "title": "Founders",
+            "description": "List of the founders of the company. The list should only contain the founders and not other key persons associated with the company.",
+            "items": {
+                "type": "string"
+            },
+            "examples": [
+                [
+                    "Hasso Plattner",
+                    "Hans-Werner Hector",
+                    "Klaus Tschira"
+                ]
             ]
-          ]
         }
-      },
-      "required": [
+    },
+    "required": [
         "id",
         "name",
         "website",
@@ -128,14 +120,5 @@
         "industry",
         "assets",
         "revenue"
-      ],
-      "additionalProperties": false
-    },
-    "FounderName": {
-      "title": "Founder Name",
-      "description": "Name of a founder of the company. The name consists of a first name followed by the last name of the founder.",
-      "type": "string",
-      "examples": ["Hasso Plattner", "Jane Doe"]
-    }
-  }
+    ]
 }

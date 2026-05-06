@@ -489,20 +489,75 @@ class DataFusionEvaluator:
         """Align two datasets by possibly different ID columns.
 
         Returns aligned DataFrames with matching records only.
+
+        Fused rows are indexed by the primary fused ID and by any IDs recorded
+        in ``_fusion_sources``. This supports validation sets whose expected IDs
+        refer to one source record instead of the synthetic fused ID.
         """
+        import ast
+
         fused_clean = fused_df.dropna(subset=[fused_id_column]).copy()
         expected_clean = expected_df.dropna(subset=[expected_id_column]).copy()
 
         if expected_clean.empty:
             return pd.DataFrame(), pd.DataFrame()
 
-        fused_clean["__eval_id"] = fused_clean[fused_id_column].astype(str)
+        source_id_to_fused_idx: Dict[str, int] = {}
+        for idx, row in fused_clean.iterrows():
+            primary_id = str(row[fused_id_column])
+            source_id_to_fused_idx[primary_id] = idx
+
+            fusion_sources = row.get("_fusion_sources")
+            if fusion_sources is None:
+                continue
+
+            if isinstance(fusion_sources, str):
+                try:
+                    sources = ast.literal_eval(fusion_sources)
+                except (ValueError, SyntaxError):
+                    sources = [fusion_sources]
+            else:
+                sources = list(fusion_sources) if fusion_sources else []
+
+            for source_id in sources:
+                if isinstance(source_id, str) and source_id:
+                    source_id_to_fused_idx[source_id] = idx
+
         expected_clean["__eval_id"] = expected_clean[expected_id_column].astype(str)
 
         expected_id_order = expected_clean["__eval_id"].tolist()
-        fused_id_set = set(fused_clean["__eval_id"])
+        has_source_ids = "source_ids" in expected_clean.columns
 
-        missing_ids = [gid for gid in expected_id_order if gid not in fused_id_set]
+        aligned_fused_rows = []
+        aligned_expected_rows = []
+        missing_ids = []
+
+        expected_by_id = expected_clean.set_index("__eval_id", drop=False)
+        for expected_id in expected_id_order:
+            fused_idx = source_id_to_fused_idx.get(expected_id)
+
+            expected_row = expected_by_id.loc[expected_id]
+            if isinstance(expected_row, pd.DataFrame):
+                expected_row = expected_row.iloc[0]
+
+            if fused_idx is None and has_source_ids:
+                source_ids = [
+                    source_id.strip()
+                    for source_id in str(expected_row.get("source_ids", "")).split(",")
+                    if source_id.strip()
+                ]
+                for source_id in source_ids:
+                    fused_idx = source_id_to_fused_idx.get(source_id)
+                    if fused_idx is not None:
+                        break
+
+            if fused_idx is None:
+                missing_ids.append(expected_id)
+                continue
+
+            aligned_fused_rows.append(fused_clean.loc[fused_idx])
+            aligned_expected_rows.append(expected_row)
+
         if missing_ids:
             preview = ", ".join(missing_ids[:5])
             if len(missing_ids) > 5:
@@ -513,11 +568,11 @@ class DataFusionEvaluator:
                 preview,
             )
 
-        aligned_expected = expected_clean.set_index("__eval_id").loc[expected_id_order]
-        aligned_fused = fused_clean.set_index("__eval_id").reindex(expected_id_order)
+        if not aligned_fused_rows:
+            return pd.DataFrame(), pd.DataFrame()
 
-        aligned_expected = aligned_expected.reset_index(drop=True)
-        aligned_fused = aligned_fused.reset_index(drop=True)
+        aligned_expected = pd.DataFrame(aligned_expected_rows).reset_index(drop=True)
+        aligned_fused = pd.DataFrame(aligned_fused_rows).reset_index(drop=True)
 
         aligned_expected = aligned_expected.drop(columns="__eval_id", errors="ignore")
         aligned_fused = aligned_fused.drop(columns="__eval_id", errors="ignore")

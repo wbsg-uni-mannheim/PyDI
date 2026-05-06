@@ -8,9 +8,11 @@ validation is handled separately by the validators module.
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -63,9 +65,15 @@ class DataFrameTransformResult:
     total_transformed: int
     total_failed: int
 
+    @property
+    def columns_normalized(self) -> int:
+        """Number of columns where at least one value was transformed."""
+        return sum(1 for result in self.columns.values() if result.values_transformed > 0)
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "columns": {name: col.to_dict() for name, col in self.columns.items()},
+            "columns_normalized": self.columns_normalized,
             "total_transformed": self.total_transformed,
             "total_failed": self.total_failed,
         }
@@ -316,6 +324,25 @@ def _transform_datetime(
         return value, False
 
 
+def _transform_taxonomy(
+    value: Any,
+    mapping: dict[str, str | None],
+) -> tuple[Any, bool]:
+    """Transform a value using a pre-computed taxonomy mapping."""
+    if pd.isna(value):
+        return value, False
+
+    text = str(value).strip()
+    if not text:
+        return value, False
+
+    mapped = mapping.get(text)
+    if mapped is not None:
+        return mapped, True
+
+    return value, False
+
+
 def _transform_text(
     value: Any,
     spec: ColumnSpec,
@@ -398,6 +425,8 @@ def transform_column(
     series: pd.Series,
     spec: ColumnSpec,
     detected_type: str | None = None,
+    *,
+    taxonomy_mapping: dict[str, str | None] | None = None,
 ) -> tuple[pd.Series, TransformResult]:
     """
     Transform a single column according to specification.
@@ -406,6 +435,7 @@ def transform_column(
         series: Pandas Series to transform
         spec: Column specification
         detected_type: Pre-detected type (optional optimization)
+        taxonomy_mapping: Pre-computed taxonomy mapping for taxonomy normalization.
 
     Returns:
         Tuple of (transformed Series, TransformResult)
@@ -430,6 +460,7 @@ def transform_column(
         or spec.stdnum_format
         or (spec.convert_percentage and spec.convert_percentage != "keep")
         or spec.output_type == "datetime"
+        or spec.taxonomy_path is not None
     )
 
     for idx, value in series.items():
@@ -483,6 +514,13 @@ def transform_column(
             elif spec.output_type == "datetime":
                 attempted_transform = True
                 transformed_value, was_transformed = _transform_datetime(value, spec)
+
+            elif spec.taxonomy_path is not None and taxonomy_mapping is not None:
+                attempted_transform = True
+                transformed_value, was_transformed = _transform_taxonomy(
+                    value,
+                    taxonomy_mapping,
+                )
 
             # Apply text transformations
             if spec.case or spec.strip_whitespace:
@@ -543,6 +581,10 @@ def transform_column(
 def transform_dataframe(
     df: pd.DataFrame,
     spec: NormalizationSpec,
+    *,
+    chat_model: Any = None,
+    taxonomy_cache_dir: str | None = None,
+    schema_base_path: str | None = None,
 ) -> DataFrameTransformResult:
     """
     Transform a DataFrame according to specification.
@@ -550,6 +592,10 @@ def transform_dataframe(
     Args:
         df: DataFrame to transform
         spec: Normalization specification
+        chat_model: LangChain chat model for taxonomy mapping. Required if a
+            column has taxonomy_path values not covered by an existing cache.
+        taxonomy_cache_dir: Directory for taxonomy mapping cache files.
+        schema_base_path: Base path for resolving relative taxonomy file paths.
 
     Returns:
         DataFrameTransformResult with transformed DataFrame and metadata
@@ -565,6 +611,19 @@ def transform_dataframe(
     column_results: dict[str, TransformResult] = {}
     total_transformed = 0
     total_failed = 0
+    taxonomy_mappings: dict[str, dict[str, str | None]] = {}
+    dataset_name = df.attrs.get("dataset_name")
+
+    for col_name, col_spec in spec.columns.items():
+        if col_spec.taxonomy_path and col_name in df.columns:
+            taxonomy_mappings[col_name] = _prepare_taxonomy_mapping(
+                df[col_name],
+                col_spec,
+                chat_model=chat_model,
+                cache_dir=taxonomy_cache_dir,
+                base_path=schema_base_path,
+                dataset_name=dataset_name,
+            )
 
     for col_name, col_spec in spec.columns.items():
         if col_name not in df.columns:
@@ -574,6 +633,7 @@ def transform_dataframe(
         transformed_series, col_result = transform_column(
             df[col_name],
             col_spec,
+            taxonomy_mapping=taxonomy_mappings.get(col_name),
         )
 
         result_df[col_name] = transformed_series
@@ -587,6 +647,143 @@ def transform_dataframe(
         total_transformed=total_transformed,
         total_failed=total_failed,
     )
+
+
+def _prepare_taxonomy_mapping(
+    series: pd.Series,
+    spec: ColumnSpec,
+    *,
+    chat_model: Any,
+    cache_dir: str | None,
+    base_path: str | None,
+    dataset_name: str | None = None,
+) -> dict[str, str | None]:
+    """Load, extend, and persist a taxonomy mapping for one column."""
+    from io import StringIO
+
+    from .taxonomy import (
+        TaxonomyLoader,
+        TaxonomyMapper,
+        TaxonomyMappingResult,
+        load_mapping_cache,
+        save_mapping_cache,
+    )
+
+    column_name = str(series.name)
+
+    cache_path = spec.taxonomy_mapping_path
+    if cache_path is None and cache_dir is not None:
+        cache_path = str(Path(cache_dir) / f"{column_name}_taxonomy_mapping.json")
+    if cache_path is None and base_path is not None:
+        cache_path = str(Path(base_path) / f"{column_name}_taxonomy_mapping.json")
+
+    cached_mapping = load_mapping_cache(cache_path) if cache_path else None
+
+    if spec.taxonomy_path is None:
+        raise ValueError(f"taxonomy_path is required for column '{column_name}'")
+
+    loader = TaxonomyLoader()
+    taxonomy_values = loader.load(
+        spec.taxonomy_path,
+        spec.taxonomy_column,
+        base_path=base_path,
+    )
+    taxonomy_csv_content = loader.load_full_csv(spec.taxonomy_path, base_path=base_path)
+
+    taxonomy_column = spec.taxonomy_column
+    if taxonomy_column is None:
+        taxonomy_header = pd.read_csv(StringIO(taxonomy_csv_content), nrows=0)
+        taxonomy_column = taxonomy_header.columns[0]
+
+    source_values = series.dropna().astype(str).str.strip().unique().tolist()
+    source_values = [value for value in source_values if value]
+
+    taxonomy_set = set(taxonomy_values)
+    cached_set = set(cached_mapping.keys()) if cached_mapping else set()
+
+    pre_mapped = {value: value for value in source_values if value in taxonomy_set}
+    from_cache = {
+        value: cached_mapping[value]
+        for value in source_values
+        if value in cached_set and value not in taxonomy_set
+    }
+    needs_mapping = [
+        value
+        for value in source_values
+        if value not in taxonomy_set and value not in cached_set
+    ]
+
+    label = f"{dataset_name}.{column_name}" if dataset_name else column_name
+    logger.info(
+        "Taxonomy mapping for %s: %d unique, %d exact, %d cached, %d need LLM",
+        label,
+        len(source_values),
+        len(pre_mapped),
+        len(from_cache),
+        len(needs_mapping),
+    )
+
+    full_mapping: dict[str, str | None] = {**pre_mapped, **from_cache}
+    llm_model_used = None
+
+    if needs_mapping:
+        if chat_model is None:
+            logger.info(
+                "Column '%s' has %d values outside the taxonomy and no chat_model "
+                "was provided; leaving those values unchanged",
+                column_name,
+                len(needs_mapping),
+            )
+            full_mapping.update({value: None for value in needs_mapping})
+        else:
+            mapper = TaxonomyMapper(chat_model)
+            result = mapper.create_mapping(
+                needs_mapping,
+                taxonomy_csv_content,
+                taxonomy_column,
+                column_name=column_name,
+            )
+            full_mapping.update(result.mapping)
+            llm_model_used = result.llm_model
+
+    save_mapping = {**(cached_mapping or {}), **full_mapping}
+    unmapped = [value for value, mapped in save_mapping.items() if mapped is None]
+
+    current_counts = (
+        series.dropna().astype(str).str.strip().value_counts().to_dict()
+    )
+    current_counts = {
+        value: count for value, count in current_counts.items() if value in save_mapping
+    }
+
+    counts_by_dataset = {}
+    if cache_path:
+        try:
+            with open(cache_path, encoding="utf-8") as handle:
+                cache_data = json.load(handle)
+                counts_by_dataset = cache_data.get(
+                    "source_value_counts_by_dataset",
+                    {},
+                )
+        except (FileNotFoundError, json.JSONDecodeError):
+            counts_by_dataset = {}
+
+    counts_by_dataset[dataset_name or "unknown"] = current_counts
+
+    if cache_path and (needs_mapping or cached_mapping is None):
+        save_mapping_cache(
+            cache_path,
+            TaxonomyMappingResult(
+                mapping=save_mapping,
+                unmapped=unmapped,
+                taxonomy_values=taxonomy_values,
+                taxonomy_column=taxonomy_column,
+                llm_model=llm_model_used,
+                source_value_counts_by_dataset=counts_by_dataset,
+            ),
+        )
+
+    return full_mapping
 
 
 def normalize_dataframe(
