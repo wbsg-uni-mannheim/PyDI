@@ -212,6 +212,11 @@ class LLMBasedSchemaMatcher(BaseSchemaMatcher):
         """Get the default system prompt for schema matching."""
         return """You are an expert at aligning table schemas.
 
+IMPORTANT: Source column names may be placeholders or generic identifiers (for example Attribute_1, col1, field_a, Column_A). When column names are not descriptive, focus on the actual data values to infer each column's semantic meaning:
+- Look at value formats, patterns, and content in the sample rows.
+- Infer what real-world information each column contains, such as dates, names, locations, categories, identifiers, or measurements.
+- Match based on what the data represents, not only on column names.
+
 Given Table A and Table B, identify the matching columns between them. For every column in Table A, specify the corresponding column in Table B. If a column in Table A has no match in Table B, map it to null. Represent each mapping as a two-item list like ["Table A column", "Table B column" or null].
 
 Return the final answer strictly as JSON in the format {{"column_mappings": [["Table A column", "Table B column"], ["Table A column", null], ...]}} with no additional commentary."""
@@ -228,6 +233,9 @@ Question:
 
 ### Provenance
 {source_metadata}
+
+### Column Value Summary
+{source_column_summary}
 
 ### Sample Data
 {source_table}
@@ -294,6 +302,40 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
 
         return "**Metadata:** " + " | ".join(metadata_lines) if metadata_lines else ""
 
+    def _generate_column_summary(self, df: pd.DataFrame, max_samples: int = 5) -> str:
+        """Generate compact value summaries for each schema column."""
+        schema_columns = get_schema_columns(df)
+        if not schema_columns:
+            return ""
+
+        str_to_orig = {str(col): col for col in df.columns}
+        lines = []
+
+        for col in schema_columns:
+            original_col = str_to_orig.get(col)
+            if original_col is None:
+                continue
+
+            try:
+                series = df[original_col].dropna()
+                unique_count = series.nunique(dropna=True)
+                sample_values = series.drop_duplicates().head(max_samples).tolist()
+                sample_strs = []
+                for value in sample_values:
+                    text = str(value)
+                    if len(text) > 50:
+                        text = text[:47] + "..."
+                    sample_strs.append(f'"{text}"')
+
+                samples = ", ".join(sample_strs) if sample_strs else "(none)"
+                lines.append(
+                    f"- `{col}`: {unique_count} unique values. Examples: {samples}"
+                )
+            except Exception:
+                lines.append(f"- `{col}`: unable to summarize")
+
+        return "\n".join(lines)
+
     def _dataframe_to_markdown(
         self,
         df: pd.DataFrame,
@@ -347,7 +389,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         schema_columns: List[str],
         limit: int,
     ) -> pd.DataFrame:
-        """Select representative rows prioritizing records without missing values."""
+        """Select representative rows while exposing sparse populated columns."""
 
         if limit <= 0:
             return df[schema_columns].iloc[0:0]
@@ -358,16 +400,34 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
 
         limit = min(limit, len(data))
         cleaned = data.replace("", pd.NA)
-        missing_counts = cleaned.isna().sum(axis=1)
+        fill_rates = cleaned.notna().sum() / len(cleaned)
+        sparse_columns = fill_rates[fill_rates < 0.5].index.tolist()
+        selected_indices = []
+        selected_seen = set()
 
-        full_rows = missing_counts[missing_counts == 0]
-        if len(full_rows) >= limit:
-            indices = full_rows.index[:limit]
-        else:
-            ordered_indices = missing_counts.sort_values(kind="mergesort").index[:limit]
-            indices = ordered_indices
+        rows_per_sparse = max(1, min(2, limit // max(1, len(sparse_columns) + 1)))
+        for column in sparse_columns:
+            populated_indices = cleaned.index[cleaned[column].notna()].tolist()
+            for idx in populated_indices[:rows_per_sparse]:
+                if idx not in selected_seen:
+                    selected_indices.append(idx)
+                    selected_seen.add(idx)
+                if len(selected_indices) >= limit:
+                    break
+            if len(selected_indices) >= limit:
+                break
 
-        sampled = data.loc[indices]
+        if len(selected_indices) < limit:
+            missing_counts = cleaned.isna().sum(axis=1)
+            ordered_indices = missing_counts.sort_values(kind="mergesort").index
+            for idx in ordered_indices:
+                if idx not in selected_seen:
+                    selected_indices.append(idx)
+                    selected_seen.add(idx)
+                if len(selected_indices) >= limit:
+                    break
+
+        sampled = data.loc[selected_indices]
         sampled = sampled.sort_index()
         return sampled.head(limit)
 
@@ -539,6 +599,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         # Extract provenance metadata and convert DataFrames to markdown
         source_provenance = self._extract_dataset_metadata(source_dataset)
         target_provenance = self._extract_dataset_metadata(target_dataset)
+        source_column_summary = self._generate_column_summary(source_dataset)
         source_markdown = self._dataframe_to_markdown(
             source_dataset,
             source_name,
@@ -576,6 +637,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
                     source_name=source_name,
                     source_schema_info=source_schema_info,
                     source_metadata=source_provenance,
+                    source_column_summary=source_column_summary,
                     source_table=source_markdown,
                     target_name=target_name,
                     target_schema_info=target_schema_info,
@@ -590,6 +652,7 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
                         "target_name": target_name,
                         "source_schema_info": source_schema_info,
                         "source_provenance": source_provenance,
+                        "source_column_summary": source_column_summary,
                         "target_schema_info": target_schema_info,
                         "target_provenance": target_provenance,
                         "source_table": source_markdown,
@@ -721,6 +784,27 @@ Return the final result as JSON in the format {{"column_mappings": [["Table A co
         # Always flush logs even when debug mode is disabled
         self._llm_logger.flush(lambda name, payload: self._write_artifact(name, payload, force=True))
 
-        logger.info(f"LLM schema matching completed. Found {len(results)} correspondences")
+        if results:
+            logger.info(
+                f"LLM schema matching completed. Found {len(results)} correspondences"
+            )
+            return pd.DataFrame(results)
 
-        return pd.DataFrame(results)
+        logger.warning(
+            "LLM schema matching found no correspondences between '%s' and '%s'. "
+            "Source columns: %s; target columns: %s",
+            source_name,
+            target_name,
+            get_schema_columns(source_dataset),
+            get_schema_columns(target_dataset),
+        )
+        return pd.DataFrame(
+            columns=[
+                "source_dataset",
+                "source_column",
+                "target_dataset",
+                "target_column",
+                "score",
+                "notes",
+            ]
+        )

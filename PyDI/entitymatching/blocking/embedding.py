@@ -108,6 +108,7 @@ class EmbeddingBlocker(BaseBlocker):
         # Initialize embeddings
         self.left_embeddings = left_embeddings
         self.right_embeddings = right_embeddings
+        self._embeddings_prepared = False
         
         # Lazy-loaded components
         self._sentence_transformer = None
@@ -229,15 +230,43 @@ class EmbeddingBlocker(BaseBlocker):
             
             embeddings = np.vstack(all_embeddings)
         
-        # Convert to float32 and normalize if requested
-        embeddings = embeddings.astype(np.float32)
-        
+        return embeddings
+
+    def _prepare_embeddings(self, embeddings: np.ndarray, label: str) -> np.ndarray:
+        """Convert embeddings to a numerically safe representation."""
+        embeddings = np.asarray(embeddings, dtype=np.float32)
+
+        if embeddings.ndim != 2:
+            raise ValueError(
+                f"{label} embeddings must be a 2D array, got shape {embeddings.shape}"
+            )
+
+        non_finite = ~np.isfinite(embeddings)
+        if np.any(non_finite):
+            self.logger.warning(
+                "EmbeddingBlocker: replacing %d non-finite values in %s embeddings",
+                int(non_finite.sum()),
+                label,
+            )
+            embeddings = np.nan_to_num(embeddings, nan=0.0, posinf=0.0, neginf=0.0)
+
         if self.normalize:
-            # L2 normalize
             norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-            norms = np.maximum(norms, 1e-8)  # Avoid division by zero
-            embeddings = embeddings / norms
-            
+            valid_norms = norms > 1e-8
+            zero_norm_count = int((~valid_norms).sum())
+            if zero_norm_count:
+                self.logger.warning(
+                    "EmbeddingBlocker: %d zero-norm %s embeddings left as zero vectors",
+                    zero_norm_count,
+                    label,
+                )
+            embeddings = np.divide(
+                embeddings,
+                norms,
+                out=np.zeros_like(embeddings, dtype=np.float32),
+                where=valid_norms,
+            )
+
         return embeddings
     
     def _ensure_embeddings(self) -> tuple[np.ndarray, np.ndarray]:
@@ -254,7 +283,21 @@ class EmbeddingBlocker(BaseBlocker):
                 self.logger.debug(f"Creating embeddings for dataset2: {len(self.df_right)} records")
                 self.right_embeddings = self._compute_embeddings(self.df_right)
                 self.logger.info(f"created {self.right_embeddings.shape[1]}d embeddings for second dataset")
-                
+
+        if not self._embeddings_prepared:
+            self.left_embeddings = self._prepare_embeddings(
+                self.left_embeddings, "left"
+            )
+            self.right_embeddings = self._prepare_embeddings(
+                self.right_embeddings, "right"
+            )
+            if self.left_embeddings.shape[1] != self.right_embeddings.shape[1]:
+                raise ValueError(
+                    "Left and right embeddings must have the same dimensionality: "
+                    f"{self.left_embeddings.shape[1]} != {self.right_embeddings.shape[1]}"
+                )
+            self._embeddings_prepared = True
+
         return self.left_embeddings, self.right_embeddings
     
     def _build_nn_index(self, embeddings: np.ndarray):
@@ -346,7 +389,9 @@ class EmbeddingBlocker(BaseBlocker):
     
     def _query_sklearn_index(self, query_embeddings: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """Query sklearn index."""
-        distances, indices = self._nn_index.kneighbors(query_embeddings)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=RuntimeWarning, module="sklearn")
+            distances, indices = self._nn_index.kneighbors(query_embeddings)
         
         # Convert distances to similarities
         if self.metric == "cosine":

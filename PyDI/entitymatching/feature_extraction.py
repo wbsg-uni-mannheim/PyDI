@@ -101,6 +101,9 @@ class FeatureExtractor:
         pairs: pd.DataFrame,
         id_column: str,
         labels: Optional[pd.Series] = None,
+        *,
+        left_lookup: Optional[Union[pd.DataFrame, Dict[Any, Dict[str, Any]]]] = None,
+        right_lookup: Optional[Union[pd.DataFrame, Dict[Any, Dict[str, Any]]]] = None,
     ) -> pd.DataFrame:
         """Create feature matrix from entity pairs.
 
@@ -117,6 +120,13 @@ class FeatureExtractor:
         labels : pandas.Series, optional
             Binary labels for pairs (1 for match, 0 for non-match).
             If provided, adds 'label' column to output.
+        left_lookup : dict or pandas.DataFrame, optional
+            Precomputed lookup for the left dataset. Dict form should be
+            ``{id: {column: value, ...}}``. DataFrame form should be indexed by
+            ``id_column`` and is converted once for faster pair access.
+        right_lookup : dict or pandas.DataFrame, optional
+            Precomputed lookup for the right dataset, same accepted forms as
+            ``left_lookup``.
             
         Returns
         -------
@@ -143,17 +153,20 @@ class FeatureExtractor:
         if labels is not None and len(labels) != len(pairs):
             raise ValueError(f"Labels length ({len(labels)}) doesn't match pairs length ({len(pairs)})")
         
-        # Validate that ID column exists
-        if id_column not in df_left.columns:
-            raise ValueError(f"Left dataset missing ID column: {id_column}")
-        if id_column not in df_right.columns:
-            raise ValueError(f"Right dataset missing ID column: {id_column}")
+        if left_lookup is None:
+            if id_column not in df_left.columns:
+                raise ValueError(f"Left dataset missing ID column: {id_column}")
+            left_lookup = df_left.set_index(id_column).to_dict("index")
+        elif isinstance(left_lookup, pd.DataFrame):
+            left_lookup = left_lookup.to_dict("index")
 
-        # Create lookup dictionaries for fast record access
-        left_lookup = df_left.set_index(id_column)
-        right_lookup = df_right.set_index(id_column)
-        
-        
+        if right_lookup is None:
+            if id_column not in df_right.columns:
+                raise ValueError(f"Right dataset missing ID column: {id_column}")
+            right_lookup = df_right.set_index(id_column).to_dict("index")
+        elif isinstance(right_lookup, pd.DataFrame):
+            right_lookup = right_lookup.to_dict("index")
+
         # Initialize feature matrix
         feature_data = []
         
@@ -161,18 +174,11 @@ class FeatureExtractor:
         for idx, pair in pairs.iterrows():
             id1, id2 = pair["id1"], pair["id2"]
             
-            try:
-                record1 = left_lookup.loc[id1]
-                record2 = right_lookup.loc[id2]
-                
-                # Handle case where .loc returns DataFrame due to duplicate indices
-                if isinstance(record1, pd.DataFrame):
-                    record1 = record1.iloc[0]
-                if isinstance(record2, pd.DataFrame):
-                    record2 = record2.iloc[0]
-                    
-            except KeyError as e:
-                logging.warning(f"Record not found: {e}")
+            record1 = left_lookup.get(id1)
+            record2 = right_lookup.get(id2)
+
+            if record1 is None or record2 is None:
+                logging.warning(f"Record not found for pair {id1}-{id2}")
                 continue
                 
             # Extract features for this pair

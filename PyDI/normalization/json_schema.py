@@ -221,6 +221,14 @@ def _property_to_column_spec(prop_schema: dict, root_schema: dict) -> ColumnSpec
         spec_kwargs["case"] = prop_schema["x-pydi-case"]
     if "x-pydi-strip-whitespace" in prop_schema:
         spec_kwargs["strip_whitespace"] = prop_schema["x-pydi-strip-whitespace"]
+    if "x-pydi-taxonomy" in prop_schema:
+        spec_kwargs["taxonomy_path"] = prop_schema["x-pydi-taxonomy"]
+    if "x-pydi-taxonomy-column" in prop_schema:
+        spec_kwargs["taxonomy_column"] = prop_schema["x-pydi-taxonomy-column"]
+    if "x-pydi-taxonomy-mapping" in prop_schema:
+        spec_kwargs["taxonomy_mapping_path"] = prop_schema[
+            "x-pydi-taxonomy-mapping"
+        ]
 
     return ColumnSpec(**spec_kwargs)
 

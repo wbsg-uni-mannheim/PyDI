@@ -45,6 +45,9 @@ class SchemaTranslator:
         normalize: Union["NormalizationSpec", bool, None] = None,
         on_failure: Literal["keep", "null", "raise"] = "keep",
         return_result: bool = False,
+        chat_model=None,
+        schema_base_path: str | None = None,
+        taxonomy_cache_dir: str | None = None,
     ) -> Union[pd.DataFrame, tuple[pd.DataFrame, "DataFrameTransformResult"]]:
         """Translate column names according to a schema mapping.
 
@@ -77,6 +80,13 @@ class SchemaTranslator:
         return_result : bool, default False
             If True, return a tuple of (DataFrame, DataFrameTransformResult)
             to access per-column transformation errors and statistics.
+        chat_model : BaseChatModel, optional
+            LangChain chat model for taxonomy-based normalization. Required if
+            the normalization spec includes taxonomy values not covered by cache.
+        schema_base_path : str, optional
+            Base path for resolving relative taxonomy file paths.
+        taxonomy_cache_dir : str, optional
+            Directory for taxonomy mapping cache files.
 
         Returns
         -------
@@ -125,6 +135,11 @@ class SchemaTranslator:
 
         if relevant.empty:
             logging.info(f"No schema mappings found for dataset '{dataset_name}'")
+            if return_result:
+                from ..normalization import DataFrameTransformResult
+
+                copy = df.copy()
+                return copy, DataFrameTransformResult(copy, {}, 0, 0)
             return df.copy()
 
         # Build column rename dict, picking best score if duplicates exist
@@ -154,6 +169,11 @@ class SchemaTranslator:
 
         if not rename_map:
             logging.info(f"No applicable mappings for dataset '{dataset_name}'")
+            if return_result:
+                from ..normalization import DataFrameTransformResult
+
+                copy = df.copy()
+                return copy, DataFrameTransformResult(copy, {}, 0, 0)
             return df.copy()
 
         logging.info(f"Translating {len(rename_map)} columns for '{dataset_name}'")
@@ -209,7 +229,14 @@ class SchemaTranslator:
 
         # Apply normalization if requested
         if normalize is not None:
-            translated, transform_result = self._apply_normalization(translated, normalize, on_failure)
+            translated, transform_result = self._apply_normalization(
+                translated,
+                normalize,
+                on_failure,
+                chat_model=chat_model,
+                schema_base_path=schema_base_path,
+                taxonomy_cache_dir=taxonomy_cache_dir,
+            )
             if return_result:
                 return translated, transform_result
 
@@ -220,6 +247,10 @@ class SchemaTranslator:
         df: pd.DataFrame,
         normalize: Union["NormalizationSpec", bool],
         on_failure: Literal["keep", "null", "raise"],
+        *,
+        chat_model=None,
+        schema_base_path: str | None = None,
+        taxonomy_cache_dir: str | None = None,
     ) -> tuple[pd.DataFrame, "DataFrameTransformResult"]:
         """Apply value normalization to the DataFrame.
 
@@ -231,6 +262,12 @@ class SchemaTranslator:
             If True, auto-detect normalizations. If NormalizationSpec, use it.
         on_failure : {"keep", "null", "raise"}
             Default failure behavior for columns without explicit on_failure.
+        chat_model : BaseChatModel, optional
+            LangChain chat model for taxonomy-based normalization.
+        schema_base_path : str, optional
+            Base path for resolving relative taxonomy file paths.
+        taxonomy_cache_dir : str, optional
+            Directory for taxonomy mapping cache files.
 
         Returns
         -------
@@ -265,7 +302,13 @@ class SchemaTranslator:
                 col_spec.on_failure = on_failure
 
         # Transform the DataFrame
-        result = _transform_dataframe(df, spec)
+        result = _transform_dataframe(
+            df,
+            spec,
+            chat_model=chat_model,
+            taxonomy_cache_dir=taxonomy_cache_dir,
+            schema_base_path=schema_base_path,
+        )
 
         logging.info(
             f"Normalization complete: {result.total_transformed} values transformed, "
