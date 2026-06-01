@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_65305|lastFM_30977|name=Man Gave Names To All The Animals / We Belong To The Night | artist=Ellen Foley|Bob Dylan | release-date=1979 | release-country=Italy | duration=583.0 | genre=Pop|Funk / Soul|Rock | tracks=['Man Gave Names To All The Animals', 'We Belong To The Night']||name=Man Gave Names to All the Animals / Trouble in Mind | artist=B. Dylan | duration=568.0 | tracks=['Man Gave Names to All the Animals', 'Trouble In Mind']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Man Gave Names To All The Animals / We Belong To The Night | artist=Ellen Foley|Bob Dylan | release-date=1979 | release-country=Italy | duration=583.0 | genre=Pop|Funk / Soul|Rock | tracks=['Man Gave Names To All The Animals', 'We Belong To The Night']\nRecord B: name=Man Gave Names to All the Animals / Trouble in Mind | artist=B. Dylan | duration=568.0 | tracks=['Man Gave Names to All the Animals', 'Trouble In Mind']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_33793|lastFM_28273|name=Singles | artist=The Smiths | release-date=1995-08-25 | release-country=Japan | genre=Rock | tracks=['Hand In Glove', 'This Charming Man', 'What Difference Does It Make?', \"Heaven Knows I'm Miserable Now\", 'William, It Was Really Nothing', 'How Soon Is Now?', \"Shakespeare's Sister\", \"That Joke Isn't Funny Anymore\", 'The Boy With The Thorn In His Side', 'Bigmouth Strikes Again', 'Panic', 'Ask', 'Shoplifters Of The World Unite', 'Sheila Take A Bow', 'Girlfriend In A Coma', \"I Started Something I Couldn't Finish\", 'Last Night I Dreamt That Somebody Loved Me', 'There Is A Light That Never Goes Out']||name=Singles | artist=The Briefs | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles | artist=The Smiths | release-date=1995-08-25 | release-country=Japan | genre=Rock | tracks=['Hand In Glove', 'This Charming Man', 'What Difference Does It Make?', \"Heaven Knows I'm Miserable Now\", 'William, It Was Really Nothing', 'How Soon Is Now?', \"Shakespeare's Sister\", \"That Joke Isn't Funny Anymore\", 'The Boy With The Thorn In His Side', 'Bigmouth Strikes Again', 'Panic', 'Ask', 'Shoplifters Of The World Unite', 'Sheila Take A Bow', 'Girlfriend In A Coma', \"I Started Something I Couldn't Finish\", 'Last Night I Dreamt That Somebody Loved Me', 'There Is A Light That Never Goes Out']\nRecord B: name=Singles | artist=The Briefs | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_17144|lastFM_8322|name=Homesick | artist=Experimental Pop Band | release-date=1999 | release-country=Germany | genre=Electronic|Pop|Rock | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', \"Everything's Easy\", 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']||name=Homesick | artist=Experimental P. Band | duration=3026.0 | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', 'Everything Is Easy', 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Homesick | artist=Experimental Pop Band | release-date=1999 | release-country=Germany | genre=Electronic|Pop|Rock | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', \"Everything's Easy\", 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']\nRecord B: name=Homesick | artist=Experimental P. Band | duration=3026.0 | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', 'Everything Is Easy', 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

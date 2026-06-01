@@ -1,0 +1,159 @@
+# Knob 10 — Source Reliability Differentiation: Games domain config.
+#
+# Refreshed-CSV column names (2026-05-07 K10 sign-off, plan_s1_scale.md
+# §"K10 sign-off"). Metacritic wins every eligible attribute under the
+# curated-source-preferred rule (the prior pass had dbpedia winning
+# releaseYear; that is a flip — dbpedia.launch_yr is infobox-scraped while
+# metacritic.year_published is curated against the canonical release date).
+#
+# Eligible attributes (>=2 sources after the refreshed-CSV remap):
+#   name (3), platform (3), ESRB (2), releaseYear (3), developer (3),
+#   genres (3), criticScore (2), userScore (2). publisher (sales-only),
+#   series (dbpedia-only), and globalSales (sales-only) are dropped.
+
+domain: games
+
+id_columns:
+  dbpedia: id
+  metacritic: id
+  sales: id
+
+attribute_mapping:
+  dbpedia:
+    title: name
+    system: platform
+    launch_yr: releaseYear
+    studio: developer
+    genre: genres
+    franchise: series
+  metacritic:
+    game_title: name
+    console: platform
+    age_rating: ESRB
+    year_published: releaseYear
+    made_by: developer
+    genres: genres
+    press_rating: criticScore
+    player_rating: userScore
+  sales:
+    prod_title: name
+    hw: platform
+    age_classification: ESRB
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    units_sold_mm: globalSales
+
+# Winner identity (all metacritic per the curated-source-preferred rule).
+# releaseYear flipped from dbpedia (prior pass) -> metacritic (curated).
+attribute_targets:
+  name:
+    easy:
+      dbpedia: 0.05
+      metacritic: 0.85
+      sales: 0.10
+    medium:
+      dbpedia: 0.15
+      metacritic: 0.65
+      sales: 0.20
+    hard:
+      dbpedia: 0.30
+      metacritic: 0.40
+      sales: 0.30
+  platform:
+    easy:
+      dbpedia: 0.05
+      metacritic: 0.85
+      sales: 0.10
+    medium:
+      dbpedia: 0.15
+      metacritic: 0.65
+      sales: 0.20
+    hard:
+      dbpedia: 0.30
+      metacritic: 0.40
+      sales: 0.30
+  ESRB:
+    easy:
+      metacritic: 0.85
+      sales: 0.15
+    medium:
+      metacritic: 0.65
+      sales: 0.35
+    hard:
+      metacritic: 0.50
+      sales: 0.50
+  releaseYear:
+    easy:
+      dbpedia: 0.10
+      metacritic: 0.85
+      sales: 0.05
+    medium:
+      dbpedia: 0.20
+      metacritic: 0.65
+      sales: 0.15
+    hard:
+      dbpedia: 0.30
+      metacritic: 0.40
+      sales: 0.30
+  developer:
+    easy:
+      dbpedia: 0.10
+      metacritic: 0.80
+      sales: 0.10
+    medium:
+      dbpedia: 0.20
+      metacritic: 0.60
+      sales: 0.20
+    hard:
+      dbpedia: 0.30
+      metacritic: 0.40
+      sales: 0.30
+  genres:
+    easy:
+      dbpedia: 0.05
+      metacritic: 0.85
+      sales: 0.10
+    medium:
+      dbpedia: 0.15
+      metacritic: 0.65
+      sales: 0.20
+    hard:
+      dbpedia: 0.30
+      metacritic: 0.40
+      sales: 0.30
+  criticScore:
+    easy:
+      metacritic: 0.85
+      sales: 0.15
+    medium:
+      metacritic: 0.65
+      sales: 0.35
+    hard:
+      metacritic: 0.50
+      sales: 0.50
+  userScore:
+    easy:
+      metacritic: 0.85
+      sales: 0.15
+    medium:
+      metacritic: 0.65
+      sales: 0.35
+    hard:
+      metacritic: 0.50
+      sales: 0.50
+
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+concentration_cap: 0.99

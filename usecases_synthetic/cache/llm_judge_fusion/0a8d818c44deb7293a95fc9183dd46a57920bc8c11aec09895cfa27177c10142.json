@@ -1,0 +1,30 @@
+{
+  "attribute": "title",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "12TB - Seagate IronWolf PRO NAS 7200RPM - ST12000NE0008"
+    },
+    {
+      "source": "products_2",
+      "value": "Seagate 12TB IronWolf Pro 7200RPM 256MB Cache 3.5-Inch NAS Hard Disk Drive ST12000NE0007"
+    },
+    {
+      "source": "products_3",
+      "value": "12TB IronWolf Pro ST12000NE0007, 7200 RPM, SATA 6Gb/s, 512e, 256MB cache, 3.5-Inch HDD"
+    },
+    {
+      "source": "products_4",
+      "value": "Seagate IronWolf Pro HDD NAS 12TB 256MB 7200rpm SataIII 3.5"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "interpolation",
+    "reasoning": "All candidates describe the same drive; normalized the product title by combining the consistent brand, capacity, speed, cache, form factor, NAS type, and model number.",
+    "value": "Seagate IronWolf Pro 12TB 7200RPM 256MB Cache 3.5-Inch NAS HDD ST12000NE0007"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Seagate IronWolf Pro 12TB 7200RPM 256MB Cache 3.5-Inch NAS HDD ST12000NE0007\",\"operation\":\"interpolation\",\"confidence\":0.93,\"reasoning\":\"All candidates describe the same drive; normalized the product title by combining the consistent brand, capacity, speed, cache, form factor, NAS type, and model number.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_12196|mbrainz_1766|name=Devotion Surrender | artist=Carlos Santana | duration=2959.0 | tracks=['A Love Supreme', 'Naima', 'The Life Divine', 'Let Us Go Into The House Of The Lord', 'Meditation', 'A Love Supreme (alternate - take 2)', 'Naima (alternate - take 4)']||name=Surrender | artist=Kut Klose | release-date=1995-03-14 | release-country=United States of America | duration=3038 | tracks=['Lay My Body Down', \"Don't Change\", 'Get Up on It', 'Do Me', 'Lovely Thang', 'Surrender', 'I Like', 'Keep On', 'Giving You My Love Again', 'Sexual Baby', \"Like You've Never Been Done (Get Up on It remix)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Devotion Surrender | artist=Carlos Santana | duration=2959.0 | tracks=['A Love Supreme', 'Naima', 'The Life Divine', 'Let Us Go Into The House Of The Lord', 'Meditation', 'A Love Supreme (alternate - take 2)', 'Naima (alternate - take 4)']\nRecord B: name=Surrender | artist=Kut Klose | release-date=1995-03-14 | release-country=United States of America | duration=3038 | tracks=['Lay My Body Down', \"Don't Change\", 'Get Up on It', 'Do Me', 'Lovely Thang', 'Surrender', 'I Like', 'Keep On', 'Giving You My Love Again', 'Sexual Baby', \"Like You've Never Been Done (Get Up on It remix)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

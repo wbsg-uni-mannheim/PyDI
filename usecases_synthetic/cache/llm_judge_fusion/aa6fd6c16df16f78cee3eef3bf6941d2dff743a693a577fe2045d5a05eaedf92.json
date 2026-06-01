@@ -1,0 +1,29 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['... And Before We Knew It Had Happened at All, It Was Over', 'What the Exultant Heart Calls Good', 'Into Sleep to Create a Flame', 'A Fleeting Glimpse', 'A Whisper of the Eye']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['...and Before We Knew It Had Happened At All, It Was Over', 'What The Exultant Heart Calls Good', 'Into Sleep To Create A Flame', 'A Whisper of the Eye', 'A Fleeting Glimpse', 'Love Or No Love']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "union",
+    "reasoning": "Combined the track lists from both sources, preserving all unique tracks and normalizing only by set union.",
+    "value": [
+      "... And Before We Knew It Had Happened at All, It Was Over",
+      "What the Exultant Heart Calls Good",
+      "Into Sleep to Create a Flame",
+      "A Fleeting Glimpse",
+      "A Whisper of the Eye",
+      "Love Or No Love"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"... And Before We Knew It Had Happened at All, It Was Over\",\"What the Exultant Heart Calls Good\",\"Into Sleep to Create a Flame\",\"A Fleeting Glimpse\",\"A Whisper of the Eye\",\"Love Or No Love\"],\"operation\":\"union\",\"confidence\":0.98,\"reasoning\":\"Combined the track lists from both sources, preserving all unique tracks and normalizing only by set union.\"}"
+}

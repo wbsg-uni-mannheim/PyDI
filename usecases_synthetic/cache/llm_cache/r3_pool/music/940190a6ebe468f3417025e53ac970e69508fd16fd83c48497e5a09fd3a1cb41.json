@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_183950|mbrainz_13138|name=Collapse Into Now | artist=R.E.M. | release-date=2011-03-09 | release-country=Japan | duration=2465.0 | genre=Rock | tracks=['Discoverer', 'All The Best', 'Überlin', 'Oh My Heart', 'It Happened Today', 'Every Day Is Yours To Win', 'Mine Smell Like Honey', 'Walk It Back', 'Alligator_Aviator_Autopilot_Antimatter', 'That Someone Is You', 'Me, Marlon Brando, Marlon Brando And I', 'Blue']||name=Collapse Into Now | artist=R.E.M. | release-date=2011-03-07 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2479 | tracks=['Discoverer', 'All the Best', 'Ãœberlin', 'Oh My Heart', 'It Happened Today', 'Every Day Is Yours to Win', 'Mine Smell Like Honey', 'Walk It Back', 'Alligator_Aviator_Autopilot_Antimatter', 'That Someone Is You', 'Me, Marlon Brando, Marlon Brando and I', 'Blue']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Collapse Into Now | artist=R.E.M. | release-date=2011-03-09 | release-country=Japan | duration=2465.0 | genre=Rock | tracks=['Discoverer', 'All The Best', 'Überlin', 'Oh My Heart', 'It Happened Today', 'Every Day Is Yours To Win', 'Mine Smell Like Honey', 'Walk It Back', 'Alligator_Aviator_Autopilot_Antimatter', 'That Someone Is You', 'Me, Marlon Brando, Marlon Brando And I', 'Blue']\nRecord B: name=Collapse Into Now | artist=R.E.M. | release-date=2011-03-07 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2479 | tracks=['Discoverer', 'All the Best', 'Ãœberlin', 'Oh My Heart', 'It Happened Today', 'Every Day Is Yours to Win', 'Mine Smell Like Honey', 'Walk It Back', 'Alligator_Aviator_Autopilot_Antimatter', 'That Someone Is You', 'Me, Marlon Brando, Marlon Brando and I', 'Blue']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_32000|lastFM_17337|name=Puzzled EP | artist=Fuellsand | release-date=2004 | release-country=Germany | duration=665.0 | genre=Rock | tracks=['I Did Not Even Notice', 'The Approaching Siren']||name=Puzzle EP | artist=Fcode | duration=1161.0 | tracks=['Puzzle (Original Mix)', 'Puzzle (Mr.Dee Remix)', 'Puzzle (Artem Folevski Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Puzzled EP | artist=Fuellsand | release-date=2004 | release-country=Germany | duration=665.0 | genre=Rock | tracks=['I Did Not Even Notice', 'The Approaching Siren']\nRecord B: name=Puzzle EP | artist=Fcode | duration=1161.0 | tracks=['Puzzle (Original Mix)', 'Puzzle (Mr.Dee Remix)', 'Puzzle (Artem Folevski Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

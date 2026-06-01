@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_4843|lastFM_2358|name=The Ballað Of The Broken Birdie Records | artist=múm | release-date=1999 | release-country=Iceland | genre=Electronic | tracks=['The Ballað Of The Broken Birdie Records (Original Mix)', 'The Ballað Of The Broken Birdie Records (Biogen Remix)', 'The Ballað Of The Broken Birdie Records (Ruxpin Remix I)', 'The Ballað Of The Broken Birdie Records (Ruxpin Remix II)', 'The Ballað Of The Broken Birdie Records (Ilo Remix)']||name=The BallaÃƒÂ° Of The Broken Birdie Records | artist=mÃƒÂºm | duration=952.0 | tracks=['The Ballad Of The Broken Birdie Records (Original Mix)', 'The Ballad of the Broken Birdie Records (Ruxpin remix I)', 'The Ballad of the Broken Birdie Records (Ruxpin remix II)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Ballað Of The Broken Birdie Records | artist=múm | release-date=1999 | release-country=Iceland | genre=Electronic | tracks=['The Ballað Of The Broken Birdie Records (Original Mix)', 'The Ballað Of The Broken Birdie Records (Biogen Remix)', 'The Ballað Of The Broken Birdie Records (Ruxpin Remix I)', 'The Ballað Of The Broken Birdie Records (Ruxpin Remix II)', 'The Ballað Of The Broken Birdie Records (Ilo Remix)']\nRecord B: name=The BallaÃƒÂ° Of The Broken Birdie Records | artist=mÃƒÂºm | duration=952.0 | tracks=['The Ballad Of The Broken Birdie Records (Original Mix)', 'The Ballad of the Broken Birdie Records (Ruxpin remix I)', 'The Ballad of the Broken Birdie Records (Ruxpin remix II)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

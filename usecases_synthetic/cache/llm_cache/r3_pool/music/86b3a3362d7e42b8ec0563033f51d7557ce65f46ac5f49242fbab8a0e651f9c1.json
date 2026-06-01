@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_38204|mbrainz_2650|name=Loveless | artist=My Bloody Valentine | release-date=1991 | release-country=Germany | duration=2912.0 | genre=Rock | tracks=['Only Shallow', 'Loomer', 'Touched', 'To Here Knows When', 'When You Sleep', 'I Only Said', 'Come In Alone', 'Sometimes', 'Blown A Wish', 'What You Want', 'Soon']||name=Loveless | artist=My Bloody Valentine | release-date=1991-01-01 | release-country=United States of America | duration=2914 | tracks=['Only Shallow', 'Loomer', 'Touched', 'To Here Knows When', 'When You Sleep', 'I Only Said', 'Come In Alone', 'Sometimes', 'Blown a Wish', 'What You Want', 'Soon']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Loveless | artist=My Bloody Valentine | release-date=1991 | release-country=Germany | duration=2912.0 | genre=Rock | tracks=['Only Shallow', 'Loomer', 'Touched', 'To Here Knows When', 'When You Sleep', 'I Only Said', 'Come In Alone', 'Sometimes', 'Blown A Wish', 'What You Want', 'Soon']\nRecord B: name=Loveless | artist=My Bloody Valentine | release-date=1991-01-01 | release-country=United States of America | duration=2914 | tracks=['Only Shallow', 'Loomer', 'Touched', 'To Here Knows When', 'When You Sleep', 'I Only Said', 'Come In Alone', 'Sometimes', 'Blown a Wish', 'What You Want', 'Soon']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

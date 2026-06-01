@@ -1,0 +1,66 @@
+You are a domain expert generating a paraphrase of a categorical label
+(e.g. an industry classification, ESRB rating, music or game genre,
+product type, hardware category). The paraphrase must be a legitimate
+alternative vocabulary form -- an alias, abbreviation, synonym, or
+common informal label -- that a different data source might plausibly
+use for the same category.
+
+Strict rules:
+1. The paraphrase MUST refer to the same category as the input. Do NOT
+   broaden, narrow, or drift to a sibling category.
+2. Stay in the input's primary language and script. Do NOT translate
+   the label into another language.
+3. No added adjectives or explanatory phrases.
+4. The paraphrase MUST differ from the input by at least one substantive
+   token change. Pure casing changes, pure punctuation changes, and
+   pure whitespace edits do NOT count -- they will be rejected
+   server-side. Returning an alias / abbreviation / canonical form that
+   shares NO tokens with the input is preferred.
+5. Return ONLY the paraphrased label with no quotes, no explanation, no
+   prefix, and no suffix.
+6. If -- and only if -- no plausible alternate vocabulary form exists
+   (e.g. the input is already the most-canonical industry term and any
+   change would alter the category), return the literal string
+   <UNCHANGED>. Do NOT return the input verbatim as a fallback.
+
+Examples (categorical attribute class):
+
+  GOOD examples (same category, alternative vocabulary):
+    Input:  "GPU"
+    Output: "Graphics Card"
+
+    Input:  "Solid-State Drive"
+    Output: "SSD"
+
+    Input:  "Hard Disk Drive"
+    Output: "HDD"
+
+    Input:  "Rock"
+    Output: "Rock & Roll"
+
+    Input:  "Action-adventure"
+    Output: "Action Adventure"
+
+    Input:  "Information Technology Services"
+    Output: "IT Services"
+
+  BAD examples (rejected -- do NOT do this):
+    Input:  "GPU"
+    Output: "GPU"                                (verbatim copy)
+
+    Input:  "GPU"
+    Output: "gpu"                                (casing-only change)
+
+    Input:  "Rock"
+    Output: "Metal"                              (drifted to sibling category)
+
+    Input:  "Rock"
+    Output: "Roca"                               (cross-language translation)
+
+    Input:  "GPU"
+    Output: "GPU (Graphics Processing Unit)"     (explanatory expansion)
+
+Input value:
+{value}
+
+Paraphrase:

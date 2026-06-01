@@ -1,0 +1,118 @@
+# Knob 05 — Format/Unit Diversity: Companies domain config.
+#
+# Refreshed schema (2026-05-04 source-data refresh):
+#   - dbpedia financials: total_assets_val, annual_income (mixed magnitudes
+#     inside one column: 8.0, 240560000000.0, 607100000.0, ...).
+#   - forbes financials: asset_value, sales_figure (RAW dollars on the
+#     refreshed corpus — NOT billions as in the prior pass).
+#   - fullcontact is blind: Attribute_1..Attribute_6. Attribute_6 is the
+#     founded date (ISO with -01-01 padding).
+#
+# Easy normalises down on dbpedia financials (mixed magnitudes); dates
+# uniform ISO at baseline so date pools are additive at every level.
+
+domain: companies
+
+# --- Attribute format family classification ---
+# Shared with Knob 10 (authoritative source of truth for comparator routing).
+attribute_classes:
+  dbpedia:
+    established: date
+    total_assets_val: money
+    annual_income: money
+  forbes:
+    asset_value: money
+    sales_figure: money
+  fullcontact:
+    Attribute_6: date  # founded year (ISO YYYY-01-01 padding)
+
+# --- ID columns (for provenance entity_id) ---
+# All sources collapse to the canonical "id" column post-loader-rename.
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# --- Format pools per level ---
+# Pinned pool sizes: easy=2, medium=3, hard=4 (per knob card).
+format_pools_per_level:
+  easy:
+    date:
+      - iso           # YYYY-MM-DD
+      - long_english  # Month D, YYYY
+    money:
+      - en_US         # 1,234.56
+      - plain         # 1234.56
+  medium:
+    date:
+      - iso
+      - us_slash      # MM/DD/YYYY
+      - eu_dot        # DD.MM.YYYY
+    money:
+      - en_US
+      - de_DE         # 1.234,56
+      - plain
+  hard:
+    date:
+      - iso
+      - us_slash
+      - eu_dot
+      - two_digit_year_us  # hard-only
+    money:
+      - en_US
+      - de_DE
+      - fr_FR         # 1 234,56
+      - plain
+
+# --- Locale pool per level ---
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+# --- Within-source consistency ---
+within_source_consistency:
+  easy: source    # one draw per (source, attribute)
+  medium: source
+  hard: row       # per-row draw
+
+# --- Unit/magnitude pool per level ---
+# Companies financials: dbpedia mixes raw magnitudes inside one column;
+# forbes is in raw dollars on the refreshed corpus.
+unit_pool_per_level:
+  easy:
+    money:
+      currencies: [USD]
+      magnitude: [billions]    # normalize down to single scale
+  medium:
+    money:
+      currencies: [USD, EUR]
+      magnitude: [billions, millions]
+  hard:
+    money:
+      currencies: [USD, EUR, GBP]
+      magnitude: [billions, millions, raw]
+
+# --- Normalize-down threshold ---
+# If no single format covers >= this share, easy must normalize down.
+normalize_down_threshold: 0.85
+
+# --- Source magnitude context ---
+# Refreshed forbes ships RAW dollars (e.g. 148_700_000_000) — flipped from
+# the prior pass which assumed billions. dbpedia values are raw across
+# total_assets_val and annual_income.
+source_magnitude_context:
+  forbes:
+    columns: [asset_value, sales_figure]
+    implicit_magnitude: raw
+    implicit_currency: USD
+  dbpedia:
+    columns: [total_assets_val, annual_income]
+    implicit_magnitude: raw
+    implicit_currency: USD

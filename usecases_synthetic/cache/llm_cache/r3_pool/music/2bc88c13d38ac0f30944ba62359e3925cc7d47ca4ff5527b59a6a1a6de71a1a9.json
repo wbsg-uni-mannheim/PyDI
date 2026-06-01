@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_4403|mbrainz_317|name=Beyond City | artist=Jon Jenkins | duration=3777.0 | tracks=['The Calling', 'Zzyzx Road', 'Through City Light', 'Secrets of the Virgin', 'Legacy', 'Deep Sleep and Dying Embers', 'The Source', 'Sky of Surrender', 'Through Different Eyes', 'Forever']||name=Beyond Digits | artist=Current Value | release-date=2002-08-02 | release-country=Germany | duration=3816 | tracks=['H-Theme', \"Droppin'\", 'Disruptor', 'Digital Realm', 'Panic', 'Q-Type', 'Facility', 'Fractal', 'Dynamo', 'Danish Treat']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond City | artist=Jon Jenkins | duration=3777.0 | tracks=['The Calling', 'Zzyzx Road', 'Through City Light', 'Secrets of the Virgin', 'Legacy', 'Deep Sleep and Dying Embers', 'The Source', 'Sky of Surrender', 'Through Different Eyes', 'Forever']\nRecord B: name=Beyond Digits | artist=Current Value | release-date=2002-08-02 | release-country=Germany | duration=3816 | tracks=['H-Theme', \"Droppin'\", 'Disruptor', 'Digital Realm', 'Panic', 'Q-Type', 'Facility', 'Fractal', 'Dynamo', 'Danish Treat']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

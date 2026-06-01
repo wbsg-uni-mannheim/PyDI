@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1998-11"
+    },
+    {
+      "source": "discogs",
+      "value": "1998-11-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "interpolation",
+    "reasoning": "The month-level date and the full date imply the specific release date as the first day of that month.",
+    "value": "1998-11-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1998-11-01\",\"operation\":\"interpolation\",\"confidence\":0.98,\"reasoning\":\"The month-level date and the full date imply the specific release date as the first day of that month.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_49716|lastFM_40025|name=Je Vais Encore Dormir Tout Seul Ce Soir... (Et Je Vais Encore Le Regretter) | artist=Elmer Food Beat | release-date=1991 | release-country=France | duration=505.0 | genre=Pop|Rock | tracks=['Je Vais Encore Dormir Tout Seul Ce Soir... (Et Je Vais Encore Le Regretter)', 'Véronique', \"Roland L'Cradoss\", '']||name=Elmer F. Beat -  Je vais encore dormir tout seul ce soir | artist=Elmer F. Beat | duration=2869.0 | tracks=['Ridy Oh', 'Lucie', 'VÃƒÂ©ronique', 'Yasmina', \"Si tu veux m'arrÃƒÂªter\", 'Moi et Zarbie', \"Roland l'cradoss\", 'Dans ta bouche', 'Manou dis nous tout', 'Le premier poil', 'Les traversÃƒÂ©es sont solitaires', \"Je n'aime que ma guitare\", \"Je n'en peux plus\", 'Je vais encore dormir tout seul ce soir et  je vais encore le regretter']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Je Vais Encore Dormir Tout Seul Ce Soir... (Et Je Vais Encore Le Regretter) | artist=Elmer Food Beat | release-date=1991 | release-country=France | duration=505.0 | genre=Pop|Rock | tracks=['Je Vais Encore Dormir Tout Seul Ce Soir... (Et Je Vais Encore Le Regretter)', 'Véronique', \"Roland L'Cradoss\", '']\nRecord B: name=Elmer F. Beat -  Je vais encore dormir tout seul ce soir | artist=Elmer F. Beat | duration=2869.0 | tracks=['Ridy Oh', 'Lucie', 'VÃƒÂ©ronique', 'Yasmina', \"Si tu veux m'arrÃƒÂªter\", 'Moi et Zarbie', \"Roland l'cradoss\", 'Dans ta bouche', 'Manou dis nous tout', 'Le premier poil', 'Les traversÃƒÂ©es sont solitaires', \"Je n'aime que ma guitare\", \"Je n'en peux plus\", 'Je vais encore dormir tout seul ce soir et  je vais encore le regretter']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

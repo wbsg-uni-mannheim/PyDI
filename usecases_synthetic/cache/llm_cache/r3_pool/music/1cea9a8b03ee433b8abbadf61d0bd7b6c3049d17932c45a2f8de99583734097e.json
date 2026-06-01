@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_123627|mbrainz_2158|name=Empire Jazz | artist=Ron Carter | release-date=1980 | release-country=Japan | duration=2299.0 | genre=Jazz | tracks=[\"The Imperial March (Darth Vader's Theme)\", 'The Asteroid Field', 'Han Solo And The Princess (Love Theme)', \"Lando's Place\", \"Yoda's Theme\"]||name=Empire Jazz | artist=Carter, Ron | release-date=1980-01-01 | release-country=United States of America | duration=2299 | tracks=[\"The Imperial March (Darth Vader's Theme)\", 'The Asteroid Field', 'Han Solo and the Princess (Love Theme)', \"Lando's Palace\", \"Yoda's Theme\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Empire Jazz | artist=Ron Carter | release-date=1980 | release-country=Japan | duration=2299.0 | genre=Jazz | tracks=[\"The Imperial March (Darth Vader's Theme)\", 'The Asteroid Field', 'Han Solo And The Princess (Love Theme)', \"Lando's Place\", \"Yoda's Theme\"]\nRecord B: name=Empire Jazz | artist=Carter, Ron | release-date=1980-01-01 | release-country=United States of America | duration=2299 | tracks=[\"The Imperial March (Darth Vader's Theme)\", 'The Asteroid Field', 'Han Solo and the Princess (Love Theme)', \"Lando's Palace\", \"Yoda's Theme\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

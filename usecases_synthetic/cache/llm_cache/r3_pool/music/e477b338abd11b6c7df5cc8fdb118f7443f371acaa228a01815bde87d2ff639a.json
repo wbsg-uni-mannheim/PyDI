@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_54334|lastFM_31199|name=The Coral | artist=The Coral | release-date=2002 | release-country=Brazil | genre=Rock | tracks=['Spanish Main', 'I Remember When', 'Shadows Fall', 'Dreaming Of You', 'Simon Diamond', 'Goodbye', 'Waiting For The Heartaches', 'Skeleton Key', 'Wildfire', 'Badman', 'Calendars And Clocks']||name=T. Coral -  The Coral | artist=T. Coral | duration=2278.0 | tracks=['Spanish Main', 'I Remember When', 'Shadows Fall', 'Simon Diamond', 'Goodbye', 'Waiting for the Heartaches', 'Skeleton Key', 'Wildfire', 'Bad Man', 'Calendars and Clocks', 'Time Travel']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Coral | artist=The Coral | release-date=2002 | release-country=Brazil | genre=Rock | tracks=['Spanish Main', 'I Remember When', 'Shadows Fall', 'Dreaming Of You', 'Simon Diamond', 'Goodbye', 'Waiting For The Heartaches', 'Skeleton Key', 'Wildfire', 'Badman', 'Calendars And Clocks']\nRecord B: name=T. Coral -  The Coral | artist=T. Coral | duration=2278.0 | tracks=['Spanish Main', 'I Remember When', 'Shadows Fall', 'Simon Diamond', 'Goodbye', 'Waiting for the Heartaches', 'Skeleton Key', 'Wildfire', 'Bad Man', 'Calendars and Clocks', 'Time Travel']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

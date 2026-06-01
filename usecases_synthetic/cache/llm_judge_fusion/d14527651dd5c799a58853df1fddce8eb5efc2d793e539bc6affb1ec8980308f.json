@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "86.36"
+    },
+    {
+      "source": "products_2",
+      "value": "94.46"
+    },
+    {
+      "source": "products_3",
+      "value": "1 199,0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "aggregation",
+    "reasoning": "Two candidates cluster in a plausible price range while the third appears to be a formatting outlier or different currency/locale value, so I used a robust aggregate.",
+    "value": 94.46
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":94.46,\"operation\":\"aggregation\",\"confidence\":0.74,\"reasoning\":\"Two candidates cluster in a plausible price range while the third appears to be a formatting outlier or different currency/locale value, so I used a robust aggregate.\"}"
+}

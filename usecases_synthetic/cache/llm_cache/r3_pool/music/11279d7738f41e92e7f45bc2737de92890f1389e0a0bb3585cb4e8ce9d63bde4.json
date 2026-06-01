@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_10937|mbrainz_4447|name=- new - Early Burial | artist=Evenings | duration=1590.0 | tracks=['[untitled]', '[untitled]']||name=Burial | artist=Burial | release-date=2006-12-13 | release-country=Japan | duration=3080 | tracks=['[untitled]', 'Distant Lights', 'Spaceape', 'Wounder', 'Night Bus', 'Southern Comfort', 'U Hurt Me', 'Gutted', 'Forgive', 'Broken Home', 'Prayer', 'Pirates', '[untitled]']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=- new - Early Burial | artist=Evenings | duration=1590.0 | tracks=['[untitled]', '[untitled]']\nRecord B: name=Burial | artist=Burial | release-date=2006-12-13 | release-country=Japan | duration=3080 | tracks=['[untitled]', 'Distant Lights', 'Spaceape', 'Wounder', 'Night Bus', 'Southern Comfort', 'U Hurt Me', 'Gutted', 'Forgive', 'Broken Home', 'Prayer', 'Pirates', '[untitled]']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

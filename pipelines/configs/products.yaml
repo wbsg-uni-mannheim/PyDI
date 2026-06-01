@@ -1,0 +1,117 @@
+# Best-of-breed pipeline config for products.
+#
+# Per the 2026-06-01 directive, the BoB pipeline evaluates products
+# on the canonical PyDI tree at usecases/products/ (NOT the synthetic
+# translation at usecases_synthetic/usecases/products/). This:
+#   - sources data from input/data_cleaned_final/dataset_<n>_normalized.json
+#     (27-attribute hardware schema, IDs prefixed in-memory)
+#   - reads EM train/val/test from input/entity_matching_gt/
+#   - reads SM gold from input/schemamatching/sm_mapping_gold.csv
+#     (one-time copy of the hand-authored synthetic-side gold)
+#   - reads fusion silver from input/fusion/{fusion_test_set,
+#     fusion_validation_set}.csv (the 27-attribute hardware silver
+#     the workflow notebook itself scores against — vs the prior
+#     6-attribute synthetic XML silver)
+#
+# All stages enabled by default. ``norm`` is scored but does NOT
+# transform downstream frames in v1 — products is already in
+# data_cleaned_final form so the Norm members usually tie and any
+# transformation we apply on top would muddle the comparison to the
+# human baseline notebook.
+
+domain: products
+
+# Bundle source. See pipelines/lib/bundle.py::load_pipeline_bundle
+# for the dispatch rules.
+#   - canonical: usecases/products/ via canonical_loader (in-memory
+#     ID prefix + label normalize + fusion CSV → flat-record reshape).
+#   - synthetic_baseline: usecases_synthetic/usecases/products/ via
+#     variant_loader.load_variant. Kept for back-compat / A/B tests.
+bundle_source: canonical
+
+# Stage chain. Each stage may be disabled but order is fixed.
+stages:
+  sm:
+    enabled: true
+    selection_metric: f1            # mean over per-source SM mapping F1
+  norm:
+    enabled: true
+    selection_metric: macro_f1
+    apply_winner: false             # v1: scoring-only; see plan §8.4
+    vacuous_epsilon: 0.005          # max_f1 - min_f1 below this => "vacuous"
+  em:
+    enabled: true
+    blocking_selection_metric: reduction_ratio   # handled by composition block in YAML
+    matching_selection_metric: f1
+    clustering: greedy              # within-EM-committee clustering for matcher inputs
+  refinement:
+    enabled: true
+    methods: [baseline, greedy, mbm]
+    selection_metric: f1
+  fusion:
+    enabled: true
+    selection_metric: macro_accuracy
+
+# Column type config for the e2e panel (PyDI.evaluation.panel).
+# Drawn from products_target_schema.json + the data_cleaned_final
+# column layout (27 columns shared across all 4 source datasets).
+column_types:
+  id: identifier
+  cluster_id: identifier
+  url: identifier
+  title: text
+  brand: categorical
+  description: text
+  price: numerical
+  priceCurrency: categorical
+  product_type: categorical
+  model: text
+  model_number: text
+  chipset_name: text
+  vram_gb: numerical
+  storage_gb: numerical
+  read_speed_mb_s: numerical
+  write_speed_mb_s: numerical
+  bus_type: categorical
+  interface_type: categorical
+  width_mm: numerical
+  length_mm: numerical
+  height_mm: numerical
+  weight_g: numerical
+  storage_connection_type: categorical
+  memory_type: categorical
+  color: categorical
+  form_factor: categorical
+  title_description: text
+
+# Panel numerical tolerance defaults.
+panel_tolerance:
+  default: 0.04
+  overrides:
+    price: 0.10
+    vram_gb: 0.10
+    storage_gb: 0.10
+    read_speed_mb_s: 0.15
+    write_speed_mb_s: 0.15
+
+# Composite subscore weights — passed through to compute_e2e_panel.
+# Default matches PyDI/evaluation/composite.DEFAULT_WEIGHTS so can be
+# omitted; kept explicit so per-domain overrides are obvious. Subscore
+# names match the brainstorm subdimensions
+# (see docs/tutorial/e2e_evaluation/metrics.md).
+composite_weights:
+  entity_coverage: 0.10
+  fact_coverage: 0.10
+  source_based_fact_coverage: 0.10
+  consistency: 0.10
+  cluster_correctness: 0.30
+  fact_correctness: 0.30
+
+# Optional: source-id prefix → source name mapping. Used by the e2e
+# panel's source-composition diagnostics. The synthetic-side products
+# tree uses these prefixes; the bundle loader supplies them.
+source_prefix_map:
+  products_1_: products_1
+  products_2_: products_2
+  products_3_: products_3
+  products_4_: products_4

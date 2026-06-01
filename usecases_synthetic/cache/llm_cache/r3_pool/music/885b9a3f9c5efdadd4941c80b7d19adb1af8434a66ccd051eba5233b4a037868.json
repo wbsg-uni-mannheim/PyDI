@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_131927|mbrainz_22997|name=Singles | artist=Luna Sea | release-date=1997-12-17 | release-country=Japan | genre=Rock | tracks=['Believe', 'In My Dream (With Shiver)', 'Rosier', 'True Blood', 'Mother', 'Desire', 'End Of Sorrow', 'In Silence', 'Claustrophobia', 'Slave', 'Rain', 'Fallout', 'Luv U', 'Twice', 'Ray']||name=SINGLES | artist=LUNA SEA | release-date=1997-12-17 | release-country=Japan | duration=2312 | tracks=['BELIEVE', 'IN MY DREAM (WITH SHIVER)', 'ROSIER', 'TRUE BLUE', 'MOTHER', 'DESIRE', 'END OF SORROW', 'IN SILENCE', 'Claustrophobia', 'SLAVE', 'RAIN', 'FALLOUT', 'LUV U', 'TWICE', 'Ray']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles | artist=Luna Sea | release-date=1997-12-17 | release-country=Japan | genre=Rock | tracks=['Believe', 'In My Dream (With Shiver)', 'Rosier', 'True Blood', 'Mother', 'Desire', 'End Of Sorrow', 'In Silence', 'Claustrophobia', 'Slave', 'Rain', 'Fallout', 'Luv U', 'Twice', 'Ray']\nRecord B: name=SINGLES | artist=LUNA SEA | release-date=1997-12-17 | release-country=Japan | duration=2312 | tracks=['BELIEVE', 'IN MY DREAM (WITH SHIVER)', 'ROSIER', 'TRUE BLUE', 'MOTHER', 'DESIRE', 'END OF SORROW', 'IN SILENCE', 'Claustrophobia', 'SLAVE', 'RAIN', 'FALLOUT', 'LUV U', 'TWICE', 'Ray']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

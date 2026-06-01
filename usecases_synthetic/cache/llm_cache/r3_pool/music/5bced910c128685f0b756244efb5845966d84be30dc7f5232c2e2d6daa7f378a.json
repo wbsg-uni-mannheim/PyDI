@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_55146|mbrainz_6014|name=To the Faithful Departed | artist=The Cranberries | duration=3141.0 | tracks=['Hollywood', 'Salvation', \"When You're Gone\", 'Free to Decide', 'War Child', 'Forever Yellow Skies', 'The Rebels', 'I Just Shot John Lennon', 'Electric Blue', \"I'm Still Remembering\", 'Will You Remember?', 'Joe', 'Bosnia']||name=To the Faithful Departed | artist=Cranberries, The | release-date=1996-04-29 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3142 | tracks=['Hollywood', 'Salvation', 'When Youâ€™re Gone', 'Free to Decide', 'War Child', 'Forever Yellow Skies', 'The Rebels', 'I Just Shot John Lennon', 'Electric Blue', 'Iâ€™m Still Remembering', 'Will You Remember?', 'Joe', 'Bosnia']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=To the Faithful Departed | artist=The Cranberries | duration=3141.0 | tracks=['Hollywood', 'Salvation', \"When You're Gone\", 'Free to Decide', 'War Child', 'Forever Yellow Skies', 'The Rebels', 'I Just Shot John Lennon', 'Electric Blue', \"I'm Still Remembering\", 'Will You Remember?', 'Joe', 'Bosnia']\nRecord B: name=To the Faithful Departed | artist=Cranberries, The | release-date=1996-04-29 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3142 | tracks=['Hollywood', 'Salvation', 'When Youâ€™re Gone', 'Free to Decide', 'War Child', 'Forever Yellow Skies', 'The Rebels', 'I Just Shot John Lennon', 'Electric Blue', 'Iâ€™m Still Remembering', 'Will You Remember?', 'Joe', 'Bosnia']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

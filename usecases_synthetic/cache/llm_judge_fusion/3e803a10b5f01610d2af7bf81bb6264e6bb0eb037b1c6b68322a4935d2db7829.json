@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "868"
+    },
+    {
+      "source": "discogs",
+      "value": "868.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "0.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "aggregation",
+    "reasoning": "Two sources agree on 868 while 0.0 appears to be a missing/placeholder value.",
+    "value": 868
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":868,\"operation\":\"aggregation\",\"confidence\":0.98,\"reasoning\":\"Two sources agree on 868 while 0.0 appears to be a missing/placeholder value.\"}"
+}

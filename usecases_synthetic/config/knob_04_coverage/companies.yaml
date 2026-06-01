@@ -1,0 +1,87 @@
+# Knob 04 — Per-entity Source Coverage Skew — Companies
+#
+# Measured baseline after pool-based linkage (see knobs/knob_04_coverage_skew.md
+# § Histogram semantics): H_base = {1: 0.0, 2: 0.7715, 3: 0.2285} over
+# ~1659 matchable entities. Pool-only linkage is always cross-source so
+# no matchable entity is a singleton at baseline; distractor singletons
+# (~9656 records) are excluded from the histogram by construction.
+#
+# Easy pushes every 2-source entity toward full 3-source coverage via
+# paraphrase fabrication. Hard demotes 2-source entities into singletons
+# and a minority of 3-source entities into 2-source, producing a long
+# tail that stresses fusion voting.
+#
+# See knobs/knob_04_coverage_skew.md for full specification.
+
+domain: companies
+source_count: 3
+
+# ID column per source (used to identify and place records).
+# All sources collapse to the canonical "id" column post-loader-rename
+# (per the loader at usecases_synthetic/lib/loaders.py:load_source).
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# Primary column per source for conflict-preserving removal scoring.
+primary_columns:
+  dbpedia: org_name
+  forbes: company
+  fullcontact: Attribute_2
+
+# Target coverage histogram per level.
+# Easy: pull the 2-source tail toward full 3-source coverage.
+# Hard: demote toward singletons; leave some 2-source and 3-source mass
+# so fusion voting has at least some witnesses.
+target_coverage_histogram:
+  easy:
+    1: 0.0
+    2: 0.10
+    3: 0.90
+  medium:
+    1: 0.20
+    2: 0.30
+    3: 0.50
+  hard:
+    1: 0.55
+    2: 0.30
+    3: 0.15
+
+# Within-source duplicate rate per level (paraphrase-copied rows emitted
+# back into the same source).
+within_source_duplicate_rate:
+  easy: 0.0
+  medium: 0.01
+  hard: 0.02
+
+# Hard singleton cap — 0.60 aligns with the default. Pool-based linkage
+# keeps distractors out of the histogram, so the cap now applies to the
+# ~1659 matchable entities rather than the full 12k corpus.
+singleton_cap_hard: 0.60
+
+# R10-E: maximum fraction of any single source's rows K4 may demote, so
+# the conflict-ranking does not decimate one source and silently delete
+# EM-gold edges (not regenerated post-K4). 0.40 = at most 40% of a
+# source's rows.
+per_source_demotion_cap: 0.40
+
+# Fix-on-collapse softening step.
+delta_softening_step: 0.05
+
+# Easy fabrication mode.
+# For companies, most of the corpus would need fabrication; the LLM
+# primary path is too expensive and contamination-prone, so we use the
+# deterministic paraphrase fallback only.
+# Fabrication mode: paraphrase_only uses K1's deterministic operator pool
+# (abbreviate / eda_random_swap / eda_random_delete) cell-by-cell to
+# fabricate sibling records — no LLM calls. The llm_* fields below are
+# declared for completeness but unused unless fabrication_mode: llm_primary.
+fabrication_mode: paraphrase_only
+
+# LLM hygiene (unused at fabrication_mode=paraphrase_only but recorded).
+# Default model gpt-5.4-mini for cost. Ask user before each K4 run
+# whether to bump to gpt-5.4 (invalidates cache).
+llm_prompt_version: v1
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0

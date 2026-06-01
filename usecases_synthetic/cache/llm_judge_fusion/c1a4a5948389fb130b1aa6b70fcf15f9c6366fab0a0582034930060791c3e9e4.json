@@ -1,0 +1,25 @@
+{
+  "attribute": "keypeople",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "['William Redington Hewlett', 'David Packard']"
+    },
+    {
+      "source": "fullcontact",
+      "value": "David Packard"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "union",
+    "reasoning": "One source lists both key people and the other confirms David Packard, so the combined canonical set is both names.",
+    "value": [
+      "William Redington Hewlett",
+      "David Packard"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"William Redington Hewlett\",\"David Packard\"],\"operation\":\"union\",\"confidence\":0.99,\"reasoning\":\"One source lists both key people and the other confirms David Packard, so the combined canonical set is both names.\"}"
+}

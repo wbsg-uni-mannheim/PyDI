@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_51958|lastFM_18672|name=Spirit Of Sorrow | artist=Fear Of Eternity | release-date=2006 | release-country=United States of America | duration=2590.0 | genre=Rock | tracks=['Staring At The Dark', 'A Torrent In My Veins', 'Atrocious Pain', 'Silences Fortification', 'Spirit Of Sorrow', 'Sad Dreams', 'That Rainy Day', 'Tormented Heart']||name=Spirit Of Rumi | artist=Vision I. | duration=2574.0 | tracks=['Seek In Your Heart', \"Don't go back to sleep\", 'The Ocean', 'Eyes Go Blind (Aya)', 'The Breath (The Color of Dying)', 'The Center', 'Lovers / At Night We Fall', 'Nine Layers of Illusion', 'Desert Dusk', \"Don't Go Back to Sleep (Reprise)\", 'The Great Mystery']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit Of Sorrow | artist=Fear Of Eternity | release-date=2006 | release-country=United States of America | duration=2590.0 | genre=Rock | tracks=['Staring At The Dark', 'A Torrent In My Veins', 'Atrocious Pain', 'Silences Fortification', 'Spirit Of Sorrow', 'Sad Dreams', 'That Rainy Day', 'Tormented Heart']\nRecord B: name=Spirit Of Rumi | artist=Vision I. | duration=2574.0 | tracks=['Seek In Your Heart', \"Don't go back to sleep\", 'The Ocean', 'Eyes Go Blind (Aya)', 'The Breath (The Color of Dying)', 'The Center', 'Lovers / At Night We Fall', 'Nine Layers of Illusion', 'Desert Dusk', \"Don't Go Back to Sleep (Reprise)\", 'The Great Mystery']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

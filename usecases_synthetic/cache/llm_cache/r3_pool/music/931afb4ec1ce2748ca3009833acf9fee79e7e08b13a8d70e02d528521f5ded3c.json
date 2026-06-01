@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_29720|lastFM_72696|name=The Singles | artist=The Bluetones | release-date=2002-04-08 | release-country=UK | duration=4613.0 | genre=Rock | tracks=['Are You Blue Or Are You Blind?', 'Bluetonic', 'Slight Return', 'Cut Some Rug', 'Marblehead Johnson', 'Solomon Bites The Worm', 'If...', 'Sleazy Bed Track', '4-Day Weekend', 'Keep The Homefires Burning', 'Autophilia', 'Mudslide', 'After Hours', 'Freeze Dried Pop (Dumb It Up)', 'Persuasion', 'The Bluetones Big Score', 'After Hours', 'Pretty Ballerina', 'Blue', 'Blue Shadows', \"That's Life\"]||name=The Singles | artist=The Dunwells | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles | artist=The Bluetones | release-date=2002-04-08 | release-country=UK | duration=4613.0 | genre=Rock | tracks=['Are You Blue Or Are You Blind?', 'Bluetonic', 'Slight Return', 'Cut Some Rug', 'Marblehead Johnson', 'Solomon Bites The Worm', 'If...', 'Sleazy Bed Track', '4-Day Weekend', 'Keep The Homefires Burning', 'Autophilia', 'Mudslide', 'After Hours', 'Freeze Dried Pop (Dumb It Up)', 'Persuasion', 'The Bluetones Big Score', 'After Hours', 'Pretty Ballerina', 'Blue', 'Blue Shadows', \"That's Life\"]\nRecord B: name=The Singles | artist=The Dunwells | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

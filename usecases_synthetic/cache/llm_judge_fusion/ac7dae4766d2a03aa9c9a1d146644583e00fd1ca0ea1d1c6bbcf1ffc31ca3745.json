@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "300.0 GB"
+    },
+    {
+      "source": "products_2",
+      "value": "300.0"
+    },
+    {
+      "source": "products_3",
+      "value": "300000 MB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "interpolation",
+    "reasoning": "All candidates indicate the same capacity, and 300000 MB converts to 300 GB.",
+    "value": 300
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":300,\"operation\":\"interpolation\",\"confidence\":0.99,\"reasoning\":\"All candidates indicate the same capacity, and 300000 MB converts to 300 GB.\"}"
+}

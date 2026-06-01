@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Finland"
+    },
+    {
+      "source": "discogs",
+      "value": "UK"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "UK is the standard abbreviation for United Kingdom, and Finland is a conflicting source value.",
+    "value": "United Kingdom"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United Kingdom\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"UK is the standard abbreviation for United Kingdom, and Finland is a conflicting source value.\"}"
+}

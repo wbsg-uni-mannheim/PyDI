@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_68135|mbrainz_2383|name=The Best Of The Marx Brothers | artist=The Marx Brothers | duration=2196.0 | tracks=[\"Who's That Man?\", \"Chico's Piano\", 'Two blind loves', 'Cosi Cosa', 'Swing Swingali', 'Harpo And Chico Pianos', 'Sing while you sell', 'Lydia, The Tattooed Lady', \"Ridin' The Range\", 'Mama Wants To Know Who Stole The Jam']||name=Best of the Blues Brothers (orig.) | artist=Blues Brothers | release-date=1981-01-01 | release-country=Germany | duration=2146 | tracks=['Expressway to Your Heart', 'Everybody Needs Somebody to Love', 'I Donâ€™t Know', 'She Caught the Katy', 'Soul Man', 'Rubber Biscuit', 'Going Back to Miami', 'Gimme Some Lovinâ€™', 'â€œBâ€? Movie Box Car Blues', 'Flip, Flop & Fly']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Best Of The Marx Brothers | artist=The Marx Brothers | duration=2196.0 | tracks=[\"Who's That Man?\", \"Chico's Piano\", 'Two blind loves', 'Cosi Cosa', 'Swing Swingali', 'Harpo And Chico Pianos', 'Sing while you sell', 'Lydia, The Tattooed Lady', \"Ridin' The Range\", 'Mama Wants To Know Who Stole The Jam']\nRecord B: name=Best of the Blues Brothers (orig.) | artist=Blues Brothers | release-date=1981-01-01 | release-country=Germany | duration=2146 | tracks=['Expressway to Your Heart', 'Everybody Needs Somebody to Love', 'I Donâ€™t Know', 'She Caught the Katy', 'Soul Man', 'Rubber Biscuit', 'Going Back to Miami', 'Gimme Some Lovinâ€™', 'â€œBâ€? Movie Box Car Blues', 'Flip, Flop & Fly']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

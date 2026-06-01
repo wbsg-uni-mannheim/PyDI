@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_118877|mbrainz_9239|name=Psycho's From Beyond (Demo Pressing) | artist=Klingonz | release-country=UK | genre=Rock | tracks=['Uuuurnchk !! Side', 'Klingzonez', 'Blue Suede Shoes', 'Wayback Home', 'Oompa Loompa', 'Flying Saucers', 'Spiderman', 'Huuuurnchk !! Side', 'Too Sentimental', 'Kling Stomp', 'Mutant Blob', 'Fritenite', 'Ghastly Things', 'Pick Pick Yum Yum']||name=Psycho's From Beyond | artist=Klingonz | release-date=2001-01-01 | release-country=Germany | duration=0 | tracks=['Klingzones', 'Blue Suede Shoes', 'Wayback Home', 'Oompa Loompa', 'Flying Saucers', 'Spiderman', 'Too Sentimental', 'Kling Stomp', 'Mutant Blob', 'Fritenite', 'Ghastly Things', 'Pick Pick Yum Yum']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Psycho's From Beyond (Demo Pressing) | artist=Klingonz | release-country=UK | genre=Rock | tracks=['Uuuurnchk !! Side', 'Klingzonez', 'Blue Suede Shoes', 'Wayback Home', 'Oompa Loompa', 'Flying Saucers', 'Spiderman', 'Huuuurnchk !! Side', 'Too Sentimental', 'Kling Stomp', 'Mutant Blob', 'Fritenite', 'Ghastly Things', 'Pick Pick Yum Yum']\nRecord B: name=Psycho's From Beyond | artist=Klingonz | release-date=2001-01-01 | release-country=Germany | duration=0 | tracks=['Klingzones', 'Blue Suede Shoes', 'Wayback Home', 'Oompa Loompa', 'Flying Saucers', 'Spiderman', 'Too Sentimental', 'Kling Stomp', 'Mutant Blob', 'Fritenite', 'Ghastly Things', 'Pick Pick Yum Yum']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

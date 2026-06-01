@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_2074|mbrainz_24711|name=Bju-Ty (The Skin Is Broken By | artist=Silence Gift | duration=2814.0 | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine-Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince McGee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']||name=A Broken Truce | artist=Violent Silence | release-date=2013-01-01 | release-country=Sweden | duration=2833 | tracks=['Prism Path', 'Rim of Clouds', 'The Kingdom Below', 'A Broken Truce']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bju-Ty (The Skin Is Broken By | artist=Silence Gift | duration=2814.0 | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine-Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince McGee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']\nRecord B: name=A Broken Truce | artist=Violent Silence | release-date=2013-01-01 | release-country=Sweden | duration=2833 | tracks=['Prism Path', 'Rim of Clouds', 'The Kingdom Below', 'A Broken Truce']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

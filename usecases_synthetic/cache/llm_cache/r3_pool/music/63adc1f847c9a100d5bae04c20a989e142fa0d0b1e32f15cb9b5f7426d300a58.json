@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_169100|mbrainz_14306|name=Brothers Of The Road | artist=The Allman Brothers Band | release-country=Japan | duration=2357.0 | genre=Rock | tracks=['Brothers Of The Road', \"Leavin'\", 'Straight From The Heart', 'The Heat Is On', 'Maybe We Can Go Back To Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much ( I Needed You )', 'Things You Used To Do', 'I Beg Of You']||name=Brothers of the Road | artist=Allman Brothers Band, The | release-date=1997-01-01 | release-country=United States of America | duration=2350 | tracks=['Brothers of the Road', 'Leavinâ€™', 'Straight From the Heart', 'The Heat Is On', 'Maybe We Can Go Back to Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much (I Needed You)', 'Things You Used to Do', 'I Beg of You']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Brothers Of The Road | artist=The Allman Brothers Band | release-country=Japan | duration=2357.0 | genre=Rock | tracks=['Brothers Of The Road', \"Leavin'\", 'Straight From The Heart', 'The Heat Is On', 'Maybe We Can Go Back To Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much ( I Needed You )', 'Things You Used To Do', 'I Beg Of You']\nRecord B: name=Brothers of the Road | artist=Allman Brothers Band, The | release-date=1997-01-01 | release-country=United States of America | duration=2350 | tracks=['Brothers of the Road', 'Leavinâ€™', 'Straight From the Heart', 'The Heat Is On', 'Maybe We Can Go Back to Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much (I Needed You)', 'Things You Used to Do', 'I Beg of You']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

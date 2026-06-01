@@ -1,0 +1,39 @@
+domain: companies
+master_seed: 42
+
+# Sources refreshed 2026-05-04 to schema.org-style CSV format. Native id
+# columns ship with the data and already carry the source-specific
+# prefix (e.g. dbpedia ``entity_uri`` is ``http://dbpedia.org/...``,
+# fullcontact ``Attribute_1`` is ``fullcontact_<n>``); the loader
+# renames each ``id_column`` to ``id`` so downstream code keeps its
+# ``id_column="id"`` assumption. Pre-refresh XML/JSON sources are
+# preserved at usecases/companies/input/data/old/ for reference.
+sources:
+  - name: dbpedia
+    file: dbpedia.csv
+    format: csv
+    id_prefix: "http://dbpedia.org/"
+    id_column: entity_uri
+  - name: forbes
+    file: forbes.csv
+    format: csv
+    id_prefix: "http://www.forbes.com/"
+    id_column: forbes_url
+  - name: fullcontact
+    file: fullcontact.csv
+    format: csv
+    id_prefix: "fullcontact_"
+    id_column: Attribute_1
+
+source_pairs:
+  - [forbes, dbpedia]
+  - [forbes, fullcontact]
+
+attribute_classes:
+  name: primary
+  country: key
+  city: key
+  assets: secondary
+  revenue: secondary
+  founded: secondary
+  keypeople: secondary

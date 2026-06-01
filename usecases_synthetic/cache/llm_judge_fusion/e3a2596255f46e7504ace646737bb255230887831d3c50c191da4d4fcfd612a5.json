@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Sweet"
+    },
+    {
+      "source": "discogs",
+      "value": "The Sweet"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The candidates refer to the same band, and 'The Sweet' is the canonical full artist name.",
+    "value": "The Sweet"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Sweet\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The candidates refer to the same band, and 'The Sweet' is the canonical full artist name.\"}"
+}

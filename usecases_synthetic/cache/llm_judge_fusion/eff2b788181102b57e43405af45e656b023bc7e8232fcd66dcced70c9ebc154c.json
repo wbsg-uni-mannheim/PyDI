@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "119.21 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "128.0"
+    },
+    {
+      "source": "products_4",
+      "value": "128.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "aggregation",
+    "reasoning": "Two candidates indicate 128 GB, and 119.21 GiB is approximately 128 GB.",
+    "value": 128.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":128.0,\"operation\":\"aggregation\",\"confidence\":0.95,\"reasoning\":\"Two candidates indicate 128 GB, and 119.21 GiB is approximately 128 GB.\"}"
+}

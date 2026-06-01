@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_9687|mbrainz_7903|name=Plastic Bertrand -  TÃƒÂ©lÃƒÂ©phone ÃƒÂ  tÃƒÂ©lÃƒÂ©phone mon bijou / Stop ou encore | artist=Plastic Bertrand | duration=406.0 | tracks=['TÃƒÂ©lÃƒÂ©phone ÃƒÂ\\xa0 TÃƒÂ©lÃƒÂ©phone Mon Bijou', 'Stop ou encore']||name=Plastic Supermodel | artist=Anorak Girl | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Plastic Supermodel', \"Billie's Joined the Fanclub\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Plastic Bertrand -  TÃƒÂ©lÃƒÂ©phone ÃƒÂ  tÃƒÂ©lÃƒÂ©phone mon bijou / Stop ou encore | artist=Plastic Bertrand | duration=406.0 | tracks=['TÃƒÂ©lÃƒÂ©phone ÃƒÂ\\xa0 TÃƒÂ©lÃƒÂ©phone Mon Bijou', 'Stop ou encore']\nRecord B: name=Plastic Supermodel | artist=Anorak Girl | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Plastic Supermodel', \"Billie's Joined the Fanclub\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

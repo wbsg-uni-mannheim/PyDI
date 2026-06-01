@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "RON"
+    },
+    {
+      "source": "products_3",
+      "value": "USD"
+    },
+    {
+      "source": "products_4",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "No evidence indicates normalization across sources, so I selected one candidate verbatim.",
+    "value": "RON"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"RON\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"No evidence indicates normalization across sources, so I selected one candidate verbatim.\"}"
+}

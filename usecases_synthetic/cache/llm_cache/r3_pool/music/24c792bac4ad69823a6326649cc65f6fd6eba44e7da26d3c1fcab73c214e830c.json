@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_576|mbrainz_196|name=Get Ready! | artist=2 Unlimited | release-date=1992-01-01 | release-country=Germany | duration=2221.0 | genre=Electronic | tracks=['Get Ready For This', 'Twilight Zone', 'The Magic Friend', 'Contrast', 'Rougher Than The Average', 'Desire', 'Workaholic', 'Eternally Yours', 'Delight']||name=Get Ready! | artist=2 Unlimited | release-date=1992-04-25 | release-country=Japan | duration=3601 | tracks=['Get Ready for This', 'Twilight Zone (7â€³ vocal)', 'The Magic Friend', 'Contrast', 'Rougher Than the Average', 'Workaholic', 'Delight', 'Get Ready for This (Rio & Le Jean remix) (instrumental)', 'Twilight Zone (instrumental)', 'The Magic Friend (instrumental)', 'Rougher Than the Average (instrumental)', 'Workaholic (instrumental)', 'Delight (instrumental)', 'Desire', 'Eternally Yours']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Get Ready! | artist=2 Unlimited | release-date=1992-01-01 | release-country=Germany | duration=2221.0 | genre=Electronic | tracks=['Get Ready For This', 'Twilight Zone', 'The Magic Friend', 'Contrast', 'Rougher Than The Average', 'Desire', 'Workaholic', 'Eternally Yours', 'Delight']\nRecord B: name=Get Ready! | artist=2 Unlimited | release-date=1992-04-25 | release-country=Japan | duration=3601 | tracks=['Get Ready for This', 'Twilight Zone (7â€³ vocal)', 'The Magic Friend', 'Contrast', 'Rougher Than the Average', 'Workaholic', 'Delight', 'Get Ready for This (Rio & Le Jean remix) (instrumental)', 'Twilight Zone (instrumental)', 'The Magic Friend (instrumental)', 'Rougher Than the Average (instrumental)', 'Workaholic (instrumental)', 'Delight (instrumental)', 'Desire', 'Eternally Yours']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

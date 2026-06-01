@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_129006|lastFM_14564|name=United We Stand / Say A Prayer | artist=Brotherhood Of Man | release-date=1970 | release-country=Italy | duration=342.0 | genre=Pop | tracks=['United We Stand', 'Say A Prayer']||name=United We Stand | artist=Brotherhood o. Man | duration=4206.0 | tracks=['United We Stand', 'Sing In The Sunshine', 'Where Are You Going To My Love?', 'Proud Mary', 'Living In The Land Of Love', 'Maybe The Morning', 'You And I', 'California Sunday Morning', 'You Are What You Are', 'Our World Of Love', 'A Little Bit Of Heaven', 'Love One Another', 'Follow Me', 'This Boy', 'Happy Ever After', 'Do Your Thing', 'Loves, Lines, Angles And Rhymes', 'A Better Tomorrow', 'Put Your Hand In The Hand', 'We Can Make It', 'Say A Prayer', 'For The Rest Of Our Lives', 'Reach Out Your Hand', 'You Can Depend On Me']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=United We Stand / Say A Prayer | artist=Brotherhood Of Man | release-date=1970 | release-country=Italy | duration=342.0 | genre=Pop | tracks=['United We Stand', 'Say A Prayer']\nRecord B: name=United We Stand | artist=Brotherhood o. Man | duration=4206.0 | tracks=['United We Stand', 'Sing In The Sunshine', 'Where Are You Going To My Love?', 'Proud Mary', 'Living In The Land Of Love', 'Maybe The Morning', 'You And I', 'California Sunday Morning', 'You Are What You Are', 'Our World Of Love', 'A Little Bit Of Heaven', 'Love One Another', 'Follow Me', 'This Boy', 'Happy Ever After', 'Do Your Thing', 'Loves, Lines, Angles And Rhymes', 'A Better Tomorrow', 'Put Your Hand In The Hand', 'We Can Make It', 'Say A Prayer', 'For The Rest Of Our Lives', 'Reach Out Your Hand', 'You Can Depend On Me']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

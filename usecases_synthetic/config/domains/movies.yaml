@@ -1,0 +1,35 @@
+domain: movies
+master_seed: 42
+
+sources:
+  - name: academy_awards
+    file: academy_awards.xml
+    format: xml
+    id_prefix: "academy_awards_"
+  - name: actors
+    file: actors.xml
+    format: xml
+    id_prefix: "actors_"
+  - name: golden_globes
+    file: golden_globes.xml
+    format: xml
+    id_prefix: "golden_globes_"
+
+source_pairs:
+  - [academy_awards, actors]
+  - [actors, golden_globes]
+
+# Canonical attributes drawn from the fusion test_set.xml schema (movies
+# domain has no separate target_schema.json — fusion test set is the
+# canonical reference). ``title`` is the identifying label (primary).
+# ``director`` and ``date`` (year) are key partitioning attributes; both
+# materially distinguish films and are used by K2 niche-density and K10
+# reliability routing. ``actors`` is the secondary list-typed attribute.
+# Note: S6 (movies pool) is upstream-blocked on a movies PLM run; this
+# YAML is ready but the per-knob configs (S9) and Phase C runs depend
+# on the pool being produced first.
+attribute_classes:
+  title: primary
+  director: key
+  date: key
+  actors: secondary

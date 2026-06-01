@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2504"
+    },
+    {
+      "source": "discogs",
+      "value": "2530.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "2502.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "The durations are close numeric variants, so a robust aggregate is appropriate; 2504 ms is the central integer-like value.",
+    "value": 2504.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2504.0,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"The durations are close numeric variants, so a robust aggregate is appropriate; 2504 ms is the central integer-like value.\"}"
+}

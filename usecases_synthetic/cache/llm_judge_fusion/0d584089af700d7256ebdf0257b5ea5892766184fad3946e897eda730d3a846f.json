@@ -1,0 +1,22 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "44100000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "47600000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.87,
+    "operation": "aggregation",
+    "reasoning": "The candidates are close numeric estimates, so a simple average provides a robust canonical revenue value.",
+    "value": 45850000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":45850000000,\"operation\":\"aggregation\",\"confidence\":0.87,\"reasoning\":\"The candidates are close numeric estimates, so a simple average provides a robust canonical revenue value.\"}"
+}

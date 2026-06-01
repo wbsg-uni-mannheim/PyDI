@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_22471|lastFM_10891|name=Spirit Of Yma | artist=Vermonster | release-date=1990 | release-country=United States of America | duration=2523.0 | genre=Rock | tracks=['Grease Of The Yak', 'Rainy, Starless Night', 'The Lions', 'Black Liquid Slowly Mummifies']||name=Vermonster -  Spirit of Yma | artist=Vermonster | duration=1157.0 | tracks=['grease of the yak', 'rainy, starless night']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit Of Yma | artist=Vermonster | release-date=1990 | release-country=United States of America | duration=2523.0 | genre=Rock | tracks=['Grease Of The Yak', 'Rainy, Starless Night', 'The Lions', 'Black Liquid Slowly Mummifies']\nRecord B: name=Vermonster -  Spirit of Yma | artist=Vermonster | duration=1157.0 | tracks=['grease of the yak', 'rainy, starless night']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

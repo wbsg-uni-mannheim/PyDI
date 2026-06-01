@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_10686|lastFM_74906|name=Trouble | artist=Alain Chamfort | release-date=1990-05-23 | release-country=France | duration=2423.0 | genre=Pop | tracks=[\"Souris Puisque C'est Grave\", \"Gare De L'est\", 'Ce Ne Sera Pas Moi', 'Mama Gri-Gri', 'Lisa Rougit', 'Sapho & Sophie', \"Personne N'aime Personne\", \"L'amour Samplé\", 'La Femme De Ma Vie', 'Noctambule']||name=Speak Of Trouble | artist=G. Bloomers | duration=2432.0 | tracks=['Lobbyist', 'The Young Ones Slept', 'Honey Blanket', 'Daylight', \"This Ain't You\", 'Speak Of Trouble', 'Admit Defeat', 'Fever Days', 'Last Of My Faith', 'Dark Horse', 'Thorn In My Side']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Trouble | artist=Alain Chamfort | release-date=1990-05-23 | release-country=France | duration=2423.0 | genre=Pop | tracks=[\"Souris Puisque C'est Grave\", \"Gare De L'est\", 'Ce Ne Sera Pas Moi', 'Mama Gri-Gri', 'Lisa Rougit', 'Sapho & Sophie', \"Personne N'aime Personne\", \"L'amour Samplé\", 'La Femme De Ma Vie', 'Noctambule']\nRecord B: name=Speak Of Trouble | artist=G. Bloomers | duration=2432.0 | tracks=['Lobbyist', 'The Young Ones Slept', 'Honey Blanket', 'Daylight', \"This Ain't You\", 'Speak Of Trouble', 'Admit Defeat', 'Fever Days', 'Last Of My Faith', 'Dark Horse', 'Thorn In My Side']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

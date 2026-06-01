@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_5946|lastFM_2907|name=Time Of The Future | artist=Mother Earth | release-date=2001 | release-country=UK | genre=Electronic | tracks=[\"Hope You're Feelin' Better\", 'Look To The Light', 'Jonathan E', 'Bad Ass Weed', 'Mister Freedom', 'Time Of The Future', 'Riot On 103rd Street', 'A Trip Down Brian Lane', 'Warlocks Of Pendragon', 'Find It', 'Jesse', \"We're A Winner\", 'The Life Eternity', 'Climbing Fox', 'Freethinker', 'The Sinister Six', '(Never Gonna Get) To War', 'Wham Bam Thank You Mam', 'Compare Yourself']||name=Time of  Future | artist=Mother Earth | duration=2244.0 | tracks=[\"Hope You're Feelin Better\", 'Jonathan E', 'Bad Ass Weed', 'Mister Freedom', 'Time Of The Future', 'Riot On 103rd Street', 'A Trip Down Brian Lane', 'Warlocks Of Pendragon', 'Compare Yourself']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Time Of The Future | artist=Mother Earth | release-date=2001 | release-country=UK | genre=Electronic | tracks=[\"Hope You're Feelin' Better\", 'Look To The Light', 'Jonathan E', 'Bad Ass Weed', 'Mister Freedom', 'Time Of The Future', 'Riot On 103rd Street', 'A Trip Down Brian Lane', 'Warlocks Of Pendragon', 'Find It', 'Jesse', \"We're A Winner\", 'The Life Eternity', 'Climbing Fox', 'Freethinker', 'The Sinister Six', '(Never Gonna Get) To War', 'Wham Bam Thank You Mam', 'Compare Yourself']\nRecord B: name=Time of  Future | artist=Mother Earth | duration=2244.0 | tracks=[\"Hope You're Feelin Better\", 'Jonathan E', 'Bad Ass Weed', 'Mister Freedom', 'Time Of The Future', 'Riot On 103rd Street', 'A Trip Down Brian Lane', 'Warlocks Of Pendragon', 'Compare Yourself']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25696|lastFM_61541|name=Teen Spirit | artist=A*Teens | release-date=2001 | release-country=United States of America | duration=2832.0 | genre=Electronic|Pop | tracks=['Bouncing Off The Ceiling (Upside Down)', '...To The Music', 'Halfway Around The World', 'Firefly', 'Sugar Rush', \"Rockin'\", 'Around The Corner Of Your Eye', \"Slammin' Kinda Love\", 'All My Love', 'For All That I Am', \"That's What (It's All About)\", 'Morning Light', 'Back For More', \"Don't Even Know Your Name\", 'Bouncing Off The Ceiling (Upside Down)']||name=and the Spirit | artist=T. Five Points Band | duration=2820.0 | tracks=['Candyman', 'Angel Child', 'Name of My Game', \"Smokin' Loco\", \"J-bird's Blues\", \"Nobody's Fault\", 'TV Preacher', 'Call Me the Hammer', \"(Medley) Reno Ride, M & O Blues, Leave 'em Now\", 'Maggie Walker', \"Lady's Blues\", 'New Special Rider Blues', '900 Miles', 'Love in Vain']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Teen Spirit | artist=A*Teens | release-date=2001 | release-country=United States of America | duration=2832.0 | genre=Electronic|Pop | tracks=['Bouncing Off The Ceiling (Upside Down)', '...To The Music', 'Halfway Around The World', 'Firefly', 'Sugar Rush', \"Rockin'\", 'Around The Corner Of Your Eye', \"Slammin' Kinda Love\", 'All My Love', 'For All That I Am', \"That's What (It's All About)\", 'Morning Light', 'Back For More', \"Don't Even Know Your Name\", 'Bouncing Off The Ceiling (Upside Down)']\nRecord B: name=and the Spirit | artist=T. Five Points Band | duration=2820.0 | tracks=['Candyman', 'Angel Child', 'Name of My Game', \"Smokin' Loco\", \"J-bird's Blues\", \"Nobody's Fault\", 'TV Preacher', 'Call Me the Hammer', \"(Medley) Reno Ride, M & O Blues, Leave 'em Now\", 'Maggie Walker', \"Lady's Blues\", 'New Special Rider Blues', '900 Miles', 'Love in Vain']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

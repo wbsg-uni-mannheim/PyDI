@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "14,000,000 MB"
+    },
+    {
+      "source": "products_3",
+      "value": "1000000"
+    },
+    {
+      "source": "products_4",
+      "value": "14000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Converted 14,000,000 MB to 14,000 GB and matched the explicit GB candidate.",
+    "value": 14000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":14000,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Converted 14,000,000 MB to 14,000 GB and matched the explicit GB candidate.\"}"
+}

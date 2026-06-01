@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_48038|mbrainz_5964|name=Gotta Get Over (Taking Loot) / Flip The Script | artist=G. Starr | tracks=[]||name=DWYCK / Flip the Script | artist=Gang Starr | release-date=1992-01-01 | release-country=United States of America | duration=738 | tracks=['DWYCK (clean version)', 'Flip the Script (remix / Minor Adjustment mix)', 'Flip the Script (album version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gotta Get Over (Taking Loot) / Flip The Script | artist=G. Starr | tracks=[]\nRecord B: name=DWYCK / Flip the Script | artist=Gang Starr | release-date=1992-01-01 | release-country=United States of America | duration=738 | tracks=['DWYCK (clean version)', 'Flip the Script (remix / Minor Adjustment mix)', 'Flip the Script (album version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

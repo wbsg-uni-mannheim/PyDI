@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_191632|mbrainz_20809|name=Monsters In The Closet | artist=Mayday Parade | release-date=2013-10-08 | release-country=United States of America | duration=2723.0 | genre=Pop|Rock | tracks=['Ghosts', 'Girls', 'Last Night For A Table Of Two', '12 Through 15', 'The Torment Of Existance Weighed Against The Horror Of Nonbeing', 'Even Robots Need Blankets', 'Repent And Repeat', 'Demons', 'Sorry, Not Sorry', 'Nothing You Can Live Without, Nothing You Can Do About', 'Hold Onto Me', 'Angels']||name=Monsters in the Closet | artist=Mayday Parade | release-date=2013-10-08 | release-country=United States of America | duration=2723 | tracks=['Ghosts', 'Girls', 'Last Night for a Table of Two', '12 Through 15', 'The Torment of Existence Weighed Against the Horror of Nonbeing', 'Even Robots Need Blankets', 'Repent and Repeat', 'Demons', 'Sorry, Not Sorry', 'Nothing You Can Live Without, Nothing You Can Do About', 'Hold Onto Me', 'Angels']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monsters In The Closet | artist=Mayday Parade | release-date=2013-10-08 | release-country=United States of America | duration=2723.0 | genre=Pop|Rock | tracks=['Ghosts', 'Girls', 'Last Night For A Table Of Two', '12 Through 15', 'The Torment Of Existance Weighed Against The Horror Of Nonbeing', 'Even Robots Need Blankets', 'Repent And Repeat', 'Demons', 'Sorry, Not Sorry', 'Nothing You Can Live Without, Nothing You Can Do About', 'Hold Onto Me', 'Angels']\nRecord B: name=Monsters in the Closet | artist=Mayday Parade | release-date=2013-10-08 | release-country=United States of America | duration=2723 | tracks=['Ghosts', 'Girls', 'Last Night for a Table of Two', '12 Through 15', 'The Torment of Existence Weighed Against the Horror of Nonbeing', 'Even Robots Need Blankets', 'Repent and Repeat', 'Demons', 'Sorry, Not Sorry', 'Nothing You Can Live Without, Nothing You Can Do About', 'Hold Onto Me', 'Angels']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

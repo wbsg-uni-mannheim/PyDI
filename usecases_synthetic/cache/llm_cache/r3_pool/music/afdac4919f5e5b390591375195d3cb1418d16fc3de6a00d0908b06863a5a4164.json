@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25634|mbrainz_404|name=Since I Left You | artist=The Avalanches | release-date=2001 | release-country=United States of America | duration=3663.0 | genre=Electronic | tracks=['Since I Left You', 'Stay Another Season', 'Radio', 'Two Hearts In 3/4 Time', 'Avalanche Rock', 'Flight Tonight', 'Close To You', 'Diners Only', 'A Different Feeling', 'Electricity', 'Tonight', \"Pablo's Cruise\", 'Frontier Psychiatrist', 'Etoh', 'Summer Crane', 'Little Journey', 'Live At Dominoes', 'Extra Kings']||name=Since I Left You | artist=Avalanches, The | release-date=2004-01-01 | release-country=United States of America | duration=3695 | tracks=['Since I Left You', 'Stay Another Season', 'Radio', 'Two Hearts in 3/4 Time', 'Avalanche Rock', 'Flight Tonight', 'Close to You', 'Diners Only', 'A Different Feeling', 'Electricity', 'Tonight May Have to Last Me All My Life', 'Pabloâ€™s Cruise', 'Frontier Psychiatrist', 'Etoh', 'Summer Crane', 'Little Journey', 'Live at Dominoes', 'Extra Kings']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Since I Left You | artist=The Avalanches | release-date=2001 | release-country=United States of America | duration=3663.0 | genre=Electronic | tracks=['Since I Left You', 'Stay Another Season', 'Radio', 'Two Hearts In 3/4 Time', 'Avalanche Rock', 'Flight Tonight', 'Close To You', 'Diners Only', 'A Different Feeling', 'Electricity', 'Tonight', \"Pablo's Cruise\", 'Frontier Psychiatrist', 'Etoh', 'Summer Crane', 'Little Journey', 'Live At Dominoes', 'Extra Kings']\nRecord B: name=Since I Left You | artist=Avalanches, The | release-date=2004-01-01 | release-country=United States of America | duration=3695 | tracks=['Since I Left You', 'Stay Another Season', 'Radio', 'Two Hearts in 3/4 Time', 'Avalanche Rock', 'Flight Tonight', 'Close to You', 'Diners Only', 'A Different Feeling', 'Electricity', 'Tonight May Have to Last Me All My Life', 'Pabloâ€™s Cruise', 'Frontier Psychiatrist', 'Etoh', 'Summer Crane', 'Little Journey', 'Live at Dominoes', 'Extra Kings']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

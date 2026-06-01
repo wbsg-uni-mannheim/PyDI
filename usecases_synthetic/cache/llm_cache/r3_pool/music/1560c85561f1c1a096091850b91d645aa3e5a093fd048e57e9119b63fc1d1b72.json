@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_7858|mbrainz_3779|name=Mount Eerie Dances with Wolves | artist=Mount Eerie | duration=1246.0 | tracks=['Mount Eerie Dances With Wolves', 'Wolf Mountain Howls: \"Into the World\"']||name=Two New Songs of Mount Eerie | artist=Mount Eerie | release-date=2004-01-01 | release-country=United States of America | duration=0 | tracks=['Fuck the World', 'Do Not Be Afraid']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mount Eerie Dances with Wolves | artist=Mount Eerie | duration=1246.0 | tracks=['Mount Eerie Dances With Wolves', 'Wolf Mountain Howls: \"Into the World\"']\nRecord B: name=Two New Songs of Mount Eerie | artist=Mount Eerie | release-date=2004-01-01 | release-country=United States of America | duration=0 | tracks=['Fuck the World', 'Do Not Be Afraid']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

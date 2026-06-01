@@ -1,0 +1,32 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Vigil', 'Big Wedge', 'State of Mind', 'The Company', 'A Gentlemanâ€™s Excuse Me', 'The Voyeur (I Like to Watch)', 'Family Business', 'View From the Hill', 'ClichÃ©']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Vigil', 'Big Wedge', 'State Of Mind', 'The Company', \"A Gentleman's Excuse Me\", 'The Voyeur (I Like To Watch)', 'Family Business', 'View From The Hill', 'Cliché']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates list the same tracks with casing and encoding differences, so I normalized them to a single clean track list.",
+    "value": [
+      "Vigil",
+      "Big Wedge",
+      "State Of Mind",
+      "The Company",
+      "A Gentleman's Excuse Me",
+      "The Voyeur (I Like To Watch)",
+      "Family Business",
+      "View From The Hill",
+      "Cliché"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Vigil\",\"Big Wedge\",\"State Of Mind\",\"The Company\",\"A Gentleman's Excuse Me\",\"The Voyeur (I Like To Watch)\",\"Family Business\",\"View From The Hill\",\"Cliché\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates list the same tracks with casing and encoding differences, so I normalized them to a single clean track list.\"}"
+}

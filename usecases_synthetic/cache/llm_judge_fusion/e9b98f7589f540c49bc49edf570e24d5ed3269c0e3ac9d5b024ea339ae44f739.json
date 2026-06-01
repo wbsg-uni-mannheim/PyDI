@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2004-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2003"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "interpolation",
+    "reasoning": "MusicBrainz provides a full date while Discogs only gives the release year, which is consistent with 2004.",
+    "value": "2004-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2004-01-01\",\"operation\":\"interpolation\",\"confidence\":0.86,\"reasoning\":\"MusicBrainz provides a full date while Discogs only gives the release year, which is consistent with 2004.\"}"
+}

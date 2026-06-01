@@ -1,0 +1,36 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Pacifica (Vocal Mix)', 'Pacifica (Instrumental Mix)', 'Pacifica (Chasing Shadows Remix)', 'Pacifica (Kito & Reija Remix)', 'Pacficia (Acoustic Version)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Pacifica (Vocal Mix)', 'Pacifica (Instrumental Mix)', 'Pacifica (Chasing Shadows Remix)', 'Pacifica (Kito & Reija Remix)', 'Pacifica (Acoustic Version)']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Pacifica (Kito & Reija Lee Remix)', 'Pacifica (Acoustic)']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Pacifica (Vocal Mix)', 'Pacifica (Instrumental Mix)', 'Pacifica (Chasing Shadows Remix)', 'Pacifica (Kito and Reija Remix)', 'Pacifica (Acoustic Version)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Two high-agreement sources provide the same track list with minor spelling/formatting differences, so the canonical list is normalized from them.",
+    "value": [
+      "Pacifica (Vocal Mix)",
+      "Pacifica (Instrumental Mix)",
+      "Pacifica (Chasing Shadows Remix)",
+      "Pacifica (Kito & Reija Remix)",
+      "Pacifica (Acoustic Version)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Pacifica (Vocal Mix)\",\"Pacifica (Instrumental Mix)\",\"Pacifica (Chasing Shadows Remix)\",\"Pacifica (Kito & Reija Remix)\",\"Pacifica (Acoustic Version)\"],\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Two high-agreement sources provide the same track list with minor spelling/formatting differences, so the canonical list is normalized from them.\"}"
+}

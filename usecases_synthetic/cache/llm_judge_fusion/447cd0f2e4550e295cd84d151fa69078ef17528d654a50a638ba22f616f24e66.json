@@ -1,0 +1,22 @@
+{
+  "attribute": "vram_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "4.0"
+    },
+    {
+      "source": "products_4",
+      "value": "4000 MB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "4000 MB normalizes to 4.0 GB, matching the other candidate.",
+    "value": 4.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4.0,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"4000 MB normalizes to 4.0 GB, matching the other candidate.\"}"
+}

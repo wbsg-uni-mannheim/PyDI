@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_3927|lastFM_1973|name=Electronica Gainsbourg M2 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1464.0 | genre=Electronic | tracks=['Marabout', 'No Comment', 'Sea, Sex & Sun (Sexy Remix)', \"La Bas C'est Naturel\"]||name=*popular* Electronica Gainsbourg M2 | artist=Serge Gainsbourg | duration=1001.0 | tracks=['Marabout', 'No Comment', 'Sea, Sex & Sun (Sexy Remix)', \"LÃƒÂ\\xa0 Bas C'Est Naturel\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Electronica Gainsbourg M2 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1464.0 | genre=Electronic | tracks=['Marabout', 'No Comment', 'Sea, Sex & Sun (Sexy Remix)', \"La Bas C'est Naturel\"]\nRecord B: name=*popular* Electronica Gainsbourg M2 | artist=Serge Gainsbourg | duration=1001.0 | tracks=['Marabout', 'No Comment', 'Sea, Sex & Sun (Sexy Remix)', \"LÃƒÂ\\xa0 Bas C'Est Naturel\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

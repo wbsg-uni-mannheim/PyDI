@@ -1,0 +1,132 @@
+# Entity-matching MATCHING committee roster — music domain.
+#
+# Per-domain fork of em_matching_committee.yaml (companies-canonical).
+# Same 4-member roster (ditto_plm / magellan / llm_matcher / comem),
+# enable-all posture per R5 EM matching sign-off.
+#
+# Music quirks:
+#   * `label` (record label) is dropped from Ditto's fields because
+#     `label` collides with Ditto's reserved metadata key for the
+#     binary classification target (see
+#     third_party/ditto_modern/data.py RESERVED_SERIALIZATION_FIELDS).
+#   * `genre` is excluded from Ditto fields — single-source (only
+#     discogs has it post-refresh), empty on at least one side of every
+#     pair. `duration` replaces it.
+#   * lastfm contributes only `name` + `artist` post-refresh; the rest
+#     of its columns are 0%-populated.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). R2 checkpoint
+      at usecases_synthetic/cache/ditto_checkpoints/music/best — winner:
+      lr=1e-4 weighted, test F1=0.9837 (2 pairs).
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/music/best
+        fields: [name, artist, release-date, release-country, duration, label, genre, tracks]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher: auto-generated comparator-vector features +
+      sklearn RandomForest. `training_gold_path` runner-injected per
+      source pair. Date hint on `release-date`; continuous numeric on
+      `duration`.
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        numeric_attributes: [duration]
+        date_attributes: [release-date]
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        # Locked by R5 EM matching sweep (2026-05-11): music winner
+        # = n_estimators=100, max_depth=None, class_weight=None
+        # (mean closed-set F1 = 0.973). Notably class_weight=None wins
+        # for music (not `balanced` like companies + games) — music has
+        # large train sets (~17-19k pairs/pair) where the 8.9% positive
+        # rate already yields enough positive examples for the
+        # classifier without reweighting. See plan_s1_scale.md
+        # §"R5 EM matching sign-off (2026-05-11)".
+        classifier_params:
+          n_estimators: 100
+          max_depth: null
+          random_state: 42
+          n_jobs: 1
+          class_weight: null
+        preprocess: normalize_text
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style zero-shot LLM matcher. `genre` + `label` kept in
+      fields (mostly sparse → render as `<missing>`, acceptable for LLM
+      prompts).
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [name, artist, release-date, release-country, duration, label, genre, tracks]
+        chat_model_name: openai/gpt-5.4-mini
+        temperature: 0.0
+        max_tokens: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM). Two-stage LLM pipeline. Paper
+      defaults locked.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [name, artist, release-date, release-country, duration, label, genre, tracks]
+        stage1_model: openai/gpt-5.4-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+required_axes:
+  matching_type: [learned, llm]
+  missing_value_tolerant: [true]
+
+# Column mapping — must stay identical to em_blocking_committee_music.yaml
+# and fusion_committee_music.yaml. Refreshed 2026-05-04: new CSV sources
+# already use canonical column names, so no per-source rename is needed.
+column_mapping:
+  musicbrainz: {}
+  discogs: {}
+  lastfm: {}

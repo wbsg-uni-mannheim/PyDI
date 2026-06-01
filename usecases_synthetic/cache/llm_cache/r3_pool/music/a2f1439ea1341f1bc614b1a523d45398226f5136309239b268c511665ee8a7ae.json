@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_17834|lastFM_8633|name=A Light Beyond The End | artist=Drunkness | release-date=1998 | release-country=Germany | duration=3972.0 | genre=Electronic | tracks=['...', 'Enough (Love Me, Hate Me)', 'The Light Beyond The End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des Bösen', 'Pyramids', 'Mysterious', 'Too Late Now', 'Instinct To Survive', 'Galaxy (Drunkness Hymn)']||name=A Light Beyond The End | artist=Drunkness | duration=3973.0 | tracks=['...', 'Enough (love Me, Hate Me)', 'The Light beyond the End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des BÃƒÂ¶sen', 'Pyramids', 'Mysterious', 'Too late now', 'Instinct to survive', 'Galaxy (Drunkness Hymn)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=A Light Beyond The End | artist=Drunkness | release-date=1998 | release-country=Germany | duration=3972.0 | genre=Electronic | tracks=['...', 'Enough (Love Me, Hate Me)', 'The Light Beyond The End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des Bösen', 'Pyramids', 'Mysterious', 'Too Late Now', 'Instinct To Survive', 'Galaxy (Drunkness Hymn)']\nRecord B: name=A Light Beyond The End | artist=Drunkness | duration=3973.0 | tracks=['...', 'Enough (love Me, Hate Me)', 'The Light beyond the End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des BÃƒÂ¶sen', 'Pyramids', 'Mysterious', 'Too late now', 'Instinct to survive', 'Galaxy (Drunkness Hymn)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

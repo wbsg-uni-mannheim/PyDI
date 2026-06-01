@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Palo Alto, CaliforniaCalifornia"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Palo Alto"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Normalized the malformed city string to the standard city name matching the other source.",
+    "value": "Palo Alto"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Palo Alto\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Normalized the malformed city string to the standard city name matching the other source.\"}"
+}

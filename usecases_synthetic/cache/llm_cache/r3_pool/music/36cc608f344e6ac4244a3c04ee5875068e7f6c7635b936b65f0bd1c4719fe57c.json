@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_7599|lastFM_3624|name=Visions | artist=Steven Severin | release-date=1998 | release-country=UK | duration=2610.0 | genre=Electronic | tracks=['Sphere', 'The Absolute', 'Come Deliver Us', 'The Fourth Water', 'Baphomet', 'Enter Into These Bonds', 'Skin Crawl', 'The Radiance', 'Transverberation Of The Heart']||name=Visions | artist=Steven Severin | duration=2470.0 | tracks=['Baphomet', 'Come Deliver Us', 'Enter Into These Bonds', 'The Radiance', 'Transverberation of the Heart', 'Sphere', 'The Fourth Water', 'Skin Crawl', 'The Absolute']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Visions | artist=Steven Severin | release-date=1998 | release-country=UK | duration=2610.0 | genre=Electronic | tracks=['Sphere', 'The Absolute', 'Come Deliver Us', 'The Fourth Water', 'Baphomet', 'Enter Into These Bonds', 'Skin Crawl', 'The Radiance', 'Transverberation Of The Heart']\nRecord B: name=Visions | artist=Steven Severin | duration=2470.0 | tracks=['Baphomet', 'Come Deliver Us', 'Enter Into These Bonds', 'The Radiance', 'Transverberation of the Heart', 'Sphere', 'The Fourth Water', 'Skin Crawl', 'The Absolute']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

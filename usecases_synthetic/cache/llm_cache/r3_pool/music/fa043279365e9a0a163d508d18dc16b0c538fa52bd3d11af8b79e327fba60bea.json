@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_66020|lastFM_30843|name=I Belong | artist=Paulette Dozier|Vytas Brenner | release-date=1981 | release-country=Venezuela | genre=Funk / Soul | tracks=['I Belong', 'I Gotta Feeling', \"I'm Gonna Climb That Mountain\", 'Sweet Ziza', 'Decissions', 'Are You The One?', 'Feeling Much Calmer']||name=Belong | artist=Vytas Brenner | duration=1658.0 | tracks=['I gotta feeling', 'IÃ¢â‚¬â„¢m Gonna Climb That Mountain', 'Sweet zita', 'Decisions', 'Are You The One?', 'Feeling much calmer']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=I Belong | artist=Paulette Dozier|Vytas Brenner | release-date=1981 | release-country=Venezuela | genre=Funk / Soul | tracks=['I Belong', 'I Gotta Feeling', \"I'm Gonna Climb That Mountain\", 'Sweet Ziza', 'Decissions', 'Are You The One?', 'Feeling Much Calmer']\nRecord B: name=Belong | artist=Vytas Brenner | duration=1658.0 | tracks=['I gotta feeling', 'IÃ¢â‚¬â„¢m Gonna Climb That Mountain', 'Sweet zita', 'Decisions', 'Are You The One?', 'Feeling much calmer']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

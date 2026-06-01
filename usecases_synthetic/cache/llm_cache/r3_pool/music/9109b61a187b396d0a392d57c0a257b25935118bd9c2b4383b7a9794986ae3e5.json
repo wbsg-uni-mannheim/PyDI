@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_60840|lastFM_17842|name=Move Along | artist=The All-American Rejects | release-date=2006 | release-country=UK | duration=928.0 | genre=Rock | tracks=['Move Along', 'Kiss Yourself Goodbye', 'Eyelash Wishes', 'Move Along - Video']||name=Along | artist=The All-American Rejects | duration=1595.0 | tracks=['Dirty Little Secret', 'Stab My Back', 'Change Your Mind', 'Night Drive', '11:11 p.m.', 'Straitjacket Feeling', \"I'm Waiting\", \"Can't Take It\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Move Along | artist=The All-American Rejects | release-date=2006 | release-country=UK | duration=928.0 | genre=Rock | tracks=['Move Along', 'Kiss Yourself Goodbye', 'Eyelash Wishes', 'Move Along - Video']\nRecord B: name=Along | artist=The All-American Rejects | duration=1595.0 | tracks=['Dirty Little Secret', 'Stab My Back', 'Change Your Mind', 'Night Drive', '11:11 p.m.', 'Straitjacket Feeling', \"I'm Waiting\", \"Can't Take It\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

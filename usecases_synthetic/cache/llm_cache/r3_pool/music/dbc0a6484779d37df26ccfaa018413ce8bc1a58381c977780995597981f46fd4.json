@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_172038|mbrainz_2208|name=Mariah Carey | artist=Mariah Carey | release-date=1990 | release-country=Saudi Arabia | duration=2785.0 | genre=Pop|Funk / Soul|Hip Hop | tracks=['Vision Of Love', \"There's Got To Be A Way\", \"I Don't Wanna Cry\", 'Someday', 'Vanishing', 'All In Your Mind', 'Alone In Love', 'You Need Me', 'Sent From Up Above', 'Prisoner', 'Love Takes Time']||name=Can't Let Go | artist=Carey, Mariah | release-date=1991-01-01 | duration=773 | tracks=[\"Can't Let Go (edit)\", 'To Be Around You', 'Canâ€™t Let Go']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mariah Carey | artist=Mariah Carey | release-date=1990 | release-country=Saudi Arabia | duration=2785.0 | genre=Pop|Funk / Soul|Hip Hop | tracks=['Vision Of Love', \"There's Got To Be A Way\", \"I Don't Wanna Cry\", 'Someday', 'Vanishing', 'All In Your Mind', 'Alone In Love', 'You Need Me', 'Sent From Up Above', 'Prisoner', 'Love Takes Time']\nRecord B: name=Can't Let Go | artist=Carey, Mariah | release-date=1991-01-01 | duration=773 | tracks=[\"Can't Let Go (edit)\", 'To Be Around You', 'Canâ€™t Let Go']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

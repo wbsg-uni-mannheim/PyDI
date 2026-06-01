@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42939|lastFM_20316|name=Scripture Of The Woods | artist=Dragobrath | release-date=2006 | release-country=Russia | genre=Rock | tracks=['Intro: Entering The Austere Realm Of Forestpower', 'Scripture Of The Woods', 'Idols Of The Yore', 'Eerie Obscure', 'Subjugated By The Barbaric Pagan Power', 'Ephemeral Tunnel Leading To The Past', 'Entombment Of Crapulent Souls', 'Anamorphosis Into The Ancient Aeons', 'Transylvanian Hunger (Darkthrone Cover)']||name=*popular* Scripture of the Woods | artist=Dragobrath | duration=3042.0 | tracks=['Entering the Austere Realm of Forestpower', 'Scripture of the Woods', 'Idols of the Yore', 'Eerie Obscure', 'Subjugated by the Barbaric Pagan Power', 'Ephemeral Tunnel Leading to the Past', 'Entombment of Crapulent Souls', 'Anamorphosis Into the Ancient Aeons', 'Transylvanian Hunger (Darkthrone cover)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Scripture Of The Woods | artist=Dragobrath | release-date=2006 | release-country=Russia | genre=Rock | tracks=['Intro: Entering The Austere Realm Of Forestpower', 'Scripture Of The Woods', 'Idols Of The Yore', 'Eerie Obscure', 'Subjugated By The Barbaric Pagan Power', 'Ephemeral Tunnel Leading To The Past', 'Entombment Of Crapulent Souls', 'Anamorphosis Into The Ancient Aeons', 'Transylvanian Hunger (Darkthrone Cover)']\nRecord B: name=*popular* Scripture of the Woods | artist=Dragobrath | duration=3042.0 | tracks=['Entering the Austere Realm of Forestpower', 'Scripture of the Woods', 'Idols of the Yore', 'Eerie Obscure', 'Subjugated by the Barbaric Pagan Power', 'Ephemeral Tunnel Leading to the Past', 'Entombment of Crapulent Souls', 'Anamorphosis Into the Ancient Aeons', 'Transylvanian Hunger (Darkthrone cover)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

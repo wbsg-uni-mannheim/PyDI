@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_61291|mbrainz_24150|name=Skid R. -  United World Rebellion - Chapter One | artist=Skid R. | duration=1336.0 | tracks=['Kings of Demolition', \"Let's Go\", 'This Is Killing Me', 'Get Up', 'United']||name=Rise of the Damnation Army (United World Rebellion: Chapter 2) | artist=Skid Row | release-date=2014-01-01 | duration=1715 | tracks=['We Are the Damned', 'Give It the Gun', 'Catch Your Fall', 'Damnation Army', 'Zero Day', 'Sheer Heart Attack', 'Rats in the Cellar']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Skid R. -  United World Rebellion - Chapter One | artist=Skid R. | duration=1336.0 | tracks=['Kings of Demolition', \"Let's Go\", 'This Is Killing Me', 'Get Up', 'United']\nRecord B: name=Rise of the Damnation Army (United World Rebellion: Chapter 2) | artist=Skid Row | release-date=2014-01-01 | duration=1715 | tracks=['We Are the Damned', 'Give It the Gun', 'Catch Your Fall', 'Damnation Army', 'Zero Day', 'Sheer Heart Attack', 'Rats in the Cellar']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

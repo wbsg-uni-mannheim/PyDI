@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_20669|lastFM_479|name=Chrome 01 | artist=John Debo | release-date=2000 | release-country=United States of America | duration=4394.0 | genre=Electronic | tracks=['The Baguio Track (Saeed & Palash Remix)', 'Promises', \"Don't Do It\", 'Shaïva', 'Choose Life (Trancesetters Remix)', 'Standing', 'Second Contact', 'Philter', 'Falling Together', '1-800 Ming', 'Deep Progress (Z2 Remix)']||name=Chrome | artist=Etnica | duration=4336.0 | tracks=['Nervous (Etnica Remix)', 'Detonator', 'Vco', 'Dervish (Wasted Remix)', 'Liquid Forms', 'Are we Safe?', 'Like a Diamond', 'Solaris', 'Tracktor Activity']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Chrome 01 | artist=John Debo | release-date=2000 | release-country=United States of America | duration=4394.0 | genre=Electronic | tracks=['The Baguio Track (Saeed & Palash Remix)', 'Promises', \"Don't Do It\", 'Shaïva', 'Choose Life (Trancesetters Remix)', 'Standing', 'Second Contact', 'Philter', 'Falling Together', '1-800 Ming', 'Deep Progress (Z2 Remix)']\nRecord B: name=Chrome | artist=Etnica | duration=4336.0 | tracks=['Nervous (Etnica Remix)', 'Detonator', 'Vco', 'Dervish (Wasted Remix)', 'Liquid Forms', 'Are we Safe?', 'Like a Diamond', 'Solaris', 'Tracktor Activity']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

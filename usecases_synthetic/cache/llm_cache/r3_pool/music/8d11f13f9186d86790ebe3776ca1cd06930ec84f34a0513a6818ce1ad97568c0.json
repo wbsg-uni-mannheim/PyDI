@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_22608|lastFM_77028|name=Surrender | artist=Suicide | release-date=1988 | release-country=France | genre=Electronic|Rock | tracks=['Surrender', 'Rain Of Ruin']||name=Surrender | artist=Hurts | duration=1052.0 | tracks=['Surrender', 'Some Kind of Heaven', 'Nothing Will Be Bigger Than Us', 'Rolling Stone', 'Lights', 'Wings']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Surrender | artist=Suicide | release-date=1988 | release-country=France | genre=Electronic|Rock | tracks=['Surrender', 'Rain Of Ruin']\nRecord B: name=Surrender | artist=Hurts | duration=1052.0 | tracks=['Surrender', 'Some Kind of Heaven', 'Nothing Will Be Bigger Than Us', 'Rolling Stone', 'Lights', 'Wings']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

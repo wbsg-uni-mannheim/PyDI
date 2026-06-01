@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "73.36"
+    },
+    {
+      "source": "products_2",
+      "value": "222.09"
+    },
+    {
+      "source": "products_3",
+      "value": "98.71"
+    },
+    {
+      "source": "products_4",
+      "value": "60.91"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "Used a robust numeric aggregate (median of the four prices) to reduce the effect of outliers.",
+    "value": 91.12
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":91.12,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"Used a robust numeric aggregate (median of the four prices) to reduce the effect of outliers.\"}"
+}

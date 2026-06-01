@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_175166|lastFM_202|name=Face The Future EP | artist=Speedy J | release-date=1991 | release-country=Netherlands | genre=Electronic | tracks=['Evolution', 'Destroit', 'Analogical', 'Pull Over']||name=the Future EP | artist=Speedy J | duration=1268.0 | tracks=['Evolution', 'Destroit', 'Analogical', 'Pull Over']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Face The Future EP | artist=Speedy J | release-date=1991 | release-country=Netherlands | genre=Electronic | tracks=['Evolution', 'Destroit', 'Analogical', 'Pull Over']\nRecord B: name=the Future EP | artist=Speedy J | duration=1268.0 | tracks=['Evolution', 'Destroit', 'Analogical', 'Pull Over']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

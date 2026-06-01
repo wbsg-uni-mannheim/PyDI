@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_65945|lastFM_30819|name=Unplugged | artist=Green Day | release-date=2001 | release-country=Europe | genre=Rock | tracks=['Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King For A Day', 'When I Come Around', 'Scattered', 'Time Of Your Life', 'Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King For A Day', 'When I Come Around', 'Scattered', 'Time Of Your Life', 'Welcome To Paradise', 'Church On Sunday', '2000 Light Years Away', 'Basketcase', 'Warning']||name=Unplugged | artist=Green Day | duration=3422.0 | tracks=['Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King for a Day', 'When I Come Around', 'Scattered', 'Geek Stink Breath', 'Hitching A Ride', 'Warning', 'She', 'King for a Day', 'Scattered', 'Welcome to Paradise', 'Church on Sunday', '2000 Light Years Away', 'Warning']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Unplugged | artist=Green Day | release-date=2001 | release-country=Europe | genre=Rock | tracks=['Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King For A Day', 'When I Come Around', 'Scattered', 'Time Of Your Life', 'Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King For A Day', 'When I Come Around', 'Scattered', 'Time Of Your Life', 'Welcome To Paradise', 'Church On Sunday', '2000 Light Years Away', 'Basketcase', 'Warning']\nRecord B: name=Unplugged | artist=Green Day | duration=3422.0 | tracks=['Geek Stink Breath', 'Hitching A Ride', 'Warning', 'Longview', 'She', 'King for a Day', 'When I Come Around', 'Scattered', 'Geek Stink Breath', 'Hitching A Ride', 'Warning', 'She', 'King for a Day', 'Scattered', 'Welcome to Paradise', 'Church on Sunday', '2000 Light Years Away', 'Warning']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "14000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "1000.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "Numeric candidates were aggregated using the median/mean midpoint to get a robust canonical storage size.",
+    "value": 7000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":7000,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"Numeric candidates were aggregated using the median/mean midpoint to get a robust canonical storage size.\"}"
+}

@@ -1,0 +1,101 @@
+# Knob 06 — Value Noise Injection Rate — Movies
+
+domain: movies
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+attribute_classes:
+  academy_awards:
+    title: primary
+    director_name: key
+    date: secondary
+    actors_actor_name: secondary
+    oscar: secondary
+  actors:
+    title: primary
+    date: secondary
+    actors_actor_name: secondary
+    actors_actor_birthday: secondary
+    actors_actor_birthplace: secondary
+  golden_globes:
+    title: primary
+    director_name: key
+    date: secondary
+    actors_actor_name: secondary
+    globe: secondary
+
+attribute_mapping:
+  academy_awards:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+  actors:
+    title: title
+    date: date
+    actors_actor_name: actors
+  golden_globes:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+
+noise_rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.0
+    secondary: 0.01
+  medium:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.04
+  hard:
+    primary: 0.01
+    key: 0.06
+    secondary: 0.12
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+operator_mix:
+  easy:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+  medium:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+    typo_substitute: 1.5
+    ocr_confuse: 1.0
+  hard:
+    whitespace_corrupt: 0.5
+    case_corrupt: 0.5
+    typo_substitute: 2.0
+    ocr_confuse: 1.5
+    truncate: 1.0
+
+max_edits_per_cell:
+  easy: 1
+  medium: 1
+  hard: 3
+
+max_ocr_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2
+
+max_truncate_chars:
+  easy: 1
+  medium: 2
+  hard: 3
+
+soft_global_primary_cap_hard: 0.35
+
+compression_factor: 0.5
+stretch_factor: 1.5
+
+cleanup_rules: []

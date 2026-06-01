@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_96940|mbrainz_4158|name=Sehnsucht Ist Unheilbar | artist=Juliane Werding | release-date=1986 | release-country=Germany | duration=2164.0 | genre=Pop|Rock | tracks=['Sehnsucht Ist Unheilbar', 'Takt Der Zeit', 'Stimmen Im Wind', 'Der Brief', 'Nachtexpress', 'Das Würfelspiel', 'Weich Und Warm', \"Land Über'm Meer\", 'Alle Macht']||name=Sehnsucht ist unheilbar | artist=Werding, Juliane | release-date=1986-01-01 | release-country=Germany | duration=2164 | tracks=['Sehnsucht ist inheilbar', 'Takt der Zeit', 'Stimmen im Wind', 'Der Brief', 'Nachtexpress', 'Das WÃ¼rfelspiel', 'Weich und warm', \"Land Ã¼ber'm Meer\", 'Alle Macht']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sehnsucht Ist Unheilbar | artist=Juliane Werding | release-date=1986 | release-country=Germany | duration=2164.0 | genre=Pop|Rock | tracks=['Sehnsucht Ist Unheilbar', 'Takt Der Zeit', 'Stimmen Im Wind', 'Der Brief', 'Nachtexpress', 'Das Würfelspiel', 'Weich Und Warm', \"Land Über'm Meer\", 'Alle Macht']\nRecord B: name=Sehnsucht ist unheilbar | artist=Werding, Juliane | release-date=1986-01-01 | release-country=Germany | duration=2164 | tracks=['Sehnsucht ist inheilbar', 'Takt der Zeit', 'Stimmen im Wind', 'Der Brief', 'Nachtexpress', 'Das WÃ¼rfelspiel', 'Weich und warm', \"Land Ã¼ber'm Meer\", 'Alle Macht']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

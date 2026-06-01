@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1175|mbrainz_212|name=Tempesta | artist=Statik Sound System | release-date=1996 | release-country=UK | duration=3341.0 | genre=Electronic | tracks=['Free To Choose, Hard To Be', 'Jack', 'Essential Times', 'So Close', 'Sonar', 'Amazed By You', 'Dr Wheeler', 'Valentine', 'Dreams Of Mine', 'In Our Own Dub/Jack Laid Bare']||name=Tempesta II | artist=Statik Sound System | release-date=1997-09 | release-country=United States of America | duration=3803 | tracks=['Free to Choose, Hard to Be', 'Living in Essential Times', 'Jack', 'Essential Times', 'Sonar', 'Amazed by You', 'Dr Wheeler', 'Valentine', 'Dreams of Mine', 'Hear My Plea', 'Seven Shades', '[untitled]']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tempesta | artist=Statik Sound System | release-date=1996 | release-country=UK | duration=3341.0 | genre=Electronic | tracks=['Free To Choose, Hard To Be', 'Jack', 'Essential Times', 'So Close', 'Sonar', 'Amazed By You', 'Dr Wheeler', 'Valentine', 'Dreams Of Mine', 'In Our Own Dub/Jack Laid Bare']\nRecord B: name=Tempesta II | artist=Statik Sound System | release-date=1997-09 | release-country=United States of America | duration=3803 | tracks=['Free to Choose, Hard to Be', 'Living in Essential Times', 'Jack', 'Essential Times', 'Sonar', 'Amazed by You', 'Dr Wheeler', 'Valentine', 'Dreams of Mine', 'Hear My Plea', 'Seven Shades', '[untitled]']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

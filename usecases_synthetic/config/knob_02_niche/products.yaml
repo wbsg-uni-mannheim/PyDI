@@ -1,0 +1,229 @@
+# Knob 02 - Entity Niche Density - Products
+#
+# Products sources are small (812/812/762/626 = 3012 rows total) — much
+# smaller than companies/games/music. Per-level corner-ratio targets
+# carried over from companies' starting point; calibrate at S.5a if
+# the dispatcher under-shoots on hard (analogous to music's F4 in
+# plan_s1_final.md). ``interp_pair_factor`` defaults to 0.5; tune
+# per-domain at S.5a.
+
+domain: products
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+primary_column_per_source:
+  products_1: title
+  products_2: title
+  products_3: title
+  products_4: title
+
+canonical_schema:
+  - title
+  - brand
+  - description
+  - price
+  - priceCurrency
+  - product_type
+  - model
+  - model_number
+  - chipset_name
+  - vram_gb
+  - storage_gb
+  - title_description
+
+attribute_mapping:
+  products_1: &products_attr_mapping
+    title: title
+    brand: brand
+    description: description
+    price: price
+    product_type: product_type
+    model: model
+    model_number: model_number
+    chipset_name: chipset_name
+    vram_gb: vram_gb
+    storage_gb: storage_gb
+  products_2: *products_attr_mapping
+  products_3: *products_attr_mapping
+  products_4: *products_attr_mapping
+
+source_priority:
+  - products_1
+  - products_2
+  - products_3
+  - products_4
+
+text_concat_order:
+  - title
+  - brand
+  - description
+  - product_type
+  - model
+  - chipset_name
+
+# Same embedding model the other 3 active domains use. Switching it
+# invalidates the on-disk embedding cache (the .meta.json carries
+# model_id), forcing a deterministic rebuild on next K2 run.
+embedding_model_id: BAAI/bge-base-en-v1.5
+
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+metric_top_k: 20
+rrf_k0: 60
+c_min: 2
+boost_label_collision: 5.0
+inner_token_threshold: 0.8
+
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Products attribute-overlap weights — brand + product_type partition
+# the catalog (manufacturer × category); chipset_name is a strong
+# discriminator within GPU/CPU sub-clusters; price is a noisy
+# secondary signal.
+attribute_overlap_weights:
+  brand: 0.35
+  product_type: 0.30
+  chipset_name: 0.15
+  price: 0.20
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+
+# Per plan note: products may need lower relative intensities. These
+# carry over companies' rates as a starting point; S13 must lower if
+# baseline is already at hard.
+# 2026-05-27 (step 4h): raised hard target from 0.65 -> 0.80 per the
+# user's cross-domain uniform target decision. Note: max_interp_fraction
+# x n_entities = 0.60 x 3012 = 1807 may cap realised hard ratio short
+# of 0.80; audit will report this as cap-bound.
+# 2026-05-28: raised max_interp_fraction from 0.60 -> 0.85. First run
+# with the step-4i drop-corner-touching operator hit the 0.60 cap at
+# both easy + medium on products (baseline ratio ~0.83 vs easy target
+# 0.20 needs ~60% drops; the cap blocked it). 0.85 lets easy reach
+# closer to 0.20 and restores K2 cross-level monotonicity.
+# Per-level interpolation_count overrides at medium + hard removed
+# 2026-05-27 (step 4h): let the dispatcher derive them from
+# gap x interp_pair_factor. Easy retains interpolation_count: 0 to
+# enforce the drop-corner path with no interp at easy. Per-level
+# placement_split overrides also removed — superseded by the top-level
+# placement_split: 0.5.
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+    removal_fraction_cap: 0.30
+    interpolation_count: 0
+  medium:
+    target_corner_case_ratio: 0.50
+    removal_fraction_cap: 0.10
+  hard:
+    target_corner_case_ratio: 0.80
+    removal_fraction_cap: 0.05
+
+max_interp_fraction: 0.85
+
+# F4 calibration: align with music + games + companies (all set to 0.05
+# post-2026-05-15). Default 0.5 was documented as 7-15× under-shoot on
+# music's corner-pair target; products has small clusters (max size 4)
+# so the per-interpolation contribution is realistic at 1.0 corner pair
+# per interp -> per_interp_corner = max(1, int(20*0.05)) = 1.
+interp_pair_factor: 0.05
+
+em_test_regeneration:
+  target_size: 200
+  candidate_pool_cap: 2000
+
+# 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.
+# Was 0.6 (60% test / 40% train); user signed off equal distribution so the
+# regen splits have the same corner-case shape on both sides. Top-level
+# value supersedes the previous per-level overrides under levels:.
+placement_split: 0.5
+
+# Default model gpt-5.4-mini for cost. Ask user before each K2 run
+# whether to bump to gpt-5.4 (invalidates the on-disk LLM cache, the
+# key carries model_id).
+# 2026-05-27 (step 4h): prompt v1 -> v2 — interpolate_v2.txt broadens
+# the lead-sentence domain enumeration to include products (GPUs / SSDs /
+# HDDs / etc.) and carries a domain-extension maintenance note.
+# Invalidates the existing K2 LLM cache by construction.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Step 4i (2026-05-27): drop-corner-touching operator + non-corner
+# refill. New K2 dispatch branch at baseline_ratio > target_ratio
+# replaces the legacy noop_baseline_above_target path — K2 now actually
+# moves the ratio downward when configured. Each drop pairs with a
+# 1-for-1 LLM-synthesized non-corner entity refill so canonical set
+# size stays stable.
+non_corner_refill:
+  enabled: true
+  reference_count: 5            # K reference entities for the dissimilarity anchor
+  contamination_check:
+    label_collision_block: true # synthesised primary label must not exist in current canonical set
+non_corner_prompt_version: v1
+
+# Pool built 2026-05-15 from native ``cluster_id`` linkage via
+# scripts/build_pool_products.py (separate from the PLM + rule-based
+# build_pool.py used for companies/games/music).
+pool_quality: live
+
+# Hard-negative score-margin gate (S3) — per-domain Ditto checkpoint
+# does not yet exist; S11 baseline step trains it.
+hard_negative_gate:
+  enabled: true
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/products/best
+  plm_fields:
+    - title
+    - brand
+    - description
+    - model
+    - model_number
+    - product_type
+    - chipset_name
+    - vram_gb
+    - storage_gb
+  plm_threshold_theta: 0.61
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 16
+  plm_margin_delta: 0.08
+  # 2026-05-27 (step 4h option a): full LLM adjudication on every
+  # gate decision via new gate_mode field. Mirrors bucket-C policy:
+  # PLM score becomes audit telemetry, not a decision shortcut.
+  # Insurance against transitional-state Ditto calibration on
+  # music / companies / products (pre-R7 padding fix).
+  gate_mode: full_llm
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    hard:
+      enabled: true
+      plm_margin_delta: 0.10
+      gate_mode: full_llm

@@ -1,0 +1,109 @@
+# Normalization committee roster — music domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member
+# is a coherent end-to-end normalization approach producing a complete
+# per-cell normalized output across every eligible attribute; per-
+# member macro_f1 is the headline metric. Three coherent members:
+#
+# * ``rule_per_attribute_optimal`` — val-best rule normalizer per
+#   attribute, locked from the candidates declared below.
+# * ``llm_only`` — :class:`LLMCanonicalizer` (prompt v2) everywhere.
+# * ``passthrough`` — identity baseline (raw value unchanged).
+#
+# Eligible attributes for music (SM ∩ fusion ∩ kind):
+#   artist, duration, name, release-country, release-date.
+# (genre + label are discogs-only post-refresh; tracks is array-valued
+# and intentionally deferred per K10 card.)
+
+seed: 42
+
+fusion_protection_tolerance: {}
+
+# Rule normalizer candidates available to the val-selection sweep. Each
+# declares which attributes it can natively handle; the runner inverts
+# this to a per-attribute candidate list and picks the best on val.
+rule_normalizers:
+  - name: text_clean
+    module: usecases_synthetic.lib.normalizer_members
+    class: TextCleanNormalizer
+    applies_to: [name, artist, release-country]
+    params:
+      # lowercase: true is the R9 norm re-sweep winner (2026-06-01,
+      # macro_f1 +0.019 on music, n=2288); the closeness contract is
+      # case-insensitive so lowercasing name/artist normalises cleanly.
+      lowercase: true
+      strip_whitespace: true
+      normalize_unicode: true
+      remove_html: true
+
+  - name: date_iso
+    module: usecases_synthetic.lib.normalizer_members
+    class: DateIsoNormalizer
+    applies_to: [release-date]
+    params:
+      date_format: '%Y-%m-%d'
+      year_only_format: '%Y'
+      handle_timezone: true
+
+  - name: number_locale
+    module: usecases_synthetic.lib.normalizer_members
+    class: NumberLocaleNormalizer
+    applies_to: [duration]
+    params:
+      babel_candidate_locales: [en_US]
+      handle_currency: false
+      handle_percentages: false
+
+  - name: country_iso
+    module: usecases_synthetic.lib.normalizer_members
+    class: CountryIsoNormalizer
+    applies_to: [release-country]
+    params:
+      output_format: official_name
+    # 'official_name' is the R9 norm re-sweep winner (2026-06-01,
+    # macro_f1 +0.27 on release-country, n=2288). The prior 'name'
+    # choice assumed the reference uses primary names; the fusion gold
+    # is actually DOMINATED by official long-forms — 'United Kingdom of
+    # Great Britain and Northern Ireland' (123) >> 'United Kingdom' (13),
+    # 'United States of America' (24) >> 'United States' (2) — so
+    # official_name matches ~150/200 vs name ~34/200. (Loses Germany's
+    # 16 primary-name rows, wins UK+US.) Investigation 2026-06-01.
+
+  - name: taxonomy_lookup
+    module: usecases_synthetic.lib.normalizer_members
+    class: TaxonomyLookupNormalizer
+    # 'genre' is discogs-only post-refresh and not in SM∩fusion∩kind —
+    # kept here for forward-compat.
+    applies_to: [genre]
+    params:
+      case_insensitive: true
+      taxonomies:
+        music:
+          genre:
+            path: music/input/schemamatching/Music_Genres_Taxonomy.csv
+            columns: ['Genre Name', 'Subgenre Name', 'Sub-Subgenre Name']
+
+# LLM normalizer config (used by the ``llm_only`` member; cache + prompt
+# v2 invalidate existing entries by construction, see plan_revision §C12).
+llm_normalizer:
+  module: usecases_synthetic.lib.llm_normalizer
+  class: LLMCanonicalizer
+  params:
+    model_name: gpt-5.4-mini
+    num_examples: 5
+    temperature: 0.0
+    max_tokens: 2048
+    prompt_version: v2
+    cache_dir: usecases_synthetic/cache/llm_normalizer
+
+# C12 member roster. Always three coherent members under C12; per-member
+# macro_f1 is directly comparable because every member covers every
+# eligible attribute (rule_per_attribute_optimal via its locked map,
+# llm_only natively, passthrough as identity).
+members:
+  - name: rule_per_attribute_optimal
+    params: {}
+  - name: llm_only
+    params: {}
+  - name: passthrough
+    params: {}

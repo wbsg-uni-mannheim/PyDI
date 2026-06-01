@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_101323|mbrainz_5829|name=The Resurrection Of Pigboy Crabshaw | artist=The Paul Butterfield Blues Band | release-date=2002 | release-country=United States of America | duration=2669.0 | genre=Blues|Jazz|Funk / Soul|Rock | tracks=['One More Heartache', \"Driftin' And Driftin'\", 'Pity The Fool', 'Born Under A Bad Sign', 'Run Out Of Time', 'Double Trouble', \"Drivin' Wheel\", \"Droppin' Out\", \"Tollin' Bells\"]||name=The Resurrection of Pigboy Crabshaw | artist=Butterfield, Paul, Blues Band, The | release-date=1967-01-01 | release-country=United States of America | duration=2742 | tracks=['One More Heartache', \"Driftin' and Driftin'\", 'Pity the Fool', 'Born Under a Bad Sign', 'Run Out of Time', 'Double Trouble', \"Drivin' Wheel\", \"Droppin' Out\", \"Tollin' Bells\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Resurrection Of Pigboy Crabshaw | artist=The Paul Butterfield Blues Band | release-date=2002 | release-country=United States of America | duration=2669.0 | genre=Blues|Jazz|Funk / Soul|Rock | tracks=['One More Heartache', \"Driftin' And Driftin'\", 'Pity The Fool', 'Born Under A Bad Sign', 'Run Out Of Time', 'Double Trouble', \"Drivin' Wheel\", \"Droppin' Out\", \"Tollin' Bells\"]\nRecord B: name=The Resurrection of Pigboy Crabshaw | artist=Butterfield, Paul, Blues Band, The | release-date=1967-01-01 | release-country=United States of America | duration=2742 | tracks=['One More Heartache', \"Driftin' and Driftin'\", 'Pity the Fool', 'Born Under a Bad Sign', 'Run Out of Time', 'Double Trouble', \"Drivin' Wheel\", \"Droppin' Out\", \"Tollin' Bells\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

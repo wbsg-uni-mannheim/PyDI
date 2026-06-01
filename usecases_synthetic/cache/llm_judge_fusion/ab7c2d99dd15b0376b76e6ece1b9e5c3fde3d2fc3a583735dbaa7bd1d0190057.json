@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "1,862.65 GiB"
+    },
+    {
+      "source": "products_4",
+      "value": "2,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The candidates represent the same capacity in different units; 1,862.65 GiB is approximately 2,000 GB.",
+    "value": 2000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\": 2000.0,\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The candidates represent the same capacity in different units; 1,862.65 GiB is approximately 2,000 GB.\"}"
+}

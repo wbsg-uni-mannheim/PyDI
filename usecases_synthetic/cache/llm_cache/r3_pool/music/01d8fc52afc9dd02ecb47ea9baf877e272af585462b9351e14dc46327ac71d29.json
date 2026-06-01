@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_41687|mbrainz_9287|name=Stand Up To Your Judgement | artist=The Mighty Diamonds | release-date=1978 | release-country=Jamaica | duration=1962.0 | genre=Reggae | tracks=['Jah Will Work It Out', 'Just Another Man', 'Payaka', 'Cho Me Brethren', 'Stand Up To Your Judgement', 'I Want To Know', 'Fools Rush In', 'Back Whey', 'Stoned Out Of My Mind', 'Country Living']||name=Stand Up to Your Judgment | artist=Mighty Diamonds, The | release-date=1978-01-01 | release-country=Jamaica | duration=1962 | tracks=['Jah Will Work It Out', 'Just Another Man', 'Payaka', 'Cho Me Brethren', 'Stand Up to Your Judgement', 'I Want To Know', 'Fools Rush In', 'Back Whey', 'Stoned Out of My Mind', 'Country Living']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stand Up To Your Judgement | artist=The Mighty Diamonds | release-date=1978 | release-country=Jamaica | duration=1962.0 | genre=Reggae | tracks=['Jah Will Work It Out', 'Just Another Man', 'Payaka', 'Cho Me Brethren', 'Stand Up To Your Judgement', 'I Want To Know', 'Fools Rush In', 'Back Whey', 'Stoned Out Of My Mind', 'Country Living']\nRecord B: name=Stand Up to Your Judgment | artist=Mighty Diamonds, The | release-date=1978-01-01 | release-country=Jamaica | duration=1962 | tracks=['Jah Will Work It Out', 'Just Another Man', 'Payaka', 'Cho Me Brethren', 'Stand Up to Your Judgement', 'I Want To Know', 'Fools Rush In', 'Back Whey', 'Stoned Out of My Mind', 'Country Living']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

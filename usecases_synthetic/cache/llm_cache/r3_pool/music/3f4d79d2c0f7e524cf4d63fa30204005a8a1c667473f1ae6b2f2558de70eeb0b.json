@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_107536|lastFM_10255|name=She's Got Issues | artist=The Offspring | release-date=1999 | release-country=UK | duration=821.0 | genre=Electronic|Rock | tracks=[\"She's Got Issues\", \"The Kids Aren't Alright (Wiseguys Mix)\", \"The Kids Aren't Alright (Wiseguys Instrumental)\"]||name=Got Issues | artist=T. Offspring | duration=409.0 | tracks=[\"She's Got Issues\", \"The Kids Aren't Alright (Wiseguys mix)\", \"The Kids Aren't Alright (Wiseguys Instrumental)\", 'Pretty Fly (For A White Guy) (The Baka Boyz Low Rider Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=She's Got Issues | artist=The Offspring | release-date=1999 | release-country=UK | duration=821.0 | genre=Electronic|Rock | tracks=[\"She's Got Issues\", \"The Kids Aren't Alright (Wiseguys Mix)\", \"The Kids Aren't Alright (Wiseguys Instrumental)\"]\nRecord B: name=Got Issues | artist=T. Offspring | duration=409.0 | tracks=[\"She's Got Issues\", \"The Kids Aren't Alright (Wiseguys mix)\", \"The Kids Aren't Alright (Wiseguys Instrumental)\", 'Pretty Fly (For A White Guy) (The Baka Boyz Low Rider Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

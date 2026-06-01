@@ -1,0 +1,22 @@
+{
+  "attribute": "vram_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "4.0"
+    },
+    {
+      "source": "products_4",
+      "value": "4000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "4000 is the same as 4.0 GB when interpreted as MB, so I normalized to a single canonical VRAM value in GB.",
+    "value": 4
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"4000 is the same as 4.0 GB when interpreted as MB, so I normalized to a single canonical VRAM value in GB.\"}"
+}

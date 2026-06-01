@@ -1,0 +1,71 @@
+# Knob 03 — Per-source Attribute Drop Rate — Movies
+
+domain: movies
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+attribute_classes:
+  academy_awards:
+    title: primary
+    director_name: key
+    date: secondary
+    actors_actor_name: secondary
+    oscar: secondary
+  actors:
+    title: primary
+    date: secondary
+    actors_actor_name: secondary
+    actors_actor_birthday: secondary
+    actors_actor_birthplace: secondary
+  golden_globes:
+    title: primary
+    director_name: key
+    date: secondary
+    actors_actor_name: secondary
+    globe: secondary
+
+attribute_mapping:
+  academy_awards:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+  actors:
+    title: title
+    date: date
+    actors_actor_name: actors
+  golden_globes:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+
+rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.05
+  medium:
+    primary: 0.0
+    key: 0.10
+    secondary: 0.15
+  hard:
+    primary: 0.03
+    key: 0.25
+    secondary: 0.35
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+compression_factor: 0.7
+stretch_factor: 1.5
+
+single_source_survivor_cap_hard: 0.05
+per_cell_ceiling_delta: 0.10
+
+per_source_attribute_overrides: {}

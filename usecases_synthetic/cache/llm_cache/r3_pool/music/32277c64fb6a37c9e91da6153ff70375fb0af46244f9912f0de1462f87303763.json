@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_9647|mbrainz_22063|name=Gemini Soul | artist=Jay Tripwire | duration=3156.0 | tracks=['Absorb', 'Body to Body', 'Move Like Water', 'Call and Answer', 'Denman Place', 'English Bay', 'How We Used To Do It', 'Sagittarius', 'The Evil That Men Do', 'Tokyo Space Noodles', \"U Can't Do That On NT\", 'Gemini Soul', 'Dope Groove']||name=Gemini | artist=Donamorte | release-date=2013-12-12 | release-country=Italy | duration=3118 | tracks=['Gemini', \"Can't You Feel It\", 'End of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In the Woods', 'Necronomicon', 'D.R.E.D.A.', 'I Want to Escape', 'Accept and Understand', 'Charade']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gemini Soul | artist=Jay Tripwire | duration=3156.0 | tracks=['Absorb', 'Body to Body', 'Move Like Water', 'Call and Answer', 'Denman Place', 'English Bay', 'How We Used To Do It', 'Sagittarius', 'The Evil That Men Do', 'Tokyo Space Noodles', \"U Can't Do That On NT\", 'Gemini Soul', 'Dope Groove']\nRecord B: name=Gemini | artist=Donamorte | release-date=2013-12-12 | release-country=Italy | duration=3118 | tracks=['Gemini', \"Can't You Feel It\", 'End of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In the Woods', 'Necronomicon', 'D.R.E.D.A.', 'I Want to Escape', 'Accept and Understand', 'Charade']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,25 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Hammering the Cramps', 'Spirit Ditch']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Hammering The Cramps', 'Spirit Ditch']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The track lists match aside from capitalization, so I normalized to a canonical title casing.",
+    "value": [
+      "Hammering the Cramps",
+      "Spirit Ditch"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Hammering the Cramps\",\"Spirit Ditch\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The track lists match aside from capitalization, so I normalized to a canonical title casing.\"}"
+}

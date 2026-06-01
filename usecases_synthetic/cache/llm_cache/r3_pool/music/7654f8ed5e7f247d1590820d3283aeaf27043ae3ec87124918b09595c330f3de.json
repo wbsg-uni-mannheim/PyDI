@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_22963|lastFM_4156|name=Promenade | artist=Underground Lovers | release-date=1993 | release-country=Australia | duration=781.0 | genre=Rock | tracks=['Promenade', 'Leaves Me Blind', 'Live GI', 'Get It On']||name=Promenade | artist=P. Meursault | duration=2298.0 | tracks=['prologue', 'promenade']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Promenade | artist=Underground Lovers | release-date=1993 | release-country=Australia | duration=781.0 | genre=Rock | tracks=['Promenade', 'Leaves Me Blind', 'Live GI', 'Get It On']\nRecord B: name=Promenade | artist=P. Meursault | duration=2298.0 | tracks=['prologue', 'promenade']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

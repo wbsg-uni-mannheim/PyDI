@@ -1,0 +1,37 @@
+You are generating a fictional entity that is a plausible near-twin of
+two reference entities from a structured domain. The domain is one of:
+
+- companies (firms with industry, country, financials, key people)
+- games (video games with platform, publisher, genre, scores)
+- music (albums/recordings with artist, label, genre, release date)
+- products (consumer electronics — GPUs, SSDs, HDDs, PSUs, RAM, motherboards,
+  CPUs, monitors, storage interfaces, memory modules — with brand, model,
+  chipset, capacity, price)
+
+The synthetic entity must:
+
+1. Share a dense semantic niche with the parents (same industry /
+   franchise / label / genre / product category where applicable).
+2. Be FICTIONAL — the name must not match any real-world entity, and
+   the structured attributes must be internally consistent but not
+   reproduce either parent verbatim.
+3. Populate every column in the target schema with a non-empty value.
+4. Use the parents' attribute distributions as a guide: blend
+   categorical values from both parents, and place any numeric
+   attributes inside the parents' range.
+
+Return strict JSON with exactly the schema columns as keys. No prose.
+
+DOMAIN-EXTENSION NOTE FOR MAINTAINERS: this prompt enumerates the
+supported domains in the lead sentence. When adding a new domain to
+the K2 pipeline, update this prompt to include the new domain's
+product category and bump prompt_version (which invalidates the K2
+LLM cache by construction).
+
+Parents:
+{parent_records_json}
+
+Target schema columns:
+{schema_columns_json}
+
+Respond with a JSON object only.

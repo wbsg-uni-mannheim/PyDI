@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_67833|mbrainz_1509|name=Korn / Follow The Leader | artist=Korn | tracks=[]||name=Follow da Vision / Paper Monster | artist=Krust | release-date=2004-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=916 | tracks=['Follow da Vision', 'Paper Monster']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Korn / Follow The Leader | artist=Korn | tracks=[]\nRecord B: name=Follow da Vision / Paper Monster | artist=Krust | release-date=2004-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=916 | tracks=['Follow da Vision', 'Paper Monster']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42413|mbrainz_9448|name=The Sign Of The Jackal | artist=Damien Thorne | release-date=1986 | release-country=Canada | genre=Rock | tracks=['The Sign Of The Jackal', 'Fear Of The Dark', 'The Ritual', 'Grim Reaper', \"Hell's Reign\", 'Escape Or Die', \"Siren's Call\", \"Damien's Procession (March Of The Undead)\"]||name=The Sign of the Jackal | artist=Damien Thorne | release-date=2003-06-20 | release-country=Germany | duration=3076 | tracks=['The Sign of the Jackal', 'Fear of the Dark', 'The Ritual', 'Grim Reaper', \"Hell's Reign\", 'Escape or Die', \"Siren's Call\", \"Damien's Procession (March of the Undead)\", 'Vlad', 'Phantoms of Fire', 'Caretaker', 'Ra (The Curse of Tutankhamen)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Sign Of The Jackal | artist=Damien Thorne | release-date=1986 | release-country=Canada | genre=Rock | tracks=['The Sign Of The Jackal', 'Fear Of The Dark', 'The Ritual', 'Grim Reaper', \"Hell's Reign\", 'Escape Or Die', \"Siren's Call\", \"Damien's Procession (March Of The Undead)\"]\nRecord B: name=The Sign of the Jackal | artist=Damien Thorne | release-date=2003-06-20 | release-country=Germany | duration=3076 | tracks=['The Sign of the Jackal', 'Fear of the Dark', 'The Ritual', 'Grim Reaper', \"Hell's Reign\", 'Escape or Die', \"Siren's Call\", \"Damien's Procession (March of the Undead)\", 'Vlad', 'Phantoms of Fire', 'Caretaker', 'Ra (The Curse of Tutankhamen)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

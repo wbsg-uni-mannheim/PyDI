@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_73651|mbrainz_29534|name=YUHKINEN -  Far Beyond The Seven Seas | artist=YUHKINEN | duration=2524.0 | tracks=['YUHKINEN', 'Far Beyond The Seven Seas', 'Kraken', 'Mourning Star', 'XXX', 'Bump And Grind', 'Triumph & Glory', 'Believe']||name=FAR BEYOND THE SEVEN SEAS (album) | artist=YUHKI | release-date=2011-04-27 | release-country=Japan | duration=3519 | tracks=['YUHKINEN', 'Far Beyond The Seven Seas', 'Kraken', 'Mourning Star', 'XXX', 'Ivory', 'Impulse', 'The Spirits Of Dark And Lonely Water', 'Bump And Grind', 'Triumph & Glory', 'Believe']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=YUHKINEN -  Far Beyond The Seven Seas | artist=YUHKINEN | duration=2524.0 | tracks=['YUHKINEN', 'Far Beyond The Seven Seas', 'Kraken', 'Mourning Star', 'XXX', 'Bump And Grind', 'Triumph & Glory', 'Believe']\nRecord B: name=FAR BEYOND THE SEVEN SEAS (album) | artist=YUHKI | release-date=2011-04-27 | release-country=Japan | duration=3519 | tracks=['YUHKINEN', 'Far Beyond The Seven Seas', 'Kraken', 'Mourning Star', 'XXX', 'Ivory', 'Impulse', 'The Spirits Of Dark And Lonely Water', 'Bump And Grind', 'Triumph & Glory', 'Believe']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2486"
+    },
+    {
+      "source": "discogs",
+      "value": "2486.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "2494.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "Two sources agree exactly at 2486, and the third is a close outlier likely due to metadata variance.",
+    "value": 2486
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2486,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"Two sources agree exactly at 2486, and the third is a close outlier likely due to metadata variance.\"}"
+}

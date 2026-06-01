@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_119488|mbrainz_1835|name=Candleland (The Second Coming) | artist=Elizabeth Fraser|Ian McCulloch | release-date=1990 | release-country=UK | duration=1007.0 | genre=Rock | tracks=['Candleland (The Second Coming) (Extended Version)', 'Big Days', 'The World Is Flat', 'Wassailing In The Night']||name=Candleland (The Second Coming) | artist=McCulloch, Ian | release-date=1990-01-01 | release-country=United States of America | duration=1234 | tracks=['Candleland (The Second Coming) (single version)', 'Candleland (The Second Coming) (extended version)', 'Big Days', 'The World Is Flat', 'Wassailing in the Night']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Candleland (The Second Coming) | artist=Elizabeth Fraser|Ian McCulloch | release-date=1990 | release-country=UK | duration=1007.0 | genre=Rock | tracks=['Candleland (The Second Coming) (Extended Version)', 'Big Days', 'The World Is Flat', 'Wassailing In The Night']\nRecord B: name=Candleland (The Second Coming) | artist=McCulloch, Ian | release-date=1990-01-01 | release-country=United States of America | duration=1234 | tracks=['Candleland (The Second Coming) (single version)', 'Candleland (The Second Coming) (extended version)', 'Big Days', 'The World Is Flat', 'Wassailing in the Night']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

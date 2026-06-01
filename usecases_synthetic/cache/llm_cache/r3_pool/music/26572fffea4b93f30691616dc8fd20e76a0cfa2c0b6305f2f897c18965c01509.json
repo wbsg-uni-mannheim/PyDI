@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_63740|mbrainz_19198|name=Encore | artist=Tammy Wynette | release-date=1981 | release-country=United States of America | genre=Folk, World, & Country | tracks=[\"Your Good Girl's Gonna Go Bad\", \"I Don't Wanna Play House\", 'Woman To Woman', 'They Call It Making Love', 'Another Lonely Song', 'One Of A Kind', \"Let's Get Together (One Last Time)\", 'He Was There (When I Needed You)', 'You And Me', 'No One Else In The World']||name=Encore | artist=Louvin Brothers, The | release-date=1961-01-01 | release-country=United States of America | duration=0 | tracks=['Childish Love', 'Love Is a Lonely Street', 'If You Love Me Stay Away', 'Cash on the Barrel Head', 'The New Partner Waltz', 'Stagger', \"Ruby's Song\", 'Nellie Moved to Town', 'What a Change One Day Can Make', 'Call Me', \"You're Learning\", 'My Curly Headed Baby']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Encore | artist=Tammy Wynette | release-date=1981 | release-country=United States of America | genre=Folk, World, & Country | tracks=[\"Your Good Girl's Gonna Go Bad\", \"I Don't Wanna Play House\", 'Woman To Woman', 'They Call It Making Love', 'Another Lonely Song', 'One Of A Kind', \"Let's Get Together (One Last Time)\", 'He Was There (When I Needed You)', 'You And Me', 'No One Else In The World']\nRecord B: name=Encore | artist=Louvin Brothers, The | release-date=1961-01-01 | release-country=United States of America | duration=0 | tracks=['Childish Love', 'Love Is a Lonely Street', 'If You Love Me Stay Away', 'Cash on the Barrel Head', 'The New Partner Waltz', 'Stagger', \"Ruby's Song\", 'Nellie Moved to Town', 'What a Change One Day Can Make', 'Call Me', \"You're Learning\", 'My Curly Headed Baby']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

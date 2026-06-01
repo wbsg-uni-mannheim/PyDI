@@ -1,0 +1,197 @@
+# Knob 01 - Surface Augmentation Intensity - Music
+#
+# Authored per knobs/knob_01_surface_augmentation.md.
+#
+# Refreshed 2026-05-07 against the post-2026-05-04 CSV sources at
+# usecases/music/input/data/{musicbrainz,discogs,lastfm}.csv.
+# All three sources now ship a uniform schema on disk
+# (id/name/artist/release-date/release-country/duration/label/genre/
+# tracks), but lastfm has 0% coverage on release-country, release-date,
+# label, genre - so lastfm K1 stays thin (`name`, `artist` only).
+# Column-name remap from pre-refresh schema:
+#   musicbrainz: title -> name, country -> release-country,
+#                date -> release-date
+# (discogs/lastfm columns were already named `name`, `artist`, etc.).
+#
+# Baseline easy -> medium for short fields (titles, artists, labels).
+# No `paraphrase_long`. Hard LLM paraphrase uses the tightest
+# contamination check of any domain - music titles are highly
+# web-memorable.
+
+domain: music
+
+# ID columns: musicbrainz native id is `id` post-refresh (no rename
+# needed); discogs and lastfm also ship `id`. Loader pass-through.
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+# Per-source column -> attribute class.
+# Lastfm's release-country/release-date/label/genre are 0% populated
+# in the refreshed data, so they are not registered here - paraphrase
+# would be a no-op.
+attribute_classes:
+  musicbrainz:
+    name: primary
+    artist: key
+    release-country: key
+    release-date: secondary
+    label: secondary
+  discogs:
+    name: primary
+    artist: key
+    release-country: key
+    genre: categorical
+    release-date: secondary
+    label: secondary
+  lastfm:
+    name: primary
+    artist: key
+
+# Source column -> canonical target attribute.
+attribute_mapping:
+  musicbrainz:
+    name: name
+    artist: artist
+    release-country: release-country
+    release-date: release-date
+    label: label
+  discogs:
+    name: name
+    artist: artist
+    release-country: release-country
+    genre: genre
+    release-date: release-date
+    label: label
+  lastfm:
+    name: name
+    artist: artist
+
+paraphrase_rate_primary:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+paraphrase_rate_key:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+paraphrase_rate_secondary:
+  easy: 0.0
+  medium: 0.16
+  hard: 0.30
+paraphrase_rate_categorical:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+
+operator_mix:
+  easy:
+    # Note: dormant under `paraphrase_rate_*.easy: 0.0` (the rate-based
+    # dispatcher short-circuits before reaching operator sampling at easy).
+    # The easy normalize-down work runs via `baseline_above_target_rules`
+    # at a separate code path. Kept as defensive placeholder for any future
+    # easy-rate bump.
+    normalize_to_canonical: 1.0
+  medium:
+    abbreviate: 2.0
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 1.0
+  hard:
+    abbreviate: 1.5
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 3.0
+
+# Easy-only normalize-down: harmonise country forms. Musicbrainz emits
+# the long form ("United States of America", "United Kingdom of Great
+# Britain and Northern Ireland"); discogs uses shorter forms ("USA",
+# "UK"). Easy projects musicbrainz toward the shorter discogs sibling.
+baseline_above_target_rules:
+  - source: musicbrainz
+    attribute: release-country
+    canonical_from: discogs
+    canonical_attribute: release-country
+    strategy: shortest
+
+# Music abbreviation table: countries, feat./vs. variants, volume/no./
+# part suffixes, common parenthetical edition tags, label suffixes.
+# ~25 entries per the 2026-05-07 K1 sign-off. Article drop is handled
+# by `article_drop_pattern` rather than enumerated entries.
+abbreviation_table:
+  # Country forms (release-country key column)
+  "United States of America": "USA"
+  "United States": "USA"
+  "United Kingdom of Great Britain and Northern Ireland": "UK"
+  "United Kingdom": "UK"
+  "Great Britain": "UK"
+  "Federal Republic of Germany": "Germany"
+  # Featuring / versus
+  "Featuring": "feat."
+  "featuring": "feat."
+  "with": "feat."
+  "versus": "vs."
+  "vs": "vs."
+  # Album / single suffixes
+  "Volume": "Vol."
+  "Number": "No."
+  "Part": "Pt."
+  "(Original Soundtrack)": "(OST)"
+  "(Remastered)": "(Remaster)"
+  "(Deluxe Edition)": "(Deluxe)"
+  "(Extended Version)": "(Extended)"
+  # Label suffixes
+  "Records": "Rec."
+  "Recordings": "Rec."
+  "Music": "Mus."
+  "Entertainment": "Ent."
+
+# Categorical vocab map (genre synonyms). Bidirectional.
+categorical_vocab_map:
+  "Hip-Hop": "Hip Hop"
+  "Hip Hop": "Rap"
+  "Rock and Roll": "Rock & Roll"
+  "Rhythm and Blues": "R&B"
+  "Electronic Dance Music": "EDM"
+  "Drum and Bass": "DnB"
+
+# Article drop pattern: leading-article removal on titles
+# (e.g. "The Dark Side of the Moon" -> "Dark Side of the Moon").
+# Used by the medium table-driven operator path.
+article_drop_pattern: "^(The|A|An) "
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+
+key_token_skiplist:
+  musicbrainz:
+    name: []
+  discogs:
+    name: []
+  lastfm:
+    name: []
+
+key_token_skiplist_global: []
+
+# Hard-path LLM config. Default gpt-5.4-mini per the 2026-05-06
+# LLM-model-default policy; ask user before each K1 hard run whether
+# to bump to gpt-5.4. `llm_temperature=0` is non-negotiable for music.
+# R10-D 2026-05-29: prompt_version bumped to v2 -- minimum-divergence
+# rule, <UNCHANGED> sentinel escape, per-attribute-class prompt
+# split (primary/key -> short_v2, secondary -> secondary_v2,
+# categorical -> categorical_v2). Cache key under
+# cache/knob_01_paraphrases/<domain>/<level>/ rotates on this bump.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+anchor_survivor_floor:
+  primary: true
+  key: false
+  secondary: false
+  categorical: false

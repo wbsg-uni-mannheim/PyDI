@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "447.03 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "480.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.84,
+    "operation": "verbatim_pick",
+    "reasoning": "The numeric candidate is already in the attribute's likely canonical unit, while the GiB value appears to be a non-canonical representation.",
+    "value": 480.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":480.0,\"operation\":\"verbatim_pick\",\"confidence\":0.84,\"reasoning\":\"The numeric candidate is already in the attribute's likely canonical unit, while the GiB value appears to be a non-canonical representation.\"}"
+}

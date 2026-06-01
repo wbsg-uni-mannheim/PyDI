@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_27963|mbrainz_12973|name=[explicit] Encore fou (nouvelle version) | artist=T. MoÃƒÂ¯se | duration=275.0 | tracks=['Encore fou (nouvelle version)']||name=Encore fou (nouvelle version) | artist=MoÃ¯se, Teri | release-date=1999-01-01 | release-country=France | duration=274 | tracks=['Encore fou (nouvelle version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=[explicit] Encore fou (nouvelle version) | artist=T. MoÃƒÂ¯se | duration=275.0 | tracks=['Encore fou (nouvelle version)']\nRecord B: name=Encore fou (nouvelle version) | artist=MoÃ¯se, Teri | release-date=1999-01-01 | release-country=France | duration=274 | tracks=['Encore fou (nouvelle version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

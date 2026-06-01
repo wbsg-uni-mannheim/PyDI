@@ -1,0 +1,22 @@
+{
+  "attribute": "product_type",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "GPU"
+    },
+    {
+      "source": "products_4",
+      "value": "6PU"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "'6PU' is likely a corrupted OCR variant of 'GPU', so the canonical product type is GPU.",
+    "value": "GPU"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GPU\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"'6PU' is likely a corrupted OCR variant of 'GPU', so the canonical product type is GPU.\"}"
+}

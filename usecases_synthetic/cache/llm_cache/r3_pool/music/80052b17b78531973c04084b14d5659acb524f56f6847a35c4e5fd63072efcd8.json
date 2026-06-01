@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_83309|mbrainz_2556|name=Earth Crisis | artist=Steel Pulse | release-date=1984 | release-country=United States of America | duration=2324.0 | genre=Reggae | tracks=[\"Steppin' Out\", 'Tightrope', 'Throne Of Gold', 'Roller Skates', 'Earth Crisis', 'Bodyguard', 'Grab Education', 'Wild Goose Chase']||name=Earth Crisis | artist=Steel Pulse | release-date=2005-06-07 | release-country=United States of America | duration=3902 | tracks=[\"Steppin' Out\", 'Tightrope', 'Throne of Gold', 'Roller Skates', 'Earth Crisis', 'Bodyguard', 'Grab Education', 'Wild Goose Chase', \"Steppin' Out (dub version)\", \"Steppin' Out (extended version)\", 'Roller Skates (remix version)', 'Roller Skates (dub version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Earth Crisis | artist=Steel Pulse | release-date=1984 | release-country=United States of America | duration=2324.0 | genre=Reggae | tracks=[\"Steppin' Out\", 'Tightrope', 'Throne Of Gold', 'Roller Skates', 'Earth Crisis', 'Bodyguard', 'Grab Education', 'Wild Goose Chase']\nRecord B: name=Earth Crisis | artist=Steel Pulse | release-date=2005-06-07 | release-country=United States of America | duration=3902 | tracks=[\"Steppin' Out\", 'Tightrope', 'Throne of Gold', 'Roller Skates', 'Earth Crisis', 'Bodyguard', 'Grab Education', 'Wild Goose Chase', \"Steppin' Out (dub version)\", \"Steppin' Out (extended version)\", 'Roller Skates (remix version)', 'Roller Skates (dub version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

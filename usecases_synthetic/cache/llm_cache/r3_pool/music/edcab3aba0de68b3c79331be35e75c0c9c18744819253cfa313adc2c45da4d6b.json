@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_57838|lastFM_16381|name=The Greatest Of The Guess Who | artist=The Guess Who | release-date=1988 | release-country=United States of America | duration=2413.0 | genre=Rock | tracks=['These Eyes', 'Laughing', 'Undun', 'No Time', 'American Woman', 'Hand Me Down World', 'Albert Flasher', 'Glamour Boy', 'Star Baby', 'Clap For The Wolfman', \"Dancin' Fool\", 'When The Band Was Singin\\' \"Shakin\\' All Over\"']||name=The Greatest  The Guess Who | artist=T. Guess Who | duration=2494.0 | tracks=['These Eyes', 'These Eyes (Remastered)', 'Laughing', 'Undun', 'No Time', 'American Woman', 'Hand Me Down World', 'Albert Flasher', 'Glamour Boy', 'Clap For The Wolfman', \"Dancin' Fool\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Greatest Of The Guess Who | artist=The Guess Who | release-date=1988 | release-country=United States of America | duration=2413.0 | genre=Rock | tracks=['These Eyes', 'Laughing', 'Undun', 'No Time', 'American Woman', 'Hand Me Down World', 'Albert Flasher', 'Glamour Boy', 'Star Baby', 'Clap For The Wolfman', \"Dancin' Fool\", 'When The Band Was Singin\\' \"Shakin\\' All Over\"']\nRecord B: name=The Greatest  The Guess Who | artist=T. Guess Who | duration=2494.0 | tracks=['These Eyes', 'These Eyes (Remastered)', 'Laughing', 'Undun', 'No Time', 'American Woman', 'Hand Me Down World', 'Albert Flasher', 'Glamour Boy', 'Clap For The Wolfman', \"Dancin' Fool\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

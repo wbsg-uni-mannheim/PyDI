@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_165392|mbrainz_2067|name=True Confessions | artist=Bananarama | release-date=1986 | release-country=Indonesia | genre=Electronic|Pop | tracks=['Venus', 'Do Not Disturb', 'A Trick Of The Night', 'Ready Or Not', 'Dance With A Stranger', 'True Confessions', 'More Than Physical', 'Promised Land', 'A Perfect World', 'Cut Above The Rest', 'Hooked On Love', 'Venus (Extended Version)', 'Cruel Summer', \"State I'm In\"]||name=True Confessions | artist=Bananarama | release-date=1986-07 | release-country=Germany | duration=2778 | tracks=['True Confessions', 'Ready or Not', 'A Trick of the Night', 'Dance With a Stranger', 'In a Perfect World', 'Venus (album version)', 'Do Not Disturb', 'A Cut Above the Rest', 'Promised Land', 'More Than Physical', 'Hooked on Love']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=True Confessions | artist=Bananarama | release-date=1986 | release-country=Indonesia | genre=Electronic|Pop | tracks=['Venus', 'Do Not Disturb', 'A Trick Of The Night', 'Ready Or Not', 'Dance With A Stranger', 'True Confessions', 'More Than Physical', 'Promised Land', 'A Perfect World', 'Cut Above The Rest', 'Hooked On Love', 'Venus (Extended Version)', 'Cruel Summer', \"State I'm In\"]\nRecord B: name=True Confessions | artist=Bananarama | release-date=1986-07 | release-country=Germany | duration=2778 | tracks=['True Confessions', 'Ready or Not', 'A Trick of the Night', 'Dance With a Stranger', 'In a Perfect World', 'Venus (album version)', 'Do Not Disturb', 'A Cut Above the Rest', 'Promised Land', 'More Than Physical', 'Hooked on Love']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

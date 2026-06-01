@@ -1,0 +1,106 @@
+# Knob 01 - Surface Augmentation Intensity - Movies
+#
+# Movies sources (academy_awards, actors, golden_globes) all carry an
+# `id` column natively after XML namespace stripping (S8 loader change).
+# Per-level rates carried over from companies; S13 will recalibrate.
+
+domain: movies
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+attribute_classes:
+  academy_awards:
+    title: primary
+    director_name: key
+    actors_actor_name: secondary
+  actors:
+    title: primary
+    actors_actor_name: secondary
+  golden_globes:
+    title: primary
+    director_name: key
+    actors_actor_name: secondary
+
+attribute_mapping:
+  academy_awards:
+    title: title
+    director_name: director
+    actors_actor_name: actors
+  actors:
+    title: title
+    actors_actor_name: actors
+  golden_globes:
+    title: title
+    director_name: director
+    actors_actor_name: actors
+
+paraphrase_rate_primary:
+  easy: 0.0
+  medium: 0.02
+  hard: 0.08
+paraphrase_rate_key:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+paraphrase_rate_secondary:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.20
+paraphrase_rate_categorical:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+
+operator_mix:
+  easy:
+    normalize_to_canonical: 1.0
+  medium:
+    abbreviate: 2.0
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+  hard:
+    abbreviate: 1.5
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 2.0
+
+baseline_above_target_rules: []
+
+abbreviation_table:
+  Director: "Dir."
+  Junior: "Jr."
+  Senior: "Sr."
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+
+key_token_skiplist:
+  academy_awards:
+    title: []
+  actors:
+    title: []
+  golden_globes:
+    title: []
+
+key_token_skiplist_global: []
+
+llm_prompt_version: v1
+# Migrated 2026-05-22 (plan_revision.md §R2) from claude-opus-4-6 to
+# canonical gpt-5.4-mini per feedback_synth_llm_and_naming. Invalidates
+# the on-disk LLM cache (model_id is part of the key); regenerable on
+# next K1 run.
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+anchor_survivor_floor:
+  primary: true
+  key: false
+  secondary: false
+  categorical: false

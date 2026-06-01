@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_88091|lastFM_18269|name=Nocturne | artist=Wild Nothing | release-date=2012-08-28 | release-country=United States of America | genre=Electronic|Pop|Rock | tracks=['Shadow', 'Midnight Song', 'Nocturne', 'Through The Grass', 'Only Heather', \"This Chain Won't Break\", 'Disappear Always', 'Paradise', 'Counting Days', 'The Blue Dress', 'Rheya']||name=Nocturne | artist=Susanne A. Quartet | duration=2636.0 | tracks=['Desire', 'Paludianity', 'Saba', 'Verao', 'Chove Shiva', 'Nocturne']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Nocturne | artist=Wild Nothing | release-date=2012-08-28 | release-country=United States of America | genre=Electronic|Pop|Rock | tracks=['Shadow', 'Midnight Song', 'Nocturne', 'Through The Grass', 'Only Heather', \"This Chain Won't Break\", 'Disappear Always', 'Paradise', 'Counting Days', 'The Blue Dress', 'Rheya']\nRecord B: name=Nocturne | artist=Susanne A. Quartet | duration=2636.0 | tracks=['Desire', 'Paludianity', 'Saba', 'Verao', 'Chove Shiva', 'Nocturne']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

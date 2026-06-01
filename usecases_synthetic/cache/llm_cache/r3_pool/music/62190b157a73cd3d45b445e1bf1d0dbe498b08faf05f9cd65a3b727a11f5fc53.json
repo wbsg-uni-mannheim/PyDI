@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_37928|lastFM_18006|name=One By One | artist=The Impressions | release-date=1965 | release-country=United States of America | genre=Blues|Funk / Soul | tracks=['Twilight Time', 'I Wanna Be Around', 'Nature Boy', 'Just One Kiss From You', 'I Want To Be With You', 'Answer Me, My Love', \"It's Not Unusual\", 'Without A Song', 'Falling In Love With You', 'My Prayer', 'Mona Lisa', 'Lonely Man']||name=T. Impressions -  One By One | artist=T. Impressions | duration=1948.0 | tracks=['Twilight Time', 'I Wanna Be Around', 'Nature Boy', 'Just One Kiss From You', 'I Want To Be With You', 'Answer Me, My Love', \"It's Not Unusual\", 'Without A Song', 'Falling In Love With You', 'My Prayer', 'Mona Lisa', 'Lonely Man']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=One By One | artist=The Impressions | release-date=1965 | release-country=United States of America | genre=Blues|Funk / Soul | tracks=['Twilight Time', 'I Wanna Be Around', 'Nature Boy', 'Just One Kiss From You', 'I Want To Be With You', 'Answer Me, My Love', \"It's Not Unusual\", 'Without A Song', 'Falling In Love With You', 'My Prayer', 'Mona Lisa', 'Lonely Man']\nRecord B: name=T. Impressions -  One By One | artist=T. Impressions | duration=1948.0 | tracks=['Twilight Time', 'I Wanna Be Around', 'Nature Boy', 'Just One Kiss From You', 'I Want To Be With You', 'Answer Me, My Love', \"It's Not Unusual\", 'Without A Song', 'Falling In Love With You', 'My Prayer', 'Mona Lisa', 'Lonely Man']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

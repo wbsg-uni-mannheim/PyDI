@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_2",
+      "value": "228.79"
+    },
+    {
+      "source": "products_3",
+      "value": "299.0"
+    },
+    {
+      "source": "products_4",
+      "value": "429.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.44,
+    "operation": "aggregation",
+    "reasoning": "Prices conflict and 299.0 is the median candidate, making it the most robust aggregate.",
+    "value": 299.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":299.0,\"operation\":\"aggregation\",\"confidence\":0.44,\"reasoning\":\"Prices conflict and 299.0 is the median candidate, making it the most robust aggregate.\"}"
+}

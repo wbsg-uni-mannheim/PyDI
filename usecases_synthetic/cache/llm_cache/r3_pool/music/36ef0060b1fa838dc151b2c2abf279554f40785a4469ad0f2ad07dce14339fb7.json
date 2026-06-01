@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_106826|lastFM_48131|name=Random Access Memories | artist=Daft Punk | release-date=2013-05-21 | duration=4468.0 | genre=Electronic|Pop|Funk / Soul|Rock | tracks=['Give Life Back To Music', 'The Game Of Love', 'Giorgio By Moroder', 'Within', 'Instant Crush', 'Lose Yourself To Dance', 'Touch', 'Get Lucky', 'Beyond', 'Motherboard', 'Fragments Of Time', \"Doin' It Right\", 'Contact']||name=Random Access  (Ãƒâ€°dition Studio Masters) | artist=Daft Punk | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Random Access Memories | artist=Daft Punk | release-date=2013-05-21 | duration=4468.0 | genre=Electronic|Pop|Funk / Soul|Rock | tracks=['Give Life Back To Music', 'The Game Of Love', 'Giorgio By Moroder', 'Within', 'Instant Crush', 'Lose Yourself To Dance', 'Touch', 'Get Lucky', 'Beyond', 'Motherboard', 'Fragments Of Time', \"Doin' It Right\", 'Contact']\nRecord B: name=Random Access  (Ãƒâ€°dition Studio Masters) | artist=Daft Punk | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

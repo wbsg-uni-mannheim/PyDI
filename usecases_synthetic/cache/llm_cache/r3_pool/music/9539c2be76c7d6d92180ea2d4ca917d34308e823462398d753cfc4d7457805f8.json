@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25246|lastFM_6828|name=My Washing Machine | artist=SIKK | release-date=2005-12-20 | release-country=United States of America | duration=4683.0 | genre=Electronic | tracks=['My Washing Machine (Original Radio Mix)', 'My Washing Machine (Original Mix)', 'My Washing Machine (Original Funk Radio Mix)', 'My Washing Machine (Original Funk Mix)', 'My Washing Machine (Instrumental Mix)', 'My Washing Machine (Original F*ck Cut Mix)', 'My Washing Machine (Original Beep Mix)', 'My Washing Machine (Original Francaise Radio Mix)', 'My Washing Machine (Original Francaise Mix)', 'My Washing Machine (Original Spanish Radio Mix)', 'My Washing Machine (Original Spanish Mix)', 'My Washing Machine (Bini & Martini Fu**ing Machine Mix)', 'My Washing Machine (Bini & Martini Exclusive Mix)']||name=My Washing  (Remixes) | artist=Sikk | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=My Washing Machine | artist=SIKK | release-date=2005-12-20 | release-country=United States of America | duration=4683.0 | genre=Electronic | tracks=['My Washing Machine (Original Radio Mix)', 'My Washing Machine (Original Mix)', 'My Washing Machine (Original Funk Radio Mix)', 'My Washing Machine (Original Funk Mix)', 'My Washing Machine (Instrumental Mix)', 'My Washing Machine (Original F*ck Cut Mix)', 'My Washing Machine (Original Beep Mix)', 'My Washing Machine (Original Francaise Radio Mix)', 'My Washing Machine (Original Francaise Mix)', 'My Washing Machine (Original Spanish Radio Mix)', 'My Washing Machine (Original Spanish Mix)', 'My Washing Machine (Bini & Martini Fu**ing Machine Mix)', 'My Washing Machine (Bini & Martini Exclusive Mix)']\nRecord B: name=My Washing  (Remixes) | artist=Sikk | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

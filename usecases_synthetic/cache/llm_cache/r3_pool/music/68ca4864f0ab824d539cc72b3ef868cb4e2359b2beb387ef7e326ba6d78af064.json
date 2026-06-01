@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_5398|lastFM_2639|name=Smells Like Teen Spirit 2003 | artist=Nirvana | release-date=2003 | release-country=UK | genre=Electronic | tracks=['Smells Like Teen Spirit 2003']||name=Nirvana -  Smells Like Teen Spirit 2003 | artist=Nirvana | duration=426.0 | tracks=['smells like teen spirit 2003']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Smells Like Teen Spirit 2003 | artist=Nirvana | release-date=2003 | release-country=UK | genre=Electronic | tracks=['Smells Like Teen Spirit 2003']\nRecord B: name=Nirvana -  Smells Like Teen Spirit 2003 | artist=Nirvana | duration=426.0 | tracks=['smells like teen spirit 2003']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

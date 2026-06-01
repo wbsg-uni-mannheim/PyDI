@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_91189|lastFM_28260|name=Singles Collection | artist=The Exploited | release-date=1991 | release-country=UK | duration=2841.0 | genre=Rock | tracks=['Army Life', 'The Mods', 'Crashed Out', 'Exploited Barmy Army', 'I Believe In Anarchy', 'What You Gonna Do', 'Dogs Of War', 'Blown To Bits (Live)', 'Dead Cities', \"Hitler's In Charts Again\", 'Class War', 'SPG (Live)', 'Cop Cars (Live)', 'YOP', 'Attack', 'Alternative', 'Troops Of Tomorrow', \"Computers Don't Blunder\", 'Addiction', 'Rival Leaders', 'Army Style', 'Singalongabushell']||name=The Complete  Singles Collection | artist=The Adicts | duration=2989.0 | tracks=['Easy Way Out', 'Steamroller', 'Numbers', 'Chinese Takeaway', \"You'll Never Walk Alone\", 'Bad Boy', 'Shake Rattle Bang Your Head', 'Tokyo', 'The Odd Couple', 'A. D. X. Medley', 'Falling In Love Again', 'Come Along', 'Champ Ãƒâ€°lysÃƒÂ©es', 'Who Split My Beer', 'Cowboys']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles Collection | artist=The Exploited | release-date=1991 | release-country=UK | duration=2841.0 | genre=Rock | tracks=['Army Life', 'The Mods', 'Crashed Out', 'Exploited Barmy Army', 'I Believe In Anarchy', 'What You Gonna Do', 'Dogs Of War', 'Blown To Bits (Live)', 'Dead Cities', \"Hitler's In Charts Again\", 'Class War', 'SPG (Live)', 'Cop Cars (Live)', 'YOP', 'Attack', 'Alternative', 'Troops Of Tomorrow', \"Computers Don't Blunder\", 'Addiction', 'Rival Leaders', 'Army Style', 'Singalongabushell']\nRecord B: name=The Complete  Singles Collection | artist=The Adicts | duration=2989.0 | tracks=['Easy Way Out', 'Steamroller', 'Numbers', 'Chinese Takeaway', \"You'll Never Walk Alone\", 'Bad Boy', 'Shake Rattle Bang Your Head', 'Tokyo', 'The Odd Couple', 'A. D. X. Medley', 'Falling In Love Again', 'Come Along', 'Champ Ãƒâ€°lysÃƒÂ©es', 'Who Split My Beer', 'Cowboys']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

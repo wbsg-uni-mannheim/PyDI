@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "T.Raumschmiere"
+    },
+    {
+      "source": "discogs",
+      "value": "MC Soom-T|T.Raumschmiere"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The Discogs value appears to be a separator-delimited collaboration, and the canonical artist here is T.Raumschmiere.",
+    "value": "T.Raumschmiere"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"T.Raumschmiere\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The Discogs value appears to be a separator-delimited collaboration, and the canonical artist here is T.Raumschmiere.\"}"
+}

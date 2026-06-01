@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_5160|mbrainz_1092|name=Dangerous | artist=Busta Rhymes | release-date=1997 | release-country=United States of America | genre=Electronic|Hip Hop | tracks=['Dangerous (Album Version)', 'Dangerous (Album Instrumental)', 'Dangerous (Acapella)', 'Dangerous (The Soul Society Remix)', 'Dangerous (Natural Born Chillers Remix)', 'Dangerous (Soul Society Instrumental)']||name=Dangerous | artist=Busta Rhymes | release-date=1997-01-01 | duration=1021 | tracks=['Dangerous (The Soul Society remix)', 'Dangerous (album version-clean)', 'Dangerous (album version-dirty)', 'Dangerous (Natural Born Chillers remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dangerous | artist=Busta Rhymes | release-date=1997 | release-country=United States of America | genre=Electronic|Hip Hop | tracks=['Dangerous (Album Version)', 'Dangerous (Album Instrumental)', 'Dangerous (Acapella)', 'Dangerous (The Soul Society Remix)', 'Dangerous (Natural Born Chillers Remix)', 'Dangerous (Soul Society Instrumental)']\nRecord B: name=Dangerous | artist=Busta Rhymes | release-date=1997-01-01 | duration=1021 | tracks=['Dangerous (The Soul Society remix)', 'Dangerous (album version-clean)', 'Dangerous (album version-dirty)', 'Dangerous (Natural Born Chillers remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

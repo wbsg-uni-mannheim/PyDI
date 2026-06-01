@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_127577|mbrainz_10132|name=Repeater | artist=Splitsville | release-date=1998 | release-country=United States of America | duration=2326.0 | genre=Rock | tracks=['Dayjob', 'I Concentrate On You', 'Manna', 'Big Red Sun', 'Downsizing', 'Dixie Liquor And Beer', 'Joan Of Arc', 'The Master Of Space And Time', 'The First Thing About Regret', \"Why It Can't Be\", 'Dumb And Satisfied', 'Dotcom']||name=Repeater | artist=Splitsville | release-date=1998-01-01 | release-country=United States of America | duration=2331 | tracks=['Dayjob', 'I Concentrate on You', 'Manna (You Say You Believe)', 'Big Red Sun', 'Downsizing', 'Dixie Liquor and Beer', 'Joan of Arc', 'The Master of Space and Time', 'The First Thing About Regret', \"Why Can't It Be\", 'Dumb and Satisfied', 'Dotcom']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Repeater | artist=Splitsville | release-date=1998 | release-country=United States of America | duration=2326.0 | genre=Rock | tracks=['Dayjob', 'I Concentrate On You', 'Manna', 'Big Red Sun', 'Downsizing', 'Dixie Liquor And Beer', 'Joan Of Arc', 'The Master Of Space And Time', 'The First Thing About Regret', \"Why It Can't Be\", 'Dumb And Satisfied', 'Dotcom']\nRecord B: name=Repeater | artist=Splitsville | release-date=1998-01-01 | release-country=United States of America | duration=2331 | tracks=['Dayjob', 'I Concentrate on You', 'Manna (You Say You Believe)', 'Big Red Sun', 'Downsizing', 'Dixie Liquor and Beer', 'Joan of Arc', 'The Master of Space and Time', 'The First Thing About Regret', \"Why Can't It Be\", 'Dumb and Satisfied', 'Dotcom']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

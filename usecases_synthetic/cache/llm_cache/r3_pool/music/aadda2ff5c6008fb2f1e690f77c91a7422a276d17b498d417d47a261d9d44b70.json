@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_91401|lastFM_34906|name=Visions | artist=Astral Sleep | release-date=2012-10-15 | release-country=Russia | duration=3438.0 | genre=Rock | tracks=['The Towers', 'Channel Sleep', 'Visions', '…They All Await Me When I Break The Shackles Of Flesh']||name=Visions | artist=Bunky Green | duration=2475.0 | tracks=['Alone Again, Naturally', 'What I Did For Love', 'The Greatest Love Of All', 'Never Can Say Goodbye', 'Ali Theme/I Write The Songs', 'The Entertainer', 'Visions']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Visions | artist=Astral Sleep | release-date=2012-10-15 | release-country=Russia | duration=3438.0 | genre=Rock | tracks=['The Towers', 'Channel Sleep', 'Visions', '…They All Await Me When I Break The Shackles Of Flesh']\nRecord B: name=Visions | artist=Bunky Green | duration=2475.0 | tracks=['Alone Again, Naturally', 'What I Did For Love', 'The Greatest Love Of All', 'Never Can Say Goodbye', 'Ali Theme/I Write The Songs', 'The Entertainer', 'Visions']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

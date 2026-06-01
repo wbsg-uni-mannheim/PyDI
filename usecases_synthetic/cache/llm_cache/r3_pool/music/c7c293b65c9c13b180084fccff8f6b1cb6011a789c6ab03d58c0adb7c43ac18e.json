@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_113863|mbrainz_10533|name=Diversity | artist=Gentleman | release-date=2010-04-09 | release-country=Europe | genre=Reggae | tracks=['The Reason', 'Ina Time Like Now', 'Lonely Days', 'Regardless', 'It No Pretty', 'I Got To Go', 'The Finish Line', 'Changes', 'To The Top', 'No Time To Play', 'Fast Forward', 'Hold On Strong', 'Moment Of Truth', 'Tempolution', 'Another Melody', 'Help', 'Along The Way', 'Good Old Days', 'Everlasting Love']||name=Diversity | artist=Gentleman | release-date=2010-04-09 | release-country=Germany | duration=3964 | tracks=['The Reason', 'Ina Time Like Now', 'Lonely Days', 'Regardless', 'It No Pretty', 'I Got to Go', 'The Finish Line', 'Changes', 'To the Top', 'No Time to Play', 'Fast Forward', 'Hold on Strong', 'Moment of Truth', 'Tempolution', 'Another Melody', 'Help', 'Along the Way', 'Good Old Days', 'Everlasting Love']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Diversity | artist=Gentleman | release-date=2010-04-09 | release-country=Europe | genre=Reggae | tracks=['The Reason', 'Ina Time Like Now', 'Lonely Days', 'Regardless', 'It No Pretty', 'I Got To Go', 'The Finish Line', 'Changes', 'To The Top', 'No Time To Play', 'Fast Forward', 'Hold On Strong', 'Moment Of Truth', 'Tempolution', 'Another Melody', 'Help', 'Along The Way', 'Good Old Days', 'Everlasting Love']\nRecord B: name=Diversity | artist=Gentleman | release-date=2010-04-09 | release-country=Germany | duration=3964 | tracks=['The Reason', 'Ina Time Like Now', 'Lonely Days', 'Regardless', 'It No Pretty', 'I Got to Go', 'The Finish Line', 'Changes', 'To the Top', 'No Time to Play', 'Fast Forward', 'Hold on Strong', 'Moment of Truth', 'Tempolution', 'Another Melody', 'Help', 'Along the Way', 'Good Old Days', 'Everlasting Love']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

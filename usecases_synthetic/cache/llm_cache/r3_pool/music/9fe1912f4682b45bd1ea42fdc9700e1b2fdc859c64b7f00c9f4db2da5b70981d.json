@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_65545|mbrainz_5224|name=Spirit | artist=S. Maguire | duration=2401.0 | tracks=['Treat Me', 'You To Me Are Everything', 'If You Really Care', \"I'll Be Good For You\", 'If I Surrender', \"Now I've Found You\", 'Your Love', \"Don't Pull Your Love\", 'Sweet Town (Mister Cab Driver)', 'Where Do Broken Hearts Go', 'Make It Right']||name=Spirit of Yma | artist=Vermonster | release-date=1990-01-01 | release-country=United States of America | duration=2433 | tracks=['Grease of the Yak', 'Rainy, Starless Night', 'The Lions', 'Black Liquid Slowly Mummifies']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit | artist=S. Maguire | duration=2401.0 | tracks=['Treat Me', 'You To Me Are Everything', 'If You Really Care', \"I'll Be Good For You\", 'If I Surrender', \"Now I've Found You\", 'Your Love', \"Don't Pull Your Love\", 'Sweet Town (Mister Cab Driver)', 'Where Do Broken Hearts Go', 'Make It Right']\nRecord B: name=Spirit of Yma | artist=Vermonster | release-date=1990-01-01 | release-country=United States of America | duration=2433 | tracks=['Grease of the Yak', 'Rainy, Starless Night', 'The Lions', 'Black Liquid Slowly Mummifies']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_136625|mbrainz_15289|name=Homesick | artist=A Day To Remember | release-date=2013 | release-country=United States of America | duration=2438.0 | genre=Pop|Rock | tracks=['The Downfall Of Us All', 'My Life For Hire', \"I'm Made Of Wax Larry, What Are You Made Of?\", 'NJ Legion Iced Tea', \"Mr. Highway's Always Thinking About The End\", 'Have Faith In Me', 'Welcome To The Family', 'Homesick', \"Holdin' It Down For The Underground\", 'You Already Know What You Are', 'Another Song About The Weekend', 'If It Means A Lot To You']||name=Homesick | artist=Day to Remember, A | release-date=2009-10-26 | release-country=United States of America | duration=2898 | tracks=['The Downfall of Us All', 'My Life for Hire', 'Iâ€™m Made of Wax, Larry, What Are You Made Of?', 'NJ Legion Iced Tea', 'Mr. Highwayâ€™s Thinking About the End', 'Have Faith in Me', 'Welcome to the Family', 'Homesick', 'Holdinâ€™ It Down for the Underground', 'You Already Know What You Are', 'Another Song About the Weekend', 'If It Means a Lot to You', 'Homesick', 'Another Song About the Weekend']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Homesick | artist=A Day To Remember | release-date=2013 | release-country=United States of America | duration=2438.0 | genre=Pop|Rock | tracks=['The Downfall Of Us All', 'My Life For Hire', \"I'm Made Of Wax Larry, What Are You Made Of?\", 'NJ Legion Iced Tea', \"Mr. Highway's Always Thinking About The End\", 'Have Faith In Me', 'Welcome To The Family', 'Homesick', \"Holdin' It Down For The Underground\", 'You Already Know What You Are', 'Another Song About The Weekend', 'If It Means A Lot To You']\nRecord B: name=Homesick | artist=Day to Remember, A | release-date=2009-10-26 | release-country=United States of America | duration=2898 | tracks=['The Downfall of Us All', 'My Life for Hire', 'Iâ€™m Made of Wax, Larry, What Are You Made Of?', 'NJ Legion Iced Tea', 'Mr. Highwayâ€™s Thinking About the End', 'Have Faith in Me', 'Welcome to the Family', 'Homesick', 'Holdinâ€™ It Down for the Underground', 'You Already Know What You Are', 'Another Song About the Weekend', 'If It Means a Lot to You', 'Homesick', 'Another Song About the Weekend']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

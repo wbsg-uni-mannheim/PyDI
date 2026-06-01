@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_37964|lastFM_28587|name=California | artist=Phantom Planet | release-date=2002 | release-country=UK | duration=402.0 | genre=Rock | tracks=['California', 'The Happy Ending']||name=California | artist=Akia | duration=416.0 | tracks=['California (Hip Hop Remix)', 'California (Instrumental)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=California | artist=Phantom Planet | release-date=2002 | release-country=UK | duration=402.0 | genre=Rock | tracks=['California', 'The Happy Ending']\nRecord B: name=California | artist=Akia | duration=416.0 | tracks=['California (Hip Hop Remix)', 'California (Instrumental)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

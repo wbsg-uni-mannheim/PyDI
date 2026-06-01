@@ -1,0 +1,40 @@
+domain: games-small
+master_seed: 42
+knob_config_alias: games
+sources:
+- name: dbpedia
+  file: dbpedia.csv
+  format: csv
+  id_prefix: dbpedia_
+  id_column: wiki_ref
+- name: metacritic
+  file: metacritic.csv
+  format: csv
+  id_prefix: metacritic_
+  id_column: mc_id
+- name: sales
+  file: sales.csv
+  format: csv
+  id_prefix: sales_
+  id_column: rec_id
+source_pairs:
+- - dbpedia
+  - sales
+- - metacritic
+  - dbpedia
+# [metacritic, sales] dropped 2026-05-16 — see games.yaml F11 note.
+attribute_classes:
+  name: primary
+  platform: key
+  ESRB: key
+  releaseYear: secondary
+  developer: secondary
+  publisher: secondary
+  genres: secondary
+  criticScore: secondary
+  userScore: secondary
+  globalSales: secondary
+  series: secondary
+fusion_files:
+  validation: validation_set_final.xml
+  test: test_set_final.xml

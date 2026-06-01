@@ -1,0 +1,37 @@
+domain: products-small
+master_seed: 42
+knob_config_alias: products
+sources:
+- name: products_1
+  file: products_1.json
+  format: json
+  id_prefix: products_1_
+- name: products_2
+  file: products_2.json
+  format: json
+  id_prefix: products_2_
+- name: products_3
+  file: products_3.json
+  format: json
+  id_prefix: products_3_
+- name: products_4
+  file: products_4.json
+  format: json
+  id_prefix: products_4_
+source_pairs:
+- - products_1
+  - products_2
+- - products_1
+  - products_3
+- - products_1
+  - products_4
+attribute_classes:
+  title: primary
+  brand: key
+  description: secondary
+  price: secondary
+  priceCurrency: secondary
+fusion_files:
+  validation: validation_set.xml
+  test: test_set.xml
+data_root: usecases_synthetic/usecases

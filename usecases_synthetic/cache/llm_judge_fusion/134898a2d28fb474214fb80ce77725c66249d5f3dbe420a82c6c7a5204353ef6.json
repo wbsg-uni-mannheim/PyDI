@@ -1,0 +1,34 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Folie Ã\\xa0 Deux', 'The Reinkarnation of Take the Time', 'Maybe', \"Yadada's Brother\", \"Drone in the Fox's Ear\", 'River Clyde', \"Choir's on Fire (Wickburn)\", 'We Want You', 'I Need You', \"I Know What You're Like\", 'Exorcism of...']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Folie ÃƒÂ\\xa0 Deux', 'Maybe', \"YaDaDa's Brother\", \"Drone In The Fox's Ear\", 'River Clyde', 'We Want You', \"Choir's On Fire (Wickburn)\", 'I Need You', 'Exorcism of...']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "interpolation",
+    "reasoning": "Combined both track lists, normalized encoding/casing variations, and kept the superset of tracks implied by the sources.",
+    "value": [
+      "Folie à Deux",
+      "The Reinkarnation of Take the Time",
+      "Maybe",
+      "Yadada's Brother",
+      "Drone in the Fox's Ear",
+      "River Clyde",
+      "Choir's on Fire (Wickburn)",
+      "We Want You",
+      "I Need You",
+      "I Know What You're Like",
+      "Exorcism of..."
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Folie à Deux\",\"The Reinkarnation of Take the Time\",\"Maybe\",\"Yadada's Brother\",\"Drone in the Fox's Ear\",\"River Clyde\",\"Choir's on Fire (Wickburn)\",\"We Want You\",\"I Need You\",\"I Know What You're Like\",\"Exorcism of...\"],\"operation\":\"interpolation\",\"confidence\":0.92,\"reasoning\":\"Combined both track lists, normalized encoding/casing variations, and kept the superset of tracks implied by the sources.\"}"
+}

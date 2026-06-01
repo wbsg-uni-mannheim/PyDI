@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_87188|mbrainz_5009|name=Constellation_Gemini | artist=Decence | release-date=2008-11-11 | release-country=Germany | duration=4199.0 | genre=Electronic | tracks=['There Must Be More', 'Ideologies', 'Last Man Standing', 'Nothing More (Epic)', 'Doesn´t Matter...', 'My Angel', 'The Clockwork', 'Nothing More', 'The Quiet Of The Night', 'Waving Goodbye', 'Oh Lord', 'Holy?', 'There Must Be More (New_Constellation Mix By Decence)', 'There Must Be More (Cold Fusion Mix By Matt976)']||name=Constellation_Gemini | artist=Decence | release-date=2005-01-01 | release-country=Germany | duration=4199 | tracks=['There Must Be More', 'Ideologies', 'Last Man Standing', 'Nothing More (Epic)', \"Doesn't Matterâ€¦\", 'My Angel', 'The Clockwork', 'Nothing More', 'The Quiet of the Night', 'Waving Goodbye', 'Oh Lord', 'Holy?', 'There Must Be More (New_Constellation mix by Decence)', 'There Must Be More (Cold Fusion mix by Matt976)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Constellation_Gemini | artist=Decence | release-date=2008-11-11 | release-country=Germany | duration=4199.0 | genre=Electronic | tracks=['There Must Be More', 'Ideologies', 'Last Man Standing', 'Nothing More (Epic)', 'Doesn´t Matter...', 'My Angel', 'The Clockwork', 'Nothing More', 'The Quiet Of The Night', 'Waving Goodbye', 'Oh Lord', 'Holy?', 'There Must Be More (New_Constellation Mix By Decence)', 'There Must Be More (Cold Fusion Mix By Matt976)']\nRecord B: name=Constellation_Gemini | artist=Decence | release-date=2005-01-01 | release-country=Germany | duration=4199 | tracks=['There Must Be More', 'Ideologies', 'Last Man Standing', 'Nothing More (Epic)', \"Doesn't Matterâ€¦\", 'My Angel', 'The Clockwork', 'Nothing More', 'The Quiet of the Night', 'Waving Goodbye', 'Oh Lord', 'Holy?', 'There Must Be More (New_Constellation mix by Decence)', 'There Must Be More (Cold Fusion mix by Matt976)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_26807|lastFM_12929|name=Resurrection Day | artist=White Zombie | release-date=1993 | release-country=Italy | duration=4675.0 | genre=Rock | tracks=['Soul-Crusher', 'Thrust', 'Black Sunshine', 'Welcome To The Planet Motherfucker / Psychoholic Slag', 'Grindhouse (A Go Go)', 'I Am Legend', 'Spiderbaby (Yeah-Yeah-Yeah)', \"Thunderkiss '65\", 'Warp Asylum', 'Helter Skelter', 'Cosmic Monsters Inc.', 'Black Sunshine', 'Thrust', 'Welcome To The Planet Motherfucker', 'Pshychoholic Slag', \"Thunderkiss '65\", 'Grindhouse (A Go Go)', 'Cosmic Monsters Inc.']||name=Resurrection | artist=White Zombie | duration=3396.0 | tracks=['Soul Crusher', 'Thrust', 'Black Sunshine (one)', 'Medley - Welcome to Planet Motherfucker - Pshycholic Slag', 'Grindhouse (A Go Go) (one)', 'I Am Legend', 'Spiderbaby (Yeah - Yeah - Yeah)', 'Helter Skelter', 'Black Sunshine (two)', 'Welcome to Planet Motherfucker', 'Psychoholic Slag', \"Thunderkis '65 (two)\", 'Grindhouse (A Go Go) (two)', 'Cosmic Monsters Inc. (Two)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Resurrection Day | artist=White Zombie | release-date=1993 | release-country=Italy | duration=4675.0 | genre=Rock | tracks=['Soul-Crusher', 'Thrust', 'Black Sunshine', 'Welcome To The Planet Motherfucker / Psychoholic Slag', 'Grindhouse (A Go Go)', 'I Am Legend', 'Spiderbaby (Yeah-Yeah-Yeah)', \"Thunderkiss '65\", 'Warp Asylum', 'Helter Skelter', 'Cosmic Monsters Inc.', 'Black Sunshine', 'Thrust', 'Welcome To The Planet Motherfucker', 'Pshychoholic Slag', \"Thunderkiss '65\", 'Grindhouse (A Go Go)', 'Cosmic Monsters Inc.']\nRecord B: name=Resurrection | artist=White Zombie | duration=3396.0 | tracks=['Soul Crusher', 'Thrust', 'Black Sunshine (one)', 'Medley - Welcome to Planet Motherfucker - Pshycholic Slag', 'Grindhouse (A Go Go) (one)', 'I Am Legend', 'Spiderbaby (Yeah - Yeah - Yeah)', 'Helter Skelter', 'Black Sunshine (two)', 'Welcome to Planet Motherfucker', 'Psychoholic Slag', \"Thunderkis '65 (two)\", 'Grindhouse (A Go Go) (two)', 'Cosmic Monsters Inc. (Two)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_8198|lastFM_3963|name=Casanova | artist=The Prince Of Dance Music | release-date=2005-01-20 | release-country=France | duration=2133.0 | genre=Electronic | tracks=['Casanova', 'Casanova Raw (No Condom Mix)', \"When I'm Banging\", \"When I'm Banging (Nervous DJ Remix)\", 'Conga Conga', \"One Mo' Dance\"]||name=Casanova | artist=The Prince of Dance Music | duration=2133.0 | tracks=['Casanova', 'Casanova Raw (No Condom mix)', \"when i'm banging\", \"when i'm banging (nervous dj remix)\", 'Conga Conga (feat. Mad Drummer)', \"one mo' dance\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Casanova | artist=The Prince Of Dance Music | release-date=2005-01-20 | release-country=France | duration=2133.0 | genre=Electronic | tracks=['Casanova', 'Casanova Raw (No Condom Mix)', \"When I'm Banging\", \"When I'm Banging (Nervous DJ Remix)\", 'Conga Conga', \"One Mo' Dance\"]\nRecord B: name=Casanova | artist=The Prince of Dance Music | duration=2133.0 | tracks=['Casanova', 'Casanova Raw (No Condom mix)', \"when i'm banging\", \"when i'm banging (nervous dj remix)\", 'Conga Conga (feat. Mad Drummer)', \"one mo' dance\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

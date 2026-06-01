@@ -1,0 +1,226 @@
+{
+  "cluster_size_distribution": {
+    "available": true,
+    "max_size": 13,
+    "n_components": 4570,
+    "p95_size": 3,
+    "p99_size": 5,
+    "top_sizes": [
+      13,
+      9,
+      8,
+      8,
+      8,
+      8,
+      7,
+      7,
+      7,
+      7
+    ]
+  },
+  "delta_estimation": {
+    "cap": 0.2,
+    "delta_used": 0.2,
+    "floor": 0.05,
+    "n_misclassified": 39,
+    "n_predictions": 2000,
+    "percentile": 90.0,
+    "raw_percentile": 0.4973474383354187
+  },
+  "ditto_checkpoint": "/Users/ralph/Dev/PyDI/cache/ditto_checkpoints/music/best",
+  "ditto_threshold": 0.5,
+  "domain": "music",
+  "llm_model_id": "gpt-5.4",
+  "llm_used": true,
+  "per_pair": {
+    "discogs_lastfm": {
+      "blocker_sweep": {
+        "closure_only": true
+      },
+      "buckets": {
+        "a_gold": 0,
+        "b_agreement": 1359,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 571,
+        "c_kept_confident": 0,
+        "c_kept_llm": 473,
+        "c_total": 1044
+      },
+      "closure": {
+        "closure_only_pair": true,
+        "ditto_added": 2227,
+        "human_added": 1646,
+        "n_ditto_pos_pre_closure": 0,
+        "n_human_pre_closure": 0
+      },
+      "delta_used": 0.2,
+      "n_candidates": 0,
+      "n_ditto_positive_at_theta": 2116,
+      "n_gold_positives": 0,
+      "n_human_pairs_expanded": 1646,
+      "n_left": 22627,
+      "n_right": 9865,
+      "pool_size": 1832,
+      "sources": [
+        "discogs",
+        "lastfm"
+      ]
+    },
+    "musicbrainz_discogs": {
+      "blocker_sweep": {
+        "cleared_floor": true,
+        "per_blocker": {
+          "bm25_blocker": {
+            "n_candidates": 47630,
+            "n_gold_positives_seen": 2475,
+            "n_gold_positives_total": 2658,
+            "pair_recall": 0.9311512415349887,
+            "reduction_ratio": 0.9995580501171167
+          },
+          "embedding_blocker": {
+            "n_candidates": 47616,
+            "n_gold_positives_seen": 2521,
+            "n_gold_positives_total": 2658,
+            "pair_recall": 0.9484574868322047,
+            "reduction_ratio": 0.9995581800205046
+          },
+          "sorted_neighbourhood_blocker": {
+            "n_candidates": 154360,
+            "n_gold_positives_seen": 2626,
+            "n_gold_positives_total": 2658,
+            "pair_recall": 0.9879608728367193,
+            "reduction_ratio": 0.9985677223614977
+          },
+          "standard_blocker": {
+            "n_candidates": 1672290,
+            "n_gold_positives_seen": 2635,
+            "n_gold_positives_total": 2658,
+            "pair_recall": 0.991346877351392,
+            "reduction_ratio": 0.9844831331167986
+          },
+          "token_blocker": {
+            "n_candidates": 10460722,
+            "n_gold_positives_seen": 2655,
+            "n_gold_positives_total": 2658,
+            "pair_recall": 0.9988713318284425,
+            "reduction_ratio": 0.9029369123918841
+          }
+        },
+        "winner": "sorted_neighbourhood_blocker"
+      },
+      "buckets": {
+        "a_gold": 2658,
+        "b_agreement": 453,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 281,
+        "c_kept_confident": 0,
+        "c_kept_llm": 472,
+        "c_total": 753
+      },
+      "closure": {
+        "closure_only_pair": false,
+        "ditto_added": 205,
+        "human_added": 0,
+        "n_ditto_pos_pre_closure": 3776,
+        "n_human_pre_closure": 2915
+      },
+      "delta_used": 0.2,
+      "n_candidates": 154410,
+      "n_ditto_positive_at_theta": 3807,
+      "n_gold_positives": 2658,
+      "n_human_pairs_expanded": 2915,
+      "n_left": 4763,
+      "n_right": 22627,
+      "pool_size": 3583,
+      "sources": [
+        "musicbrainz",
+        "discogs"
+      ]
+    },
+    "musicbrainz_lastfm": {
+      "blocker_sweep": {
+        "cleared_floor": false,
+        "per_blocker": {
+          "bm25_blocker": {
+            "n_candidates": 47630,
+            "n_gold_positives_seen": 2630,
+            "n_gold_positives_total": 2855,
+            "pair_recall": 0.9211908931698775,
+            "reduction_ratio": 0.9989863152559554
+          },
+          "embedding_blocker": {
+            "n_candidates": 47576,
+            "n_gold_positives_seen": 2546,
+            "n_gold_positives_total": 2855,
+            "pair_recall": 0.8917688266199649,
+            "reduction_ratio": 0.9989874645101267
+          },
+          "sorted_neighbourhood_blocker": {
+            "n_candidates": 122184,
+            "n_gold_positives_seen": 1977,
+            "n_gold_positives_total": 2855,
+            "pair_recall": 0.6924693520140105,
+            "reduction_ratio": 0.9973996208951008
+          },
+          "standard_blocker": {
+            "n_candidates": 582152,
+            "n_gold_positives_seen": 2060,
+            "n_gold_positives_total": 2855,
+            "pair_recall": 0.7215411558669002,
+            "reduction_ratio": 0.9876103589940153
+          },
+          "token_blocker": {
+            "n_candidates": 4243876,
+            "n_gold_positives_seen": 2853,
+            "n_gold_positives_total": 2855,
+            "pair_recall": 0.9992994746059545,
+            "reduction_ratio": 0.9096797741587859
+          }
+        },
+        "winner": "bm25_blocker"
+      },
+      "buckets": {
+        "a_gold": 2855,
+        "b_agreement": 349,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 592,
+        "c_kept_confident": 0,
+        "c_kept_llm": 98,
+        "c_total": 690
+      },
+      "closure": {
+        "closure_only_pair": false,
+        "ditto_added": 85,
+        "human_added": 0,
+        "n_ditto_pos_pre_closure": 3484,
+        "n_human_pre_closure": 3110
+      },
+      "delta_used": 0.2,
+      "n_candidates": 48096,
+      "n_ditto_positive_at_theta": 3497,
+      "n_gold_positives": 2855,
+      "n_human_pairs_expanded": 3110,
+      "n_left": 4763,
+      "n_right": 9865,
+      "pool_size": 3302,
+      "sources": [
+        "musicbrainz",
+        "lastfm"
+      ]
+    }
+  },
+  "pool_size": 8717,
+  "transitive_closure": {
+    "ditto_added_per_pair": {
+      "discogs__lastfm": 2227,
+      "discogs__musicbrainz": 205,
+      "lastfm__musicbrainz": 85
+    },
+    "extra_ditto_calls": 2711,
+    "human_added_per_pair": {
+      "discogs__lastfm": 1646,
+      "discogs__musicbrainz": 0,
+      "lastfm__musicbrainz": 0
+    }
+  }
+}

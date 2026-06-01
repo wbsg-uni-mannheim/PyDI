@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_26877|lastFM_12961|name=Hero Crisis | artist=Depth Affect | release-date=2008-06-06 | release-country=France | duration=2737.0 | genre=Electronic|Pop|Hip Hop | tracks=['Junior International', 'Hero Crisis', 'Street Level', 'The Villain Stands', 'Radish Field', 'Girl’s Math', 'Dusty Records', 'Öyster Bunch', 'Cotton Candy', 'Dorothea Land', 'Tumble Tug', 'Base Camp Wolf']||name=Depth Affect -  Hero Crisis | artist=Depth Affect | duration=2721.0 | tracks=['Junior International', 'Hero Crisis', 'Street Level (feat. Subtitle)', 'The Villain Stands', 'Radish Field', \"Girl's Math\", 'Dusty Records (feat. Awol One)', 'Ãƒâ€“yster Bunch', 'Cotton Candy', 'Dorothea Land', 'Tumble Tug', 'Base Camp Wolf']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hero Crisis | artist=Depth Affect | release-date=2008-06-06 | release-country=France | duration=2737.0 | genre=Electronic|Pop|Hip Hop | tracks=['Junior International', 'Hero Crisis', 'Street Level', 'The Villain Stands', 'Radish Field', 'Girl’s Math', 'Dusty Records', 'Öyster Bunch', 'Cotton Candy', 'Dorothea Land', 'Tumble Tug', 'Base Camp Wolf']\nRecord B: name=Depth Affect -  Hero Crisis | artist=Depth Affect | duration=2721.0 | tracks=['Junior International', 'Hero Crisis', 'Street Level (feat. Subtitle)', 'The Villain Stands', 'Radish Field', \"Girl's Math\", 'Dusty Records (feat. Awol One)', 'Ãƒâ€“yster Bunch', 'Cotton Candy', 'Dorothea Land', 'Tumble Tug', 'Base Camp Wolf']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

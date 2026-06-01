@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1996-04-08"
+    },
+    {
+      "source": "discogs",
+      "value": "1996"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "interpolation",
+    "reasoning": "The full date from MusicBrainz is more specific and consistent with Discogs' year-only value.",
+    "value": "1996-04-08"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1996-04-08\",\"operation\":\"interpolation\",\"confidence\":0.97,\"reasoning\":\"The full date from MusicBrainz is more specific and consistent with Discogs' year-only value.\"}"
+}

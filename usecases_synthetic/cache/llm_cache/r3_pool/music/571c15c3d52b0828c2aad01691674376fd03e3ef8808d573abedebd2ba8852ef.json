@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_82716|mbrainz_1059|name=In Search Of... | artist=N*E*R*D | release-date=2001 | release-country=United States of America | genre=Electronic|Rock|Hip Hop | tracks=['Intro', 'Tape You', 'Brain', 'Things Are Getting Better', 'Run To The Sun', 'Truth Or Dare', \"What's Wrong With Me\", 'Am I High', 'Outro']||name=In Search Of... | artist=N.E.R.D | release-date=2002-03-12 | release-country=United States of America | duration=3240 | tracks=['Lapdance', 'Things Are Getting Better', 'Brain', 'Provider', 'Truth or Dare', 'Tape You', 'Run to the Sun', 'Baby Doll', 'Am I High', 'Rock Star', 'Bobby James', 'Stay Together']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=In Search Of... | artist=N*E*R*D | release-date=2001 | release-country=United States of America | genre=Electronic|Rock|Hip Hop | tracks=['Intro', 'Tape You', 'Brain', 'Things Are Getting Better', 'Run To The Sun', 'Truth Or Dare', \"What's Wrong With Me\", 'Am I High', 'Outro']\nRecord B: name=In Search Of... | artist=N.E.R.D | release-date=2002-03-12 | release-country=United States of America | duration=3240 | tracks=['Lapdance', 'Things Are Getting Better', 'Brain', 'Provider', 'Truth or Dare', 'Tape You', 'Run to the Sun', 'Baby Doll', 'Am I High', 'Rock Star', 'Bobby James', 'Stay Together']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

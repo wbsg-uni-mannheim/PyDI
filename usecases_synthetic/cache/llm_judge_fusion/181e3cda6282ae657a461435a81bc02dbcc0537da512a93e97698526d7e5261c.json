@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Pep Love (and others)"
+    },
+    {
+      "source": "discogs",
+      "value": "Pep Love"
+    },
+    {
+      "source": "lastfm",
+      "value": "P. Love"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The candidates clearly refer to the same artist, and 'Pep Love' is the normalized canonical form.",
+    "value": "Pep Love"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Pep Love\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The candidates clearly refer to the same artist, and 'Pep Love' is the normalized canonical form.\"}"
+}

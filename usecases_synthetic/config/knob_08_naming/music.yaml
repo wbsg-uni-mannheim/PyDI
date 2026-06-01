@@ -1,0 +1,186 @@
+# Knob 08 — Schema Naming Divergence: Music
+#
+# Refreshed against the 2026-05-04 CSV sources. All three sources
+# (musicbrainz, discogs, lastfm) ship with the same canonical column
+# set: `id, name, artist, release-date, release-country, duration,
+# label, genre, tracks` — uniformly descriptive at baseline (matches
+# spec call "music @ easy"). lastfm key/secondary attributes are
+# 0%-populated post-refresh per K1/K6/K10 sign-offs; K8 only renames
+# headers, so empty columns cost nothing to author.
+
+level_assignments:
+  easy:
+    musicbrainz: descriptive
+    discogs: descriptive
+    lastfm: descriptive
+  medium:
+    musicbrainz: abbreviated
+    discogs: descriptive
+    lastfm: cryptic
+  hard:
+    musicbrainz: cryptic
+    discogs: abbreviated
+    lastfm: anonymized
+
+# Ground-truth schema mapping: source_col -> target_col.
+# Canonical target names match the fusion val/test XML element tags
+# and the K10 sign-off attribute_mapping. `id` columns are intentionally
+# OMITTED from rename_table.
+sm_mapping:
+  musicbrainz:
+    id: id
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+    label: label
+    genre: genre
+    tracks: tracks
+  discogs:
+    id: id
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+    label: label
+    genre: genre
+    tracks: tracks
+  lastfm:
+    id: id
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+    label: label
+    genre: genre
+    tracks: tracks
+
+rename_table:
+  musicbrainz:
+    name:
+      descriptive: name
+      abbreviated: rel_nm
+      cryptic: t
+      anonymized: Attribute_2
+    artist:
+      descriptive: artist
+      abbreviated: art
+      cryptic: ar
+      anonymized: Attribute_3
+    release-date:
+      descriptive: release-date
+      abbreviated: rel_dt
+      cryptic: rd
+      anonymized: Attribute_4
+    release-country:
+      descriptive: release-country
+      abbreviated: rel_ctry
+      cryptic: rc
+      anonymized: Attribute_5
+    duration:
+      descriptive: duration
+      abbreviated: dur
+      cryptic: du
+      anonymized: Attribute_6
+    label:
+      descriptive: label
+      abbreviated: lbl
+      cryptic: lb
+      anonymized: Attribute_7
+    genre:
+      descriptive: genre
+      abbreviated: gnr
+      cryptic: g
+      anonymized: Attribute_8
+    tracks:
+      descriptive: tracks
+      abbreviated: trks
+      cryptic: tk
+      anonymized: Attribute_9
+
+  discogs:
+    name:
+      descriptive: name
+      abbreviated: rel_nm
+      cryptic: nm
+      anonymized: Attribute_2
+    artist:
+      descriptive: artist
+      abbreviated: art_nm
+      cryptic: art_id
+      anonymized: Attribute_3
+    release-date:
+      descriptive: release-date
+      abbreviated: rel_dt
+      cryptic: rd
+      anonymized: Attribute_4
+    release-country:
+      descriptive: release-country
+      abbreviated: rel_ctry
+      cryptic: cc
+      anonymized: Attribute_5
+    duration:
+      descriptive: duration
+      abbreviated: dur
+      cryptic: dr
+      anonymized: Attribute_6
+    label:
+      descriptive: label
+      abbreviated: lbl
+      cryptic: lab
+      anonymized: Attribute_7
+    genre:
+      descriptive: genre
+      abbreviated: gnr
+      cryptic: g_cat
+      anonymized: Attribute_8
+    tracks:
+      descriptive: tracks
+      abbreviated: trks
+      cryptic: trk
+      anonymized: Attribute_9
+
+  lastfm:
+    name:
+      descriptive: name
+      abbreviated: rel_nm
+      cryptic: t_nm
+      anonymized: Attribute_2
+    artist:
+      descriptive: artist
+      abbreviated: art
+      cryptic: ar_nm
+      anonymized: Attribute_3
+    release-date:
+      descriptive: release-date
+      abbreviated: rel_dt
+      cryptic: rd
+      anonymized: Attribute_4
+    release-country:
+      descriptive: release-country
+      abbreviated: rel_ctry
+      cryptic: cc
+      anonymized: Attribute_5
+    duration:
+      descriptive: duration
+      abbreviated: dur
+      cryptic: dur_s
+      anonymized: Attribute_6
+    label:
+      descriptive: label
+      abbreviated: lbl
+      cryptic: lb_nm
+      anonymized: Attribute_7
+    genre:
+      descriptive: genre
+      abbreviated: gnr
+      cryptic: gn
+      anonymized: Attribute_8
+    tracks:
+      descriptive: tracks
+      abbreviated: trks
+      cryptic: tnms
+      anonymized: Attribute_9

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_27302|lastFM_13153|name=Outside Brain Inside My Room | artist=Twilight Memory | release-country=Italy | genre=Electronic | tracks=['Outside Brain Inside My Room', 'Hidden Screams During An Ordinary Summer Day', 'Nocturnal Mind Explosions', 'Neuro Glasses Of Lost Memory', 'Death Outside', 'Dead Steel Orchestra Of Dead Europe', 'Terminal Choice']||name=*popular* outside brain inside my room | artist=Twilight Memory | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Outside Brain Inside My Room | artist=Twilight Memory | release-country=Italy | genre=Electronic | tracks=['Outside Brain Inside My Room', 'Hidden Screams During An Ordinary Summer Day', 'Nocturnal Mind Explosions', 'Neuro Glasses Of Lost Memory', 'Death Outside', 'Dead Steel Orchestra Of Dead Europe', 'Terminal Choice']\nRecord B: name=*popular* outside brain inside my room | artist=Twilight Memory | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_63975|lastFM_36760|name=Call Your Girlfriend (Remixes) | artist=Robyn | release-date=2011-05-10 | duration=1308.0 | genre=Electronic | tracks=['Call Your Girlfriend (Feed Me Remix)', 'Call Your Girlfriend (Kaskade Remix)', 'Call Your Girlfriend (Sultan & Ned Shepard Remix)', 'Call Your Girlfriend (Sultan & Ned Shepard Dub Remix)']||name=*popular* Call Your Girlfriend | artist=Robyn | duration=1307.0 | tracks=['Call Your Girlfriend (Feed Me Remix)', 'Call Your Girlfriend (Kaskade Remix)', 'Call Your Girlfriend (Sultan & Ned Remix)', 'Call Your Girlfriend (Sultan & Ned Dub)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call Your Girlfriend (Remixes) | artist=Robyn | release-date=2011-05-10 | duration=1308.0 | genre=Electronic | tracks=['Call Your Girlfriend (Feed Me Remix)', 'Call Your Girlfriend (Kaskade Remix)', 'Call Your Girlfriend (Sultan & Ned Shepard Remix)', 'Call Your Girlfriend (Sultan & Ned Shepard Dub Remix)']\nRecord B: name=*popular* Call Your Girlfriend | artist=Robyn | duration=1307.0 | tracks=['Call Your Girlfriend (Feed Me Remix)', 'Call Your Girlfriend (Kaskade Remix)', 'Call Your Girlfriend (Sultan & Ned Remix)', 'Call Your Girlfriend (Sultan & Ned Dub)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

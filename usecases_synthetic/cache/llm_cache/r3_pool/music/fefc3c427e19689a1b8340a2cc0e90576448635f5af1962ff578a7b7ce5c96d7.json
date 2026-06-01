@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_10485|mbrainz_6774|name=The Psychedelic World Of The 13th Floor Elevators | artist=1. Floor Elevators | tracks=[]||name=The Psychadelic Sounds of the 13th Floor Elevators | artist=13th Floor Elevators | release-date=2003-07-22 | release-country=United States of America | duration=3243 | tracks=[\"You're Gonna Miss Me\", 'Roller Coaster', 'Splash 1', 'Reverberation', \"Don't Fall Down\", 'Fire Engine', 'Thru the Rhythm', \"You Don't Know (How Young You Are)\", 'Kingdom of Heaven', 'Monkey Island', 'Tried to Hide', 'Everybody Needs Somebody to Love (live)', 'You Really Got Me (live)', 'Gloria (live)', \"You're Gonna Miss Me (live)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Psychedelic World Of The 13th Floor Elevators | artist=1. Floor Elevators | tracks=[]\nRecord B: name=The Psychadelic Sounds of the 13th Floor Elevators | artist=13th Floor Elevators | release-date=2003-07-22 | release-country=United States of America | duration=3243 | tracks=[\"You're Gonna Miss Me\", 'Roller Coaster', 'Splash 1', 'Reverberation', \"Don't Fall Down\", 'Fire Engine', 'Thru the Rhythm', \"You Don't Know (How Young You Are)\", 'Kingdom of Heaven', 'Monkey Island', 'Tried to Hide', 'Everybody Needs Somebody to Love (live)', 'You Really Got Me (live)', 'Gloria (live)', \"You're Gonna Miss Me (live)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

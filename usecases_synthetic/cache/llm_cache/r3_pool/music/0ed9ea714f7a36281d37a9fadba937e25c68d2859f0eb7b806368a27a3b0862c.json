@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_31290|mbrainz_1426|name=[explicit] Torn (The Dance Mixes) | artist=Natalie Browne | tracks=[]||name=Torn - The Dance Mixes | artist=Browne, Natalie | release-date=1998-01-01 | release-country=United States of America | duration=1220 | tracks=['Torn (Definitive radio edit)', 'Torn (Fired Up radio edit)', 'Torn (Definitive mix)', 'Torn (Fired Up mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=[explicit] Torn (The Dance Mixes) | artist=Natalie Browne | tracks=[]\nRecord B: name=Torn - The Dance Mixes | artist=Browne, Natalie | release-date=1998-01-01 | release-country=United States of America | duration=1220 | tracks=['Torn (Definitive radio edit)', 'Torn (Fired Up radio edit)', 'Torn (Definitive mix)', 'Torn (Fired Up mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

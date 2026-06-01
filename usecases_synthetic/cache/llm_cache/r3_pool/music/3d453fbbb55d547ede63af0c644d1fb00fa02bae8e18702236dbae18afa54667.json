@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_2069|mbrainz_7973|name=Continuum | artist=R. Modell | duration=0.0 | tracks=['Vitamin M', 'Vitamin K']||name=The Continuum | artist=Brotherâ€™s Keeper | release-date=1996-06 | release-country=United States of America | duration=0 | tracks=['The Continuum', 'Eternal', 'Two Dollar Bill', 'Drift', 'Sunshine', 'Halfman', 'Spectator', 'The Gift', 'Momentum', 'Identify']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Continuum | artist=R. Modell | duration=0.0 | tracks=['Vitamin M', 'Vitamin K']\nRecord B: name=The Continuum | artist=Brotherâ€™s Keeper | release-date=1996-06 | release-country=United States of America | duration=0 | tracks=['The Continuum', 'Eternal', 'Two Dollar Bill', 'Drift', 'Sunshine', 'Halfman', 'Spectator', 'The Gift', 'Momentum', 'Identify']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

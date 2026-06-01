@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "3,725.29 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "4000.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Converted the explicit GiB value to its numeric gigabyte-equivalent form and selected the consistent normalized candidate.",
+    "value": 3725.29
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3725.29,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Converted the explicit GiB value to its numeric gigabyte-equivalent form and selected the consistent normalized candidate.\"}"
+}

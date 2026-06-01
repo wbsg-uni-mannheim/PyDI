@@ -1,0 +1,246 @@
+# Fusion committee roster — music domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member is
+# a coherent end-to-end fusion approach producing a complete fused
+# DataFrame across all attributes; per-member macro_accuracy is the
+# headline metric. The per-(attribute, strategy) split of the pre-C12
+# layout is retired — see baselines/music/fusion_committee_selection.json
+# (written on first run) for the val-best PyDI choices each member
+# locks in.
+#
+# Per-domain fork rather than a single canonical file because
+# attribute_types + pydi_candidates depend on the schema.
+
+seed: 42
+
+fused_id_column: id
+gold_id_column: id
+
+# Music's ``<tracks>`` XML element ships its track listing as a Python-
+# list literal in the element's text content. The runner literal_eval's
+# these columns before evaluation.
+gold_list_columns:
+  - tracks
+
+# Trust scores reflect K2 source_priority for music. musicbrainz is the
+# canonical authority for releases (id namespace, careful curation),
+# discogs is community-curated metadata, lastfm is user-tagged data.
+trust_scores:
+  musicbrainz: 3
+  discogs: 2
+  lastfm: 1
+
+# Column mapping — keep in sync with em_blocking / em_matching music
+# yamls. New CSV sources already use canonical names, so no rename.
+column_mapping:
+  musicbrainz: {}
+  discogs: {}
+  lastfm: {}
+
+evaluation_functions:
+  name: tokenized_match
+  artist: tokenized_match
+  release-date: year_only_match
+  release-country: tokenized_match
+  genre: tokenized_match
+  label: tokenized_match
+  duration: numeric_tolerance_match
+  tracks: tokenized_match
+
+evaluation_params:
+  # Hard-set from the human-baseline notebook (usecases/music/
+  # music_workflow.ipynb, 2026-06-01 per user): duration tolerance = 10.
+  # numeric_tolerance_match applies this as an ABSOLUTE band
+  # (abs(a-b) <= 10), i.e. durations within 10 seconds count as a match.
+  # NOT swept (only non-tolerance fusion params are tuned in R9).
+  duration:
+    tolerance: 10
+  tracks:
+    # Locked at 0.1 by R5 Fusion sub-D sweep (2026-05-12).
+    threshold: 0.1
+
+# Per-attribute semantic type. Drives member dispatch:
+# string/categorical/date attributes route to a TD member's native
+# method (or PyDI for cell_local members); numeric + list attributes
+# route to val-best PyDI for non-native TD members.
+attribute_types:
+  name: string
+  artist: string
+  release-date: date
+  release-country: categorical
+  genre: categorical
+  label: string
+  duration: numeric
+  tracks: list
+
+# PyDI candidate registry for val-selection sweeps. Used by
+# pydi_per_attribute_optimal (across every attribute) and by the TD
+# members on attributes whose type is not in their native set.
+pydi_candidates:
+  string:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: longest_string
+      function: longest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: shortest_string
+      function: shortest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  categorical:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  date:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: earliest
+      function: earliest
+      module: PyDI.fusion.conflict_resolution.date
+    - name: most_recent
+      function: most_recent
+      module: PyDI.fusion.conflict_resolution.date
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  numeric:
+    - name: median
+      function: median
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: average
+      function: average
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: maximum
+      function: maximum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: minimum
+      function: minimum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: trimmed_mean
+      function: trimmed_mean
+      module: usecases_synthetic.lib.robust_aggregators
+      params:
+        trim: 0.1
+    - name: huber_m_estimator
+      function: huber_m_estimator
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: median_of_means
+      function: median_of_means
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  list:
+    - name: union
+      function: union
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection
+      function: intersection
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection_k_sources
+      function: intersection_k_sources
+      module: PyDI.fusion.conflict_resolution.list
+      params:
+        k: 2
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+# C12 member roster. Each member produces a single fused DataFrame via
+# one DataFusionEngine.run() call. Per-member macro_accuracy is the
+# headline; best-member macro is the user-attainable ceiling per stage.
+members:
+  - name: pydi_per_attribute_optimal
+    params: {}
+
+  - name: llm_only
+    params:
+      llm_callable: openai
+      llm_model: gpt-5.4-mini
+      model_id: gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      cache_dir: usecases_synthetic/cache/llm_judge_fusion
+      prompt_version: v2
+
+  - name: fusionquery_only
+    # R5 Fusion sub-H sweep params kept (temperature=0.7 universal winner
+    # on music). Native on string/categorical/date; val-best PyDI on
+    # numeric (duration) + list (tracks).
+    params:
+      max_iters: 5
+      theta: 3.0e-5
+      init_trust: 0.95
+      history_size: 50.0
+      temperature: 0.7
+      threshold: 0.7
+
+  - name: truthfinder_only
+    # R5 Fusion sub-E sweep params kept (gamma=0.1 universal winner on
+    # music). Native on string/categorical/date; val-best PyDI on
+    # numeric + list.
+    params:
+      init_trust: 0.9
+      gamma: 0.1
+      rho: 0.5
+      max_iters: 10
+      early_stop: 1.0e-3
+
+  - name: ltm_only
+    # R5 Fusion sub-I sweep params kept (alpha_0=[20, 5] lifts tracks on
+    # music). Native on string/categorical/date + list (multi-truth);
+    # val-best PyDI on numeric only.
+    params:
+      alpha_0: [20.0, 5.0]
+      alpha_1: [10.0, 10.0]
+      beta: [10.0, 10.0]
+      max_iters: 50
+      burnin: 10
+      thin: 2
+
+  - name: casefusion_only
+    # R5 Fusion sub-G sweep params kept. Native on string/categorical/
+    # date; val-best PyDI on numeric + list.
+    params:
+      dimension: 10
+      alpha: 1.05
+      beta: 1.1
+      lr: 0.05
+      converge_rate: 1.0e-5
+      max_iters: 50
+
+  - name: accusim_only
+    # Native on every attribute via the type-aware _accusim_default_sim
+    # (dice on strings, Jaccard on lists, numeric-tolerance on numerics).
+    params:
+      accuracy_prior: 0.8
+      n_competing_values: 10
+      epsilon: 1.0e-3
+      max_iter: 20
+      sim_threshold: 0.7
+
+  - name: voting_only
+    params: {}
+
+  - name: prefer_higher_trust_only
+    params: {}

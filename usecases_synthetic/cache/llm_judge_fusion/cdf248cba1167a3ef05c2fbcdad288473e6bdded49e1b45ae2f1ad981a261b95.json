@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Singles Collection"
+    },
+    {
+      "source": "lastfm",
+      "value": "One Way System -  Singles Collection"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Removed the artist prefix from the Last.fm candidate to canonicalize the release title.",
+    "value": "Singles Collection"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Singles Collection\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Removed the artist prefix from the Last.fm candidate to canonicalize the release title.\"}"
+}

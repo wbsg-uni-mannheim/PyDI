@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_62020|mbrainz_4627|name=California | artist=Jack a. White | duration=168.0 | tracks=[\"California Dreamin'\"]||name=California Dreamin' | artist=Hi-STANDARD | release-date=1996-08-26 | release-country=United States of America | duration=139 | tracks=[\"California Dreamin'\", 'Lonely', 'Wait for the Sun']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=California | artist=Jack a. White | duration=168.0 | tracks=[\"California Dreamin'\"]\nRecord B: name=California Dreamin' | artist=Hi-STANDARD | release-date=1996-08-26 | release-country=United States of America | duration=139 | tracks=[\"California Dreamin'\", 'Lonely', 'Wait for the Sun']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

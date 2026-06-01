@@ -1,0 +1,274 @@
+# Fusion committee roster — products domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member is
+# a coherent end-to-end fusion approach producing a complete fused
+# DataFrame across all attributes; per-member macro_accuracy is the
+# headline metric. The per-(attribute, strategy) split of the pre-C12
+# layout is retired — see baselines/products/fusion_committee_selection.json
+# (written on first run) for the val-best PyDI choices each member
+# locks in.
+#
+# Per-domain fork rather than a single canonical file because
+# attribute_types + pydi_candidates depend on the schema.
+#
+# NOTE: the existing fusion gold
+# (usecases/products/input/fusion/{validation,test}_set.xml) currently
+# only carries the original 5 attribute columns (title / brand /
+# description / price / priceCurrency). The data_cleaned_final
+# additions (model / product_type / chipset_name / vram_gb /
+# storage_gb) are declared here so the next gold refresh requires no
+# committee config change. They are dead config until the gold XML is
+# refreshed.
+
+seed: 42
+
+fused_id_column: id
+gold_id_column: id
+
+# Trust scores: R9 trust sub-sweep (2026-05-28) on products tried all
+# 24 permutations of (4, 3, 2, 1) across the 4 sources. All 24 cells
+# produced identical overall_accuracy = 0.8220 (per-attribute val-best
+# selection dominates), but macro_accuracy resolved a clear winner at
+# (products_1=4, products_2=3, products_3=2, products_4=1). Direction
+# matches the human-baseline notebook (cell f1b27fcf: p1=3, p2=2, p3=1,
+# p4=2) — products_1 highest, products_3 lowest. Replaces the prior
+# flat (1, 1, 1, 1) placeholder.
+trust_scores:
+  products_1: 4
+  products_2: 3
+  products_3: 2
+  products_4: 1
+
+# Column mapping - empty per source (shared schema). Keep in sync with
+# em_blocking / em_matching products yamls.
+column_mapping:
+  products_1: {}
+  products_2: {}
+  products_3: {}
+  products_4: {}
+
+evaluation_functions:
+  # Full data_cleaned_final wide schema (plan_revision §R1 / §R10-L).
+  # Fusion gold XML refreshed 2026-06-01 from 6 -> 19 attrs (the prior
+  # narrow set was a generator bug). Committee convention: tokenized_match
+  # for string/categorical/tech attrs, numeric_tolerance_match for
+  # numerics. (Per the 2026-06-01 decision we keep the committee's
+  # tokenized convention rather than the human-baseline notebook's
+  # exact/hardware_strict tech-string matchers; only the baseline's
+  # numeric tolerance value is adopted below.)
+  title: tokenized_match
+  brand: tokenized_match
+  description: tokenized_match
+  price: numeric_tolerance_match
+  priceCurrency: tokenized_match
+  title_description: tokenized_match
+  product_type: tokenized_match
+  model: tokenized_match
+  model_number: tokenized_match
+  chipset_name: tokenized_match
+  vram_gb: numeric_tolerance_match
+  storage_gb: numeric_tolerance_match
+  bus_type: tokenized_match
+  interface_type: tokenized_match
+  memory_type: tokenized_match
+  storage_connection_type: tokenized_match
+  form_factor: tokenized_match
+  read_speed_mb_s: numeric_tolerance_match
+  write_speed_mb_s: numeric_tolerance_match
+
+evaluation_params:
+  # price is not covered by the human-baseline hardware schema; left at
+  # its original 0.1.
+  price:
+    tolerance: 0.1
+  # Numeric tolerances sourced from the human-baseline notebook
+  # (usecases/products/products_workflow_v2.ipynb, 2026-06-01 per user):
+  # tolerance=0.15 for every numeric hardware attr. NOTE: PyDI
+  # numeric_tolerance_match applies this as an ABSOLUTE band
+  # (abs(a-b) <= 0.15), NOT 15% — the notebook labels it "15%" but the
+  # function is absolute, so on integer GB counts it is effectively
+  # near-exact. Kept byte-faithful to the baseline.
+  vram_gb:
+    tolerance: 0.15
+  storage_gb:
+    tolerance: 0.15
+  read_speed_mb_s:
+    tolerance: 0.15
+  write_speed_mb_s:
+    tolerance: 0.15
+
+# Per-attribute semantic type. Drives member dispatch:
+# string/categorical/date attributes route to a TD member's native
+# method; numeric attributes route to val-best PyDI for non-native TD
+# members.
+attribute_types:
+  title: string
+  brand: categorical
+  description: string
+  price: numeric
+  priceCurrency: categorical
+  title_description: string
+  product_type: categorical
+  model: string
+  model_number: string
+  chipset_name: string
+  vram_gb: numeric
+  storage_gb: numeric
+  bus_type: categorical
+  interface_type: categorical
+  memory_type: categorical
+  storage_connection_type: categorical
+  form_factor: categorical
+  read_speed_mb_s: numeric
+  write_speed_mb_s: numeric
+
+# PyDI candidate registry for val-selection sweeps. Used by
+# pydi_per_attribute_optimal (across every attribute) and by the TD
+# members on attributes whose type is not in their native set.
+pydi_candidates:
+  string:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: longest_string
+      function: longest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: shortest_string
+      function: shortest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  categorical:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  numeric:
+    - name: median
+      function: median
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: average
+      function: average
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: maximum
+      function: maximum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: minimum
+      function: minimum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: trimmed_mean
+      function: trimmed_mean
+      module: usecases_synthetic.lib.robust_aggregators
+      params:
+        trim: 0.1
+    - name: huber_m_estimator
+      function: huber_m_estimator
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: median_of_means
+      function: median_of_means
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+# C12 member roster. Each member produces a single fused DataFrame via
+# one DataFusionEngine.run() call. Per-member macro_accuracy is the
+# headline; best-member macro is the user-attainable ceiling per stage.
+members:
+  - name: pydi_per_attribute_optimal
+    params: {}
+
+  - name: llm_only
+    params:
+      llm_callable: openai
+      llm_model: gpt-5.4-mini
+      model_id: gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      cache_dir: usecases_synthetic/cache/llm_judge_fusion
+      prompt_version: v2
+
+  - name: fusionquery_only
+    # R9 fusionquery sub-sweep (2026-05-28) on products: 9 cells across
+    # (temperature, threshold). All cells tied at overall_accuracy =
+    # 0.8220; winner on macro_accuracy: temperature=0.3, threshold=0.5
+    # (was 0.5 / 0.7). Within-noise update; recorded for audit trail.
+    # Native on string/categorical/date; val-best PyDI on numeric
+    # (price, vram_gb, storage_gb).
+    params:
+      max_iters: 5
+      theta: 3.0e-5
+      init_trust: 0.95
+      history_size: 50.0
+      temperature: 0.3
+      threshold: 0.5
+
+  - name: truthfinder_only
+    # R9 truthfinder sub-sweep (2026-05-28) on products: 8 cells across
+    # init_trust. All cells tied at overall_accuracy = 0.8220; winner on
+    # macro_accuracy: init_trust=0.8 (was 0.9). Within-noise update;
+    # recorded for audit trail. Native on string/categorical/date;
+    # val-best PyDI on numeric.
+    params:
+      init_trust: 0.8
+      gamma: 0.1
+      rho: 0.5
+      max_iters: 10
+      early_stop: 1.0e-3
+
+  - name: ltm_only
+    # Defaults — products has no list-typed attributes today, so LTM's
+    # multi-truth path is unused; native on string/categorical/date,
+    # val-best PyDI on numeric.
+    params:
+      alpha_0: [50.0, 10.0]
+      alpha_1: [10.0, 10.0]
+      beta: [10.0, 10.0]
+      max_iters: 50
+      burnin: 10
+      thin: 2
+
+  - name: casefusion_only
+    # R9 casefusion sub-sweep (2026-05-28) on products: 4 cells across
+    # lr. All cells tied at overall_accuracy = 0.8220; winner on
+    # macro_accuracy: lr=0.01 (was 0.05). Within-noise update; recorded
+    # for audit trail.
+    params:
+      dimension: 10
+      alpha: 1.05
+      beta: 1.1
+      lr: 0.01
+      converge_rate: 1.0e-5
+      max_iters: 50
+
+  - name: accusim_only
+    # R9 accusim sub-sweep (2026-05-28) on products: 9 cells across
+    # (accuracy_prior, sim_threshold). All cells tied at
+    # overall_accuracy = 0.8220; winner on macro_accuracy:
+    # accuracy_prior=0.7, sim_threshold=0.5 (was 0.8 / 0.7). Within-
+    # noise update; recorded for audit trail. Native on every attribute
+    # via the type-aware _accusim_default_sim (dice on strings, numeric-
+    # tolerance on numerics).
+    params:
+      accuracy_prior: 0.7
+      n_competing_values: 10
+      epsilon: 1.0e-3
+      max_iter: 20
+      sim_threshold: 0.5
+
+  - name: voting_only
+    params: {}
+
+  - name: prefer_higher_trust_only
+    params: {}

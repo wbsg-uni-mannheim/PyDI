@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "EHR"
+    },
+    {
+      "source": "products_2",
+      "value": "EUR"
+    },
+    {
+      "source": "products_3",
+      "value": "R0N"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "EUR is the standard ISO 4217 currency code and the other candidates appear to be noisy variants.",
+    "value": "EUR"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"EUR\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"EUR is the standard ISO 4217 currency code and the other candidates appear to be noisy variants.\"}"
+}

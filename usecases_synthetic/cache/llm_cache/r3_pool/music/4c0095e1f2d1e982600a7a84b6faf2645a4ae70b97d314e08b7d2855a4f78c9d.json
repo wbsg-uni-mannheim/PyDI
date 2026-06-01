@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_25013|mbrainz_12282|name=Sings  Classics | artist=Dennis B. | duration=2800.0 | tracks=['Take My Hand', 'Write Me A Letter', 'Left With A Broken Heart', 'Satamasagana', 'No Man Is A Island', 'Dancing Mood', 'Fancy Make Up', 'Do You Love Me', 'Mr Fix It', 'Moving Away', 'Winter Shade Of Pale', 'All In This Together', 'Loving You']||name=Classics | artist=McLean, Don | release-date=1996-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2830 | tracks=['American Pie', 'Vincent', 'And I Love You So', 'Crying', \"Since I Don't Have You\", 'Castles in the Air', \"It's Just the Sun\", 'Jerusalem', \"It's a Beautiful Life\", 'American Pie (new version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sings  Classics | artist=Dennis B. | duration=2800.0 | tracks=['Take My Hand', 'Write Me A Letter', 'Left With A Broken Heart', 'Satamasagana', 'No Man Is A Island', 'Dancing Mood', 'Fancy Make Up', 'Do You Love Me', 'Mr Fix It', 'Moving Away', 'Winter Shade Of Pale', 'All In This Together', 'Loving You']\nRecord B: name=Classics | artist=McLean, Don | release-date=1996-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2830 | tracks=['American Pie', 'Vincent', 'And I Love You So', 'Crying', \"Since I Don't Have You\", 'Castles in the Air', \"It's Just the Sun\", 'Jerusalem', \"It's a Beautiful Life\", 'American Pie (new version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

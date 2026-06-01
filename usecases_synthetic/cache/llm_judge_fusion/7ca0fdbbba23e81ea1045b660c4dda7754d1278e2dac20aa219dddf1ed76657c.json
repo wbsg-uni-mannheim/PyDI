@@ -1,0 +1,30 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "13,038.52 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "14000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "931.32 GiB"
+    },
+    {
+      "source": "products_4",
+      "value": "14,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Two candidates explicitly state 14,000 GB, and the GiB value corresponds closely to that capacity after unit normalization.",
+    "value": 14000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":14000.0,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Two candidates explicitly state 14,000 GB, and the GiB value corresponds closely to that capacity after unit normalization.\"}"
+}

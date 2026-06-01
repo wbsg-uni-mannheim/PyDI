@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_149503|mbrainz_1826|name=Among My Swan | artist=Mazzy Star | release-date=1996 | release-country=Canada | duration=3240.0 | genre=Rock | tracks=['Disappear', 'Flowers In December', 'Rhymes Of An Hour', 'Cry, Cry', 'Take Everything', 'Still Cold', 'All Your Sisters', \"I've Been Let Down\", 'Roseblood', 'Happy', 'Umbilical', 'Look On Down From The Bridge']||name=Among My Swan | artist=Mazzy Star | release-date=1996-10-17 | release-country=Germany | duration=3235 | tracks=['Disappear', 'Flowers in December', 'Rhymes of an Hour', 'Cry, Cry', 'Take Everything', 'Still Cold', 'All Your Sisters', \"I've Been Let Down\", 'Roseblood', 'Happy', 'Umbilical', 'Look on Down From the Bridge']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Among My Swan | artist=Mazzy Star | release-date=1996 | release-country=Canada | duration=3240.0 | genre=Rock | tracks=['Disappear', 'Flowers In December', 'Rhymes Of An Hour', 'Cry, Cry', 'Take Everything', 'Still Cold', 'All Your Sisters', \"I've Been Let Down\", 'Roseblood', 'Happy', 'Umbilical', 'Look On Down From The Bridge']\nRecord B: name=Among My Swan | artist=Mazzy Star | release-date=1996-10-17 | release-country=Germany | duration=3235 | tracks=['Disappear', 'Flowers in December', 'Rhymes of an Hour', 'Cry, Cry', 'Take Everything', 'Still Cold', 'All Your Sisters', \"I've Been Let Down\", 'Roseblood', 'Happy', 'Umbilical', 'Look on Down From the Bridge']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

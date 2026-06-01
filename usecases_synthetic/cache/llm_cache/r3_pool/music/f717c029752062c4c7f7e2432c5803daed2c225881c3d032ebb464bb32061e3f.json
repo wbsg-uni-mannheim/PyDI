@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_121437|lastFM_13911|name=Beyond The Aether | artist=Luciftias | release-date=2013-12-17 | release-country=United States of America | duration=3990.0 | genre=Electronic | tracks=['Beyond The Aether']||name=Beyond the Times | artist=Rodrigo Rodriguez | duration=3950.0 | tracks=['Part I', 'The Shining Eyes of the Dawn', 'Divine Light', 'Kyuden No Kurayami', 'Part V', 'Part VI', 'The Deer and the Moon', 'Sumer', 'Back to the Woods', 'Part X', \"Babylonian Queen's Eyes\", 'Witness of the Stone']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond The Aether | artist=Luciftias | release-date=2013-12-17 | release-country=United States of America | duration=3990.0 | genre=Electronic | tracks=['Beyond The Aether']\nRecord B: name=Beyond the Times | artist=Rodrigo Rodriguez | duration=3950.0 | tracks=['Part I', 'The Shining Eyes of the Dawn', 'Divine Light', 'Kyuden No Kurayami', 'Part V', 'Part VI', 'The Deer and the Moon', 'Sumer', 'Back to the Woods', 'Part X', \"Babylonian Queen's Eyes\", 'Witness of the Stone']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

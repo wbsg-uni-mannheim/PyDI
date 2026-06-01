@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_26451|lastFM_66262|name=Broken Grid | artist=Solar Fake | release-date=2008-02-01 | release-country=Germany | duration=3145.0 | genre=Electronic | tracks=['Hiding Memories From The Sun', 'Stigmata Rain', \"(You Think You're) Radical\", 'The Shield', 'Creep', 'Here I Stand', 'I Keep My Eyes Shut', 'Hero & Conqueror', 'Lies', 'Sometimes', 'Your Hell Is Here', \"I Can't Remember\"]||name=Broken Social Scene | artist=Broken Social S. | duration=3148.0 | tracks=['Ibi Dreams of Pavement (A Better Day)', '7/4 Shoreline', 'Finish Your Collapse and Stay for Breakfast', 'Major Label Debut (Slow)', \"Fire Eye'd Boy\", 'Windsurfing Nation', 'Swimmers', 'Hotel', 'Handjobs for the Holidays', 'Superconnected', 'Tremoloa Debut', \"It's All Gonna Break\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken Grid | artist=Solar Fake | release-date=2008-02-01 | release-country=Germany | duration=3145.0 | genre=Electronic | tracks=['Hiding Memories From The Sun', 'Stigmata Rain', \"(You Think You're) Radical\", 'The Shield', 'Creep', 'Here I Stand', 'I Keep My Eyes Shut', 'Hero & Conqueror', 'Lies', 'Sometimes', 'Your Hell Is Here', \"I Can't Remember\"]\nRecord B: name=Broken Social Scene | artist=Broken Social S. | duration=3148.0 | tracks=['Ibi Dreams of Pavement (A Better Day)', '7/4 Shoreline', 'Finish Your Collapse and Stay for Breakfast', 'Major Label Debut (Slow)', \"Fire Eye'd Boy\", 'Windsurfing Nation', 'Swimmers', 'Hotel', 'Handjobs for the Holidays', 'Superconnected', 'Tremoloa Debut', \"It's All Gonna Break\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

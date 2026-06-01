@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_48753|mbrainz_6925|name=Discovery | artist=Steven C. | duration=2209.0 | tracks=['Little People', 'Come Together', 'All That We...', 'Last Night', 'In Your Dreams', 'Mountain Retreats']||name=Discovery | artist=Ferraro, James | release-date=2008-01-01 | release-country=United States of America | duration=2366 | tracks=['[untitled]', '[untitled]']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Discovery | artist=Steven C. | duration=2209.0 | tracks=['Little People', 'Come Together', 'All That We...', 'Last Night', 'In Your Dreams', 'Mountain Retreats']\nRecord B: name=Discovery | artist=Ferraro, James | release-date=2008-01-01 | release-country=United States of America | duration=2366 | tracks=['[untitled]', '[untitled]']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

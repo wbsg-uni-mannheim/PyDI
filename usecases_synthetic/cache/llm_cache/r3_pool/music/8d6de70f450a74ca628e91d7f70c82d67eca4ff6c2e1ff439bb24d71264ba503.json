@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_62428|mbrainz_237|name=Happiness | artist=E. Reed | duration=1594.0 | tracks=['Happiness', 'Say You Care', 'Suite Sisters: Crazy Red', 'Suite Sisters: Black Beauty', 'Devil in a Dress']||name=Happiness | artist=Sound De-Zign | release-date=2001-01-01 | release-country=Germany | duration=1553 | tracks=['Happiness (original mix)', 'Happiness (Grant Nelson remix)', 'Happiness (Tall Paul remix)', 'Happiness (Coast to Coast remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Happiness | artist=E. Reed | duration=1594.0 | tracks=['Happiness', 'Say You Care', 'Suite Sisters: Crazy Red', 'Suite Sisters: Black Beauty', 'Devil in a Dress']\nRecord B: name=Happiness | artist=Sound De-Zign | release-date=2001-01-01 | release-country=Germany | duration=1553 | tracks=['Happiness (original mix)', 'Happiness (Grant Nelson remix)', 'Happiness (Tall Paul remix)', 'Happiness (Coast to Coast remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

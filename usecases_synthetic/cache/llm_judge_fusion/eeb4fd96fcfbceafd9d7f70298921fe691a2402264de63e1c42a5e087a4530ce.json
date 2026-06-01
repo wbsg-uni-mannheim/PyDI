@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "169.99"
+    },
+    {
+      "source": "products_2",
+      "value": "18,500.0"
+    },
+    {
+      "source": "products_3",
+      "value": "159.97"
+    },
+    {
+      "source": "products_4",
+      "value": "2,099.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "aggregation",
+    "reasoning": "Three candidates cluster near a typical retail price, while 18,500.0 is an outlier, so a robust aggregate gives the best canonical value.",
+    "value": 169.99
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":169.99,\"operation\":\"aggregation\",\"confidence\":0.97,\"reasoning\":\"Three candidates cluster near a typical retail price, while 18,500.0 is an outlier, so a robust aggregate gives the best canonical value.\"}"
+}

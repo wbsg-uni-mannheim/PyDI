@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_67444|mbrainz_13270|name=A Trip To St. Elsewhere | artist=Gnarls Barkley | release-date=2007 | release-country=United States of America | genre=Pop|Funk / Soul|Hip Hop | tracks=['Go To Church', 'Crazy', 'Smiley Faces', 'In Due Time', 'Rest', 'Suicide', 'Exclusive', 'Feel Good Inc.', 'Funkshaway', 'Git Up Git Out', 'Childz Play', 'Ill Be Around', 'Black Ice (Sky High)', 'The One', 'What Is This']||name=A Trip to St. Elsewhere | artist=Gnarls Barkley | release-date=2006-01-01 | release-country=United States of America | duration=2454 | tracks=['Go to Church', 'Crazy', 'Love All the Time', 'In Due Time', 'Reset', 'Black Ice (Sky High)', 'Suicide', 'Exclusive', 'Feel Good Inc.', 'Funkshaway', 'Git Up Git Out', 'Childz Play', \"I'll Be Around\", 'The One', 'What Is This?']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=A Trip To St. Elsewhere | artist=Gnarls Barkley | release-date=2007 | release-country=United States of America | genre=Pop|Funk / Soul|Hip Hop | tracks=['Go To Church', 'Crazy', 'Smiley Faces', 'In Due Time', 'Rest', 'Suicide', 'Exclusive', 'Feel Good Inc.', 'Funkshaway', 'Git Up Git Out', 'Childz Play', 'Ill Be Around', 'Black Ice (Sky High)', 'The One', 'What Is This']\nRecord B: name=A Trip to St. Elsewhere | artist=Gnarls Barkley | release-date=2006-01-01 | release-country=United States of America | duration=2454 | tracks=['Go to Church', 'Crazy', 'Love All the Time', 'In Due Time', 'Reset', 'Black Ice (Sky High)', 'Suicide', 'Exclusive', 'Feel Good Inc.', 'Funkshaway', 'Git Up Git Out', 'Childz Play', \"I'll Be Around\", 'The One', 'What Is This?']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

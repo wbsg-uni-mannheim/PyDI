@@ -1,0 +1,37 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Panic', 'Turn Off the Moon', 'Move It on Over', 'Sunshine in My Rainy Day Mind', 'Till You Say Youâ€™ll Be Mine', 'Iâ€™m Not Sayinâ€™', 'The Witch', 'I Surrender', 'Amoureux dâ€™une affiche', 'Where Will You Be?', 'Single Girl', 'Who Are You Trying to Fool?', 'Time Slips Away', 'Wild Flower']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Panic', 'Turn Off The Moon', 'Move It On Over', 'Sunshine In My Rainy Day Mind', \"Till You Say You'll Be Mine\", \"I'm Not Sayin'\", 'The Witch', 'I Surrender', \"Amoureux D'une Affiche\", 'Where Will You Be?', 'Single Girl', 'Who Are You Trying To Fool?', 'Time Slips Away', 'Wild Flower']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The candidates list the same tracks with only capitalization and apostrophe/encoding differences, so I normalized to a single canonical track list.",
+    "value": [
+      "Panic",
+      "Turn Off the Moon",
+      "Move It on Over",
+      "Sunshine in My Rainy Day Mind",
+      "Till You Say You’ll Be Mine",
+      "I’m Not Sayin’",
+      "The Witch",
+      "I Surrender",
+      "Amoureux d’une affiche",
+      "Where Will You Be?",
+      "Single Girl",
+      "Who Are You Trying to Fool?",
+      "Time Slips Away",
+      "Wild Flower"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Panic\",\"Turn Off the Moon\",\"Move It on Over\",\"Sunshine in My Rainy Day Mind\",\"Till You Say You’ll Be Mine\",\"I’m Not Sayin’\",\"The Witch\",\"I Surrender\",\"Amoureux d’une affiche\",\"Where Will You Be?\",\"Single Girl\",\"Who Are You Trying to Fool?\",\"Time Slips Away\",\"Wild Flower\"],\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The candidates list the same tracks with only capitalization and apostrophe/encoding differences, so I normalized to a single canonical track list.\"}"
+}

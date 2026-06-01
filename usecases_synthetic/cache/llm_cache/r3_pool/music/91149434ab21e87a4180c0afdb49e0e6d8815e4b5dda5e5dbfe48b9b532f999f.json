@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_13321|mbrainz_24101|name=Liebe Mutter... Ein Blumenstrauß, Der Nie Verwelkt | artist=Heino | release-date=1971 | release-country=Germany | duration=2524.0 | genre=Pop | tracks=[\"Ich Hab' Ehrfurcht Vor Schneeweißen Haaren\", 'La Mamma', 'Mamatschi', 'Schwalbenlied', 'Ja, Ja, Wenn Mutter Lacht...', \"Weißt Du Muatterl, Was I Träumt Hab'?\", 'Gute Nacht, Mutter', 'An Die Freude', 'Wenn Du Noch Eine Mutter Hast', 'Ave Verum Corpus', 'Ich Möchte Dir So Gerne Sagen', 'An Die Alte Mutter', 'Ave Maria', 'Schlafe Mein Prinzchen']||name=Liebe Mutter | artist=Heino | release-date=1972-01-01 | release-country=Germany | duration=2578 | tracks=[\"Ich hab' Ehrfurcht vor schneeweiÃŸen Haaren\", 'La Mamma', 'Mamatschi', 'Schwalbenlied', 'Ja, ja, wenn Mutter lacht', 'WeiÃŸt Du Muatterl, was i trÃ¤umt hab?', 'Gute Nacht, Mutter', 'An die Freunde', 'Wenn du noch eine Mutter hast', 'Ave Verum Corpus', 'Ich mÃ¶chte dir so gerne sagen', 'Als die alte Mutter', 'Ave Maria', 'Schlafe, mein Prinzchen (Wiegenlied)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Liebe Mutter... Ein Blumenstrauß, Der Nie Verwelkt | artist=Heino | release-date=1971 | release-country=Germany | duration=2524.0 | genre=Pop | tracks=[\"Ich Hab' Ehrfurcht Vor Schneeweißen Haaren\", 'La Mamma', 'Mamatschi', 'Schwalbenlied', 'Ja, Ja, Wenn Mutter Lacht...', \"Weißt Du Muatterl, Was I Träumt Hab'?\", 'Gute Nacht, Mutter', 'An Die Freude', 'Wenn Du Noch Eine Mutter Hast', 'Ave Verum Corpus', 'Ich Möchte Dir So Gerne Sagen', 'An Die Alte Mutter', 'Ave Maria', 'Schlafe Mein Prinzchen']\nRecord B: name=Liebe Mutter | artist=Heino | release-date=1972-01-01 | release-country=Germany | duration=2578 | tracks=[\"Ich hab' Ehrfurcht vor schneeweiÃŸen Haaren\", 'La Mamma', 'Mamatschi', 'Schwalbenlied', 'Ja, ja, wenn Mutter lacht', 'WeiÃŸt Du Muatterl, was i trÃ¤umt hab?', 'Gute Nacht, Mutter', 'An die Freunde', 'Wenn du noch eine Mutter hast', 'Ave Verum Corpus', 'Ich mÃ¶chte dir so gerne sagen', 'Als die alte Mutter', 'Ave Maria', 'Schlafe, mein Prinzchen (Wiegenlied)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

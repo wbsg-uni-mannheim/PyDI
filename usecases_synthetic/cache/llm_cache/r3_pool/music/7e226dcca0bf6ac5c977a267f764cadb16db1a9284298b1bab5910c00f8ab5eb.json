@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_80880|mbrainz_16166|name=Spooky Action At A Distance | artist=Lotus Plaza | release-date=2012-04-02 | release-country=United States of America | duration=2561.0 | genre=Rock | tracks=['Strangers', 'Out Of Touch', 'Dusty Rhodes', 'White Galactic One', 'Monoliths', 'Jet Out Of The Tundra', 'Eveningness', 'Remember Our Days', 'Black Buzz']||name=Spooky Action at a Distance | artist=Lotus Plaza | release-date=2012-04-27 | release-country=United States of America | duration=2642 | tracks=['Untitled', 'Strangers', 'Out of Touch', 'Dusty Rhodes', 'White Galactic One', 'Monoliths', 'Jet Out of the Tundra', 'Eveningness', 'Remember Our Days', 'Black Buzz']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spooky Action At A Distance | artist=Lotus Plaza | release-date=2012-04-02 | release-country=United States of America | duration=2561.0 | genre=Rock | tracks=['Strangers', 'Out Of Touch', 'Dusty Rhodes', 'White Galactic One', 'Monoliths', 'Jet Out Of The Tundra', 'Eveningness', 'Remember Our Days', 'Black Buzz']\nRecord B: name=Spooky Action at a Distance | artist=Lotus Plaza | release-date=2012-04-27 | release-country=United States of America | duration=2642 | tracks=['Untitled', 'Strangers', 'Out of Touch', 'Dusty Rhodes', 'White Galactic One', 'Monoliths', 'Jet Out of the Tundra', 'Eveningness', 'Remember Our Days', 'Black Buzz']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

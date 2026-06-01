@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_141883|mbrainz_873|name=Chill Out | artist=Black Uhuru | release-date=1982 | release-country=Portugal | duration=2255.0 | genre=Reggae | tracks=['Chill Out', 'Darkness', 'Eye Market', 'Right Stuff', 'Mondays', 'Fleety Foot', 'Wicked Act', 'Moya (Queen Of Jungle)', 'Emotional Slaughter']||name=Chill Out | artist=Black Uhuru | release-date=1982-12 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2266 | tracks=['Chill Out', 'Darkness', 'Eye Market', 'Right Stuff', 'Mondays', 'Fleety Foot', 'Wicked Act', 'Moya (Queen Of I Jungle)', 'Emotional Slaughter']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Chill Out | artist=Black Uhuru | release-date=1982 | release-country=Portugal | duration=2255.0 | genre=Reggae | tracks=['Chill Out', 'Darkness', 'Eye Market', 'Right Stuff', 'Mondays', 'Fleety Foot', 'Wicked Act', 'Moya (Queen Of Jungle)', 'Emotional Slaughter']\nRecord B: name=Chill Out | artist=Black Uhuru | release-date=1982-12 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2266 | tracks=['Chill Out', 'Darkness', 'Eye Market', 'Right Stuff', 'Mondays', 'Fleety Foot', 'Wicked Act', 'Moya (Queen Of I Jungle)', 'Emotional Slaughter']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

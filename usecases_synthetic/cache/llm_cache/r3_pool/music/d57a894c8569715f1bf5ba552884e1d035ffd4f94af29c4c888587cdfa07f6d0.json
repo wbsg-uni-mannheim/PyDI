@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_64852|lastFM_30319|name=Glee: The Music, Volume 6 | artist=Glee Cast | release-date=2011-06-06 | release-country=UK | duration=3889.0 | genre=Pop | tracks=['Turning Tables', 'I Feel Pretty / Unpretty', 'As If We Never Said Goodbye', 'Born This Way', 'Dreams', 'Songbird', 'Go Your Own Way', \"Don't Stop\", 'Rolling In The Deep', \"Isn't She Lovely\", 'Dancing Queen', 'Try A Little Tenderness', 'My Man', 'Pure Imagination', 'Bella Notte', \"As Long As You're There\", 'Pretending', 'Light Up The World']||name=Glee: The Music, Volume 6 | artist=Glee Cast | duration=3243.0 | tracks=['Turning Tables (Glee Cast Version featuring Gwyneth Paltrow)', 'I Feel Pretty / Unpretty', 'Born This Way', 'Dreams', 'Songbird', 'Go Your Own Way', 'Rolling in the Deep (Glee Cast Version featuring Jonathan Groff)', \"Isn't She Lovely (Glee Cast Version)\", 'Dancing Queen', 'Try a Little Tenderness', 'Pure Imagination', 'Bella Notte (Glee Cast Version)', \"As Long as You're There\", 'Pretending (Glee Cast Version)', 'Light Up the World']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Glee: The Music, Volume 6 | artist=Glee Cast | release-date=2011-06-06 | release-country=UK | duration=3889.0 | genre=Pop | tracks=['Turning Tables', 'I Feel Pretty / Unpretty', 'As If We Never Said Goodbye', 'Born This Way', 'Dreams', 'Songbird', 'Go Your Own Way', \"Don't Stop\", 'Rolling In The Deep', \"Isn't She Lovely\", 'Dancing Queen', 'Try A Little Tenderness', 'My Man', 'Pure Imagination', 'Bella Notte', \"As Long As You're There\", 'Pretending', 'Light Up The World']\nRecord B: name=Glee: The Music, Volume 6 | artist=Glee Cast | duration=3243.0 | tracks=['Turning Tables (Glee Cast Version featuring Gwyneth Paltrow)', 'I Feel Pretty / Unpretty', 'Born This Way', 'Dreams', 'Songbird', 'Go Your Own Way', 'Rolling in the Deep (Glee Cast Version featuring Jonathan Groff)', \"Isn't She Lovely (Glee Cast Version)\", 'Dancing Queen', 'Try a Little Tenderness', 'Pure Imagination', 'Bella Notte (Glee Cast Version)', \"As Long as You're There\", 'Pretending (Glee Cast Version)', 'Light Up the World']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

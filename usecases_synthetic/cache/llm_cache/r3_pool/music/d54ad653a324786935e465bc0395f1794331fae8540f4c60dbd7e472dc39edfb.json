@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_39224|lastFM_41567|name=Brothers Grimm | artist=Drapht | release-date=2008-05-17 | release-country=Australia | genre=Hip Hop | tracks=['Intro', 'Falling', 'The Money', 'Insomnia', 'Jimmy Recard', 'Dreams & Dreamers', 'A Good Year', 'Boom Boom Boom', 'Sound Man', \"Don't Wanna Work\", 'Rest In Peace', 'Where Yah From', 'Put On A Record', 'Lost', 'Lose Control']||name=KING BROTHERS | artist=K. Brothers | duration=3497.0 | tracks=['Kieusero!', 'A!! Ah', 'Mushakusha', 'Asu wo Koero', 'Moetsukiru made', 'Mudai 2', 'Rhythm', 'Yami no Naka Blues', 'MACH CLUB', 'Niji to Kumo']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Brothers Grimm | artist=Drapht | release-date=2008-05-17 | release-country=Australia | genre=Hip Hop | tracks=['Intro', 'Falling', 'The Money', 'Insomnia', 'Jimmy Recard', 'Dreams & Dreamers', 'A Good Year', 'Boom Boom Boom', 'Sound Man', \"Don't Wanna Work\", 'Rest In Peace', 'Where Yah From', 'Put On A Record', 'Lost', 'Lose Control']\nRecord B: name=KING BROTHERS | artist=K. Brothers | duration=3497.0 | tracks=['Kieusero!', 'A!! Ah', 'Mushakusha', 'Asu wo Koero', 'Moetsukiru made', 'Mudai 2', 'Rhythm', 'Yami no Naka Blues', 'MACH CLUB', 'Niji to Kumo']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

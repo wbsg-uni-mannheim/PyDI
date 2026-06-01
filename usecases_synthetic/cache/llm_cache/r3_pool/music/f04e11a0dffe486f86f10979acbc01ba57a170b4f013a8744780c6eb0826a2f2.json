@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_118995|lastFM_53159|name=Gemini | artist=Donamorte | release-date=2013-12-12 | release-country=Italy | duration=3118.0 | genre=Electronic | tracks=['Gemini', \"Can't You Feel It\", 'End Of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In The Woods', 'Necronomicon', 'D.r.e.d.a.', 'I Want To Escape', 'Accept And Understand', 'Charade']||name=Gemini | artist=Donamorte | duration=3116.0 | tracks=['Gemini', \"Can't You Feel It\", 'End of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In the Woods', 'Necronomicon', 'D.R.E.D.A.', 'I Want to Escape', 'Accept and Understand', 'Charade']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gemini | artist=Donamorte | release-date=2013-12-12 | release-country=Italy | duration=3118.0 | genre=Electronic | tracks=['Gemini', \"Can't You Feel It\", 'End Of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In The Woods', 'Necronomicon', 'D.r.e.d.a.', 'I Want To Escape', 'Accept And Understand', 'Charade']\nRecord B: name=Gemini | artist=Donamorte | duration=3116.0 | tracks=['Gemini', \"Can't You Feel It\", 'End of Your Reign', 'Down Down', \"I'll Be Dust\", 'Psycho End', 'In the Woods', 'Necronomicon', 'D.R.E.D.A.', 'I Want to Escape', 'Accept and Understand', 'Charade']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

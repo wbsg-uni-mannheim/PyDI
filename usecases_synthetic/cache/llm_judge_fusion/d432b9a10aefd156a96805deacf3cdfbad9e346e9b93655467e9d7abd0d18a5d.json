@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "226.0"
+    },
+    {
+      "source": "products_2",
+      "value": "352.51"
+    },
+    {
+      "source": "products_3",
+      "value": "193.89"
+    },
+    {
+      "source": "products_4",
+      "value": "1135.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.32,
+    "operation": "aggregation",
+    "reasoning": "The candidates are conflicting numeric prices, so a robust aggregate is appropriate; the median is 289.255, but 352.51 is the closest central candidate among the values.",
+    "value": 352.51
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":352.51,\"operation\":\"aggregation\",\"confidence\":0.32,\"reasoning\":\"The candidates are conflicting numeric prices, so a robust aggregate is appropriate; the median is 289.255, but 352.51 is the closest central candidate among the values.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_2402|mbrainz_356|name=Everything All The Time (Album Sampler) | artist=Pieter K | release-date=2002 | release-country=United States of America | duration=721.0 | genre=Electronic | tracks=['Under The Radar (Remix)', 'Trefusis Point (Remix)']||name=Everything All the Time | artist=K, Pieter | release-date=2002-10-22 | release-country=United States of America | duration=3921 | tracks=['Trefusis Point', 'Under the Radar', 'Stars From Aircraft', 'Impressions', 'Aphorism', 'Natural Light (remix)', 'All Things', 'Numina', 'It Could Have Been You', 'Un Amour Fou']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Everything All The Time (Album Sampler) | artist=Pieter K | release-date=2002 | release-country=United States of America | duration=721.0 | genre=Electronic | tracks=['Under The Radar (Remix)', 'Trefusis Point (Remix)']\nRecord B: name=Everything All the Time | artist=K, Pieter | release-date=2002-10-22 | release-country=United States of America | duration=3921 | tracks=['Trefusis Point', 'Under the Radar', 'Stars From Aircraft', 'Impressions', 'Aphorism', 'Natural Light (remix)', 'All Things', 'Numina', 'It Could Have Been You', 'Un Amour Fou']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

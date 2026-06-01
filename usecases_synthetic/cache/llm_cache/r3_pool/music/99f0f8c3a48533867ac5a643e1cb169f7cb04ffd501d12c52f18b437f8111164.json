@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_75574|lastFM_20104|name=Devotional - A Performance Filmed By Anton Corbijn | artist=Depeche Mode | release-date=1994-02-23 | release-country=Japan | genre=Electronic|Rock | tracks=['Opening Credits', 'Higher Love', 'World In My Eyes', 'Walking In My Shoes', 'Behind The Wheel', 'Stripped', 'Condemnation', 'Judas', 'Mercy In You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy The Silence', 'Fly On The Windscreen', 'Everything Counts', \"Closing Credits / Death's Door\"]||name=[explicit] Devotional Tour | artist=Depeche Mode | duration=5266.0 | tracks=['Higher Love', 'Policy of Truth', 'World in My Eyes', 'Walking in My Shoes', 'Behind the Wheel', 'Halo', 'Stripped', 'Condemnation', 'A Question of Lust', \"Death's Door\", 'Mercy in You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy the Silence', 'Fly On The Windscreen', 'Everything Counts']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Devotional - A Performance Filmed By Anton Corbijn | artist=Depeche Mode | release-date=1994-02-23 | release-country=Japan | genre=Electronic|Rock | tracks=['Opening Credits', 'Higher Love', 'World In My Eyes', 'Walking In My Shoes', 'Behind The Wheel', 'Stripped', 'Condemnation', 'Judas', 'Mercy In You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy The Silence', 'Fly On The Windscreen', 'Everything Counts', \"Closing Credits / Death's Door\"]\nRecord B: name=[explicit] Devotional Tour | artist=Depeche Mode | duration=5266.0 | tracks=['Higher Love', 'Policy of Truth', 'World in My Eyes', 'Walking in My Shoes', 'Behind the Wheel', 'Halo', 'Stripped', 'Condemnation', 'A Question of Lust', \"Death's Door\", 'Mercy in You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy the Silence', 'Fly On The Windscreen', 'Everything Counts']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

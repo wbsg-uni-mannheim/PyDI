@@ -1,0 +1,216 @@
+# Knob 02 - Entity Niche Density - Games
+#
+# Authored per knobs/knob_02_niche_density.md. Per-level configuration
+# carries only the target_corner_case_ratio; the dispatcher derives
+# operator counts from the data — see companies.yaml header for the
+# full description.
+
+domain: games
+
+id_columns:
+  dbpedia: id
+  metacritic: id
+  sales: id
+
+primary_column_per_source:
+  dbpedia: title
+  metacritic: game_title
+  sales: prod_title
+
+# Refreshed 2026-05-04 for the new CSV sources. Coverage check on the
+# refreshed CSVs (per-source non-null density of each canonical field):
+#   name        dbpedia 100%  metacritic 100%  sales 100%
+#   platform    dbpedia  99%  metacritic 100%  sales 100%
+#   genres      dbpedia 100%  metacritic 100%  sales 100%
+#   developer   dbpedia  97%  metacritic 100%  sales 100%
+#   releaseYear dbpedia  97%  metacritic 100%  sales 100%
+canonical_schema:
+  - name
+  - platform
+  - genres
+  - developer
+  - releaseYear
+
+attribute_mapping:
+  dbpedia:
+    title: name
+    system: platform
+    genre: genres
+    studio: developer
+    launch_yr: releaseYear
+  metacritic:
+    game_title: name
+    console: platform
+    genres: genres
+    made_by: developer
+    year_published: releaseYear
+  sales:
+    prod_title: name
+    hw: platform
+    genre: genres
+    studio: developer
+    launch_dt: releaseYear
+
+source_priority:
+  - dbpedia
+  - metacritic
+  - sales
+
+text_concat_order:
+  - name
+  - platform
+  - genres
+  - developer
+
+embedding_model_id: BAAI/bge-base-en-v1.5
+
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+# Games' canonical set is the largest of the three domains
+# (~14k entities); widen top-K so borderline corner cases at ranks
+# 20–50 are still surfaced for RRF fusion.
+metric_top_k: 50
+
+rrf_k0: 60
+c_min: 2
+boost_label_collision: 5.0
+inner_token_threshold: 0.8
+
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Attribute-overlap weights — games. Platform + genres carry the most
+# distinguishing signal across the three sources; developer is weaker
+# (many studios produce many games).
+attribute_overlap_weights:
+  platform: 0.35
+  genres: 0.25
+  developer: 0.20
+  releaseYear: 0.20
+
+# Year fields use absolute ±1 tolerance (3% relative on a 4-digit year
+# is meaningless).
+numeric_overlap:
+  releaseYear:
+    kind: absolute
+    tolerance: 1
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+  - "video game"
+  - game
+
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+  medium:
+    target_corner_case_ratio: 0.50
+  hard:
+    target_corner_case_ratio: 0.80
+
+max_interp_fraction: 0.60
+
+# Per-interpolation corner-pair-contribution estimate. The dispatcher's
+# budget calc:
+#   per_interp_corner = max(1, int(metric_top_k * interp_pair_factor))
+#   raw_count = ceil(needed_corner / per_interp_corner)
+# Tuned to 0.05 on 2026-05-16 to match music + companies (F4 calibration
+# pass). At 0.5 (default) the music + companies-small post-mortems showed
+# the K2 dial under-shoots configured medium / hard ratios; 0.05 makes the
+# budget gap-realistic at the cost of more LLM calls per run.
+interp_pair_factor: 0.05
+
+# 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.
+# Was 0.6 (60% test / 40% train); user signed off equal distribution so the
+# regen splits have the same corner-case shape on both sides.
+placement_split: 0.5
+
+em_test_regeneration:
+  candidate_pool_cap: 2000
+
+# Default model gpt-5.4-mini for cost. Ask user before each K2 run
+# whether to bump to gpt-5.4 (invalidates cache).
+# 2026-05-27 (step 4h): prompt v1 -> v2 — interpolate_v2.txt broadens
+# the lead-sentence domain enumeration to include products (GPUs / SSDs /
+# HDDs / etc.) and carries a domain-extension maintenance note.
+# Invalidates the existing K2 LLM cache by construction.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Step 4i (2026-05-27): drop-corner-touching operator + non-corner
+# refill. New K2 dispatch branch at baseline_ratio > target_ratio
+# replaces the legacy noop_baseline_above_target path — K2 now actually
+# moves the ratio downward when configured. Each drop pairs with a
+# 1-for-1 LLM-synthesized non-corner entity refill so canonical set
+# size stays stable.
+non_corner_refill:
+  enabled: true
+  reference_count: 5            # K reference entities for the dissimilarity anchor
+  contamination_check:
+    label_collision_block: true # synthesised primary label must not exist in current canonical set
+non_corner_prompt_version: v1
+
+pool_quality: two_system
+
+# Hard-negative score-margin gate (S3). Pinned to the R2.2 winner from
+# plan_s1_scale.md: roberta-base, lr=1e-5, batch_size=32, max_len=256,
+# max_field_len=350, epochs=50 with early-stopping patience=5
+# (early-stopped at epoch 13), warmup_ratio=0.06, MixDA --da del,
+# class-balanced via --sample-weights-csv (pos≈0.74, neg≈1.56 — train
+# is 68% positive so positives are down-weighted), --fixed-threshold 0.5.
+# Trained on ADI's labeled pool for db↔mc + db↔sales (mc↔sales has no
+# ADI data and is transfer-learned at test time, F1=0.971 on it).
+# Combined test F1=0.9388 (P=0.954, R=0.924); per-pair test F1:
+# dbpedia_metacritic 0.881 (vs ADI 0.964, -8pp), dbpedia_sales 0.952
+# (vs ADI 0.985, -3pp), metacritic_sales 0.971 (transfer-only).
+# Run dir: cache/ditto_checkpoints/games/sweep_lr_1e-5_weighted/run_20260504_175653
+hard_negative_gate:
+  enabled: true
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/games/best
+  plm_fields:
+    - name
+    - platform
+    - genres
+    - developer
+    - releaseYear
+  plm_threshold_theta: 0.5
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 32
+  plm_margin_delta: 0.08
+  # 2026-05-27 (step 4h option a): full LLM adjudication on every
+  # gate decision via new gate_mode field. Mirrors bucket-C policy:
+  # PLM score becomes audit telemetry, not a decision shortcut.
+  # Insurance against transitional-state Ditto calibration on
+  # music / companies / products (pre-R7 padding fix).
+  gate_mode: full_llm
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    hard:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm

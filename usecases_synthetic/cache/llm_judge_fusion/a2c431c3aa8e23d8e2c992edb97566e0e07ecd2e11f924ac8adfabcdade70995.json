@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "279.40 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "300.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.89,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numerically close and likely represent the same storage capacity in different units/rounding, so a robust aggregate to 300 GB is appropriate.",
+    "value": 300
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":300,\"operation\":\"aggregation\",\"confidence\":0.89,\"reasoning\":\"The candidates are numerically close and likely represent the same storage capacity in different units/rounding, so a robust aggregate to 300 GB is appropriate.\"}"
+}

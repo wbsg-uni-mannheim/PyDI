@@ -1,0 +1,195 @@
+# Entity-matching MATCHING committee roster — companies domain.
+#
+# Frozen 4-member roster at R5 EM matching sign-off
+# (plans/plan_s1_scale.md):
+#   1. ditto_plm    — supervised PLM (R2 checkpoint, missing-value tolerant)
+#   2. magellan     — classical ML (auto-feature-gen via PyDI comparators +
+#                     RandomForest implicit feature selection)
+#   3. llm_matcher  — MatchGPT-style zero-shot LLM
+#   4. comem        — Compound EM (two-stage LLM)
+#
+# All four members are enabled by default. The committee runner picks the
+# best blocker per pair (recall_floor=0.97 + tie_breaker=reduction_ratio
+# locked in em_blocking_committee.yaml) and runs every matcher against
+# the winning candidate set.
+#
+# Per-source-pair training data injection (Option A, committee_em.py
+# _PER_PAIR_TRAIN_INJECTION):
+#   * magellan's `training_gold_path` is injected by the runner at
+#     instantiation time from the per-pair `_train.csv` on disk. Pairs
+#     with no train CSV (e.g. companies dbpedia↔fullcontact closure-only)
+#     skip magellan and surface empty per-pair metrics.
+#   * llm_matcher is locked at zero-shot (no demonstrations); no per-pair
+#     injection needed.
+#   * comem is zero-shot by design (no demonstrations); no per-pair
+#     injection needed.
+#
+# LLM model defaults: `openai/gpt-5.4-mini` per plans/plan_s1_scale.md
+# §"LLM model defaults + per-run override". Variant-generation runs
+# (R6.2) route through the OpenAI Batch API for 50% cost discount.
+#
+# Threshold policy: fixed at 0.5 per-member for every variant level
+# (preserves difficulty signal — tuning θ per variant would mask knob
+# effects).
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). R2 checkpoint
+      at usecases_synthetic/cache/ditto_checkpoints/companies/best.
+      Fields include both `industry` (forbes' business_segment) AND
+      `sector` (dbpedia.sector) — they map to distinct canonical
+      attributes per K2's canonical_schema. The column_mapping at the
+      bottom of this file preserves the distinction (dbpedia.sector
+      stays as `sector`, not collapsed to `industry`).
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/companies/best
+        fields: [name, country, city, industry, sector, founded, keypeople, assets, revenue]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher: auto-generated comparator-vector features +
+      sklearn RandomForest. The Magellan philosophy ported to PyDI's
+      comparator stack (py_entitymatching itself does not install on
+      Python 3.12 — its py-stringsimjoin dep fails to build). The
+      classifier's `feature_importances_` performs implicit feature
+      selection across the generated feature bank (~10 features per
+      string column × LexicalExtendedJaccard + 4 per numeric column).
+      `training_gold_path` is runner-injected per source pair.
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        # training_gold_path injected at runtime (see Option A header).
+        # comparators omitted → auto-feature-gen mode kicks in at
+        # training time (see magellan_auto_features.auto_generate_comparators).
+        numeric_attributes: [founded, assets, revenue]
+        date_attributes: []
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        # Locked by R5 EM matching sweep (2026-05-11): companies winner
+        # = n_estimators=100, max_depth=20, class_weight=balanced
+        # (mean closed-set F1 = 0.959; see plan_s1_scale.md
+        # §"R5 EM matching sign-off (2026-05-11)").
+        classifier_params:
+          n_estimators: 100
+          max_depth: 20
+          random_state: 42
+          n_jobs: 1
+          class_weight: balanced
+        preprocess: normalize_text
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style zero-shot LLM matcher. Structured
+      `Record A` / `Record B` serialization, bare Yes/No response,
+      file-backed response cache keyed by sha256(prompt_version |
+      model_id | prompt_text). Zero-shot mode locked: no demonstrations
+      retrieval, no per-pair training data needed. Closure-only source
+      pairs (e.g. companies dbpedia↔fullcontact with no train CSV) are
+      scored zero-shot just like every other pair.
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [name, country, city, industry, sector, founded, keypeople, assets, revenue]
+        chat_model_name: openai/gpt-5.4-mini
+        temperature: 0.0
+        max_tokens: 2048
+        # k_shot / demonstrations_path / embedding_model intentionally
+        # omitted: zero-shot only per R5 EM matching sign-off
+        # (plans/plan_s1_scale.md). MatchGPTMatcher.__init__ defaults
+        # demonstrations_path=None so k_shot becomes a no-op.
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM) — two-stage LLM pipeline.
+      Stage 1 (Selecting) groups candidates by left-side id and asks
+      the LLM to pick matching candidates from a multi-option prompt;
+      Stage 2 (Matching) confirms each Stage-1 survivor with a binary
+      Yes/No prompt. stage1_set_size=10 + skip_stage1_below=2 are the
+      ComEM paper §"Parameters" defaults. stage2_model=None reuses
+      stage1_model (single-model configuration). File-backed response
+      cache under usecases_synthetic/cache/comem_prompts/.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [name, country, city, industry, sector, founded, keypeople, assets, revenue]
+        stage1_model: openai/gpt-5.4-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+# Axis coverage enforcement (consumed by test_committee_configs.py).
+# 4-of-4 enabled covers both `learned` (ditto_plm, magellan) and `llm`
+# (llm_matcher, comem) axes, plus `missing_value_tolerant: true` on
+# every member.
+required_axes:
+  matching_type: [learned, llm]
+  missing_value_tolerant: [true]
+
+# Column mapping — must stay identical to em_blocking_committee.yaml
+# and fusion_committee.yaml (runner enforces). Refreshed 2026-05-04 for
+# the new CSV sources. dbpedia.sector preserves the K2 canonical
+# distinction with forbes' industry (see R5 EM matching sign-off in
+# plans/plan_s1_scale.md).
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded

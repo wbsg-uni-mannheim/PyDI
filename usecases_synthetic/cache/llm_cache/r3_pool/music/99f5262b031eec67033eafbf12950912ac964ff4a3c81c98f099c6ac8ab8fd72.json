@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_3732|lastFM_16795|name=Traveller | artist=Bangkok Impact | release-date=2003 | release-country=Netherlands | duration=4282.0 | genre=Electronic | tracks=['Traveller', 'Aus Birgittes Tagebuch', \"Don't Be A Badboy\", 'Crowdpleaser', 'Masters Of The Universe (Part 1)', 'Leap To The Unknown', 'Give It To Me Baby', 'Logarhytmic', 'Passenger', 'Rymdfunk', 'Traveller (Part 2)', 'Black Zoo', 'Slot Cars']||name=Astral Traveller | artist=ASC | duration=4221.0 | tracks=['Cassini', 'Lightyears', 'Space Technique', 'Juno', 'Logical Regression', 'Zero Gravity', 'Projections', 'Collision Course', 'Delta Shift', 'Space Technique (The Nvious Vocal Mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Traveller | artist=Bangkok Impact | release-date=2003 | release-country=Netherlands | duration=4282.0 | genre=Electronic | tracks=['Traveller', 'Aus Birgittes Tagebuch', \"Don't Be A Badboy\", 'Crowdpleaser', 'Masters Of The Universe (Part 1)', 'Leap To The Unknown', 'Give It To Me Baby', 'Logarhytmic', 'Passenger', 'Rymdfunk', 'Traveller (Part 2)', 'Black Zoo', 'Slot Cars']\nRecord B: name=Astral Traveller | artist=ASC | duration=4221.0 | tracks=['Cassini', 'Lightyears', 'Space Technique', 'Juno', 'Logical Regression', 'Zero Gravity', 'Projections', 'Collision Course', 'Delta Shift', 'Space Technique (The Nvious Vocal Mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

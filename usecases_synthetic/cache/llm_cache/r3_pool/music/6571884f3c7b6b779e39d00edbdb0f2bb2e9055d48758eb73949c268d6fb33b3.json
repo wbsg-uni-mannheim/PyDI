@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_8628|lastFM_42672|name=The Punk Singles Collection | artist=The Adverts | release-date=1997 | release-country=UK | duration=2358.0 | genre=Rock | tracks=['One Chord Wonders', 'Quickstep', \"Gary Gilmore's Eyes\", 'Bored Teenagers', 'Safety In Numbers', 'We Who Wait', 'No Time To Be 21', 'New Day Dawning', \"Television's Over\", 'Back From The Dead', 'My Place', 'New Church (Live)', 'Cast Of Thousands', 'I Will Walk You Home']||name=The Singles Collection 1981 - | artist=K. Wilde | duration=2331.0 | tracks=['The Second Time', 'Rage To Love', \"You Keep Me Hangin' On\", 'Another Step (Closer To You)', 'You Came', 'Never Trust A Stranger', 'Four Letter Word', 'Love Is Holy', \"If I Can't Have You\", 'In My Life']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Punk Singles Collection | artist=The Adverts | release-date=1997 | release-country=UK | duration=2358.0 | genre=Rock | tracks=['One Chord Wonders', 'Quickstep', \"Gary Gilmore's Eyes\", 'Bored Teenagers', 'Safety In Numbers', 'We Who Wait', 'No Time To Be 21', 'New Day Dawning', \"Television's Over\", 'Back From The Dead', 'My Place', 'New Church (Live)', 'Cast Of Thousands', 'I Will Walk You Home']\nRecord B: name=The Singles Collection 1981 - | artist=K. Wilde | duration=2331.0 | tracks=['The Second Time', 'Rage To Love', \"You Keep Me Hangin' On\", 'Another Step (Closer To You)', 'You Came', 'Never Trust A Stranger', 'Four Letter Word', 'Love Is Holy', \"If I Can't Have You\", 'In My Life']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

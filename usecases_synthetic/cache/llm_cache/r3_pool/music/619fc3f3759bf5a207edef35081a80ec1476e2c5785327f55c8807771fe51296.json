@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_28351|lastFM_13630|name=United | artist=Deutschland Sucht Den Superstar | release-date=2003 | release-country=Germany | genre=Pop | tracks=['We Have A Dream', 'Tonight', 'Cry On My Shoulder', 'A Young Generation', 'Here We Stand Again (Stay With Me Tonight)', 'Superman', 'How Can We Mend Your Lonely Heart', 'Today, Tonight, Tomorrow', 'We Are No Heroes', 'Freedom', 'God Gave Love To You', \"It's All Over\"]||name=United | artist=Deutschland sucht den Superstar | duration=2319.0 | tracks=['We Have a Dream', 'We Have a Dream (radio edit)', 'Tonight', 'Cry On My Shoulder', 'Cry In My Shoulder', 'A Young Generation', 'Here We Stand Again (Stay With Me Tonight)', 'Today, Tonight, Tomorrow', 'God Gave Love To You', \"It's All Over\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=United | artist=Deutschland Sucht Den Superstar | release-date=2003 | release-country=Germany | genre=Pop | tracks=['We Have A Dream', 'Tonight', 'Cry On My Shoulder', 'A Young Generation', 'Here We Stand Again (Stay With Me Tonight)', 'Superman', 'How Can We Mend Your Lonely Heart', 'Today, Tonight, Tomorrow', 'We Are No Heroes', 'Freedom', 'God Gave Love To You', \"It's All Over\"]\nRecord B: name=United | artist=Deutschland sucht den Superstar | duration=2319.0 | tracks=['We Have a Dream', 'We Have a Dream (radio edit)', 'Tonight', 'Cry On My Shoulder', 'Cry In My Shoulder', 'A Young Generation', 'Here We Stand Again (Stay With Me Tonight)', 'Today, Tonight, Tomorrow', 'God Gave Love To You', \"It's All Over\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

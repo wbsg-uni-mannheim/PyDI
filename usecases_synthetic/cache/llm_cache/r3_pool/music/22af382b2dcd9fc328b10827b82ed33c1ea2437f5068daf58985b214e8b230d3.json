@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_106|lastFM_59485|name=Do It To The Music | artist=Raw Silk | release-date=2000 | release-country=United States of America | duration=709.0 | genre=Electronic | tracks=['Do It To The Music (Vocal)', 'Do It To The Nusic (Dub Mix)']||name=Do It To The Music (The Blaze Mixes) | artist=R. Silk | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Do It To The Music | artist=Raw Silk | release-date=2000 | release-country=United States of America | duration=709.0 | genre=Electronic | tracks=['Do It To The Music (Vocal)', 'Do It To The Nusic (Dub Mix)']\nRecord B: name=Do It To The Music (The Blaze Mixes) | artist=R. Silk | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25132|lastFM_22683|name=Elevator | artist=DJ Ashley|Top Shelf (2) | release-date=2008-02-01 | release-country=United States of America | duration=416.0 | genre=Electronic | tracks=['Elevator']||name=Elevator | artist=Junior Sanchez | duration=603.0 | tracks=['Elevator', 'Elevator (Alexandre Technique & Larry Tee Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Elevator | artist=DJ Ashley|Top Shelf (2) | release-date=2008-02-01 | release-country=United States of America | duration=416.0 | genre=Electronic | tracks=['Elevator']\nRecord B: name=Elevator | artist=Junior Sanchez | duration=603.0 | tracks=['Elevator', 'Elevator (Alexandre Technique & Larry Tee Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

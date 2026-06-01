@@ -1,0 +1,25 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Watch the Sunrise (feat. Steve Edwards) (vocal dub mix)', 'Watch the Sunrise (instrumental)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Watch The Sunrise (Vocal Dub Mix)', 'Watch The Sunrise (Instrumental)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The candidates refer to the same two tracks with minor capitalization/punctuation differences, so I normalized to one consistent track list preserving the more specific credit.",
+    "value": [
+      "Watch the Sunrise (feat. Steve Edwards) (vocal dub mix)",
+      "Watch the Sunrise (instrumental)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Watch the Sunrise (feat. Steve Edwards) (vocal dub mix)\",\"Watch the Sunrise (instrumental)\"],\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The candidates refer to the same two tracks with minor capitalization/punctuation differences, so I normalized to one consistent track list preserving the more specific credit.\"}"
+}

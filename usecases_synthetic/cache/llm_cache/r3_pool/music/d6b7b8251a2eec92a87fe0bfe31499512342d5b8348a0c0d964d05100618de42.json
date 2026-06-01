@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_130583|mbrainz_292|name=The Analogue Theatre | artist=CJ Bolland | release-date=1997 | release-country=United States of America | duration=4530.0 | genre=Electronic | tracks=['Obsidion', 'Pesticide', 'The Analogue Theatre', 'On Line', 'The Prophet', 'People Of The Universe', 'There Can Be Only One', 'Kung Kung Ka', 'Counterpoint', 'Sugar Is Sweeter', 'Electro Power (355 Turbo Power Mix)', \"Sugar Is Sweeter (Armand Van Helden's Drum & Bass Mix Album Edit)\"]||name=The Analogue Theatre | artist=Bolland, CJ | release-date=1997-01-01 | release-country=United States of America | duration=4608 | tracks=['Obsidion', 'Pesticide', 'The Analogue Theatre', 'On Line', 'The Prophet', 'People of the Universe', 'There Can Be Only One', 'Kung Kung Ka', 'Counterpoint', 'Sugar Is Sweeter (original mix)', 'Electro Power (355 Turbo Power mix)', \"Sugar Is Sweeter (Armand van Helden's Drum & Bass mix album edit)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Analogue Theatre | artist=CJ Bolland | release-date=1997 | release-country=United States of America | duration=4530.0 | genre=Electronic | tracks=['Obsidion', 'Pesticide', 'The Analogue Theatre', 'On Line', 'The Prophet', 'People Of The Universe', 'There Can Be Only One', 'Kung Kung Ka', 'Counterpoint', 'Sugar Is Sweeter', 'Electro Power (355 Turbo Power Mix)', \"Sugar Is Sweeter (Armand Van Helden's Drum & Bass Mix Album Edit)\"]\nRecord B: name=The Analogue Theatre | artist=Bolland, CJ | release-date=1997-01-01 | release-country=United States of America | duration=4608 | tracks=['Obsidion', 'Pesticide', 'The Analogue Theatre', 'On Line', 'The Prophet', 'People of the Universe', 'There Can Be Only One', 'Kung Kung Ka', 'Counterpoint', 'Sugar Is Sweeter (original mix)', 'Electro Power (355 Turbo Power mix)', \"Sugar Is Sweeter (Armand van Helden's Drum & Bass mix album edit)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

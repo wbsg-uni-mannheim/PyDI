@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_11804|lastFM_5746|name=Boy In Da Corner | artist=Dizzee Rascal | release-date=2004 | release-country=United States of America | duration=3675.0 | genre=Electronic|Hip Hop | tracks=[\"Sittin' Here\", 'Stop Dat', 'I Luv U', 'Brand New Day', '2 Far', 'Fix Up, Look Sharp', \"Cut 'Em Off\", 'Hold Ya Mouf', 'Round We Go', 'Jus A Rascal', 'Wot U On', 'Jezebel', 'Seems 2 Be', 'Live O', 'Do It', 'Vexed']||name=Dizzee Rascal -  Boy in da Corner | artist=Dizzee Rascal | duration=3736.0 | tracks=[\"Sittin' Here\", 'Stop Dat', 'I Luv You', 'I Luv U', 'Brand New Day', '2 Far', 'Fix Up, Look Sharp', \"Cut 'em Off\", \"Round We Go (Ain't No Love)\", 'Round We Go', \"Jus' a Rascal\", 'Wot U On', 'Jezebel', 'Live O', 'Do It', 'Do It!']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Boy In Da Corner | artist=Dizzee Rascal | release-date=2004 | release-country=United States of America | duration=3675.0 | genre=Electronic|Hip Hop | tracks=[\"Sittin' Here\", 'Stop Dat', 'I Luv U', 'Brand New Day', '2 Far', 'Fix Up, Look Sharp', \"Cut 'Em Off\", 'Hold Ya Mouf', 'Round We Go', 'Jus A Rascal', 'Wot U On', 'Jezebel', 'Seems 2 Be', 'Live O', 'Do It', 'Vexed']\nRecord B: name=Dizzee Rascal -  Boy in da Corner | artist=Dizzee Rascal | duration=3736.0 | tracks=[\"Sittin' Here\", 'Stop Dat', 'I Luv You', 'I Luv U', 'Brand New Day', '2 Far', 'Fix Up, Look Sharp', \"Cut 'em Off\", \"Round We Go (Ain't No Love)\", 'Round We Go', \"Jus' a Rascal\", 'Wot U On', 'Jezebel', 'Live O', 'Do It', 'Do It!']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

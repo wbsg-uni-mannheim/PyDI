@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2007-07-06"
+    },
+    {
+      "source": "discogs",
+      "value": "2007"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "interpolation",
+    "reasoning": "MusicBrainz provides the full release date and Discogs only the year, so the more precise date is the best canonical value.",
+    "value": "2007-07-06"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2007-07-06\",\"operation\":\"interpolation\",\"confidence\":0.94,\"reasoning\":\"MusicBrainz provides the full release date and Discogs only the year, so the more precise date is the best canonical value.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_15661|lastFM_24713|name=Black Market Music Remix Sampler | artist=Placebo | release-date=2001 | release-country=United States of America | duration=2033.0 | genre=Electronic|Rock | tracks=['Dub Psychosis', 'Passive Aggressive (Brothers In Rhythm Remix)', 'Special K (Timo Maas Remix)', 'Little Mo', \"Slave To The Wage (I Can't Believe It's A Remix)\", 'Special K (Timo Maas Dub Mix)']||name=More Black Market Music | artist=Placebo | duration=3348.0 | tracks=['Intro', 'Black-Eyed', 'Days Before You Came', 'Allergic', \"You Don't Care About Us\", 'Bionic (2006 Digital Remaster)', 'Black Market Music', 'Passive Aggressive', '36 Degrees (2004 Digital Remaster)', 'Special K', \"Without You I'm Nothing\", 'Every You Every Me', 'Teenage Angst (2004 Digital Remaster)', 'Taste in Men', 'Nancy Boy (2006 Digital Remaster)', 'Pure Morning']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Black Market Music Remix Sampler | artist=Placebo | release-date=2001 | release-country=United States of America | duration=2033.0 | genre=Electronic|Rock | tracks=['Dub Psychosis', 'Passive Aggressive (Brothers In Rhythm Remix)', 'Special K (Timo Maas Remix)', 'Little Mo', \"Slave To The Wage (I Can't Believe It's A Remix)\", 'Special K (Timo Maas Dub Mix)']\nRecord B: name=More Black Market Music | artist=Placebo | duration=3348.0 | tracks=['Intro', 'Black-Eyed', 'Days Before You Came', 'Allergic', \"You Don't Care About Us\", 'Bionic (2006 Digital Remaster)', 'Black Market Music', 'Passive Aggressive', '36 Degrees (2004 Digital Remaster)', 'Special K', \"Without You I'm Nothing\", 'Every You Every Me', 'Teenage Angst (2004 Digital Remaster)', 'Taste in Men', 'Nancy Boy (2006 Digital Remaster)', 'Pure Morning']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

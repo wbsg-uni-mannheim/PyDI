@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_110913|mbrainz_19097|name=Save Rock And Roll | artist=Fall Out Boy | release-date=2013-04-12 | release-country=Japan | genre=Rock | tracks=['CD', 'The Phoenix', 'My Songs Know What You Did In The Dark (Light Em Up)', 'Alone Together', 'Where Did The Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat A Tat', 'Save Rock And Roll', 'Bonus Track', 'My Songs Know What You Did In The Dark (Light Em Up) (2 Chainz Remix)', 'DVD', 'My Songs Know What You Did In The Dark (Light Em Up) - Music Video', 'Album \"Save Rock And Roll\" - Track By Track']||name=Save Rock and Roll | artist=Fall Out Boy | release-date=2013-04-12 | duration=2497 | tracks=['The Phoenix', 'My Songs Know What You Did in the Dark (Light Em Up)', 'Alone Together', 'Where Did the Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat a Tat', 'Save Rock and Roll']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Save Rock And Roll | artist=Fall Out Boy | release-date=2013-04-12 | release-country=Japan | genre=Rock | tracks=['CD', 'The Phoenix', 'My Songs Know What You Did In The Dark (Light Em Up)', 'Alone Together', 'Where Did The Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat A Tat', 'Save Rock And Roll', 'Bonus Track', 'My Songs Know What You Did In The Dark (Light Em Up) (2 Chainz Remix)', 'DVD', 'My Songs Know What You Did In The Dark (Light Em Up) - Music Video', 'Album \"Save Rock And Roll\" - Track By Track']\nRecord B: name=Save Rock and Roll | artist=Fall Out Boy | release-date=2013-04-12 | duration=2497 | tracks=['The Phoenix', 'My Songs Know What You Did in the Dark (Light Em Up)', 'Alone Together', 'Where Did the Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat a Tat', 'Save Rock and Roll']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

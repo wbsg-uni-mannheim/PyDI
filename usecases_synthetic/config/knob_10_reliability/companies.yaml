@@ -1,0 +1,167 @@
+# Knob 10 — Source Reliability Differentiation: Companies domain config.
+#
+# Refreshed-CSV column names (2026-05-07 K10 sign-off, plan_s1_scale.md
+# §"K10 sign-off"). Per-attribute winner picks reflect the locked
+# preference for curated commercial sources over auto-generated DBpedia
+# (Wikipedia-infobox-scraped — noisier on free-text / numeric fields).
+# DBpedia wins exactly one attribute (industry, GICS-encoded sector).
+#
+# Eligible attributes (>=2 sources after the refreshed-CSV remap, AND
+# present as a tag in the fusion val/test XML):
+#   name (3), country (3), city (2), founded (2), assets (2), revenue (2).
+#   - keypeople is in the fusion gold but is dbpedia-only post-refresh
+#     (1 source -> not reshufflable -> omitted).
+#   - industry is a 3-source attribute but is NOT in the fusion gold
+#     (gold tags: assets, city, country, founded, keypeople, name,
+#     revenue) -> omitted; K10 only acts on cells whose attribute is
+#     in the fusion gold.
+
+domain: companies
+
+# --- ID columns (for entity linkage lookups) ---
+# All three sources collapse to the canonical "id" column post-loader-rename
+# (per K1/K3/K5/K6 sign-offs in plan_s1_scale.md).
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# --- Per-source -> canonical-attribute mapping (refreshed CSV columns) ---
+# Mirrors the K6/K3 sign-offs' attribute_mapping for cross-knob alignment.
+attribute_mapping:
+  dbpedia:
+    org_name: name
+    nation: country
+    headquarters: city
+    sector: industry
+    established: founded
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: industry
+    Attribute_6: founded
+
+# --- Per-attribute target distributions per level (T[a, s]) ---
+# Sums to 1.0 per (attr, level). Sources omitted from a per-attribute
+# block are absent from that attribute's eligible source set.
+#
+# Winner identity. The curated-source-preferred rule (Forbes / FullContact
+# over auto-generated DBpedia) is applied where the measured baseline B[s, a]
+# agrees; for two attributes the measured winner is dbpedia despite the
+# noise prior because the fusion gold was authored from dbpedia values for
+# those encyclopedic facts:
+#   name     -> forbes      (clean canonical company names; B[forbes,name]=0.92)
+#   country  -> dbpedia     (B[dbpedia,country]=1.00 — gold-aligned by construction)
+#   city     -> fullcontact (locality field is FullContact's product; B[fc,city]=0.83)
+#   founded  -> dbpedia     (B[dbpedia,founded]=0.92 vs fc=0.84 — gold authored from dbpedia)
+#   assets   -> forbes      (Forbes Global 2000 financial authority; B[forbes,assets]=0.83)
+#   revenue  -> forbes      (B[forbes,revenue]=0.81)
+#
+# Note: the curated-source rule is about absolute noise; K10 measures
+# alignment with the fusion gold specifically. When the gold authors
+# happen to source a value from dbpedia, dbpedia mechanically wins K10
+# regardless of the underlying noise profile.
+#
+# Memory-override note (2026-05-27): per
+# `feedback_dbpedia_noise_profile`, DBpedia is the noisiest source and
+# should not default as a per-attribute trust winner unless the
+# attribute is GICS/controlled-vocab. The country/founded winners here
+# are dbpedia despite this prior because the human-authored fusion gold
+# was sourced from dbpedia values for these encyclopedic facts. K10
+# measures alignment with the fusion gold; when the gold sources from
+# dbpedia, dbpedia wins K10 mechanically. This is gold-alignment
+# override of source-quality prior, kept until a future re-authoring
+# of the gold against quality-preferred winners.
+attribute_targets:
+  name:
+    easy:
+      dbpedia: 0.05
+      forbes: 0.85
+      fullcontact: 0.10
+    medium:
+      dbpedia: 0.15
+      forbes: 0.65
+      fullcontact: 0.20
+    hard:
+      dbpedia: 0.25
+      forbes: 0.40
+      fullcontact: 0.35
+  country:
+    easy:
+      dbpedia: 0.85
+      forbes: 0.10
+      fullcontact: 0.05
+    medium:
+      dbpedia: 0.65
+      forbes: 0.20
+      fullcontact: 0.15
+    hard:
+      dbpedia: 0.40
+      forbes: 0.35
+      fullcontact: 0.25
+  city:
+    easy:
+      dbpedia: 0.10
+      fullcontact: 0.90
+    medium:
+      dbpedia: 0.30
+      fullcontact: 0.70
+    hard:
+      dbpedia: 0.50
+      fullcontact: 0.50
+  founded:
+    easy:
+      dbpedia: 0.90
+      fullcontact: 0.10
+    medium:
+      dbpedia: 0.70
+      fullcontact: 0.30
+    hard:
+      dbpedia: 0.50
+      fullcontact: 0.50
+  assets:
+    easy:
+      dbpedia: 0.10
+      forbes: 0.90
+    medium:
+      dbpedia: 0.30
+      forbes: 0.70
+    hard:
+      dbpedia: 0.50
+      forbes: 0.50
+  revenue:
+    easy:
+      dbpedia: 0.10
+      forbes: 0.90
+    medium:
+      dbpedia: 0.30
+      forbes: 0.70
+    hard:
+      dbpedia: 0.50
+      forbes: 0.50
+
+# --- Compromise rates per level (spec-locked carry-over) ---
+# Fraction of fusion-protected entities flagged compromised per source.
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+# --- Correlation strength per level (spec-locked carry-over) ---
+# Multiplicative down-weight on T[a,s] for compromised (source, entity) cells.
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+# --- Defensive concentration cap ---
+concentration_cap: 0.99

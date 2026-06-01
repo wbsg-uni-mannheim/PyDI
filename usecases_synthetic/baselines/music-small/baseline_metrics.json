@@ -1,0 +1,2997 @@
+{
+  "domain": "music-small",
+  "meta": {
+    "written_at": "2026-05-14T18:07:44.678891+00:00",
+    "with_llm": true,
+    "committee_versions": {
+      "fusion": "fusion_committee_music.yaml@4a03339ecdef",
+      "sm": "sm_committee.yaml@cb4a6847ac9e",
+      "norm": "normalization_committee_music.yaml@c06387b2e5ef",
+      "em_blocking": "em_blocking_committee_music.yaml@1eed2384fe7e",
+      "em_matching": "em_matching_committee_music.yaml@fef75de2e979"
+    },
+    "total_runtime_s": 259.18,
+    "fusion_input_member": ""
+  },
+  "per_stage": {
+    "fusion": {
+      "stage": "fusion",
+      "domain": "music-small",
+      "level": "baseline",
+      "runtime_s": 58.017034124997735,
+      "roster": [
+        "name_voting",
+        "name_longest_string",
+        "name_most_complete",
+        "name_prefer_higher_trust",
+        "name_accusim",
+        "name_fusionquery",
+        "name_casefusion",
+        "name_llm_judge",
+        "artist_voting",
+        "artist_longest_string",
+        "artist_prefer_higher_trust",
+        "artist_truthfinder",
+        "artist_llm_judge",
+        "release-date_voting",
+        "release-date_earliest",
+        "release-date_prefer_higher_trust",
+        "release-country_voting",
+        "release-country_most_complete",
+        "release-country_prefer_higher_trust",
+        "release-country_truthfinder",
+        "release-country_llm_judge",
+        "genre_voting",
+        "genre_most_complete",
+        "genre_prefer_higher_trust",
+        "genre_accusim",
+        "label_voting",
+        "label_longest_string",
+        "label_prefer_higher_trust",
+        "label_ltm",
+        "duration_median",
+        "duration_maximum",
+        "duration_trimmed_mean",
+        "duration_huber_m_estimator",
+        "duration_median_of_means",
+        "duration_prefer_higher_trust",
+        "duration_fusionquery",
+        "tracks_union",
+        "tracks_intersection",
+        "tracks_intersection_k_sources",
+        "tracks_voting",
+        "tracks_prefer_higher_trust",
+        "tracks_ltm"
+      ],
+      "aggregated": {
+        "overall_accuracy": 0.8593546641530513,
+        "overall_mean_accuracy": 0.8064799216240749,
+        "overall_spread": 0.11352901131126938
+      },
+      "per_attribute": {
+        "name": {
+          "best_strategy_accuracy": 0.9,
+          "mean_strategy_accuracy": 0.82375,
+          "spread": 0.17000000000000004,
+          "voting": 0.89,
+          "longest_string": 0.73,
+          "most_complete": 0.73,
+          "prefer_higher_trust": 0.88,
+          "accusim": 0.9,
+          "fusionquery": 0.76,
+          "casefusion": 0.88,
+          "llm_judge": 0.82
+        },
+        "artist": {
+          "best_strategy_accuracy": 0.93,
+          "mean_strategy_accuracy": 0.9040000000000001,
+          "spread": 0.09000000000000008,
+          "voting": 0.93,
+          "longest_string": 0.84,
+          "prefer_higher_trust": 0.93,
+          "truthfinder": 0.92,
+          "llm_judge": 0.9
+        },
+        "release-date": {
+          "best_strategy_accuracy": 0.92,
+          "mean_strategy_accuracy": 0.9066666666666667,
+          "spread": 0.030000000000000027,
+          "voting": 0.92,
+          "earliest": 0.89,
+          "prefer_higher_trust": 0.91
+        },
+        "release-country": {
+          "best_strategy_accuracy": 0.97,
+          "mean_strategy_accuracy": 0.9339999999999999,
+          "spread": 0.08999999999999997,
+          "voting": 0.88,
+          "most_complete": 0.93,
+          "prefer_higher_trust": 0.97,
+          "truthfinder": 0.94,
+          "llm_judge": 0.95
+        },
+        "genre": {
+          "best_strategy_accuracy": 0.8831168831168831,
+          "mean_strategy_accuracy": 0.8733766233766234,
+          "spread": 0.025974025974025983,
+          "voting": 0.8831168831168831,
+          "most_complete": 0.8571428571428571,
+          "prefer_higher_trust": 0.8831168831168831,
+          "accusim": 0.8701298701298701
+        },
+        "label": {
+          "best_strategy_accuracy": 0.8817204301075269,
+          "mean_strategy_accuracy": 0.8629032258064516,
+          "spread": 0.032258064516129004,
+          "voting": 0.8602150537634409,
+          "longest_string": 0.8817204301075269,
+          "prefer_higher_trust": 0.8602150537634409,
+          "ltm": 0.8494623655913979
+        },
+        "duration": {
+          "best_strategy_accuracy": 0.42,
+          "mean_strategy_accuracy": 0.2571428571428572,
+          "spread": 0.26,
+          "median": 0.27,
+          "maximum": 0.42,
+          "trimmed_mean": 0.16,
+          "huber_m_estimator": 0.16,
+          "median_of_means": 0.16,
+          "prefer_higher_trust": 0.29,
+          "fusionquery": 0.34
+        },
+        "tracks": {
+          "best_strategy_accuracy": 0.97,
+          "mean_strategy_accuracy": 0.89,
+          "spread": 0.20999999999999996,
+          "union": 0.97,
+          "intersection": 0.76,
+          "intersection_k_sources": 0.9,
+          "voting": 0.92,
+          "prefer_higher_trust": 0.92,
+          "ltm": 0.87
+        }
+      },
+      "per_partition": {
+        "primary": {
+          "mean_best_accuracy": 0.9,
+          "mean_spread": 0.17000000000000004,
+          "n_attributes": 1.0
+        },
+        "key": {
+          "mean_best_accuracy": 0.9277056277056278,
+          "mean_spread": 0.06865800865800868,
+          "n_attributes": 3.0
+        },
+        "secondary": {
+          "mean_best_accuracy": 0.7979301075268818,
+          "mean_spread": 0.13306451612903225,
+          "n_attributes": 4.0
+        }
+      },
+      "per_member": {
+        "name_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2012403749977238,
+          "notes": {
+            "attribute": "name",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.8,
+            "macro_accuracy": 0.8029164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 616,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.73,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.0882987500008312,
+          "notes": {
+            "attribute": "name",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.8,
+            "macro_accuracy": 0.8029164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 616,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.73,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.1003483339991362,
+          "notes": {
+            "attribute": "name",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8216664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.88,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.1031805840029847,
+          "notes": {
+            "attribute": "name",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "primary"
+          }
+        },
+        "name_accusim": {
+          "metrics": {
+            "overall_accuracy": 0.8220779220779221,
+            "macro_accuracy": 0.8241664921100404,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 633,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.9,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.7571829589978734,
+          "notes": {
+            "attribute": "name",
+            "strategy": "accusim",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.8038961038961039,
+            "macro_accuracy": 0.8066664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 619,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.76,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.8639376660030393,
+          "notes": {
+            "attribute": "name",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_casefusion": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8216664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.88,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.7195568749993981,
+          "notes": {
+            "attribute": "name",
+            "strategy": "casefusion",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.8116883116883117,
+            "macro_accuracy": 0.8141664921100404,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 625,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.82,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2693237919993408,
+          "notes": {
+            "attribute": "name",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "primary"
+          }
+        },
+        "artist_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.052671792000183,
+          "notes": {
+            "attribute": "artist",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "artist_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.8090909090909091,
+            "macro_accuracy": 0.8116664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 623,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.84,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2957969159979257,
+          "notes": {
+            "attribute": "artist",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "artist_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.0823376669977733,
+          "notes": {
+            "attribute": "artist",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "artist_truthfinder": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8216664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.92,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.9326089579990366,
+          "notes": {
+            "attribute": "artist",
+            "strategy": "truthfinder",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "artist_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.8168831168831169,
+            "macro_accuracy": 0.8191664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 629,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.9,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.0904472910006007,
+          "notes": {
+            "attribute": "artist",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "key"
+          }
+        },
+        "release-date_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2957725830019626,
+          "notes": {
+            "attribute": "release-date",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "release-date_earliest": {
+          "metrics": {
+            "overall_accuracy": 0.8168831168831169,
+            "macro_accuracy": 0.8191664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 629,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.89,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.132047875002172,
+          "notes": {
+            "attribute": "release-date",
+            "strategy": "earliest",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "release-date_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8216664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.91,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.4394414169983065,
+          "notes": {
+            "attribute": "release-date",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "release-country_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2245107499984442,
+          "notes": {
+            "attribute": "release-country",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "release-country_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.8272727272727273,
+            "macro_accuracy": 0.8291664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 637,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.93,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.1726380000000063,
+          "notes": {
+            "attribute": "release-country",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "release-country_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8324675324675325,
+            "macro_accuracy": 0.8341664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 641,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.97,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.1840258329975768,
+          "notes": {
+            "attribute": "release-country",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "release-country_truthfinder": {
+          "metrics": {
+            "overall_accuracy": 0.8285714285714286,
+            "macro_accuracy": 0.8304164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 638,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.94,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.9303050409980642,
+          "notes": {
+            "attribute": "release-country",
+            "strategy": "truthfinder",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "release-country_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.8298701298701299,
+            "macro_accuracy": 0.8316664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 639,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.95,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2030749170007766,
+          "notes": {
+            "attribute": "release-country",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "key"
+          }
+        },
+        "genre_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.214081999998598,
+          "notes": {
+            "attribute": "genre",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "genre_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.8181818181818182,
+            "macro_accuracy": 0.8196697388632872,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 630,
+            "genre_accuracy": 0.8571428571428571,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2325541670034,
+          "notes": {
+            "attribute": "genre",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "genre_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.230650000001333,
+          "notes": {
+            "attribute": "genre",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "genre_accusim": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8212931154866638,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8701298701298701,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.994019166999351,
+          "notes": {
+            "attribute": "genre",
+            "strategy": "accusim",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "label_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.271313083001587,
+          "notes": {
+            "attribute": "label",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "label_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.8233766233766234,
+            "macro_accuracy": 0.8256046641530512,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 634,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8817204301075269,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.2849530839994259,
+          "notes": {
+            "attribute": "label",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "label_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.3724409169990395,
+          "notes": {
+            "attribute": "label",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "label_ltm": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8215724060885352,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8494623655913979,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.694679833999544,
+          "notes": {
+            "attribute": "label",
+            "strategy": "ltm",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_median": {
+          "metrics": {
+            "overall_accuracy": 0.8168831168831169,
+            "macro_accuracy": 0.8191664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 629,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.27,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.3040012499986915,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "median",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_maximum": {
+          "metrics": {
+            "overall_accuracy": 0.8363636363636363,
+            "macro_accuracy": 0.8379164921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 644,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.42,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.330664416000218,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "maximum",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_trimmed_mean": {
+          "metrics": {
+            "overall_accuracy": 0.8025974025974026,
+            "macro_accuracy": 0.8054164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 618,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.16,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.33709645899944,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "trimmed_mean",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_huber_m_estimator": {
+          "metrics": {
+            "overall_accuracy": 0.8025974025974026,
+            "macro_accuracy": 0.8054164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 618,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.16,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.3780613339986303,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "huber_m_estimator",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_median_of_means": {
+          "metrics": {
+            "overall_accuracy": 0.8025974025974026,
+            "macro_accuracy": 0.8054164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 618,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.16,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 0.8937807090005663,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "median_of_means",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8194805194805195,
+            "macro_accuracy": 0.8216664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 631,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.29,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.3510507499995583,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "duration_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.825974025974026,
+            "macro_accuracy": 0.8279164921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 636,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.34,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 2.2804280829986965,
+          "notes": {
+            "attribute": "duration",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_union": {
+          "metrics": {
+            "overall_accuracy": 0.8272727272727273,
+            "macro_accuracy": 0.8291664921100406,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 637,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.97,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 0.9024541670005419,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "union",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_intersection": {
+          "metrics": {
+            "overall_accuracy": 0.8,
+            "macro_accuracy": 0.8029164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 616,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.76,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.3875862500026415,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "intersection",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_intersection_k_sources": {
+          "metrics": {
+            "overall_accuracy": 0.8181818181818182,
+            "macro_accuracy": 0.8204164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 630,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.9,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.409791750000295,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "intersection_k_sources",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.4511530000017956,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8207792207792208,
+            "macro_accuracy": 0.8229164921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 632,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.92,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 1.5533722920008586,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "tracks_ltm": {
+          "metrics": {
+            "overall_accuracy": 0.8142857142857143,
+            "macro_accuracy": 0.8166664921100405,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 8,
+            "total_evaluations": 770,
+            "total_correct": 627,
+            "genre_accuracy": 0.8831168831168831,
+            "genre_count": 77,
+            "tracks_accuracy": 0.87,
+            "tracks_count": 100,
+            "name_accuracy": 0.89,
+            "name_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
+            "label_accuracy": 0.8602150537634409,
+            "label_count": 93,
+            "artist_accuracy": 0.93,
+            "artist_count": 100,
+            "duration_accuracy": 0.3,
+            "duration_count": 100,
+            "release-date_accuracy": 0.92,
+            "release-date_count": 100
+          },
+          "runtime_s": 2.003981500001828,
+          "notes": {
+            "attribute": "tracks",
+            "strategy": "ltm",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "sm": {
+      "stage": "sm",
+      "domain": "music-small",
+      "level": "baseline",
+      "runtime_s": 25.35442266699829,
+      "roster": [
+        "duplicate_majority",
+        "label_jw",
+        "instance_tf_cosine",
+        "embedding_sbert",
+        "llm_openai",
+        "magneto_slm_llm",
+        "coma_hybrid"
+      ],
+      "aggregated": {
+        "macro_f1": 0.8741694352159469,
+        "min_f1": 0.6250000000000001,
+        "max_f1": 1.0,
+        "macro_precision": 0.9387755102040816,
+        "macro_recall": 0.8306878306878307
+      },
+      "per_attribute": {
+        "musicbrainz.id": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.name": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.artist": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.release-date": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.release-country": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.duration": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.label": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.genre": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "musicbrainz.tracks": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.id": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.name": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.artist": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.release-date": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.release-country": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.duration": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.label": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.genre": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "discogs.tracks": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.id": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.name": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.artist": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.release-date": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.release-country": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.duration": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.label": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.genre": {
+          "duplicate_majority": 0.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "lastfm.tracks": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        }
+      },
+      "per_partition": {
+        "musicbrainz": {
+          "macro_f1": 0.904201680672269,
+          "n_columns": 9.0
+        },
+        "discogs": {
+          "macro_f1": 0.8985994397759104,
+          "n_columns": 9.0
+        },
+        "lastfm": {
+          "macro_f1": 0.8069073783359497,
+          "n_columns": 9.0
+        }
+      },
+      "per_member": {
+        "duplicate_majority": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 0.5925925925925926,
+            "f1": 0.7441860465116279,
+            "tp": 16.0,
+            "fp": 0.0,
+            "fn": 11.0
+          },
+          "runtime_s": 3.8817498329990485,
+          "notes": {
+            "signal_type": "duplicate"
+          }
+        },
+        "label_jw": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 27.0,
+            "fp": 0.0,
+            "fn": 0.0
+          },
+          "runtime_s": 0.001129708001826657,
+          "notes": {
+            "signal_type": "label"
+          }
+        },
+        "instance_tf_cosine": {
+          "metrics": {
+            "precision": 0.7142857142857143,
+            "recall": 0.5555555555555556,
+            "f1": 0.6250000000000001,
+            "tp": 15.0,
+            "fp": 6.0,
+            "fn": 12.0
+          },
+          "runtime_s": 0.11414054099805071,
+          "notes": {
+            "signal_type": "instance"
+          }
+        },
+        "embedding_sbert": {
+          "metrics": {
+            "precision": 0.8571428571428571,
+            "recall": 0.6666666666666666,
+            "f1": 0.75,
+            "tp": 18.0,
+            "fp": 3.0,
+            "fn": 9.0
+          },
+          "runtime_s": 2.368690457999037,
+          "notes": {
+            "signal_type": "embedding"
+          }
+        },
+        "llm_openai": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 27.0,
+            "fp": 0.0,
+            "fn": 0.0
+          },
+          "runtime_s": 5.943621709000581,
+          "notes": {
+            "signal_type": "llm"
+          }
+        },
+        "magneto_slm_llm": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 27.0,
+            "fp": 0.0,
+            "fn": 0.0
+          },
+          "runtime_s": 11.560005125000316,
+          "notes": {
+            "signal_type": "llm"
+          }
+        },
+        "coma_hybrid": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 27.0,
+            "fp": 0.0,
+            "fn": 0.0
+          },
+          "runtime_s": 1.4807314169993333,
+          "notes": {
+            "signal_type": "hybrid"
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "norm": {
+      "stage": "norm",
+      "domain": "music-small",
+      "level": "baseline",
+      "runtime_s": 0.6842195830031415,
+      "roster": [
+        "text_clean",
+        "date_iso",
+        "number_locale",
+        "country_iso",
+        "taxonomy_lookup",
+        "llm_canonicalize"
+      ],
+      "aggregated": {
+        "macro_f1": 0.4368220911701877,
+        "min_f1": 0.12949120354733684,
+        "max_f1": 0.7682576381490632,
+        "macro_precision": 0.7044483490234751,
+        "macro_recall": 0.38337429385958116,
+        "best_member_f1": 0.7682576381490632,
+        "best_member_name_f1": 1.0
+      },
+      "per_attribute": {
+        "artist": {
+          "text_clean": 0.9087048832271762,
+          "llm_canonicalize": 0.25782688766114176,
+          "any_correct": 1.0,
+          "best_member_f1": 0.9087048832271762
+        },
+        "name": {
+          "text_clean": 0.9405520169851379,
+          "llm_canonicalize": 0.0814663951120163,
+          "any_correct": 1.0,
+          "best_member_f1": 0.9405520169851379
+        },
+        "release-country": {
+          "text_clean": 0.4555160142348754,
+          "country_iso": 0.13398294762484778,
+          "llm_canonicalize": 0.04918032786885246,
+          "any_correct": 1.0,
+          "best_member_f1": 0.4555160142348754
+        },
+        "release-date": {
+          "date_iso": 0.654073199527745,
+          "any_correct": 1.0,
+          "best_member_f1": 0.654073199527745
+        },
+        "duration": {
+          "number_locale": 0.6505747126436782,
+          "any_correct": 1.0,
+          "best_member_f1": 0.6505747126436782
+        },
+        "genre": {
+          "taxonomy_lookup": 0.2845528455284553,
+          "any_correct": 1.0,
+          "best_member_f1": 0.2845528455284553
+        }
+      },
+      "per_partition": {
+        "discogs": {
+          "macro_f1": 0.4368220911701877,
+          "n_attributes": 7.0
+        },
+        "lastfm": {
+          "macro_f1": 0.4368220911701877,
+          "n_attributes": 7.0
+        },
+        "musicbrainz": {
+          "macro_f1": 0.4368220911701877,
+          "n_attributes": 7.0
+        }
+      },
+      "per_member": {
+        "text_clean": {
+          "metrics": {
+            "macro_f1": 0.7682576381490632,
+            "macro_precision": 0.7884619774901264,
+            "macro_recall": 0.7523000707714084,
+            "min_f1": 0.4555160142348754,
+            "max_f1": 0.9405520169851379,
+            "n_attributes": 3.0,
+            "n_cells": 1413.0,
+            "f1": 0.7682576381490632,
+            "precision": 0.7884619774901264,
+            "recall": 0.7523000707714084
+          },
+          "runtime_s": 0.04321829199761851,
+          "notes": {
+            "signal_type": "rule_string",
+            "applies_to": [
+              "name",
+              "artist",
+              "release-country"
+            ],
+            "best_member": true
+          }
+        },
+        "date_iso": {
+          "metrics": {
+            "macro_f1": 0.654073199527745,
+            "macro_precision": 0.7367021276595744,
+            "macro_recall": 0.5881104033970276,
+            "min_f1": 0.654073199527745,
+            "max_f1": 0.654073199527745,
+            "n_attributes": 1.0,
+            "n_cells": 471.0,
+            "f1": 0.654073199527745,
+            "precision": 0.7367021276595744,
+            "recall": 0.5881104033970276
+          },
+          "runtime_s": 0.03248225000061211,
+          "notes": {
+            "signal_type": "rule_date",
+            "applies_to": [
+              "release-date"
+            ]
+          }
+        },
+        "number_locale": {
+          "metrics": {
+            "macro_f1": 0.6505747126436782,
+            "macro_precision": 0.7057356608478803,
+            "macro_recall": 0.603411513859275,
+            "min_f1": 0.6505747126436782,
+            "max_f1": 0.6505747126436782,
+            "n_attributes": 1.0,
+            "n_cells": 469.0,
+            "f1": 0.6505747126436782,
+            "precision": 0.7057356608478803,
+            "recall": 0.603411513859275
+          },
+          "runtime_s": 0.018492874998628395,
+          "notes": {
+            "signal_type": "rule_numeric",
+            "applies_to": [
+              "duration"
+            ]
+          }
+        },
+        "country_iso": {
+          "metrics": {
+            "macro_f1": 0.13398294762484778,
+            "macro_precision": 0.15714285714285714,
+            "macro_recall": 0.11677282377919321,
+            "min_f1": 0.13398294762484778,
+            "max_f1": 0.13398294762484778,
+            "n_attributes": 1.0,
+            "n_cells": 471.0,
+            "f1": 0.13398294762484778,
+            "precision": 0.15714285714285714,
+            "recall": 0.11677282377919321
+          },
+          "runtime_s": 0.475915166996856,
+          "notes": {
+            "signal_type": "rule_codelist",
+            "applies_to": [
+              "release-country"
+            ]
+          }
+        },
+        "taxonomy_lookup": {
+          "metrics": {
+            "macro_f1": 0.2845528455284553,
+            "macro_precision": 0.9459459459459459,
+            "macro_recall": 0.1674641148325359,
+            "min_f1": 0.2845528455284553,
+            "max_f1": 0.2845528455284553,
+            "n_attributes": 1.0,
+            "n_cells": 418.0,
+            "f1": 0.2845528455284553,
+            "precision": 0.9459459459459459,
+            "recall": 0.1674641148325359
+          },
+          "runtime_s": 0.08581879199846298,
+          "notes": {
+            "signal_type": "rule_nominal",
+            "applies_to": [
+              "genre"
+            ]
+          }
+        },
+        "llm_canonicalize": {
+          "metrics": {
+            "macro_f1": 0.12949120354733684,
+            "macro_precision": 0.8927015250544663,
+            "macro_recall": 0.07218683651804671,
+            "min_f1": 0.04918032786885246,
+            "max_f1": 0.25782688766114176,
+            "n_attributes": 3.0,
+            "n_cells": 1413.0,
+            "f1": 0.12949120354733684,
+            "precision": 0.8927015250544663,
+            "recall": 0.07218683651804671
+          },
+          "runtime_s": 0.027673083000991028,
+          "notes": {
+            "signal_type": "llm",
+            "applies_to": [
+              "name",
+              "artist",
+              "release-country"
+            ]
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "em_blocking": {
+      "stage": "em_blocking",
+      "domain": "music-small",
+      "level": "baseline",
+      "runtime_s": 100.73625299999912,
+      "roster": [
+        "token_blocker",
+        "standard_blocker",
+        "embedding_blocker",
+        "sorted_neighbourhood_blocker",
+        "bm25_blocker",
+        "sc_block"
+      ],
+      "aggregated": {
+        "macro_pair_recall": 0.9511018074554599,
+        "min_pair_recall": 0.8539514878014385,
+        "max_pair_recall": 0.9993278451558314,
+        "macro_reduction_ratio": 0.9794045263437737,
+        "best_member_name": "sc_block",
+        "best_member_pair_recall": 0.9993278451558314,
+        "best_member_reduction_ratio": 0.9961633402194576,
+        "recall_floor": 0.97
+      },
+      "per_attribute": {},
+      "per_partition": {
+        "musicbrainz_discogs": {
+          "winner_blocker_pair_recall": 0.9996428571428572,
+          "winner_blocker_reduction_ratio": 0.9973864847528537,
+          "recall_floor_cleared": 1.0
+        },
+        "musicbrainz_lastfm": {
+          "winner_blocker_pair_recall": 0.9990128331688055,
+          "winner_blocker_reduction_ratio": 0.9949401956860616,
+          "recall_floor_cleared": 1.0
+        }
+      },
+      "per_member": {
+        "token_blocker": {
+          "metrics": {
+            "pair_recall": 0.9991352301038876,
+            "reduction_ratio": 0.9064425278024328,
+            "candidate_count": 6531951.5,
+            "gold_positives": 2919.5,
+            "covered": 2917.0,
+            "missed": 2.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 3.417731792997074,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9032052814460797,
+                "candidate_count": 8820027.0,
+                "full_space": 91120953.0,
+                "runtime_s": 2.3470512089988915,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9993418887792037,
+                "gold_positives": 3039.0,
+                "covered": 3037.0,
+                "missed": 2.0,
+                "reduction_ratio": 0.9096797741587859,
+                "candidate_count": 4243876.0,
+                "full_space": 46986995.0,
+                "runtime_s": 1.0706805839981826,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "standard_blocker": {
+          "metrics": {
+            "pair_recall": 0.8638933742302448,
+            "reduction_ratio": 0.9857783313992776,
+            "candidate_count": 1016628.0,
+            "gold_positives": 2919.5,
+            "covered": 2506.0,
+            "missed": 413.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.2438764580001589,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9842119517779846,
+                "candidate_count": 1438622.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.16322608300106367,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.7288581770319184,
+                "gold_positives": 3039.0,
+                "covered": 2215.0,
+                "missed": 824.0,
+                "reduction_ratio": 0.9873447110205706,
+                "candidate_count": 594634.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.08065037499909522,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "embedding_blocker": {
+          "metrics": {
+            "pair_recall": 0.9951865627791097,
+            "reduction_ratio": 0.9961590085674668,
+            "candidate_count": 238150.0,
+            "gold_positives": 2919.5,
+            "covered": 2905.0,
+            "missed": 14.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 22.832694833999994,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "embedding",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9973864408551566,
+                "candidate_count": 238150.0,
+                "full_space": 91120953.0,
+                "runtime_s": 13.265011542000138,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9914445541296479,
+                "gold_positives": 3039.0,
+                "covered": 3013.0,
+                "missed": 26.0,
+                "reduction_ratio": 0.994931576279777,
+                "candidate_count": 238150.0,
+                "full_space": 46986995.0,
+                "runtime_s": 9.567683291999856,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sorted_neighbourhood_blocker": {
+          "metrics": {
+            "pair_recall": 0.8539514878014385,
+            "reduction_ratio": 0.9957249415065409,
+            "candidate_count": 273806.0,
+            "gold_positives": 2919.5,
+            "covered": 2476.0,
+            "missed": 443.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.10757149999699323,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9971428571428571,
+                "gold_positives": 2800.0,
+                "covered": 2792.0,
+                "missed": 8.0,
+                "reduction_ratio": 0.9966948875084746,
+                "candidate_count": 301165.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.06321833399852039,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.7107601184600197,
+                "gold_positives": 3039.0,
+                "covered": 2160.0,
+                "missed": 879.0,
+                "reduction_ratio": 0.9947549955046072,
+                "candidate_count": 246447.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.04435316599847283,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "bm25_blocker": {
+          "metrics": {
+            "pair_recall": 0.995116344662248,
+            "reduction_ratio": 0.9961590085674668,
+            "candidate_count": 238150.0,
+            "gold_positives": 2919.5,
+            "covered": 2905.0,
+            "missed": 14.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.68006774999958,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "sparse",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9971428571428571,
+                "gold_positives": 2800.0,
+                "covered": 2792.0,
+                "missed": 8.0,
+                "reduction_ratio": 0.9973864408551566,
+                "candidate_count": 238150.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.3839330000009795,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9930898321816387,
+                "gold_positives": 3039.0,
+                "covered": 3018.0,
+                "missed": 21.0,
+                "reduction_ratio": 0.994931576279777,
+                "candidate_count": 238150.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.29613474999860046,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sc_block": {
+          "metrics": {
+            "pair_recall": 0.9993278451558314,
+            "reduction_ratio": 0.9961633402194576,
+            "candidate_count": 237945.5,
+            "gold_positives": 2919.5,
+            "covered": 2917.5,
+            "missed": 2.0,
+            "selection_rate": 1.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 56.569034832995385,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "hybrid",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9996428571428572,
+                "gold_positives": 2800.0,
+                "covered": 2799.0,
+                "missed": 1.0,
+                "reduction_ratio": 0.9973864847528537,
+                "candidate_count": 238146.0,
+                "full_space": 91120953.0,
+                "runtime_s": 36.15176962499754,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9990128331688055,
+                "gold_positives": 3039.0,
+                "covered": 3036.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9949401956860616,
+                "candidate_count": 237745.0,
+                "full_space": 46986995.0,
+                "runtime_s": 20.417265207997843,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        }
+      },
+      "per_blocker": {
+        "token_blocker": {
+          "metrics": {
+            "pair_recall": 0.9991352301038876,
+            "reduction_ratio": 0.9064425278024328,
+            "candidate_count": 6531951.5,
+            "gold_positives": 2919.5,
+            "covered": 2917.0,
+            "missed": 2.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 3.417731792997074,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9032052814460797,
+                "candidate_count": 8820027.0,
+                "full_space": 91120953.0,
+                "runtime_s": 2.3470512089988915,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9993418887792037,
+                "gold_positives": 3039.0,
+                "covered": 3037.0,
+                "missed": 2.0,
+                "reduction_ratio": 0.9096797741587859,
+                "candidate_count": 4243876.0,
+                "full_space": 46986995.0,
+                "runtime_s": 1.0706805839981826,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "standard_blocker": {
+          "metrics": {
+            "pair_recall": 0.8638933742302448,
+            "reduction_ratio": 0.9857783313992776,
+            "candidate_count": 1016628.0,
+            "gold_positives": 2919.5,
+            "covered": 2506.0,
+            "missed": 413.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.2438764580001589,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9842119517779846,
+                "candidate_count": 1438622.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.16322608300106367,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.7288581770319184,
+                "gold_positives": 3039.0,
+                "covered": 2215.0,
+                "missed": 824.0,
+                "reduction_ratio": 0.9873447110205706,
+                "candidate_count": 594634.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.08065037499909522,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "embedding_blocker": {
+          "metrics": {
+            "pair_recall": 0.9951865627791097,
+            "reduction_ratio": 0.9961590085674668,
+            "candidate_count": 238150.0,
+            "gold_positives": 2919.5,
+            "covered": 2905.0,
+            "missed": 14.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 22.832694833999994,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "embedding",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9989285714285714,
+                "gold_positives": 2800.0,
+                "covered": 2797.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9973864408551566,
+                "candidate_count": 238150.0,
+                "full_space": 91120953.0,
+                "runtime_s": 13.265011542000138,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9914445541296479,
+                "gold_positives": 3039.0,
+                "covered": 3013.0,
+                "missed": 26.0,
+                "reduction_ratio": 0.994931576279777,
+                "candidate_count": 238150.0,
+                "full_space": 46986995.0,
+                "runtime_s": 9.567683291999856,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sorted_neighbourhood_blocker": {
+          "metrics": {
+            "pair_recall": 0.8539514878014385,
+            "reduction_ratio": 0.9957249415065409,
+            "candidate_count": 273806.0,
+            "gold_positives": 2919.5,
+            "covered": 2476.0,
+            "missed": 443.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.10757149999699323,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9971428571428571,
+                "gold_positives": 2800.0,
+                "covered": 2792.0,
+                "missed": 8.0,
+                "reduction_ratio": 0.9966948875084746,
+                "candidate_count": 301165.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.06321833399852039,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.7107601184600197,
+                "gold_positives": 3039.0,
+                "covered": 2160.0,
+                "missed": 879.0,
+                "reduction_ratio": 0.9947549955046072,
+                "candidate_count": 246447.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.04435316599847283,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "bm25_blocker": {
+          "metrics": {
+            "pair_recall": 0.995116344662248,
+            "reduction_ratio": 0.9961590085674668,
+            "candidate_count": 238150.0,
+            "gold_positives": 2919.5,
+            "covered": 2905.0,
+            "missed": 14.5,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.68006774999958,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "sparse",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9971428571428571,
+                "gold_positives": 2800.0,
+                "covered": 2792.0,
+                "missed": 8.0,
+                "reduction_ratio": 0.9973864408551566,
+                "candidate_count": 238150.0,
+                "full_space": 91120953.0,
+                "runtime_s": 0.3839330000009795,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9930898321816387,
+                "gold_positives": 3039.0,
+                "covered": 3018.0,
+                "missed": 21.0,
+                "reduction_ratio": 0.994931576279777,
+                "candidate_count": 238150.0,
+                "full_space": 46986995.0,
+                "runtime_s": 0.29613474999860046,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sc_block": {
+          "metrics": {
+            "pair_recall": 0.9993278451558314,
+            "reduction_ratio": 0.9961633402194576,
+            "candidate_count": 237945.5,
+            "gold_positives": 2919.5,
+            "covered": 2917.5,
+            "missed": 2.0,
+            "selection_rate": 1.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 56.569034832995385,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "hybrid",
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "pair_recall": 0.9996428571428572,
+                "gold_positives": 2800.0,
+                "covered": 2799.0,
+                "missed": 1.0,
+                "reduction_ratio": 0.9973864847528537,
+                "candidate_count": 238146.0,
+                "full_space": 91120953.0,
+                "runtime_s": 36.15176962499754,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "musicbrainz_lastfm": {
+                "pair_recall": 0.9990128331688055,
+                "gold_positives": 3039.0,
+                "covered": 3036.0,
+                "missed": 3.0,
+                "reduction_ratio": 0.9949401956860616,
+                "candidate_count": 237745.0,
+                "full_space": 46986995.0,
+                "runtime_s": 20.417265207997843,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "em_matching": {
+      "stage": "em_matching",
+      "domain": "music-small",
+      "level": "baseline",
+      "runtime_s": 73.5663462090015,
+      "roster": [
+        "ditto_plm",
+        "magellan",
+        "llm_matcher",
+        "comem"
+      ],
+      "aggregated": {
+        "macro_f1": 0.7498628627444688,
+        "min_f1": 0.536346120161149,
+        "max_f1": 0.9755539483200737,
+        "macro_precision": 0.9858848794969512,
+        "macro_recall": 0.6692942942942943,
+        "macro_f1_vs_val": 0.9074552321394513,
+        "macro_f1_vs_test": 0.7498628627444688,
+        "best_member_name": "ditto_plm",
+        "best_member_f1": 0.9755539483200737
+      },
+      "per_attribute": {},
+      "per_partition": {
+        "musicbrainz_discogs": {
+          "macro_f1": 0.8285380805226875,
+          "min_f1": 0.7090558766859345,
+          "max_f1": 0.9779735682819383,
+          "n_members": 4.0
+        },
+        "musicbrainz_lastfm": {
+          "macro_f1": 0.6711876449662502,
+          "min_f1": 0.3636363636363636,
+          "max_f1": 0.9803328290468987,
+          "n_members": 4.0
+        }
+      },
+      "per_member": {
+        "ditto_plm": {
+          "metrics": {
+            "f1": 0.9755539483200737,
+            "precision": 0.9621278010846208,
+            "recall": 0.9894894894894894,
+            "f1_vs_val": 0.866736807594477,
+            "precision_vs_val": 0.7751222933184958,
+            "recall_vs_val": 0.9907625547421922,
+            "pred_scoped_vs_val": 1021.0,
+            "f1_vs_test": 0.9755539483200737,
+            "precision_vs_test": 0.9621278010846208,
+            "recall_vs_test": 0.9894894894894894,
+            "pred_scoped_vs_test": 342.5
+          },
+          "runtime_s": 0.4841780819988344,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "learned",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "f1": 0.9779735682819383,
+                "precision": 0.9568965517241379,
+                "recall": 1.0,
+                "tp": 333.0,
+                "fp": 15.0,
+                "fn": 0.0,
+                "f1_vs_val": 0.8143392188336009,
+                "precision_vs_val": 0.6880650994575045,
+                "recall_vs_val": 0.9973787680209698,
+                "pred_scoped_vs_val": 1106.0,
+                "f1_vs_test": 0.9779735682819383,
+                "precision_vs_test": 0.9568965517241379,
+                "recall_vs_test": 1.0,
+                "pred_scoped_vs_test": 348.0
+              },
+              "musicbrainz_lastfm": {
+                "f1": 0.973134328358209,
+                "precision": 0.9673590504451038,
+                "recall": 0.978978978978979,
+                "tp": 326.0,
+                "fp": 11.0,
+                "fn": 7.0,
+                "f1_vs_val": 0.9191343963553531,
+                "precision_vs_val": 0.8621794871794872,
+                "recall_vs_val": 0.9841463414634146,
+                "pred_scoped_vs_val": 936.0,
+                "f1_vs_test": 0.973134328358209,
+                "precision_vs_test": 0.9673590504451038,
+                "recall_vs_test": 0.978978978978979,
+                "pred_scoped_vs_test": 337.0
+              }
+            }
+          }
+        },
+        "magellan": {
+          "metrics": {
+            "f1": 0.9479586223156571,
+            "precision": 0.9921356545720934,
+            "recall": 0.9099099099099099,
+            "f1_vs_val": 0.9481736566844255,
+            "precision_vs_val": 0.9385429861761305,
+            "recall_vs_val": 0.9584526739762811,
+            "pred_scoped_vs_val": 808.5,
+            "f1_vs_test": 0.9479586223156571,
+            "precision_vs_test": 0.9921356545720934,
+            "recall_vs_test": 0.9099099099099099,
+            "pred_scoped_vs_test": 305.5
+          },
+          "runtime_s": 72.74671404200126,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "learned",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "f1": 0.9155844155844156,
+                "precision": 0.9964664310954063,
+                "recall": 0.8468468468468469,
+                "tp": 282.0,
+                "fp": 1.0,
+                "fn": 51.0,
+                "f1_vs_val": 0.9202297383535418,
+                "precision_vs_val": 0.8967661691542289,
+                "recall_vs_val": 0.944954128440367,
+                "pred_scoped_vs_val": 804.0,
+                "f1_vs_test": 0.9155844155844156,
+                "precision_vs_test": 0.9964664310954063,
+                "recall_vs_test": 0.8468468468468469,
+                "pred_scoped_vs_test": 283.0
+              },
+              "musicbrainz_lastfm": {
+                "f1": 0.9803328290468987,
+                "precision": 0.9878048780487805,
+                "recall": 0.972972972972973,
+                "tp": 324.0,
+                "fp": 4.0,
+                "fn": 9.0,
+                "f1_vs_val": 0.9761175750153093,
+                "precision_vs_val": 0.980319803198032,
+                "recall_vs_val": 0.9719512195121951,
+                "pred_scoped_vs_val": 813.0,
+                "f1_vs_test": 0.9803328290468987,
+                "precision_vs_test": 0.9878048780487805,
+                "recall_vs_test": 0.972972972972973,
+                "pred_scoped_vs_test": 328.0
+              }
+            }
+          }
+        },
+        "llm_matcher": {
+          "metrics": {
+            "f1": 0.5395927601809956,
+            "precision": 0.9946524064171123,
+            "recall": 0.3903903903903904,
+            "f1_vs_val": NaN,
+            "precision_vs_val": NaN,
+            "recall_vs_val": NaN,
+            "pred_scoped_vs_val": 0.0,
+            "f1_vs_test": 0.5395927601809956,
+            "precision_vs_test": 0.9946524064171123,
+            "recall_vs_test": 0.3903903903903904,
+            "pred_scoped_vs_test": 131.0
+          },
+          "runtime_s": 0.18061854100233177,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "llm",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "f1": 0.7115384615384616,
+                "precision": 0.9893048128342246,
+                "recall": 0.5555555555555556,
+                "tp": 185.0,
+                "fp": 2.0,
+                "fn": 148.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.7115384615384616,
+                "precision_vs_test": 0.9893048128342246,
+                "recall_vs_test": 0.5555555555555556,
+                "pred_scoped_vs_test": 187.0
+              },
+              "musicbrainz_lastfm": {
+                "f1": 0.36764705882352944,
+                "precision": 1.0,
+                "recall": 0.22522522522522523,
+                "tp": 75.0,
+                "fp": 0.0,
+                "fn": 258.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.36764705882352944,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.22522522522522523,
+                "pred_scoped_vs_test": 75.0
+              }
+            }
+          }
+        },
+        "comem": {
+          "metrics": {
+            "f1": 0.536346120161149,
+            "precision": 0.9946236559139785,
+            "recall": 0.38738738738738737,
+            "f1_vs_val": NaN,
+            "precision_vs_val": NaN,
+            "recall_vs_val": NaN,
+            "pred_scoped_vs_val": 0.0,
+            "f1_vs_test": 0.536346120161149,
+            "precision_vs_test": 0.9946236559139785,
+            "recall_vs_test": 0.38738738738738737,
+            "pred_scoped_vs_test": 130.0
+          },
+          "runtime_s": 0.14943504100301652,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "llm",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "musicbrainz_discogs": {
+                "f1": 0.7090558766859345,
+                "precision": 0.989247311827957,
+                "recall": 0.5525525525525525,
+                "tp": 184.0,
+                "fp": 2.0,
+                "fn": 149.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.7090558766859345,
+                "precision_vs_test": 0.989247311827957,
+                "recall_vs_test": 0.5525525525525525,
+                "pred_scoped_vs_test": 186.0
+              },
+              "musicbrainz_lastfm": {
+                "f1": 0.3636363636363636,
+                "precision": 1.0,
+                "recall": 0.2222222222222222,
+                "tp": 74.0,
+                "fp": 0.0,
+                "fn": 259.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.3636363636363636,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.2222222222222222,
+                "pred_scoped_vs_test": 74.0
+              }
+            }
+          }
+        }
+      },
+      "per_blocker": {}
+    }
+  }
+}

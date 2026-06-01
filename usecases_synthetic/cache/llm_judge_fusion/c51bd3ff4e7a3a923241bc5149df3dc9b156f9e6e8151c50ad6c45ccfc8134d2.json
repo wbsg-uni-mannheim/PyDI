@@ -1,0 +1,25 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Surrender (album version)', 'This Suffering']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Surrender (Album Version)', 'This Suffering (Live @ The Orange Lounge)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "Normalized track naming and retained the common track list, excluding the clearly alternate live version.",
+    "value": [
+      "Surrender (Album Version)",
+      "This Suffering"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Surrender (Album Version)\",\"This Suffering\"],\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"Normalized track naming and retained the common track list, excluding the clearly alternate live version.\"}"
+}

@@ -1,0 +1,69 @@
+# Dimensional unit conversion factors for Knob 05 — Format/Unit Diversity.
+# Immutable once checked in. Each group maps units to a base unit.
+# factor = multiplier to convert FROM the listed unit TO the base unit.
+
+duration:
+  base_unit: seconds
+  units:
+    seconds: 1.0
+    milliseconds: 0.001
+    minutes: 60.0
+    hours: 3600.0
+
+weight:
+  base_unit: kg
+  units:
+    kg: 1.0
+    g: 0.001
+    lbs: 0.453592
+    oz: 0.0283495
+    tonnes: 1000.0
+    tons_us: 907.185
+
+length:
+  base_unit: m
+  units:
+    m: 1.0
+    cm: 0.01
+    mm: 0.001
+    km: 1000.0
+    ft: 0.3048
+    in: 0.0254
+    mi: 1609.344
+    yd: 0.9144
+
+file_size:
+  base_unit: bytes
+  units:
+    bytes: 1.0
+    KB: 1000.0
+    MB: 1.0e+6
+    GB: 1.0e+9
+    TB: 1.0e+12
+    KiB: 1024.0
+    MiB: 1048576.0
+    GiB: 1073741824.0
+
+# Rate (bandwidth) units — base is bytes/second. Conversion ratios
+# match file_size (1 GB/s = 1e9 bytes/s); the time component cancels
+# under unit conversion. Used by K5 rate class
+# (read_speed_mb_s / write_speed_mb_s on products).
+rate:
+  base_unit: bytes_per_second
+  units:
+    bytes_per_second: 1.0
+    KB/s: 1000.0
+    MB/s: 1.0e+6
+    GB/s: 1.0e+9
+    TB/s: 1.0e+12
+
+# Magnitude scales for financial values (not a "unit" per se,
+# but treated uniformly by reconvert_unit).
+magnitude:
+  base_unit: raw
+  units:
+    raw: 1.0
+    thousands: 1.0e+3
+    millions: 1.0e+6
+    billions: 1.0e+9
+    trillions: 1.0e+12

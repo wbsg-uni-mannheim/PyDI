@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_82578|mbrainz_16509|name=Get Ready | artist=The Mighty Diamonds | release-date=2002 | release-country=UK | genre=Reggae | tracks=['Schoolmate', 'Another Day Another Raid', \"Tonight I'm Gonna Take Easy\", \"Idlers' Corner ( Feat Gregory Isaacs )\", 'Sensimilia', \"Cannot Say You Didn't Know\", 'My Baby', 'Get Ready', 'Up Front', 'Modeller', 'Bad Boy Business', 'Mr Bodyguard ( 12 \" Mix )']||name=Get Ready | artist=Mighty Diamonds, The | duration=3000 | tracks=['Schoolmate', 'Another Day Another Raid', \"Tonight I'm Gonna Take It Easy\", \"Idlers' Corner\", 'My Baby', 'Get Ready', 'Up Front', 'Modeller', 'Sensemilla', \"Cannot Say You Didn't Know\", 'Bad Boy Business', 'Mr. Bodyguard (12\" mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Get Ready | artist=The Mighty Diamonds | release-date=2002 | release-country=UK | genre=Reggae | tracks=['Schoolmate', 'Another Day Another Raid', \"Tonight I'm Gonna Take Easy\", \"Idlers' Corner ( Feat Gregory Isaacs )\", 'Sensimilia', \"Cannot Say You Didn't Know\", 'My Baby', 'Get Ready', 'Up Front', 'Modeller', 'Bad Boy Business', 'Mr Bodyguard ( 12 \" Mix )']\nRecord B: name=Get Ready | artist=Mighty Diamonds, The | duration=3000 | tracks=['Schoolmate', 'Another Day Another Raid', \"Tonight I'm Gonna Take It Easy\", \"Idlers' Corner\", 'My Baby', 'Get Ready', 'Up Front', 'Modeller', 'Sensemilla', \"Cannot Say You Didn't Know\", 'Bad Boy Business', 'Mr. Bodyguard (12\" mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

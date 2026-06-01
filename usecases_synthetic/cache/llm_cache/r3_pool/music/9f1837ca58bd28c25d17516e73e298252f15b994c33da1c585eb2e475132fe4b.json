@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_159949|mbrainz_6490|name=Beyond The Permafrost | artist=Skeletonwitch | release-date=2015 | release-country=United States of America | duration=2180.0 | genre=Rock | tracks=['Upon Wings Of Black', 'Beyond The Permafrost', 'Baptized In Flames', 'Sacrifice For The Slaughtergod', 'Vengeance Will Be Mine', 'Limb From Limb', 'Cast Into The Open Sea', 'Fire From The Sky', 'Soul Thrashing Black Sorcery', 'Remains Of The Defeated', 'Feast Upon Flesh', 'Within My Blood']||name=Beyond the Permafrost | artist=Skeletonwitch | release-date=2007-10-02 | release-country=United States of America | duration=2179 | tracks=['Upon Wings of Black', 'Beyond the Permafrost', 'Baptized in Flames', 'Sacrifice for the Slaughtergod', 'Vengeance Will Be Mine', 'Limb From Limb', 'Cast Into the Open Sea', 'Fire From the Sky', 'Soul Thrashing Black Sorcery', 'Remains of the Defeated', 'Feast Upon Flesh', 'Within My Blood']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond The Permafrost | artist=Skeletonwitch | release-date=2015 | release-country=United States of America | duration=2180.0 | genre=Rock | tracks=['Upon Wings Of Black', 'Beyond The Permafrost', 'Baptized In Flames', 'Sacrifice For The Slaughtergod', 'Vengeance Will Be Mine', 'Limb From Limb', 'Cast Into The Open Sea', 'Fire From The Sky', 'Soul Thrashing Black Sorcery', 'Remains Of The Defeated', 'Feast Upon Flesh', 'Within My Blood']\nRecord B: name=Beyond the Permafrost | artist=Skeletonwitch | release-date=2007-10-02 | release-country=United States of America | duration=2179 | tracks=['Upon Wings of Black', 'Beyond the Permafrost', 'Baptized in Flames', 'Sacrifice for the Slaughtergod', 'Vengeance Will Be Mine', 'Limb From Limb', 'Cast Into the Open Sea', 'Fire From the Sky', 'Soul Thrashing Black Sorcery', 'Remains of the Defeated', 'Feast Upon Flesh', 'Within My Blood']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

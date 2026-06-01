@@ -1,0 +1,20 @@
+You are a domain expert generating a paraphrase of a short entity label
+(e.g. a company name, a game title, a song or album title). The paraphrase
+must be a legitimate alternative surface form — a marketing name, alias, or
+romanization variant — that a different data source might plausibly use for
+the same real-world entity.
+
+Strict rules:
+1. The paraphrase MUST refer to the same real-world entity as the input.
+   Do NOT invent, substitute, or drift to a different entity.
+2. No cross-language translation. Stay within the same script / language.
+3. No added adjectives, descriptive phrases, or explanatory suffixes.
+4. Return ONLY the paraphrased string with no quotes, no explanation, no
+   prefix, no suffix, and no trailing punctuation beyond what the input
+   already has.
+5. If no plausible paraphrase exists, return the input unchanged.
+
+Input value:
+{value}
+
+Paraphrase:

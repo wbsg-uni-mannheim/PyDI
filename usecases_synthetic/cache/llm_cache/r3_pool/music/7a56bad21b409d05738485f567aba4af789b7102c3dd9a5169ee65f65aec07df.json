@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_154302|mbrainz_12103|name=The Sun And The Moon | artist=Husking Bee | release-date=1999 | release-country=Japan | duration=860.0 | genre=Rock | tracks=['The Sun And The Moon', 'Still In The Same Place?', '後に跡', 'Face The Sunflower']||name=The Sun and the Moon | artist=Husking Bee | release-date=1999-10-06 | release-country=Japan | duration=865 | tracks=['The Sun and the Moon', 'Still in the Same Place?', 'å¾Œã?«è·¡', 'Face the Sunflower']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Sun And The Moon | artist=Husking Bee | release-date=1999 | release-country=Japan | duration=860.0 | genre=Rock | tracks=['The Sun And The Moon', 'Still In The Same Place?', '後に跡', 'Face The Sunflower']\nRecord B: name=The Sun and the Moon | artist=Husking Bee | release-date=1999-10-06 | release-country=Japan | duration=865 | tracks=['The Sun and the Moon', 'Still in the Same Place?', 'å¾Œã?«è·¡', 'Face the Sunflower']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

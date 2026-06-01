@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_115866|lastFM_72107|name=The Singles 1992 - 2003 | artist=No Doubt | release-date=2003 | release-country=Argentina | duration=3586.0 | genre=Rock | tracks=['Just A Girl', \"It's My Life\", 'Hey Baby', 'Bathwater', 'Sunday Morning', 'Hella Good', 'New', 'Underneath It All', 'Excuse Me Mr.', 'Running', 'Spiderwebs', 'Simple Kind Of Life', \"Don't Speak\", 'Ex-Girlfriend', 'Trapped In A Box']||name=[explicit] The Singles 1992-2003 | artist=No Doubt | duration=2797.0 | tracks=['Just a Girl', \"It's My Life\", 'Hey Baby (feat. Bounty Killer)', 'Sunday Morning', 'Hella Good', 'New', 'Excuse Me Mr.', 'Running', 'Spiderwebs', \"Don't Speak\", 'Ex-Girlfriend', 'Trapped in a Box']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles 1992 - 2003 | artist=No Doubt | release-date=2003 | release-country=Argentina | duration=3586.0 | genre=Rock | tracks=['Just A Girl', \"It's My Life\", 'Hey Baby', 'Bathwater', 'Sunday Morning', 'Hella Good', 'New', 'Underneath It All', 'Excuse Me Mr.', 'Running', 'Spiderwebs', 'Simple Kind Of Life', \"Don't Speak\", 'Ex-Girlfriend', 'Trapped In A Box']\nRecord B: name=[explicit] The Singles 1992-2003 | artist=No Doubt | duration=2797.0 | tracks=['Just a Girl', \"It's My Life\", 'Hey Baby (feat. Bounty Killer)', 'Sunday Morning', 'Hella Good', 'New', 'Excuse Me Mr.', 'Running', 'Spiderwebs', \"Don't Speak\", 'Ex-Girlfriend', 'Trapped in a Box']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_55874|mbrainz_20378|name=Monster | artist=Atella | duration=270.0 | tracks=['The Monster (Preview all mixes)']||name=Monster | artist=Imagine Dragons | release-date=2013-09-19 | duration=251 | tracks=['Monster']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monster | artist=Atella | duration=270.0 | tracks=['The Monster (Preview all mixes)']\nRecord B: name=Monster | artist=Imagine Dragons | release-date=2013-09-19 | duration=251 | tracks=['Monster']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

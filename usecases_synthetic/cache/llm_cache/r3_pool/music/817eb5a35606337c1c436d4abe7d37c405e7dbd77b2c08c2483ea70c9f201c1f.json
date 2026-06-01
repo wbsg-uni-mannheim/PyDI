@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_13591|lastFM_19863|name=The Moment Of Truth - The 2nd Album | artist=The Real Milli Vanilli | release-date=1991-02-01 | release-country=Europe | duration=2694.0 | genre=Pop|Hip Hop | tracks=['Keep On Running', 'Tell Me Where It Hurts', 'Crazy Cane', 'When I Die', 'Body Slam', \"Nice 'N Easy\", 'Hard As Hell', 'In My Life', 'Too Late (True Love)', 'The End Of Good Times', \"I'll Be Loving You\", 'Big Brother']||name=The Moment Of Truth - The 2nd | artist=The Real Milli Vanilli | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Moment Of Truth - The 2nd Album | artist=The Real Milli Vanilli | release-date=1991-02-01 | release-country=Europe | duration=2694.0 | genre=Pop|Hip Hop | tracks=['Keep On Running', 'Tell Me Where It Hurts', 'Crazy Cane', 'When I Die', 'Body Slam', \"Nice 'N Easy\", 'Hard As Hell', 'In My Life', 'Too Late (True Love)', 'The End Of Good Times', \"I'll Be Loving You\", 'Big Brother']\nRecord B: name=The Moment Of Truth - The 2nd | artist=The Real Milli Vanilli | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

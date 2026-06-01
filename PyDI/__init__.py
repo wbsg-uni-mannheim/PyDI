@@ -23,6 +23,9 @@ Subpackages
     Conflict resolution functions and data fusion engine.
 ``utils``
     Generic utilities such as comparators, logging helpers, and data profiling.
+``evaluation``
+    End-to-end pipeline evaluation (compares fused output against a
+    silver-standard reference; see ``plans/plan_e2e_metrics.md``).
 
 See the documentation in `docs/high_level_design.md` for detailed design
 guidelines and the high‑level API.
@@ -36,4 +39,5 @@ __all__ = [
     "normalization",
     "fusion",
     "utils",
+    "evaluation",
 ]

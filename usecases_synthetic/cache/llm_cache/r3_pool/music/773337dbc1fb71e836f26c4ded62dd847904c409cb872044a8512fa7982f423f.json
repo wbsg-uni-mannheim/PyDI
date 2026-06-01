@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_150976|lastFM_4579|name=The Good Life | artist=Fire Town | release-date=1989 | release-country=United States of America | duration=2521.0 | genre=Rock | tracks=['The Good Life', 'Miles Away', 'Turn To Me', 'She Reminds Me Of You', 'Reindeer Moon', 'Where The Shadows Fall', 'Under Your Spell', 'I Could Be The One', \"I Don't Want To Lose You\", 'Sounds Like Thunder']||name=The Good Life | artist=Oscar Peterson Trio | duration=2724.0 | tracks=['Wheatland (live at the London House)', 'Wave (live at the London House)', 'For Count (live at the London House)', 'The Good Life (live at the London House)', 'On A Clear Day (You Can See Forever) (live at the London House)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Good Life | artist=Fire Town | release-date=1989 | release-country=United States of America | duration=2521.0 | genre=Rock | tracks=['The Good Life', 'Miles Away', 'Turn To Me', 'She Reminds Me Of You', 'Reindeer Moon', 'Where The Shadows Fall', 'Under Your Spell', 'I Could Be The One', \"I Don't Want To Lose You\", 'Sounds Like Thunder']\nRecord B: name=The Good Life | artist=Oscar Peterson Trio | duration=2724.0 | tracks=['Wheatland (live at the London House)', 'Wave (live at the London House)', 'For Count (live at the London House)', 'The Good Life (live at the London House)', 'On A Clear Day (You Can See Forever) (live at the London House)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

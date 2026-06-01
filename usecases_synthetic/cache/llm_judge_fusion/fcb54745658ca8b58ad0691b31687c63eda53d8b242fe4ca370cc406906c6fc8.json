@@ -1,0 +1,26 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "United Kingdom of Great Britain and Northern Ireland"
+    },
+    {
+      "source": "discogs",
+      "value": "UK"
+    },
+    {
+      "source": "discogs",
+      "value": "Australia"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "UK and the formal country name both normalize to United Kingdom, while Australia is a conflicting outlier.",
+    "value": "United Kingdom"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United Kingdom\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"UK and the formal country name both normalize to United Kingdom, while Australia is a conflicting outlier.\"}"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "29.80 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "32.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "The candidates likely represent the same storage amount with one including units and the other appearing as the raw GB value, so I normalized to the more standard numeric form.",
+    "value": 32.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":32.0,\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"The candidates likely represent the same storage amount with one including units and the other appearing as the raw GB value, so I normalized to the more standard numeric form.\"}"
+}

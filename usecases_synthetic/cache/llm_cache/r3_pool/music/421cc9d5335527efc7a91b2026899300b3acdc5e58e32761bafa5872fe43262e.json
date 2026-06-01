@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_15374|mbrainz_8868|name=- new - Dynamo | artist=Rumpistol | duration=2653.0 | tracks=['Transit', 'Mobile', 'Refleksion', 'Beito', 'Rehux', 'Analog', 'Kocmoc', 'Dynamo']||name=Dynamo | artist=Faded Paper Figures | release-date=2008-07-14 | release-country=United States of America | duration=2623 | tracks=['North by North', 'B Film', 'Logos', 'Polaroid Solution', 'Future Self', 'Metropolis', 'I Fell Off My Name', \"Geneva's Gone\", 'The Persuaded', 'Being There', 'Speeches', 'Red State']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=- new - Dynamo | artist=Rumpistol | duration=2653.0 | tracks=['Transit', 'Mobile', 'Refleksion', 'Beito', 'Rehux', 'Analog', 'Kocmoc', 'Dynamo']\nRecord B: name=Dynamo | artist=Faded Paper Figures | release-date=2008-07-14 | release-country=United States of America | duration=2623 | tracks=['North by North', 'B Film', 'Logos', 'Polaroid Solution', 'Future Self', 'Metropolis', 'I Fell Off My Name', \"Geneva's Gone\", 'The Persuaded', 'Being There', 'Speeches', 'Red State']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

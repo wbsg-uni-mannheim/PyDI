@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Original Album Classics"
+    },
+    {
+      "source": "lastfm",
+      "value": "Original  Classics"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The Last.fm candidate appears to be a truncated variant of the same album title, and the MusicBrainz value is the complete canonical form.",
+    "value": "Original Album Classics"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Original Album Classics\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The Last.fm candidate appears to be a truncated variant of the same album title, and the MusicBrainz value is the complete canonical form.\"}"
+}

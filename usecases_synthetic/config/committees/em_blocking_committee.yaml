@@ -1,0 +1,219 @@
+# Entity-matching BLOCKING committee roster — companies domain.
+#
+# Split from the former `em_committee.yaml` as part of C2.4b (see
+# `plans/plan_committee_finalization.md` and
+# `knobs/committee_review/blocking_shortlist.md`). The blocking committee
+# produces candidate-pair sets; the matching committee classifies those
+# pairs. Composition strategy is **sequential select-best-blocker**: each
+# blocker is scored on pair recall (>= 0.97 floor) and reduction ratio,
+# the winner's candidate set is handed off to every matching-committee
+# member.
+#
+# Frozen 6-member roster (user-directed, 2026-04-21):
+#   1. token_blocker               (lexical, incumbent)
+#   2. standard_blocker            (lexical, incumbent, equality on name_first_token)
+#   3. embedding_blocker           (embedding, incumbent)
+#   4. sorted_neighbourhood_blocker (lexical, new - drop-in from PyDI)
+#   5. bm25_blocker                (sparse, new - via bm25s backend)
+#   6. sc_block                    (hybrid, new - adapter landed,
+#                                    DEFERRED pending per-domain checkpoint)
+#
+# sc_block's adapter (`usecases_synthetic/lib/sc_block_blocker.py`) is
+# now written — the class is importable and the functional-test suite
+# (`tests/test_sc_block_blocker.py`) exercises the full serialise →
+# encode → FAISS/sklearn-index → query → emit-pairs path against an
+# injected encoder.  The entry remains `enabled_by_default: false`
+# because the per-domain supervised-contrastive checkpoint does not
+# yet exist under
+# `usecases_synthetic/cache/sc_block_checkpoints/<domain>/best/`.
+# Promote to `enabled_by_default: true` once the checkpoint lands
+# (see plan_committee_finalization.md C2.4b remaining work).
+#
+# Metric aggregation: macro over source pairs; primary = pair_recall,
+# secondary = reduction_ratio. Downstream F1 under the pinned
+# ditto_plm matcher is reported as a diagnostic only.
+
+seed: 42
+
+# Shared preprocessing hook — applied wherever a blocker accepts a
+# `preprocess` / `preprocess_text` kwarg. BM25 deliberately opts out and
+# uses its own tokenizer (stopword removal + optional stemming) because
+# the IDF term is highly sensitive to the stopword policy.
+preprocess_text: "normalize_text"
+
+members:
+  - name: token_blocker
+    description: "Token-set inverted-index blocker on name (lexical, incumbent)"
+    blocker:
+      class: TokenBlocker
+      module: PyDI.entitymatching.blocking.token_blocking
+      params:
+        column: name
+        min_token_len: 2
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: standard_blocker
+    description: >-
+      Equality on derived name_first_3 key (lexical). Switched from
+      name_first_token → name_first_3 per the R5 EM blocking sweep
+      sign-off (2026-05-10): pair_recall lifted 0.921 → 0.935 with
+      rr unchanged at 0.998 on the baseline companies sources. The
+      first-3-chars prefix is a tighter discriminator than the first
+      alphabetic token for company names where the first token is
+      often a stopword-like prefix ("Bank of", "The X Group", etc.).
+      Runner derives `name_first_3` via the pattern-based key
+      generator in committee_em._generate_blocking_keys.
+    blocker:
+      class: StandardBlocker
+      module: PyDI.entitymatching.blocking.standard
+      params:
+        "on": [name_first_3]
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: embedding_blocker
+    description: >-
+      Dense ANN top-k retrieval (embedding). Backbone:
+      BAAI/bge-base-en-v1.5 (retrieval-tuned, 768-dim). Selected by
+      the R5 EM blocking sweep (2026-05-10): the only model in the
+      5-model panel (MiniLM-L6, MPNet-base, BGE-base, BGE-small,
+      E5-base) clearing the 0.97 pair-recall floor on ALL THREE
+      domains. Per-domain recall: companies 0.974, games 0.989,
+      music 0.995 — mean=0.986, beating MiniLM-L6 (0.981) by 0.5pp.
+      MPS/CPU friendly; ~10-13s per source-pair encoding on companies-
+      sized sources. Pending #1 closed.
+    blocker:
+      class: EmbeddingBlocker
+      module: PyDI.entitymatching.blocking.embedding
+      params:
+        text_cols: [name]
+        model: BAAI/bge-base-en-v1.5
+        top_k: 50
+        threshold: 0.3
+    blocking_type: embedding
+    enabled_by_default: true
+
+  - name: sorted_neighbourhood_blocker
+    description: >-
+      Sliding-window blocker over a sort key (lexical). Tuned by the
+      R5 EM blocking sweep (2026-05-10): key=name_norm (lowercased
+      full name) + window=40 wins on all 3 domains, beating
+      key=name+window=20 by +2.4pp recall on companies, +4.4pp on
+      games, +5.4pp on music. The full-name sort with a wider window
+      out-discriminates prefix/token sort keys because surface-form
+      ordering is preserved at higher resolution. Runner derives
+      `name_norm` via committee_em._generate_blocking_keys.
+    blocker:
+      class: SortedNeighbourhoodBlocker
+      module: PyDI.entitymatching.blocking.sorted_neighbourhood
+      params:
+        key: name_norm
+        window: 40
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: bm25_blocker
+    description: >-
+      Okapi BM25 over character n-grams (sparse, bm25s backend,
+      char_wb tokenisation). Strongest non-learned baseline that
+      survives K1 paraphrase: word-level BM25 loses the whole-word
+      signal when surface forms get rewritten at hard, char-ngrams
+      retain enough shared substrings to keep recall up. Word-level
+      tokenisation was retired 2026-05-22 per plan_revision.md §C4
+      (decision recorded against the EM-block ceiling cliff).
+    blocker:
+      class: BM25Blocker
+      module: usecases_synthetic.lib.bm25_blocker
+      params:
+        text_cols: [name]
+        top_k: 50
+        tokenizer: char_ngram
+        ngram_range: [3, 5]
+        k1: 1.5
+        b: 0.75
+    blocking_type: sparse
+    enabled_by_default: true
+
+  - name: sc_block
+    description: >-
+      Supervised-contrastive encoder + ANN retrieval (hybrid). Brinkmann
+      et al., ESWC 2024 (Mannheim WBSG, MIT). Per-domain checkpoint
+      trained via scripts/sc_block/train.py: roberta-base + SupCon loss
+      (τ=0.07) over EM-gold cluster graph with in-batch random
+      negatives. text_cols match the per-domain Ditto field set so
+      train ↔ inference share the [COL]/[VAL] serialisation shape.
+      Companies val_pair_recall at top_k=50 + threshold=0.3 = 0.9904
+      (R5 EM blocking sub-D sign-off, 2026-05-10).
+    blocker:
+      class: SCBlockBlocker
+      module: usecases_synthetic.lib.sc_block_blocker
+      params:
+        # Post-2026-05-04 schema refresh dropped city + founded from
+        # forbes (forbes columns: name, country, industry, assets,
+        # revenue, website). Strict intersection across all 3 companies
+        # sources after column_mapping is now [name, country]; the
+        # checkpoint at usecases_synthetic/cache/sc_block_checkpoints/
+        # companies/best was retrained 2026-05-15 with this thinner
+        # text_cols (F12).
+        text_cols: [name, country, city, industry, sector, founded, keypeople, assets, revenue]
+        top_k: 50
+        threshold: 0.3
+        checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/companies/best
+    blocking_type: hybrid
+    enabled_by_default: true
+
+# Blocking-committee composition strategy.
+# Runner behaviour (to be implemented in committee_em.py refactor):
+#   1. Run every enabled blocker against the source pair.
+#   2. Filter to those with pair_recall >= recall_floor.
+#   3. Among survivors, pick the one with the highest reduction_ratio
+#      (ties broken alphabetically on `name` for determinism).
+#   4. Hand the winning candidate set unchanged to the matching
+#      committee.
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+
+# Axis coverage enforcement (consumed by test_committee_configs.py).
+# Enabled roster covers [lexical, sparse, embedding, hybrid] after the
+# R5 EM blocking sub-D sign-off (2026-05-10) promoted sc_block from
+# enabled_by_default=false to true.
+required_axes:
+  blocking_type: [lexical, sparse, embedding, hybrid]
+
+# Column mapping for source-pair alignment (shared with the matching
+# committee — keep these two files in sync). The committee runner
+# normalises heterogeneous column names onto the canonical companies
+# schema before a blocker serialises text_cols. The id column is
+# already renamed to ``id`` by the loader (per ``id_column`` in
+# config/domains/companies.yaml) so it does not appear here.
+# Refreshed 2026-05-04 to match the new CSV source columns.
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    # dbpedia.sector stays as `sector` (NOT collapsed to `industry`).
+    # Forbes' business_segment maps to `industry`; the two are different
+    # canonical attributes per K2's canonical_schema. Must stay in sync
+    # with em_matching_committee.yaml (the runner enforces identity).
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded

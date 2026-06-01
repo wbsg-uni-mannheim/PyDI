@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_44002|lastFM_50023|name=The Fool | artist=Sanford Clark | release-date=1955 | release-country=United States of America | genre=Rock|Folk, World, & Country | tracks=['The Fool', 'Lonesome For A Letter']||name=The Fool | artist=The Fool | duration=2199.0 | tracks=['Voice On The Wind', 'Rainbow Man', 'Cry For Me', 'No One Will Ever Know', 'Reincarnation', 'Hello Little Sister', \"Keep On Pushin'\", 'Lay It Down', 'We Are One', 'Shining Light']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Fool | artist=Sanford Clark | release-date=1955 | release-country=United States of America | genre=Rock|Folk, World, & Country | tracks=['The Fool', 'Lonesome For A Letter']\nRecord B: name=The Fool | artist=The Fool | duration=2199.0 | tracks=['Voice On The Wind', 'Rainbow Man', 'Cry For Me', 'No One Will Ever Know', 'Reincarnation', 'Hello Little Sister', \"Keep On Pushin'\", 'Lay It Down', 'We Are One', 'Shining Light']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

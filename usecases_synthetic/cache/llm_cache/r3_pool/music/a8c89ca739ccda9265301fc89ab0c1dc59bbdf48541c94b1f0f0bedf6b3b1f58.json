@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_60601|lastFM_28381|name=Voodoo Caravan | artist=The Quill | release-date=2002 | release-country=Germany | duration=3361.0 | genre=Rock | tracks=['Voodoo Caravan', 'Sell No Soul', 'Shapes Of Afterlife', 'Until Earth Is Bitter Gone', '(Wade Across) The Mighty River', 'Save Me', 'Hole In My Head', 'Overload', 'Travel Without Moving', 'Drifting', 'Virgo']||name=[explicit] Voodoo Caravan | artist=The Quill | duration=2416.0 | tracks=['Voodoo Caravan', 'Sell No Soul', 'Shapes Of Afterlife', 'Until Earth Is Bitter Gone', 'Save Me', 'Drifting', 'Virgo']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Voodoo Caravan | artist=The Quill | release-date=2002 | release-country=Germany | duration=3361.0 | genre=Rock | tracks=['Voodoo Caravan', 'Sell No Soul', 'Shapes Of Afterlife', 'Until Earth Is Bitter Gone', '(Wade Across) The Mighty River', 'Save Me', 'Hole In My Head', 'Overload', 'Travel Without Moving', 'Drifting', 'Virgo']\nRecord B: name=[explicit] Voodoo Caravan | artist=The Quill | duration=2416.0 | tracks=['Voodoo Caravan', 'Sell No Soul', 'Shapes Of Afterlife', 'Until Earth Is Bitter Gone', 'Save Me', 'Drifting', 'Virgo']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

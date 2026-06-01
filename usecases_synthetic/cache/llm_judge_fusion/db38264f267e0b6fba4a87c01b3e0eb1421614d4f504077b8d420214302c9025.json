@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_2",
+      "value": "465.66 GiB"
+    },
+    {
+      "source": "products_3",
+      "value": "500000"
+    },
+    {
+      "source": "products_4",
+      "value": "500.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "The candidates most plausibly refer to the same storage capacity, with 500.0 and 500000 indicating 500 GB-class values and 465.66 GiB being the binary-equivalent marketing capacity.",
+    "value": 500
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":500,\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"The candidates most plausibly refer to the same storage capacity, with 500.0 and 500000 indicating 500 GB-class values and 465.66 GiB being the binary-equivalent marketing capacity.\"}"
+}

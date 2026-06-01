@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_157710|mbrainz_25570|name=Hier Encore | artist=Leslie | release-date=2010-11-22 | release-country=France | duration=202.0 | genre=Blues | tracks=['Hier Encore']||name=Hier encore | artist=Aznavour, Charles | release-date=1995-09 | release-country=France | duration=3022 | tracks=[\"Que c'est triste Venise\", \"Je t'aimais tant\", 'Ã€ ma fille', \"Tu t'amuses\", 'Le jour se lÃ¨ve', \"Il te suffirait que je t'aime\", 'Le Temps', 'Hier encore', \"Chaque fois que j'aime\", 'Avec', \"Toi et tes yeux d'enfant\", \"Quand j'en aurai assez\", 'Parce que', 'Tu Ã©tais trop jolie', 'Ce sacrÃ© piano', 'Le Palais de nos chimÃ¨res', \"J'en dÃ©duis que je t'aime\", 'Je hais les dimanches']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hier Encore | artist=Leslie | release-date=2010-11-22 | release-country=France | duration=202.0 | genre=Blues | tracks=['Hier Encore']\nRecord B: name=Hier encore | artist=Aznavour, Charles | release-date=1995-09 | release-country=France | duration=3022 | tracks=[\"Que c'est triste Venise\", \"Je t'aimais tant\", 'Ã€ ma fille', \"Tu t'amuses\", 'Le jour se lÃ¨ve', \"Il te suffirait que je t'aime\", 'Le Temps', 'Hier encore', \"Chaque fois que j'aime\", 'Avec', \"Toi et tes yeux d'enfant\", \"Quand j'en aurai assez\", 'Parce que', 'Tu Ã©tais trop jolie', 'Ce sacrÃ© piano', 'Le Palais de nos chimÃ¨res', \"J'en dÃ©duis que je t'aime\", 'Je hais les dimanches']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

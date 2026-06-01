@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42601|lastFM_38483|name=Monster Monster | artist=The Almost | release-date=2009-11-03 | release-country=United States of America | duration=2723.0 | genre=Rock | tracks=['Monster Monster', 'Lonely Wheel', \"No I Don't\", 'Hands', 'Young Again', 'Summer Summer', 'Hand Grenade', 'Books & Books', 'Souls On Ten', 'Want To', 'Get Through', 'Monster']||name=T. Almost -  Monster Monster EP | artist=T. Almost | duration=922.0 | tracks=['Birmingham', 'July', 'Wrong', 'Out West', 'Me And Alone']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monster Monster | artist=The Almost | release-date=2009-11-03 | release-country=United States of America | duration=2723.0 | genre=Rock | tracks=['Monster Monster', 'Lonely Wheel', \"No I Don't\", 'Hands', 'Young Again', 'Summer Summer', 'Hand Grenade', 'Books & Books', 'Souls On Ten', 'Want To', 'Get Through', 'Monster']\nRecord B: name=T. Almost -  Monster Monster EP | artist=T. Almost | duration=922.0 | tracks=['Birmingham', 'July', 'Wrong', 'Out West', 'Me And Alone']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

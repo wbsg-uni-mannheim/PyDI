@@ -1,0 +1,25 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Colors', 'Colors (dub)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Colors', 'Colors (Dub)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "Both sources agree on the same two track names, differing only in capitalization of 'dub'.",
+    "value": [
+      "Colors",
+      "Colors (dub)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Colors\",\"Colors (dub)\"],\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"Both sources agree on the same two track names, differing only in capitalization of 'dub'.\"}"
+}

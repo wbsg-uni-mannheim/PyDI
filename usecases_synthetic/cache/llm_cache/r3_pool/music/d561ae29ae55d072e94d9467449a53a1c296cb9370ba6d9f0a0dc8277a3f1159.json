@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42980|mbrainz_7753|name=Ev'rything's Coming Up Dusty | artist=Dusty Springfield | release-date=1965 | release-country=UK | genre=Pop|Funk / Soul | tracks=[\"Won't Be Long\", 'Oh No! Not My Baby', 'Long After Tonight Is Over', 'La Bamba', 'Who Can I Turn To?', \"Doodlin'\", \"If It Don't Work Out\", \"That's How Heartaches Are Made\", 'It Was Easier To Hurt Him', \"I've Been Wrong Before\", \"I Can't Hear You\", 'I Had A Talk With My Man', \"Packin' Up\"]||name=Ev'rything's Coming Up Dusty | artist=Springfield, Dusty | release-date=1965-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2155 | tracks=[\"Won't Be Long\", 'Oh No! Not My Baby', 'Long After Tonight Is Over', 'La Bamba', 'Who Can I Turn To?', \"Doodlin'\", \"If It Don't Work Out\", \"That's How Heartaches Are Made\", 'It Was Easier to Hurt Him', \"I've Been Wrong Before\", \"I Can't Hear You\", 'I Had a Talk With My Man', \"Packin' Up\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ev'rything's Coming Up Dusty | artist=Dusty Springfield | release-date=1965 | release-country=UK | genre=Pop|Funk / Soul | tracks=[\"Won't Be Long\", 'Oh No! Not My Baby', 'Long After Tonight Is Over', 'La Bamba', 'Who Can I Turn To?', \"Doodlin'\", \"If It Don't Work Out\", \"That's How Heartaches Are Made\", 'It Was Easier To Hurt Him', \"I've Been Wrong Before\", \"I Can't Hear You\", 'I Had A Talk With My Man', \"Packin' Up\"]\nRecord B: name=Ev'rything's Coming Up Dusty | artist=Springfield, Dusty | release-date=1965-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2155 | tracks=[\"Won't Be Long\", 'Oh No! Not My Baby', 'Long After Tonight Is Over', 'La Bamba', 'Who Can I Turn To?', \"Doodlin'\", \"If It Don't Work Out\", \"That's How Heartaches Are Made\", 'It Was Easier to Hurt Him', \"I've Been Wrong Before\", \"I Can't Hear You\", 'I Had a Talk With My Man', \"Packin' Up\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

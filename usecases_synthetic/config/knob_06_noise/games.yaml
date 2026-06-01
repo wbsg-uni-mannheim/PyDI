@@ -1,0 +1,196 @@
+# Knob 06 — Value Noise Injection Rate — Games
+#
+# Refreshed 2026-05-07 against the schema.org-style CSV sources at
+# usecases/games/input/data/. id_columns collapse to ``id`` via the
+# loader rename. New blocks: ``taxonomies`` (Pending #4 — Gaming_Platforms
+# + Video_Game_Genres) and ``numeric_attributes`` (Pending #6).
+
+domain: games
+
+id_columns:
+  dbpedia: id
+  metacritic: id
+  sales: id
+
+attribute_classes:
+  dbpedia:
+    title: primary
+    system: key
+    launch_yr: secondary
+    studio: secondary
+    genre: secondary
+    franchise: secondary
+  metacritic:
+    game_title: primary
+    console: key
+    age_rating: key
+    year_published: secondary
+    made_by: secondary
+    genres: secondary
+    press_rating: secondary
+    player_rating: secondary
+  sales:
+    prod_title: primary
+    hw: key
+    age_classification: key
+    launch_dt: secondary
+    studio: secondary
+    dist: secondary
+    genre: secondary
+    press_score: secondary
+    comm_rating: secondary
+    units_sold_mm: secondary
+
+# Source column to canonical attribute (per
+# config/domains/games.yaml: name / platform / ESRB / releaseYear /
+# developer / publisher / genres / criticScore / userScore /
+# globalSales / series).
+attribute_mapping:
+  dbpedia:
+    title: name
+    system: platform
+    launch_yr: releaseYear
+    studio: developer
+    genre: genres
+    franchise: series
+  metacritic:
+    game_title: name
+    console: platform
+    age_rating: ESRB
+    year_published: releaseYear
+    made_by: developer
+    genres: genres
+    press_rating: criticScore
+    player_rating: userScore
+  sales:
+    prod_title: name
+    hw: platform
+    age_classification: ESRB
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    units_sold_mm: globalSales
+
+noise_rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.0
+    secondary: 0.01
+  medium:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.04
+  hard:
+    primary: 0.01
+    key: 0.06
+    secondary: 0.12
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+operator_mix:
+  easy:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+  medium:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+    typo_substitute: 1.5
+    ocr_confuse: 1.0
+    taxonomy_walk: 1.0
+  hard:
+    whitespace_corrupt: 0.5
+    case_corrupt: 0.5
+    typo_substitute: 2.0
+    ocr_confuse: 1.5
+    truncate: 1.0
+    taxonomy_walk: 1.5
+
+max_edits_per_cell:
+  easy: 1
+  medium: 1
+  hard: 3
+
+max_ocr_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2
+
+max_truncate_chars:
+  easy: 1
+  medium: 2
+  hard: 3
+
+soft_global_primary_cap_hard: 0.35
+
+compression_factor: 0.5
+stretch_factor: 1.5
+
+# Pending #4: taxonomy bindings.
+# - platform taxonomy: Platform Type → Manufacturer → Platform Name.
+# - genre taxonomy: Genre Name → Subgenre Name → Sub-Subgenre Name.
+# ESRB rating taxonomy is flat (no parent/child) and is intentionally
+# NOT used here — taxonomy_walk has no walk to perform on a flat
+# vocabulary. ESRB synonym normalisation belongs in the SM/Norm stage.
+taxonomies:
+  platform:
+    csv: games/input/schemamatching/Gaming_Platforms_Taxonomy.csv
+    levels:
+      - Platform Type
+      - Manufacturer
+      - Platform Name
+    bind:
+      dbpedia:
+        system: platform
+      metacritic:
+        console: platform
+      sales:
+        hw: platform
+  genre:
+    csv: games/input/schemamatching/Video_Game_Genres_Taxonomy.csv
+    levels:
+      - Genre Name
+      - Subgenre Name
+      - Sub-Subgenre Name
+    bind:
+      dbpedia:
+        genre: genre
+      metacritic:
+        genres: genre
+      sales:
+        genre: genre
+
+# Pending #6: ±2 % relative jitter cap. ``units_sold_mm`` is in millions
+# per K5 sign-off — cap applies to the raw float as stored.
+numeric_jitter_max_relative: 0.02
+
+numeric_attributes:
+  dbpedia:
+    launch_yr: year
+  metacritic:
+    year_published: year
+    press_rating: continuous
+    player_rating: continuous
+  sales:
+    launch_dt: date
+    press_score: continuous
+    comm_rating: continuous
+    units_sold_mm: continuous
+
+# Easy-only cleanup rules: refreshed 2026-05-07. dbpedia.title carries
+# 9889 entries with a "(YYYY video game)" or "(video game)"
+# disambiguation parenthetical — strip at easy.
+cleanup_rules:
+  - source: dbpedia
+    attribute: title
+    pattern: '\s*\(\d{4}\s+video game\)\s*$'
+    replacement: ""
+  - source: dbpedia
+    attribute: title
+    pattern: '\s*\(video game\)\s*$'
+    replacement: ""

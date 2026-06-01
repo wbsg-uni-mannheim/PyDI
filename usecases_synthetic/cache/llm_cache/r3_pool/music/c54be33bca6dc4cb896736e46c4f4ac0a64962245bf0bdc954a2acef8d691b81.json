@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_94853|mbrainz_15439|name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-06 | release-country=Europe | duration=2689.0 | genre=Rock | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even The Birds', 'Black Lions', 'A Hole In The World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']||name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-09 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2682 | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even the Birds', 'Black Lions', 'A Hole in the World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-06 | release-country=Europe | duration=2689.0 | genre=Rock | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even The Birds', 'Black Lions', 'A Hole In The World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']\nRecord B: name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-09 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2682 | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even the Birds', 'Black Lions', 'A Hole in the World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

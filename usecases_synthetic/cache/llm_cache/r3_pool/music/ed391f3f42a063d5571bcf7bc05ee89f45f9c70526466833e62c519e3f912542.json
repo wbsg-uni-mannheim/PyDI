@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_196116|mbrainz_1672|name=Return To Forever | artist=Chick Corea | release-date=2005-09-14 | release-country=Japan | duration=2805.0 | genre=Jazz | tracks=['Return To Forever', 'Crystal Silence', 'What Game Shall We Play Today', 'Sometime Ago - La Fiesta']||name=Return to Forever | artist=Corea, Chick | release-date=1988-07-01 | release-country=Germany | duration=2809 | tracks=['Return to Forever', 'Crystal Silence', 'What Game Shall We Play Today', 'Sometime Ago / La Fiesta']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Return To Forever | artist=Chick Corea | release-date=2005-09-14 | release-country=Japan | duration=2805.0 | genre=Jazz | tracks=['Return To Forever', 'Crystal Silence', 'What Game Shall We Play Today', 'Sometime Ago - La Fiesta']\nRecord B: name=Return to Forever | artist=Corea, Chick | release-date=1988-07-01 | release-country=Germany | duration=2809 | tracks=['Return to Forever', 'Crystal Silence', 'What Game Shall We Play Today', 'Sometime Ago / La Fiesta']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_4168|lastFM_6784|name=Electronica Gainsbourg M1 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1309.0 | genre=Electronic | tracks=[\"Bonnie & Clyde (Herbert's Fred & Ginger Mix)\", \"Je T'aime... Moi, Non Plus (Dampfbad Dub)\", 'Lola Rastaquouère', 'New York - U.S.A.']||name=Electronica  2 | artist=Serge Gainsbourg | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Electronica Gainsbourg M1 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1309.0 | genre=Electronic | tracks=[\"Bonnie & Clyde (Herbert's Fred & Ginger Mix)\", \"Je T'aime... Moi, Non Plus (Dampfbad Dub)\", 'Lola Rastaquouère', 'New York - U.S.A.']\nRecord B: name=Electronica  2 | artist=Serge Gainsbourg | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

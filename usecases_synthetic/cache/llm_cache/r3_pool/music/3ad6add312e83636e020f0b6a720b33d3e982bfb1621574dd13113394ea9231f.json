@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_13642|mbrainz_23843|name=Chrome | artist=Chromium | tracks=[]||name=Chrome Daddies | artist=Chrome Daddies | release-date=2001-01-01 | duration=2622 | tracks=['8 Ball', 'Red Light, Blue Heart', 'Catty Town', 'I Flipped My Lid', \"Dearest Darlin'\", \"You Ain't Half the Woman (Half the Time)\", '32', 'Strip Poker', \"The Mess You've Got Me In\", 'Smilin in My Sleep', 'Rock Bottom', 'Down, Down, Down', \"Let's Walk\", 'Boogie for Square Dancers', 'Deep in the Heart of Anywhere', 'Stuarts Boogie']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Chrome | artist=Chromium | tracks=[]\nRecord B: name=Chrome Daddies | artist=Chrome Daddies | release-date=2001-01-01 | duration=2622 | tracks=['8 Ball', 'Red Light, Blue Heart', 'Catty Town', 'I Flipped My Lid', \"Dearest Darlin'\", \"You Ain't Half the Woman (Half the Time)\", '32', 'Strip Poker', \"The Mess You've Got Me In\", 'Smilin in My Sleep', 'Rock Bottom', 'Down, Down, Down', \"Let's Walk\", 'Boogie for Square Dancers', 'Deep in the Heart of Anywhere', 'Stuarts Boogie']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

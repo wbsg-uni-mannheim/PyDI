@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "11,175.87 GiB"
+    },
+    {
+      "source": "products_4",
+      "value": "12,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Converted the comma-formatted GiB value to a numeric canonical form and kept the corresponding candidate as the most directly usable storage size.",
+    "value": 11175.87
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":11175.87,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Converted the comma-formatted GiB value to a numeric canonical form and kept the corresponding candidate as the most directly usable storage size.\"}"
+}

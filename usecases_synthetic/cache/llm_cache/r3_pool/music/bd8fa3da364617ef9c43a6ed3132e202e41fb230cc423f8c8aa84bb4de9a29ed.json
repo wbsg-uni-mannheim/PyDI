@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_33958|mbrainz_15657|name=D. Eulberg -  Diorama Remixes | artist=D. Eulberg | tracks=[]||name=Diorama Remixes Pt. 1 | artist=Eulberg, Dominik | release-date=2011-11-08 | release-country=Germany | duration=2528 | tracks=[\"Teddy Tausendtod (Stephan Bodzin 'Marabu' Remix)\", 'Der Tanz Der GlÃ¼hwÃ¼rmchen (Petar Dundov Remix)', \"TÃ¤uschnungs-Blume (Ryan Davis 'Narciss' Render)\", \"Teddy Tausendtod (Stephan Bodzin 'Flamingo' Remix)\", \"Echomaus (Jesse Somfay 'Xaltii' Remix)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=D. Eulberg -  Diorama Remixes | artist=D. Eulberg | tracks=[]\nRecord B: name=Diorama Remixes Pt. 1 | artist=Eulberg, Dominik | release-date=2011-11-08 | release-country=Germany | duration=2528 | tracks=[\"Teddy Tausendtod (Stephan Bodzin 'Marabu' Remix)\", 'Der Tanz Der GlÃ¼hwÃ¼rmchen (Petar Dundov Remix)', \"TÃ¤uschnungs-Blume (Ryan Davis 'Narciss' Render)\", \"Teddy Tausendtod (Stephan Bodzin 'Flamingo' Remix)\", \"Echomaus (Jesse Somfay 'Xaltii' Remix)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

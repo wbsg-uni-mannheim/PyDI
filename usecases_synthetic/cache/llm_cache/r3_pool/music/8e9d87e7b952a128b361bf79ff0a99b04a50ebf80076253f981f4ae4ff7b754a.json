@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_122140|mbrainz_15000|name=Garbage | artist=Garbage | release-date=1996 | release-country=Ukraine | duration=3051.0 | genre=Rock | tracks=['Supervixen', 'Queer', 'As Heaven Is Wide', 'Not My Idea', 'Vow', 'Dog New Tricks', 'Only Happy When It Rains', 'A Stroke Of Luck', 'Stupid Girl', \"My Lover's Box\", 'Fix Me Now', 'Milk']||name=Garbage / Version 2.0 | artist=Garbage | release-date=2008-09-15 | duration=3060 | tracks=['Supervixen', 'Queer', 'Only Happy When It Rains', 'As Heaven Is Wide', 'Not My Idea', 'A Stroke of Luck', 'Vow', 'Stupid Girl', 'Dog New Tricks', 'My Loverâ€™s Box', 'Fix Me Now', 'Milk', 'Temptation Waits', 'I Think Iâ€™m Paranoid', 'When I Grow Up', 'Medication', 'Special', 'Hammering in My Head', 'Push It', 'The Trick Is to Keep Breathing', 'Dumb', 'Sleep Together', 'Wicked Ways', 'You Look So Fine']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Garbage | artist=Garbage | release-date=1996 | release-country=Ukraine | duration=3051.0 | genre=Rock | tracks=['Supervixen', 'Queer', 'As Heaven Is Wide', 'Not My Idea', 'Vow', 'Dog New Tricks', 'Only Happy When It Rains', 'A Stroke Of Luck', 'Stupid Girl', \"My Lover's Box\", 'Fix Me Now', 'Milk']\nRecord B: name=Garbage / Version 2.0 | artist=Garbage | release-date=2008-09-15 | duration=3060 | tracks=['Supervixen', 'Queer', 'Only Happy When It Rains', 'As Heaven Is Wide', 'Not My Idea', 'A Stroke of Luck', 'Vow', 'Stupid Girl', 'Dog New Tricks', 'My Loverâ€™s Box', 'Fix Me Now', 'Milk', 'Temptation Waits', 'I Think Iâ€™m Paranoid', 'When I Grow Up', 'Medication', 'Special', 'Hammering in My Head', 'Push It', 'The Trick Is to Keep Breathing', 'Dumb', 'Sleep Together', 'Wicked Ways', 'You Look So Fine']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

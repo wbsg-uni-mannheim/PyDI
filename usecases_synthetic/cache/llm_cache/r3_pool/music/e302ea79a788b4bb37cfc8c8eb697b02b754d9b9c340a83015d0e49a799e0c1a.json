@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_125|lastFM_72|name=The Future Is On Fire | artist=Christian Morgenstern | release-date=2000-02-28 | release-country=Germany | genre=Electronic | tracks=['The Future Is On Fire Pt. 1', 'The Future Is On Fire Pt. 2', 'The Future Is On Fire Pt. 3', 'The Future Is On Fire Pt. 4']||name=The Future Is  Fire | artist=C. Morgenstern | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Future Is On Fire | artist=Christian Morgenstern | release-date=2000-02-28 | release-country=Germany | genre=Electronic | tracks=['The Future Is On Fire Pt. 1', 'The Future Is On Fire Pt. 2', 'The Future Is On Fire Pt. 3', 'The Future Is On Fire Pt. 4']\nRecord B: name=The Future Is  Fire | artist=C. Morgenstern | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

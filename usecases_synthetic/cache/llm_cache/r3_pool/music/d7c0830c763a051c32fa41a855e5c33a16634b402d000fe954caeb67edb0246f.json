@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_2529|lastFM_364|name=Feel The Music | artist=Sound Of Music | release-date=1992 | release-country=United States of America | duration=1576.0 | genre=Electronic | tracks=['Feel The Music (Part One)', 'Feel The Music (Part Two)', 'Feel The Music (Just Right Underground Mix)', 'Feel The Music (Axis Dub)']||name=Get Into The Music | artist=DJ's Rule | duration=1593.0 | tracks=['Get Into The Music (97 Anthem Radio Edit)', 'Get Into The Music (Rhythm Masters Radio Edit)', 'Get Into The Music (Rhythm Masters Club Mix)', 'Get Into The Music (Rhythm Masters Dub Mix)', 'Get Into The Music (Skindeep Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Feel The Music | artist=Sound Of Music | release-date=1992 | release-country=United States of America | duration=1576.0 | genre=Electronic | tracks=['Feel The Music (Part One)', 'Feel The Music (Part Two)', 'Feel The Music (Just Right Underground Mix)', 'Feel The Music (Axis Dub)']\nRecord B: name=Get Into The Music | artist=DJ's Rule | duration=1593.0 | tracks=['Get Into The Music (97 Anthem Radio Edit)', 'Get Into The Music (Rhythm Masters Radio Edit)', 'Get Into The Music (Rhythm Masters Club Mix)', 'Get Into The Music (Rhythm Masters Dub Mix)', 'Get Into The Music (Skindeep Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

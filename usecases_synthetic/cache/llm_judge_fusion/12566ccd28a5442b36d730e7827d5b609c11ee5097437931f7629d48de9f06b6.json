@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1962-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "1965"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.66,
+    "operation": "verbatim_pick",
+    "reasoning": "One source provides a fully specified date, while the other only gives a year.",
+    "value": "1962-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1962-01-01\",\"operation\":\"verbatim_pick\",\"confidence\":0.66,\"reasoning\":\"One source provides a fully specified date, while the other only gives a year.\"}"
+}

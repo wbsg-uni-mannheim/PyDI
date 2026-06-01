@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1634|mbrainz_429|name=Erotica | artist=Madonna | release-date=1992-11-06 | release-country=United States of America | duration=2316.0 | genre=Electronic | tracks=['Erotica (Album Edit)', 'Erotica (Kenlou B-Boy Mix)', 'Erotica (WØ 12\")', 'Erotica (Underground Club Mix)', 'Erotica (Masters At Work Dub)', 'Erotica (Jeep Beats)', \"Erotica (Madonna's In My Jeep Mix)\"]||name=Erotica | artist=Madonna | release-date=1992-10-20 | release-country=United States of America | duration=4223 | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper and Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief of Hearts', 'Words', 'Rain', 'Whyâ€™s It So Hard', 'In This Life', 'Secret Garden']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Erotica | artist=Madonna | release-date=1992-11-06 | release-country=United States of America | duration=2316.0 | genre=Electronic | tracks=['Erotica (Album Edit)', 'Erotica (Kenlou B-Boy Mix)', 'Erotica (WØ 12\")', 'Erotica (Underground Club Mix)', 'Erotica (Masters At Work Dub)', 'Erotica (Jeep Beats)', \"Erotica (Madonna's In My Jeep Mix)\"]\nRecord B: name=Erotica | artist=Madonna | release-date=1992-10-20 | release-country=United States of America | duration=4223 | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper and Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief of Hearts', 'Words', 'Rain', 'Whyâ€™s It So Hard', 'In This Life', 'Secret Garden']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

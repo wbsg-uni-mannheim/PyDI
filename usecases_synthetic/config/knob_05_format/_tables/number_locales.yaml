@@ -1,0 +1,32 @@
+# Static number locale table for Knob 05 — Format/Unit Diversity.
+# Immutable once checked in. Each locale specifies separator conventions.
+
+locales:
+  en_US:
+    decimal_sep: "."
+    thousands_sep: ","
+    grouping: 3
+
+  de_DE:
+    decimal_sep: ","
+    thousands_sep: "."
+    grouping: 3
+
+  fr_FR:
+    decimal_sep: ","
+    thousands_sep: " "
+    grouping: 3
+
+  plain:
+    # No separators — bare number (e.g. "1234567.89")
+    decimal_sep: "."
+    thousands_sep: ""
+    grouping: 0
+
+# Hard-only suffix notations (K/M/B).
+# These are handled by reformat_number directly, not as locales.
+suffix_scales:
+  K: 1.0e+3
+  M: 1.0e+6
+  B: 1.0e+9
+  T: 1.0e+12

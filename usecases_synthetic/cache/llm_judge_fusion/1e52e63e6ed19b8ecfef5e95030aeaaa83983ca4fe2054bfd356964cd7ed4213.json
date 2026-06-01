@@ -1,0 +1,32 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Lugano', 'Drum Story', 'Bridget', 'For Coltrane', 'Blind Tom', 'Which One?', 'Lions of Juda', 'It Cannot Be True', 'Unity']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Lugano', 'Drum Story', 'Bridget', 'For Coltrane', 'Blind Tom', 'Which One?', 'Lions Of Juda', 'It Cannot Be True', 'Unity']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Track lists match except for capitalization of one title, so I normalized to a single canonical form.",
+    "value": [
+      "Lugano",
+      "Drum Story",
+      "Bridget",
+      "For Coltrane",
+      "Blind Tom",
+      "Which One?",
+      "Lions of Juda",
+      "It Cannot Be True",
+      "Unity"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Lugano\",\"Drum Story\",\"Bridget\",\"For Coltrane\",\"Blind Tom\",\"Which One?\",\"Lions of Juda\",\"It Cannot Be True\",\"Unity\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Track lists match except for capitalization of one title, so I normalized to a single canonical form.\"}"
+}

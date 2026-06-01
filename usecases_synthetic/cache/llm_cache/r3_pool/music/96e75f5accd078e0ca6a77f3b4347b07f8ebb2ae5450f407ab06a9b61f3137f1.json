@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_6136|mbrainz_7810|name=Outside Looking In | artist=Dream Sequence | duration=400.0 | tracks=['Outside Looking In', 'Jacqueline']||name=Outside Looking In | artist=McGriff, Jimmy | release-date=1978-01-01 | release-country=United States of America | duration=2229 | tracks=['Outside Looking In', 'Dust Pan', 'Playland', 'Tapioca', 'Midnight Boogie', \"Walkin' Willie\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Outside Looking In | artist=Dream Sequence | duration=400.0 | tracks=['Outside Looking In', 'Jacqueline']\nRecord B: name=Outside Looking In | artist=McGriff, Jimmy | release-date=1978-01-01 | release-country=United States of America | duration=2229 | tracks=['Outside Looking In', 'Dust Pan', 'Playland', 'Tapioca', 'Midnight Boogie', \"Walkin' Willie\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

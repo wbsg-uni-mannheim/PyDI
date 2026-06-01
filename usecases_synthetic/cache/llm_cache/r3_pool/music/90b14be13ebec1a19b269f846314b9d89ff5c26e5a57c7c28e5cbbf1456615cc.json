@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_18755|lastFM_9072|name=Purple Red Indigo Blue | artist=The Pansies | release-date=1994-10-17 | release-country=Finland | genre=Rock | tracks=['Fruit', 'Septemberhead', 'Sister Shine', 'Merry Go Round', 'Bettysong', 'Sick Inside', 'Rock', 'Turqoise', 'Caught Her Blooming', 'Addicted', 'Act', 'Uncomfortable', 'Kittens', 'Preference']||name=Purple Red Indigo Blue | artist=The Pansies | duration=2809.0 | tracks=['Fruit', 'Septemberhead', 'Sister Shine', 'Merry Go Round', 'Bettysong', 'Sick Inside', 'Rock', 'Turquoise', 'Caught Heer Blooming', 'Addicted', 'Act', 'Uncomfortable', 'Kittens', 'Preference']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Purple Red Indigo Blue | artist=The Pansies | release-date=1994-10-17 | release-country=Finland | genre=Rock | tracks=['Fruit', 'Septemberhead', 'Sister Shine', 'Merry Go Round', 'Bettysong', 'Sick Inside', 'Rock', 'Turqoise', 'Caught Her Blooming', 'Addicted', 'Act', 'Uncomfortable', 'Kittens', 'Preference']\nRecord B: name=Purple Red Indigo Blue | artist=The Pansies | duration=2809.0 | tracks=['Fruit', 'Septemberhead', 'Sister Shine', 'Merry Go Round', 'Bettysong', 'Sick Inside', 'Rock', 'Turquoise', 'Caught Heer Blooming', 'Addicted', 'Act', 'Uncomfortable', 'Kittens', 'Preference']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

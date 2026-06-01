@@ -1,0 +1,65 @@
+# Knob 04 — Per-entity Source Coverage Skew — Products
+#
+# Per plan_s1_scale.md "Per-domain specifics": products has up to 4
+# sources. Histogram is 4-bucket; companies has 3-bucket. K4 may need
+# lower relative intensities at hard given the larger source count;
+# S13 will recalibrate.
+
+domain: products
+source_count: 4
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+primary_columns:
+  products_1: title
+  products_2: title
+  products_3: title
+  products_4: title
+
+target_coverage_histogram:
+  easy:
+    1: 0.0
+    2: 0.05
+    3: 0.20
+    4: 0.75
+  medium:
+    1: 0.15
+    2: 0.25
+    3: 0.30
+    4: 0.30
+  hard:
+    1: 0.45
+    2: 0.30
+    3: 0.15
+    4: 0.10
+
+within_source_duplicate_rate:
+  easy: 0.0
+  medium: 0.01
+  hard: 0.02
+
+singleton_cap_hard: 0.60
+
+# R10-E: maximum fraction of any single source's rows K4 may demote.
+# Without this cap the conflict-ranking concentrates demotions on the
+# EM-anchor source (products_1 lost ~79% of its rows at hard), silently
+# deleting EM-gold edges that are NOT regenerated post-K4. 0.40 = at most
+# 40% of a source's rows.
+per_source_demotion_cap: 0.40
+delta_softening_step: 0.05
+
+# Fabrication mode: paraphrase_only uses K1's deterministic operator pool
+# (abbreviate / eda_random_swap / eda_random_delete) cell-by-cell to
+# fabricate sibling records — no LLM calls. The llm_* fields below are
+# declared for completeness but unused unless fabrication_mode: llm_primary.
+fabrication_mode: paraphrase_only
+
+# Default model gpt-5.4-mini for cost. Ask user before each K4 run
+# whether to bump to gpt-5.4 (invalidates the on-disk LLM cache).
+llm_prompt_version: v1
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0

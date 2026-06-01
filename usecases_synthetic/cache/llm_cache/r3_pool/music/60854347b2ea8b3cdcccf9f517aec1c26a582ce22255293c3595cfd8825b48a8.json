@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_58766|mbrainz_12782|name=Hell's Ditch | artist=The Pogues | release-date=1990 | release-country=United States of America | duration=2484.0 | genre=Rock | tracks=['The Sunnyside Of The Street', 'Sayonara', 'The Ghost Of A Smile', \"Hell's Ditch\", \"Lorca's Novena\", 'Summer In Siam', 'Rain Street', 'Rainbow Man', 'The Wake Of The Medusa', 'House Of The Gods', 'Five Green Queens And Jean', 'Maidrin Rua', 'Six To Go']||name=Hellâ€™s Ditch | artist=Pogues, The | release-date=1990-01-01 | release-country=United States of America | duration=2496 | tracks=['The Sunnyside of the Street', 'Sayonara', 'The Ghost of a Smile', 'Hellâ€™s Ditch', 'Lorcaâ€™s Novena', 'Summer in Siam', 'Rain Street', 'Rainbow Man', 'The Wake of the Medusa', 'House of the Gods', '5 Green Queens and Jean', 'MaidrÃ\\xadn Rua', 'Six to Go']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hell's Ditch | artist=The Pogues | release-date=1990 | release-country=United States of America | duration=2484.0 | genre=Rock | tracks=['The Sunnyside Of The Street', 'Sayonara', 'The Ghost Of A Smile', \"Hell's Ditch\", \"Lorca's Novena\", 'Summer In Siam', 'Rain Street', 'Rainbow Man', 'The Wake Of The Medusa', 'House Of The Gods', 'Five Green Queens And Jean', 'Maidrin Rua', 'Six To Go']\nRecord B: name=Hellâ€™s Ditch | artist=Pogues, The | release-date=1990-01-01 | release-country=United States of America | duration=2496 | tracks=['The Sunnyside of the Street', 'Sayonara', 'The Ghost of a Smile', 'Hellâ€™s Ditch', 'Lorcaâ€™s Novena', 'Summer in Siam', 'Rain Street', 'Rainbow Man', 'The Wake of the Medusa', 'House of the Gods', '5 Green Queens and Jean', 'MaidrÃ\\xadn Rua', 'Six to Go']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

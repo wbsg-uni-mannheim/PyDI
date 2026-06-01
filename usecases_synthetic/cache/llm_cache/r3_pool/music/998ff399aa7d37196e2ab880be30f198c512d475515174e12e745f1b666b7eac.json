@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_59760|mbrainz_4339|name=Mommy's Little Monster | artist=Social Distortion | release-date=1989 | release-country=United States of America | genre=Rock | tracks=['The Creeps', 'Another State Of Mind', \"It Wasn't A Pretty Picture\", 'Telling Them', 'Hour Of Darkness', \"Mommy's Little Monster\", 'Anti-Fashion', 'All The Answers', 'Moral Threat', 'Bonus Tracks', 'Under My Thumb', 'Playpen']||name=Mommyâ€™s Little Monster | artist=Social Distortion | release-date=1989-01-01 | release-country=United States of America | duration=1929 | tracks=['The Creeps', 'Another State of Mind', 'It Wasnâ€™t a Pretty Picture', 'Telling Them', 'Hour of Darkness', \"Mommy's Little Monster\", 'Anti-Fashion', 'All the Answers', 'Moral Threat', 'Under My Thumb', 'Playpen']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mommy's Little Monster | artist=Social Distortion | release-date=1989 | release-country=United States of America | genre=Rock | tracks=['The Creeps', 'Another State Of Mind', \"It Wasn't A Pretty Picture\", 'Telling Them', 'Hour Of Darkness', \"Mommy's Little Monster\", 'Anti-Fashion', 'All The Answers', 'Moral Threat', 'Bonus Tracks', 'Under My Thumb', 'Playpen']\nRecord B: name=Mommyâ€™s Little Monster | artist=Social Distortion | release-date=1989-01-01 | release-country=United States of America | duration=1929 | tracks=['The Creeps', 'Another State of Mind', 'It Wasnâ€™t a Pretty Picture', 'Telling Them', 'Hour of Darkness', \"Mommy's Little Monster\", 'Anti-Fashion', 'All the Answers', 'Moral Threat', 'Under My Thumb', 'Playpen']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

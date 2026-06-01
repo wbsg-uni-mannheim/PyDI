@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_5226|lastFM_5913|name=The Butterfly Chamber | artist=James Johnson | release-date=2002 | release-country=United States of America | duration=3583.0 | genre=Electronic | tracks=['The Citadel', 'Hall Of Radiance', 'Through The Resonance Field', 'Incensario', 'Tepantitla', 'The Butterfly Chamber', 'House Of Mist']||name=The Butterfly | artist=Moonspell | duration=3435.0 | tracks=['Soulsick', 'Butterfly Fx', \"Can't Bee\", 'Lustmord', 'Self Abuse', 'I Am The Eternal Spectator', 'Solitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Butterfly Chamber | artist=James Johnson | release-date=2002 | release-country=United States of America | duration=3583.0 | genre=Electronic | tracks=['The Citadel', 'Hall Of Radiance', 'Through The Resonance Field', 'Incensario', 'Tepantitla', 'The Butterfly Chamber', 'House Of Mist']\nRecord B: name=The Butterfly | artist=Moonspell | duration=3435.0 | tracks=['Soulsick', 'Butterfly Fx', \"Can't Bee\", 'Lustmord', 'Self Abuse', 'I Am The Eternal Spectator', 'Solitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

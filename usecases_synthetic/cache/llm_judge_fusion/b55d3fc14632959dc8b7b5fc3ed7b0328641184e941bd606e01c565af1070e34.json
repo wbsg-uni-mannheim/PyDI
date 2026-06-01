@@ -1,0 +1,26 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2008-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2008"
+    },
+    {
+      "source": "discogs",
+      "value": "2013-01-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "interpolation",
+    "reasoning": "The year 2008 is supported and the full date is the standard canonical form when only the year is available.",
+    "value": "2008-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2008-01-01\",\"operation\":\"interpolation\",\"confidence\":0.74,\"reasoning\":\"The year 2008 is supported and the full date is the standard canonical form when only the year is available.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_33674|mbrainz_7519|name=The Script | artist=The Script | release-date=2008 | release-country=United States of America | duration=928.0 | genre=Pop|Rock | tracks=['We Cry', 'Before The Worst', \"The Man Who Can't Be Moved\", 'Breakeven']||name=The Script | artist=Script, The | release-date=2009-03-17 | release-country=United States of America | duration=2485 | tracks=['We Cry', 'Before the Worst', 'Talk You Down', 'The Man Who Canâ€™t Be Moved', 'Breakeven', 'Rusty Halo', 'The End Where I Begin', 'Fall for Anything', 'If You See Kay', 'Iâ€™m Yours', 'Anybody There']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Script | artist=The Script | release-date=2008 | release-country=United States of America | duration=928.0 | genre=Pop|Rock | tracks=['We Cry', 'Before The Worst', \"The Man Who Can't Be Moved\", 'Breakeven']\nRecord B: name=The Script | artist=Script, The | release-date=2009-03-17 | release-country=United States of America | duration=2485 | tracks=['We Cry', 'Before the Worst', 'Talk You Down', 'The Man Who Canâ€™t Be Moved', 'Breakeven', 'Rusty Halo', 'The End Where I Begin', 'Fall for Anything', 'If You See Kay', 'Iâ€™m Yours', 'Anybody There']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

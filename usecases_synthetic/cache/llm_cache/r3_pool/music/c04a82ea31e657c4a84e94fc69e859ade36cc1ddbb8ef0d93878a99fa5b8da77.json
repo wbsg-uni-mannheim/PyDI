@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_164010|mbrainz_8320|name=MTV Unplugged In New York | artist=Nirvana | release-date=1994 | release-country=South Africa | duration=3236.0 | genre=Rock | tracks=['About A Girl', 'Come As You Are', \"Jesus Doesn't Want Me For A Sunbeam\", 'The Man Who Sold The World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On A Plain', 'Something In The Way', 'Plateau', 'Oh Me', 'Lake Of Fire', 'All Apologies', 'Where Did You Sleep Last Night']||name=MTV Unplugged in New York | artist=Nirvana | release-date=2009-01-01 | release-country=United States of America | duration=3230 | tracks=['About a Girl', 'Come as You Are', 'Jesus Doesnâ€™t Want Me for a Sunbeam', 'The Man Who Sold the World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On a Plain', 'Something in the Way', 'Plateau', 'Oh Me', 'Lake of Fire', 'All Apologies', 'Where Did You Sleep Last Night?']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MTV Unplugged In New York | artist=Nirvana | release-date=1994 | release-country=South Africa | duration=3236.0 | genre=Rock | tracks=['About A Girl', 'Come As You Are', \"Jesus Doesn't Want Me For A Sunbeam\", 'The Man Who Sold The World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On A Plain', 'Something In The Way', 'Plateau', 'Oh Me', 'Lake Of Fire', 'All Apologies', 'Where Did You Sleep Last Night']\nRecord B: name=MTV Unplugged in New York | artist=Nirvana | release-date=2009-01-01 | release-country=United States of America | duration=3230 | tracks=['About a Girl', 'Come as You Are', 'Jesus Doesnâ€™t Want Me for a Sunbeam', 'The Man Who Sold the World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On a Plain', 'Something in the Way', 'Plateau', 'Oh Me', 'Lake of Fire', 'All Apologies', 'Where Did You Sleep Last Night?']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

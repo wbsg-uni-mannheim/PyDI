@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_51100|mbrainz_33241|name=MTV Unplugged | artist=B. Adams | duration=3139.0 | tracks=[\"Summer Of '69 (MTV Unplugged Version)\", 'Back To You (MTV Unplugged)', 'Cuts Like A Knife (MTV Unplugged Version)', \"I'm Ready (MTV Unplugged)\", 'Fits Ya Good (MTV Unplugged Version)', 'When You Love Someone (MTV Unplugged Version)', '18 Til I Die (MTV Unplugged Version)', 'I Think About You (MTV Unplugged Version)', \"If Ya Wanna Be Bad - Ya Gotta Be Good / Let's Make A Night  To Remember (MTV Unplugged Version)\", 'The Only Thing That Looks Good On Me Is You (MTV Unplugged Version)', 'A Little Love (MTV Unplugged Version)', 'Heaven (MTV Unplugged Version)', \"I'll Always Be Right There (MTV Unplugged Version)\"]||name=Unplugged | artist=Wirtz | release-date=2014-02-21 | release-country=Germany | duration=3209 | tracks=['Meinen Namen', 'Gebrannte Kinder', 'Geschichten ohne Sieger', 'Scherben', 'Ne Weile her', 'Sag es', 'Meilenweit', 'Hier', 'Der Feind in meinem Kopf', 'Heute weiss ich', 'Keine Angst', 'Nada Brahma', 'Frei', 'Mon Amour']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MTV Unplugged | artist=B. Adams | duration=3139.0 | tracks=[\"Summer Of '69 (MTV Unplugged Version)\", 'Back To You (MTV Unplugged)', 'Cuts Like A Knife (MTV Unplugged Version)', \"I'm Ready (MTV Unplugged)\", 'Fits Ya Good (MTV Unplugged Version)', 'When You Love Someone (MTV Unplugged Version)', '18 Til I Die (MTV Unplugged Version)', 'I Think About You (MTV Unplugged Version)', \"If Ya Wanna Be Bad - Ya Gotta Be Good / Let's Make A Night  To Remember (MTV Unplugged Version)\", 'The Only Thing That Looks Good On Me Is You (MTV Unplugged Version)', 'A Little Love (MTV Unplugged Version)', 'Heaven (MTV Unplugged Version)', \"I'll Always Be Right There (MTV Unplugged Version)\"]\nRecord B: name=Unplugged | artist=Wirtz | release-date=2014-02-21 | release-country=Germany | duration=3209 | tracks=['Meinen Namen', 'Gebrannte Kinder', 'Geschichten ohne Sieger', 'Scherben', 'Ne Weile her', 'Sag es', 'Meilenweit', 'Hier', 'Der Feind in meinem Kopf', 'Heute weiss ich', 'Keine Angst', 'Nada Brahma', 'Frei', 'Mon Amour']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,30 @@
+{
+  "attribute": "model",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "Blue 3D NAND"
+    },
+    {
+      "source": "products_2",
+      "value": "WD Blue"
+    },
+    {
+      "source": "products_3",
+      "value": "BLUE"
+    },
+    {
+      "source": "products_4",
+      "value": "blue"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "The candidates all normalize to the WD Blue product line, with one source giving the fuller canonical form.",
+    "value": "WD Blue"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"WD Blue\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"The candidates all normalize to the WD Blue product line, with one source giving the fuller canonical form.\"}"
+}

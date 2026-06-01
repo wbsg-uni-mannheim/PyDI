@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_13896|lastFM_58699|name=Mercury | artist=Madder Mortem | release-date=1999-02-08 | release-country=UK | duration=3116.0 | genre=Rock | tracks=['Undertow', 'Under Another Moon', 'He Who Longed For The Stars', 'These Mortal Sins', 'The Grinding Silence', 'Loss', 'Remnants', 'Misty Sleep', 'Convertion']||name=Mercury | artist=Josie Field | duration=3015.0 | tracks=['10 Years', 'Every Now and Then', 'Angel in Disguise', 'My Heart and My Hands', 'I Take That Very Personally', 'Go Because', 'Where to Begin?', 'I Laughed and Cocked My Head to One Side', 'Long Before You Get Here', 'Cruise Control', 'You Always Get What You Wish For', '5 Minutes Ago', 'T-Shirt', 'The Little Things in Life', 'White Girl']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mercury | artist=Madder Mortem | release-date=1999-02-08 | release-country=UK | duration=3116.0 | genre=Rock | tracks=['Undertow', 'Under Another Moon', 'He Who Longed For The Stars', 'These Mortal Sins', 'The Grinding Silence', 'Loss', 'Remnants', 'Misty Sleep', 'Convertion']\nRecord B: name=Mercury | artist=Josie Field | duration=3015.0 | tracks=['10 Years', 'Every Now and Then', 'Angel in Disguise', 'My Heart and My Hands', 'I Take That Very Personally', 'Go Because', 'Where to Begin?', 'I Laughed and Cocked My Head to One Side', 'Long Before You Get Here', 'Cruise Control', 'You Always Get What You Wish For', '5 Minutes Ago', 'T-Shirt', 'The Little Things in Life', 'White Girl']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

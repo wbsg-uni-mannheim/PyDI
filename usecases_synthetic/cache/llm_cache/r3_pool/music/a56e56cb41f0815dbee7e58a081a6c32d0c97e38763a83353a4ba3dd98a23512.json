@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1531|mbrainz_1265|name=Move To The Music | artist=Blu Sol Trio | release-date=2002 | release-country=United States of America | genre=Electronic | tracks=['Move To The Music (Main Mix)', \"Move To The Music (Keep Turnin' Dub)\", 'Move To The Music (Instrumental)', 'Move To The Music (You Make Me Dub)']||name=Move to the Music | artist=Brother From Mars, A | release-date=1998-01-01 | release-country=United States of America | duration=0 | tracks=['Move to the Music (Speed Blaster)', 'Move to the Music (Piano Rock dub)', 'Move to the Music (Speed Beats)', 'Move to the Music (Move Intermission)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Move To The Music | artist=Blu Sol Trio | release-date=2002 | release-country=United States of America | genre=Electronic | tracks=['Move To The Music (Main Mix)', \"Move To The Music (Keep Turnin' Dub)\", 'Move To The Music (Instrumental)', 'Move To The Music (You Make Me Dub)']\nRecord B: name=Move to the Music | artist=Brother From Mars, A | release-date=1998-01-01 | release-country=United States of America | duration=0 | tracks=['Move to the Music (Speed Blaster)', 'Move to the Music (Piano Rock dub)', 'Move to the Music (Speed Beats)', 'Move to the Music (Move Intermission)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

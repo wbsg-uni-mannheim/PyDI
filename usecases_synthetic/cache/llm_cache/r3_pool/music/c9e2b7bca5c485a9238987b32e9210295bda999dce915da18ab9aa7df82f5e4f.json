@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_84440|mbrainz_136|name=Man Out Of Time EP | artist=G.O.L. | release-date=2000-01-01 | release-country=United States of America | duration=1425.0 | genre=Electronic | tracks=['Free Man', 'Leisure', 'Changing Time', 'Centered']||name=Man Out of Time EP | artist=G.O.L. | release-date=2000-01-01 | release-country=United States of America | duration=1425 | tracks=['Free Man', 'Leisure', 'Changing Time', 'Centered']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Man Out Of Time EP | artist=G.O.L. | release-date=2000-01-01 | release-country=United States of America | duration=1425.0 | genre=Electronic | tracks=['Free Man', 'Leisure', 'Changing Time', 'Centered']\nRecord B: name=Man Out of Time EP | artist=G.O.L. | release-date=2000-01-01 | release-country=United States of America | duration=1425 | tracks=['Free Man', 'Leisure', 'Changing Time', 'Centered']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

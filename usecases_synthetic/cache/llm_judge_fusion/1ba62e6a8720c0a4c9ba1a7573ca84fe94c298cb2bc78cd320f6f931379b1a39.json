@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-04-08"
+    },
+    {
+      "source": "discogs",
+      "value": "2011"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "interpolation",
+    "reasoning": "The year-only candidate is consistent with the full date, so the more specific date is the best canonical value.",
+    "value": "2011-04-08"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-04-08\",\"operation\":\"interpolation\",\"confidence\":0.92,\"reasoning\":\"The year-only candidate is consistent with the full date, so the more specific date is the best canonical value.\"}"
+}

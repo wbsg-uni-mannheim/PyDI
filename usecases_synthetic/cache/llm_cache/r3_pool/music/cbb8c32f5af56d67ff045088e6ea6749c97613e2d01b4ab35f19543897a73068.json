@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_41162|mbrainz_1724|name=Shelter | artist=Lori Carson | release-date=1990 | release-country=United States of America | genre=Folk, World, & Country | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love And Pain', 'Stand On Your Own', 'Pearl In His Pocket', 'Way Of The Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']||name=Shelter | artist=Carson, Lori feat. | release-date=1990-01-01 | release-country=United States of America | duration=2755 | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love and Pain', 'Stand on Your Own', 'Pearl in His Pocket', 'Way of the Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shelter | artist=Lori Carson | release-date=1990 | release-country=United States of America | genre=Folk, World, & Country | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love And Pain', 'Stand On Your Own', 'Pearl In His Pocket', 'Way Of The Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']\nRecord B: name=Shelter | artist=Carson, Lori feat. | release-date=1990-01-01 | release-country=United States of America | duration=2755 | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love and Pain', 'Stand on Your Own', 'Pearl in His Pocket', 'Way of the Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "EUR"
+    },
+    {
+      "source": "products_2",
+      "value": "SEK"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.58,
+    "operation": "verbatim_pick",
+    "reasoning": "Both are plausible currency codes; no basis to merge or normalize, so I picked one candidate verbatim.",
+    "value": "EUR"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"EUR\",\"operation\":\"verbatim_pick\",\"confidence\":0.58,\"reasoning\":\"Both are plausible currency codes; no basis to merge or normalize, so I picked one candidate verbatim.\"}"
+}

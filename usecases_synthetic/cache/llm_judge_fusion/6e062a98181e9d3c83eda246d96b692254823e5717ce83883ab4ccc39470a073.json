@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "238.42 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "256.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "256.0 is the canonical storage size, and 238.42 GiB is the equivalent GiB-formatted representation.",
+    "value": 256
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":256,\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"256.0 is the canonical storage size, and 238.42 GiB is the equivalent GiB-formatted representation.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Brotherhood of Man"
+    },
+    {
+      "source": "discogs",
+      "value": "Brotherhood Of Man"
+    },
+    {
+      "source": "lastfm",
+      "value": "Brotherhood o. Man"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "All candidates refer to the same artist with minor capitalization/abbreviation differences.",
+    "value": "Brotherhood of Man"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Brotherhood of Man\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"All candidates refer to the same artist with minor capitalization/abbreviation differences.\"}"
+}

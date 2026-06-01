@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_35873|lastFM_42193|name=Back To The Future | artist=John Acquaviva | release-date=2009-03-27 | release-country=Germany | genre=Electronic | tracks=['Tweedle Dee (Daniele Papini Remix)', 'Fluo (Veerus & Maxie Devine Remix)', 'Beached Beluga', 'Deep In Matadi', \"Shake It  (D Unity's Shaker Mix)\", 'Salamandra (Original Mix)', 'Stubboy', 'Guacamoli', 'Ripper', 'Invaders', 'High Voltage (Raul Blanco Malassa Remix)', 'Dont Bomb', 'Positive (Amo & Navas Rework 2008)', 'Counter Clock 319', 'PS You Rock (Spektre Remix)']||name=What  Do With the Future | artist=D. Cassette | duration=437.0 | tracks=['What to Do With the Future (Deep Herman Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Back To The Future | artist=John Acquaviva | release-date=2009-03-27 | release-country=Germany | genre=Electronic | tracks=['Tweedle Dee (Daniele Papini Remix)', 'Fluo (Veerus & Maxie Devine Remix)', 'Beached Beluga', 'Deep In Matadi', \"Shake It  (D Unity's Shaker Mix)\", 'Salamandra (Original Mix)', 'Stubboy', 'Guacamoli', 'Ripper', 'Invaders', 'High Voltage (Raul Blanco Malassa Remix)', 'Dont Bomb', 'Positive (Amo & Navas Rework 2008)', 'Counter Clock 319', 'PS You Rock (Spektre Remix)']\nRecord B: name=What  Do With the Future | artist=D. Cassette | duration=437.0 | tracks=['What to Do With the Future (Deep Herman Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

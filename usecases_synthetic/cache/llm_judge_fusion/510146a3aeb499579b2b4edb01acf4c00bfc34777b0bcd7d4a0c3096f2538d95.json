@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Australia"
+    },
+    {
+      "source": "discogs",
+      "value": "United States of America"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict and no source is clearly authoritative, so I selected one verbatim value.",
+    "value": "Australia"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Australia\",\"operation\":\"verbatim_pick\",\"confidence\":0.86,\"reasoning\":\"The candidates conflict and no source is clearly authoritative, so I selected one verbatim value.\"}"
+}

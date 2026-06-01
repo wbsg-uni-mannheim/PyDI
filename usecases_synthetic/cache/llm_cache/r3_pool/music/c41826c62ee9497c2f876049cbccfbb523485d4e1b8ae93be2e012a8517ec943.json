@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_153308|lastFM_66593|name=No Cities To Love | artist=Sleater-Kinney | release-date=2015-01-20 | genre=Rock | tracks=['Price Tag', 'Fangless', 'Surface Envy', 'No Cities To Love', 'A New Wave', 'No Anthems', 'Gimme Love', 'Bury Our Friends', 'Hey Darling', 'Fade']||name=- new - No Cities to Love | artist=Sleater-Kinney | duration=1770.0 | tracks=['Price Tag', 'Fangless', 'Surface Envy', 'A New Wave', 'No Anthems', 'Gimme Love', 'Bury Our Friends', 'Hey Darling', 'Fade']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=No Cities To Love | artist=Sleater-Kinney | release-date=2015-01-20 | genre=Rock | tracks=['Price Tag', 'Fangless', 'Surface Envy', 'No Cities To Love', 'A New Wave', 'No Anthems', 'Gimme Love', 'Bury Our Friends', 'Hey Darling', 'Fade']\nRecord B: name=- new - No Cities to Love | artist=Sleater-Kinney | duration=1770.0 | tracks=['Price Tag', 'Fangless', 'Surface Envy', 'A New Wave', 'No Anthems', 'Gimme Love', 'Bury Our Friends', 'Hey Darling', 'Fade']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

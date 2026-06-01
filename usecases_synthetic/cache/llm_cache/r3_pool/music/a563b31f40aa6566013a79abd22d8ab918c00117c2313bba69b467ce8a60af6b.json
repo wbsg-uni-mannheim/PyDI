@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_10662|lastFM_11647|name=Gotta Dance With The Music | artist=Echo Bass | release-date=1994 | release-country=France | duration=1034.0 | genre=Electronic | tracks=['Gotta Dance With The Music (Radio Edit)', 'Gotta Dance With The Music (Club Mix)', 'Gotta Dance With The Music (Tribal Mix)', 'Gotta Dance With The Music (Extended)']||name=Gotta Dance With The Music (Remix) | artist=E. Bass | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gotta Dance With The Music | artist=Echo Bass | release-date=1994 | release-country=France | duration=1034.0 | genre=Electronic | tracks=['Gotta Dance With The Music (Radio Edit)', 'Gotta Dance With The Music (Club Mix)', 'Gotta Dance With The Music (Tribal Mix)', 'Gotta Dance With The Music (Extended)']\nRecord B: name=Gotta Dance With The Music (Remix) | artist=E. Bass | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

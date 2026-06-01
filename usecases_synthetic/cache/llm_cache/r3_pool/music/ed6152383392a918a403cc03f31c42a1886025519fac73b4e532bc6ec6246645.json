@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_133138|mbrainz_2667|name=In Dreams | artist=Roy Orbison | release-date=1964 | release-country=United States of America | duration=1812.0 | genre=Pop | tracks=['In Dreams', 'Lonely Wine', 'Shahdaroba', 'No One Will Ever Know', 'Sunset', 'House Without Windows', 'Dream', 'Blue Bayou', '(They Call You) Gigolette', 'All I Have To Do Is Dream', 'Beautiful Dreamer', 'My Prayer']||name=In Dreams | artist=Orbison, Roy | release-date=2006-01-01 | duration=2501 | tracks=['In Dreams', 'Lonely Wine', 'Shahdaroba', 'No One Will Ever Know', 'Sunset', 'House Without Windows', 'Dream', 'Blue Bayou', '(They Call You) Gigolette', 'All I Have To Do Is Dream', 'Beautiful Dreamer', 'My Prayer', 'Falling', 'Distant Drums', 'Mean Woman Blues', 'Pretty Paper']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=In Dreams | artist=Roy Orbison | release-date=1964 | release-country=United States of America | duration=1812.0 | genre=Pop | tracks=['In Dreams', 'Lonely Wine', 'Shahdaroba', 'No One Will Ever Know', 'Sunset', 'House Without Windows', 'Dream', 'Blue Bayou', '(They Call You) Gigolette', 'All I Have To Do Is Dream', 'Beautiful Dreamer', 'My Prayer']\nRecord B: name=In Dreams | artist=Orbison, Roy | release-date=2006-01-01 | duration=2501 | tracks=['In Dreams', 'Lonely Wine', 'Shahdaroba', 'No One Will Ever Know', 'Sunset', 'House Without Windows', 'Dream', 'Blue Bayou', '(They Call You) Gigolette', 'All I Have To Do Is Dream', 'Beautiful Dreamer', 'My Prayer', 'Falling', 'Distant Drums', 'Mean Woman Blues', 'Pretty Paper']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

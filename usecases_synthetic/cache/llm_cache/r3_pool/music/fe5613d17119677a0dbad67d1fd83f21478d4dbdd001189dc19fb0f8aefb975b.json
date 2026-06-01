@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_45495|mbrainz_1910|name=Judgement | artist=The Grey Wolves | release-country=UK | duration=2876.0 | genre=Electronic | tracks=['Restraint', 'Judgement']||name=Judgement | artist=Grey Wolves, The | release-date=2009-05 | release-country=United States of America | duration=3236 | tracks=['Ritual 1 - Restraint', 'Ritual 2 - Judgement']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Judgement | artist=The Grey Wolves | release-country=UK | duration=2876.0 | genre=Electronic | tracks=['Restraint', 'Judgement']\nRecord B: name=Judgement | artist=Grey Wolves, The | release-date=2009-05 | release-country=United States of America | duration=3236 | tracks=['Ritual 1 - Restraint', 'Ritual 2 - Judgement']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

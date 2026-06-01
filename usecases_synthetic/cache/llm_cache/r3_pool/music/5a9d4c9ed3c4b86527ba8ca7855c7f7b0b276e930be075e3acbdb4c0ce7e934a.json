@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_67932|lastFM_31745|name=Shelter | artist=The Driftwood Manor | release-date=2011-08-01 | release-country=Ireland | duration=1152.0 | genre=Folk, World, & Country | tracks=['What Vanishes', 'The Turning Darkness', 'From The Dust', 'There Is A Clearing', 'The Fog Will Rise At Dawn']||name=Shelter | artist=The Driftwood Manor | duration=861.0 | tracks=['What Vanishes', 'The Turning Darkness', 'From the Dust', 'There Is a Clearing', 'The Fog Will Rise At Dawn']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shelter | artist=The Driftwood Manor | release-date=2011-08-01 | release-country=Ireland | duration=1152.0 | genre=Folk, World, & Country | tracks=['What Vanishes', 'The Turning Darkness', 'From The Dust', 'There Is A Clearing', 'The Fog Will Rise At Dawn']\nRecord B: name=Shelter | artist=The Driftwood Manor | duration=861.0 | tracks=['What Vanishes', 'The Turning Darkness', 'From the Dust', 'There Is a Clearing', 'The Fog Will Rise At Dawn']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

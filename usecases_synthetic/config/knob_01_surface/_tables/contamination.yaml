@@ -1,0 +1,15 @@
+# Contamination spot-check parameters for Knob 01 — hard LLM paraphrase path.
+# Thresholds lifted from the benchmark_contamination_survey and
+# elephants_never_forget_tabular_memorization papers.
+
+# N-gram overlap check: the paraphrase must NOT contain an n-or-more-token
+# contiguous overlap with the original value. 8 is the canonical
+# contamination signal from the survey.
+ngram_overlap_threshold: 8
+
+# First-token memorization probe: number of leading tokens used to detect
+# silent entity aliasing by the LLM.
+first_token_probe_length: 3
+
+# What to do on contamination failure.
+on_contamination_fail: fallback_to_medium

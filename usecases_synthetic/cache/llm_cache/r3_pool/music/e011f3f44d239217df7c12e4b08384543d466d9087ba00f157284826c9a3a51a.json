@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_93844|mbrainz_4382|name=Pre-Life Crisis | artist=Count Bass D | release-date=1995 | release-country=Australia | duration=3287.0 | genre=Hip Hop | tracks=['The Dozens', 'Sandwiches (I Got A Feeling)', 'T-Boz (Part 1/2)', 'Shake', 'T-Boz Tried To Talk To Me!', 'Carmex', 'I Got Needs', 'Broke Thursday', 'Agriculture', 'Brown', 'The Hate Game', 'Pink Tornado', 'Sunday School', \"Baker's Dozen\"]||name=Pre-Life Crisis | artist=Count Bass D | release-date=1995-09-25 | release-country=United States of America | duration=3279 | tracks=['The Dozens', 'Sandwiches (I Got a Feeling)', 'T-Boz (Part 1/2)', 'Shake', 'T-Boz Tried to Talk to Me!', 'Carmex', 'I Got Needs', 'Broke Thursday', 'Agriculture', 'Brown', 'The Hate Game', 'Pink Tornado', 'Sunday School', \"Baker's Dozen\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pre-Life Crisis | artist=Count Bass D | release-date=1995 | release-country=Australia | duration=3287.0 | genre=Hip Hop | tracks=['The Dozens', 'Sandwiches (I Got A Feeling)', 'T-Boz (Part 1/2)', 'Shake', 'T-Boz Tried To Talk To Me!', 'Carmex', 'I Got Needs', 'Broke Thursday', 'Agriculture', 'Brown', 'The Hate Game', 'Pink Tornado', 'Sunday School', \"Baker's Dozen\"]\nRecord B: name=Pre-Life Crisis | artist=Count Bass D | release-date=1995-09-25 | release-country=United States of America | duration=3279 | tracks=['The Dozens', 'Sandwiches (I Got a Feeling)', 'T-Boz (Part 1/2)', 'Shake', 'T-Boz Tried to Talk to Me!', 'Carmex', 'I Got Needs', 'Broke Thursday', 'Agriculture', 'Brown', 'The Hate Game', 'Pink Tornado', 'Sunday School', \"Baker's Dozen\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,25 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Get Ready Get Right (extended version)', 'Ready and Right']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Get Ready Get Right (Extended Version)', 'Ready And Right']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates refer to the same two tracks with minor capitalization/punctuation differences, so I normalized them to a consistent form.",
+    "value": [
+      "Get Ready Get Right (extended version)",
+      "Ready and Right"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Get Ready Get Right (extended version)\",\"Ready and Right\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates refer to the same two tracks with minor capitalization/punctuation differences, so I normalized them to a consistent form.\"}"
+}

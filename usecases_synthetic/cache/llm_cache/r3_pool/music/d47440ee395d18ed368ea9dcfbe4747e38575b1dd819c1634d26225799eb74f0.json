@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_76732|mbrainz_11547|name=The Best Of The  Brothers | artist=The Delmore Brothers | tracks=[]||name=The Best of the Isley Brothers | artist=Isley Brothers, The | duration=1602 | tracks=['This Old Heart of Mine (Is Weak for You)', 'Twist and Shout', \"Who's That Lady\", 'Please, Please, Please', 'Stagger Lee', 'Long Tall Sally', 'Shake It With Me Baby', \"Let's Go, Let's Go, Let's Go\", 'Surf and Shout', \"You'll Never Leave Him\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Best Of The  Brothers | artist=The Delmore Brothers | tracks=[]\nRecord B: name=The Best of the Isley Brothers | artist=Isley Brothers, The | duration=1602 | tracks=['This Old Heart of Mine (Is Weak for You)', 'Twist and Shout', \"Who's That Lady\", 'Please, Please, Please', 'Stagger Lee', 'Long Tall Sally', 'Shake It With Me Baby', \"Let's Go, Let's Go, Let's Go\", 'Surf and Shout', \"You'll Never Leave Him\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

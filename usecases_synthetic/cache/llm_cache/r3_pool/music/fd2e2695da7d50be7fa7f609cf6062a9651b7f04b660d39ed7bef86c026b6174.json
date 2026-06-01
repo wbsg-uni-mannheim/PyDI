@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_23012|mbrainz_199|name=Fuzzy Logic | artist=Super Furry Animals | release-date=2005-03-22 | release-country=United States of America | duration=3223.0 | genre=Rock | tracks=['God! Show Me Magic', 'Fuzzy Birds', 'Something For The Weekend', 'Frisbee', 'Hometown Unicorn', 'Gathering Moss', \"If You Don't Want Me To Destroy You\", 'Bad Behaviour', 'Mario Man', \"Hangin' With Howard Marks\", 'Long Gone', 'For Now And Ever', 'Bonus Tracks', 'Organ Yn Dy Geg', 'Crys Ti', 'Lazy Life (Of No Fixed Identity)', 'Death By Melody', 'Waiting To Happen']||name=Fuzzy Logic | artist=Super Furry Animals | release-date=1996-10-08 | release-country=United States of America | duration=2488 | tracks=['God! Show Me Magic', 'Fuzzy Birds', 'Something 4 the Weekend', 'Frisbee', 'Hometown Unicorn', 'Gathering Moss', \"If You Don't Want Me to Destroy You\", 'Bad Behaviour', 'Mario Man', \"Hangin' with Howard Marks\", 'Long Gone', 'For Now and Ever']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fuzzy Logic | artist=Super Furry Animals | release-date=2005-03-22 | release-country=United States of America | duration=3223.0 | genre=Rock | tracks=['God! Show Me Magic', 'Fuzzy Birds', 'Something For The Weekend', 'Frisbee', 'Hometown Unicorn', 'Gathering Moss', \"If You Don't Want Me To Destroy You\", 'Bad Behaviour', 'Mario Man', \"Hangin' With Howard Marks\", 'Long Gone', 'For Now And Ever', 'Bonus Tracks', 'Organ Yn Dy Geg', 'Crys Ti', 'Lazy Life (Of No Fixed Identity)', 'Death By Melody', 'Waiting To Happen']\nRecord B: name=Fuzzy Logic | artist=Super Furry Animals | release-date=1996-10-08 | release-country=United States of America | duration=2488 | tracks=['God! Show Me Magic', 'Fuzzy Birds', 'Something 4 the Weekend', 'Frisbee', 'Hometown Unicorn', 'Gathering Moss', \"If You Don't Want Me to Destroy You\", 'Bad Behaviour', 'Mario Man', \"Hangin' with Howard Marks\", 'Long Gone', 'For Now and Ever']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_110472|mbrainz_25706|name=Encore | artist=Sam Cooke | release-date=1958 | release-country=United States of America | duration=619.0 | genre=Pop | tracks=['Mary, Mary Lou', 'The Gypsy', 'Oh, Look At Me Now', 'Someday']||name=Encore | artist=Cooke, Sam | release-date=1958-01-01 | release-country=United States of America | duration=1863 | tracks=['Oh, Look at Me Now', 'Someday', 'Along the Navaho Trail', 'Running Wild', 'Accentuate the Positive', 'Mary, Mary Lou', 'When I Fall in Love', 'I Cover the Waterfront', 'My Foolish Heart', 'Today I Sing the Blues', 'The Gypsy', 'Itâ€™s the Talk of the Town']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Encore | artist=Sam Cooke | release-date=1958 | release-country=United States of America | duration=619.0 | genre=Pop | tracks=['Mary, Mary Lou', 'The Gypsy', 'Oh, Look At Me Now', 'Someday']\nRecord B: name=Encore | artist=Cooke, Sam | release-date=1958-01-01 | release-country=United States of America | duration=1863 | tracks=['Oh, Look at Me Now', 'Someday', 'Along the Navaho Trail', 'Running Wild', 'Accentuate the Positive', 'Mary, Mary Lou', 'When I Fall in Love', 'I Cover the Waterfront', 'My Foolish Heart', 'Today I Sing the Blues', 'The Gypsy', 'Itâ€™s the Talk of the Town']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_19405|lastFM_9369|name=Nowhere Left To Run | artist=The Outcasts | release-date=1983 | release-country=UK | genre=Pop|Rock | tracks=['Nowhere Left To Run', \"The Running's Over, Time To Pray\", 'Nowhere (Instrumental)', 'Ruby']||name=Nowhere Left  Run | artist=T. Outcasts | duration=351.0 | tracks=['Nowhere left to Run', 'Ruby']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Nowhere Left To Run | artist=The Outcasts | release-date=1983 | release-country=UK | genre=Pop|Rock | tracks=['Nowhere Left To Run', \"The Running's Over, Time To Pray\", 'Nowhere (Instrumental)', 'Ruby']\nRecord B: name=Nowhere Left  Run | artist=T. Outcasts | duration=351.0 | tracks=['Nowhere left to Run', 'Ruby']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

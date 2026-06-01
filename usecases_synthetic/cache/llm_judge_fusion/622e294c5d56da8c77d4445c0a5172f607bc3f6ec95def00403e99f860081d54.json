@@ -1,0 +1,30 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "600,000 MB"
+    },
+    {
+      "source": "products_2",
+      "value": "600.0"
+    },
+    {
+      "source": "products_3",
+      "value": "1800000"
+    },
+    {
+      "source": "products_4",
+      "value": "600.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Converted the consistent 600.0 GB / 600,000 MB candidates to a canonical GB value; other candidate appears inconsistent outlier.",
+    "value": 600
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":600,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Converted the consistent 600.0 GB / 600,000 MB candidates to a canonical GB value; other candidate appears inconsistent outlier.\"}"
+}

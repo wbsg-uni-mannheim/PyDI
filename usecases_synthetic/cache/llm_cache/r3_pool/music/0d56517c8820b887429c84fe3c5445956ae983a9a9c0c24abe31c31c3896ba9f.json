@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_102570|mbrainz_11273|name=Colors Of The Wind | artist=Vanessa Williams | release-date=1995 | release-country=United States of America | duration=496.0 | genre=Pop | tracks=['Colors Of The Wind (Radio Mix)', 'Colors Of The Wind (Spanish Version)']||name=Colors of the Wind | artist=Williams, Vanessa | release-date=1995-01-01 | release-country=Germany | duration=713 | tracks=['Colors of the Wind', 'Colors of the Wind (Spanish version)', 'Colors of the Wind']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Colors Of The Wind | artist=Vanessa Williams | release-date=1995 | release-country=United States of America | duration=496.0 | genre=Pop | tracks=['Colors Of The Wind (Radio Mix)', 'Colors Of The Wind (Spanish Version)']\nRecord B: name=Colors of the Wind | artist=Williams, Vanessa | release-date=1995-01-01 | release-country=Germany | duration=713 | tracks=['Colors of the Wind', 'Colors of the Wind (Spanish version)', 'Colors of the Wind']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

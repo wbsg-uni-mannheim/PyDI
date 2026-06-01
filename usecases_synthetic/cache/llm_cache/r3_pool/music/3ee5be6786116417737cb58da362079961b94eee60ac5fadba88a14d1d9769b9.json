@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_49529|lastFM_7267|name=A Dancing Foot And A Praying Knee Don't Belong On The Same Leg | artist=Scattered Order | release-country=Australia | genre=Electronic | tracks=['Boys Of Alpha', 'Greek Airport Now', \"It's Our Friends That Kill Us\", 'A Few Little Shocks', 'Find Girl In Boeing', 'Villa Life 84', 'Hugo Died In 1972']||name=A Dancing Foot  A Praying Knee Don't Belong On The Same Leg | artist=Scattered Order | duration=1565.0 | tracks=['Boys Of Alpha', 'greek airport now', \"it's our friends that kill us\", 'a few little shocks', 'find girl in boeing', 'Villa Life 84']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=A Dancing Foot And A Praying Knee Don't Belong On The Same Leg | artist=Scattered Order | release-country=Australia | genre=Electronic | tracks=['Boys Of Alpha', 'Greek Airport Now', \"It's Our Friends That Kill Us\", 'A Few Little Shocks', 'Find Girl In Boeing', 'Villa Life 84', 'Hugo Died In 1972']\nRecord B: name=A Dancing Foot  A Praying Knee Don't Belong On The Same Leg | artist=Scattered Order | duration=1565.0 | tracks=['Boys Of Alpha', 'greek airport now', \"it's our friends that kill us\", 'a few little shocks', 'find girl in boeing', 'Villa Life 84']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

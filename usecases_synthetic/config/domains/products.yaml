@@ -1,0 +1,96 @@
+domain: products
+
+# Products keeps its synthetic-pipeline data + variants under
+# ``usecases_synthetic/usecases/products/`` so the upstream
+# ``usecases/products/`` notebook workflow is never modified by the
+# synthetic pipeline. The synthetic-side ``id`` column carries
+# source-prefixed string ids (``products_<n>_<original_int>``) that
+# are unambiguously cross-source unique; the upstream sources keep
+# their native bare-int ``id`` field. All downstream PyDI path
+# resolution (``load_source``, EM/fusion gold, augmented variants)
+# honors this ``data_root`` override via
+# :func:`usecases_synthetic.lib.domain_config.data_root_for_domain`.
+data_root: usecases_synthetic/usecases
+
+master_seed: 42
+
+# Schema is shared verbatim across all four sources. Core columns
+# (id, title, brand, description, price, priceCurrency, cluster_id,
+# url) coexist with the extended ``data_cleaned_final`` columns
+# (title_description, model, model_number, product_type, chipset_name,
+# vram_gb, storage_gb) plus a long tail of low-coverage extras
+# (read_speed_mb_s, bus_type, etc.) that stay in the JSON but are
+# not referenced by configs. No per-source renames needed downstream.
+sources:
+  - name: products_1
+    file: products_1.json
+    format: json
+    id_prefix: "products_1_"
+  - name: products_2
+    file: products_2.json
+    format: json
+    id_prefix: "products_2_"
+  - name: products_3
+    file: products_3.json
+    format: json
+    id_prefix: "products_3_"
+  - name: products_4
+    file: products_4.json
+    format: json
+    id_prefix: "products_4_"
+
+# EM gold pair set: anchor is products_1. The remaining cross-pairs
+# (2-3, 2-4, 3-4) are not authored today; transitivity through
+# products_1 gives full cluster coverage via cluster_id linkage (see
+# pools/products/pooled_positives.csv).
+source_pairs:
+  - [products_1, products_2]
+  - [products_1, products_3]
+  - [products_1, products_4]
+
+fusion_files:
+  validation: validation_set.xml
+  test: test_set.xml
+
+# Canonical attributes. ``title`` is the identifying long_string
+# primary; ``brand`` is a nominal key categorical (sharply partitions
+# manufacturer buckets); ``description`` is noisy secondary free text;
+# ``price`` is a wide-range continuous (vendor prices vary 10x+ across
+# sources) and ``priceCurrency`` is its accompanying ISO-4217 nominal.
+# ``product_type`` is a second key (categorical partitioner across
+# GPU/SSD/PSU/etc.); ``model`` (~90% coverage) and ``title_description``
+# (100%) are the most informative secondary text fields after title.
+# Numeric ``vram_gb`` / ``storage_gb`` are the K5-format / K10-
+# reliability surfaces that the smaller-schema variant could not
+# exercise.
+#
+# 2026-05-27 (step 4h cross-knob expansion): 7 extension columns
+# brought into scope to give products' K3/K5/K6/K8/K10 dials more
+# attribute surface area. 5 categoricals (bus_type, interface_type,
+# memory_type, storage_connection_type, form_factor) get
+# taxonomy_walk under K6 + rename_table under K8 + reliability
+# distribution under K10. 2 numerics (read_speed_mb_s,
+# write_speed_mb_s) get the new K5 ``rate`` class + numeric jitter
+# under K6. Skipped: color (8-15% coverage, mixed-locale chaos),
+# width/length/height_mm + weight_g (3-6% coverage, too sparse for
+# meaningful dial movement).
+attribute_classes:
+  title: primary
+  brand: key
+  description: secondary
+  price: secondary
+  priceCurrency: secondary
+  title_description: secondary
+  product_type: key
+  model: secondary
+  model_number: secondary
+  chipset_name: secondary
+  vram_gb: secondary
+  storage_gb: secondary
+  bus_type: secondary
+  interface_type: secondary
+  memory_type: secondary
+  storage_connection_type: secondary
+  form_factor: secondary
+  read_speed_mb_s: secondary
+  write_speed_mb_s: secondary

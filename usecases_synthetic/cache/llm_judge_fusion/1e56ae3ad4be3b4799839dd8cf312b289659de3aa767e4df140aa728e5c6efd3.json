@@ -1,0 +1,22 @@
+{
+  "attribute": "product_type",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "US B_STICK"
+    },
+    {
+      "source": "products_2",
+      "value": "USB_STICK"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The two candidates differ only by an inserted space; standardizing to the canonical product type form yields USB_STICK.",
+    "value": "USB_STICK"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USB_STICK\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The two candidates differ only by an inserted space; standardizing to the canonical product type form yields USB_STICK.\"}"
+}

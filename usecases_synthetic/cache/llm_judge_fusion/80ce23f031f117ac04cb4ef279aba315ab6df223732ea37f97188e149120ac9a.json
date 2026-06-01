@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1989-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "1989"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "interpolation",
+    "reasoning": "The year-only value from Discogs is completed by the precise MusicBrainz date, so January 1 is the canonical normalized release date.",
+    "value": "1989-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1989-01-01\",\"operation\":\"interpolation\",\"confidence\":0.93,\"reasoning\":\"The year-only value from Discogs is completed by the precise MusicBrainz date, so January 1 is the canonical normalized release date.\"}"
+}

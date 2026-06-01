@@ -103,6 +103,9 @@ build-backend = "setuptools.build_meta"
 where = ["."]
 include = ["PyDI*"]
 
+[tool.setuptools.package-data]
+"PyDI.evaluation" = ["panel_metrics_glossary.json"]
+
 [tool.black]
 line-length = 88
 target-version = ['py312']

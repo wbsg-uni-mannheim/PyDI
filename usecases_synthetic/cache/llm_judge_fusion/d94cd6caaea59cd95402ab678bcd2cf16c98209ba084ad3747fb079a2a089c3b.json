@@ -1,0 +1,35 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "[\"Section 21: Together We're Heavy\", 'Section 22: Running Away', 'Section 23: Get Up and Go', 'Section 24: The Fragile Army', 'Section 25: Younger Yesterday', 'Section 26: We Crawl', 'Section 27: Mental Cabaret', 'Section 28: Guaranteed Nightlite', 'Section 29: Light to Follow', 'Section 30: Watch Us Explode (Justify)', 'Section 31: Overblow Your Nest', 'Section 32: The Championship', 'Lithium', 'Checking Out']"
+    },
+    {
+      "source": "discogs",
+      "value": "[\"Section 21 (Together We're Heavy)\", 'Section 22 (Running Away)', 'Section 23 (Get Up And Go)', 'Section 24 (The Fragile Army)', 'Section 25 (Younger Yesterday)', 'Section 26 (We Crawl)', 'Section 27 (Mental Cabaret)', 'Section 28 (Guaranteed Nightlite)', 'Section 29 (Light To Follow)', 'Section 30 (Watch Us Explode (Justify))', 'Section 31 (Overblow Your Nest)', 'Section 32 (The Championship)', 'Raise Your Ears And Hold On To Your Heart', 'The Fragile Army: Music Video']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "intersection",
+    "reasoning": "Both sources agree on the main tracklist with minor formatting differences; I kept the shared tracks and excluded source-specific extras.",
+    "value": [
+      "Section 21 (Together We're Heavy)",
+      "Section 22 (Running Away)",
+      "Section 23 (Get Up And Go)",
+      "Section 24 (The Fragile Army)",
+      "Section 25 (Younger Yesterday)",
+      "Section 26 (We Crawl)",
+      "Section 27 (Mental Cabaret)",
+      "Section 28 (Guaranteed Nightlite)",
+      "Section 29 (Light To Follow)",
+      "Section 30 (Watch Us Explode (Justify))",
+      "Section 31 (Overblow Your Nest)",
+      "Section 32 (The Championship)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Section 21 (Together We're Heavy)\",\"Section 22 (Running Away)\",\"Section 23 (Get Up And Go)\",\"Section 24 (The Fragile Army)\",\"Section 25 (Younger Yesterday)\",\"Section 26 (We Crawl)\",\"Section 27 (Mental Cabaret)\",\"Section 28 (Guaranteed Nightlite)\",\"Section 29 (Light To Follow)\",\"Section 30 (Watch Us Explode (Justify))\",\"Section 31 (Overblow Your Nest)\",\"Section 32 (The Championship)\"],\"operation\":\"intersection\",\"confidence\":0.92,\"reasoning\":\"Both sources agree on the main tracklist with minor formatting differences; I kept the shared tracks and excluded source-specific extras.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_14971|mbrainz_18116|name=Afterglow | artist=T. Commando | duration=1776.0 | tracks=['Afterglow', 'Afterglow', 'Afterglow', 'Afterglow']||name=Afterglow | artist=Black Country Communion | release-date=2012-10-30 | duration=3471 | tracks=['Big Train', 'This Is Your Time', 'Midnight Sun', 'Confessor', 'Cry Freedom', 'Afterglow', 'Dandelion', 'The Circle', 'Common Man', 'The Giver', 'Crawl']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Afterglow | artist=T. Commando | duration=1776.0 | tracks=['Afterglow', 'Afterglow', 'Afterglow', 'Afterglow']\nRecord B: name=Afterglow | artist=Black Country Communion | release-date=2012-10-30 | duration=3471 | tracks=['Big Train', 'This Is Your Time', 'Midnight Sun', 'Confessor', 'Cry Freedom', 'Afterglow', 'Dandelion', 'The Circle', 'Common Man', 'The Giver', 'Crawl']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

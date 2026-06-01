@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_104191|mbrainz_19097|name=Save Rock And Roll | artist=Fall Out Boy | release-date=2013-04-16 | release-country=United States of America | genre=Rock | tracks=['The Phoenix', 'My Songs Know What You Did In The Dark (Light Em Up)', 'Alone Together', 'Where Did The Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat A Tat', 'Save Rock And Roll']||name=Save Rock and Roll | artist=Fall Out Boy | release-date=2013-04-12 | duration=2497 | tracks=['The Phoenix', 'My Songs Know What You Did in the Dark (Light Em Up)', 'Alone Together', 'Where Did the Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat a Tat', 'Save Rock and Roll']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Save Rock And Roll | artist=Fall Out Boy | release-date=2013-04-16 | release-country=United States of America | genre=Rock | tracks=['The Phoenix', 'My Songs Know What You Did In The Dark (Light Em Up)', 'Alone Together', 'Where Did The Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat A Tat', 'Save Rock And Roll']\nRecord B: name=Save Rock and Roll | artist=Fall Out Boy | release-date=2013-04-12 | duration=2497 | tracks=['The Phoenix', 'My Songs Know What You Did in the Dark (Light Em Up)', 'Alone Together', 'Where Did the Party Go', 'Just One Yesterday', 'The Mighty Fall', 'Miss Missing You', 'Death Valley', 'Young Volcanoes', 'Rat a Tat', 'Save Rock and Roll']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

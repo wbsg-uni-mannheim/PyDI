@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "AED"
+    },
+    {
+      "source": "products_2",
+      "value": "VNO"
+    },
+    {
+      "source": "products_4",
+      "value": "EUR"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "verbatim_pick",
+    "reasoning": "AED and EUR are valid currency codes, while VNO is not a currency code and appears erroneous; AED is the most plausible canonical value from the candidates.",
+    "value": "AED"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"AED\",\"operation\":\"verbatim_pick\",\"confidence\":0.95,\"reasoning\":\"AED and EUR are valid currency codes, while VNO is not a currency code and appears erroneous; AED is the most plausible canonical value from the candidates.\"}"
+}

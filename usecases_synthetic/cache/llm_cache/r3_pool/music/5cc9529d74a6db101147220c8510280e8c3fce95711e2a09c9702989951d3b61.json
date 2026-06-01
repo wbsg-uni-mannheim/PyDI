@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_174314|lastFM_74701|name=Warning: Contains Language | artist=Dave McKean|The Flash Girls|Neil Gaiman | release-date=1995 | release-country=United States of America | genre=Non-Music | tracks=['The Song of the Audience', 'Nicholas Was...', 'Babycakes', 'Cold Colours', 'The White Road', 'Banshee', 'Chivalry', 'Troll Bridge']||name=WARNING: CONTAINS LANGUAGE | artist=N. Gaiman | duration=5201.0 | tracks=['The Song of the Audience', 'Nicholas Was...', 'Cold Colours', 'Babycakes', 'Chivalry', 'Troll Bridge']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Warning: Contains Language | artist=Dave McKean|The Flash Girls|Neil Gaiman | release-date=1995 | release-country=United States of America | genre=Non-Music | tracks=['The Song of the Audience', 'Nicholas Was...', 'Babycakes', 'Cold Colours', 'The White Road', 'Banshee', 'Chivalry', 'Troll Bridge']\nRecord B: name=WARNING: CONTAINS LANGUAGE | artist=N. Gaiman | duration=5201.0 | tracks=['The Song of the Audience', 'Nicholas Was...', 'Cold Colours', 'Babycakes', 'Chivalry', 'Troll Bridge']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

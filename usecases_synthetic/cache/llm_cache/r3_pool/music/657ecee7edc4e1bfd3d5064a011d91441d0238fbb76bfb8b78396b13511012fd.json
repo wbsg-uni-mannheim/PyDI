@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42434|lastFM_20101|name=Heritage | artist=John Renbourn | release-date=2001 | release-country=Europe | genre=Folk, World, & Country | tracks=['Judy', 'Candy Man', 'Lost Lover Blues', \"Nobody's Fault But Mine\", 'After The Dance', 'Another Monday', 'Waltz', 'Gipsy Dance', \"Ladye's Nothing's Yoye Puffe\", 'The Lady And The Unicorn', 'The Moon Shines Bright', 'My Johnny Was A Shoemaker', 'Melancholy Galliard', 'The Pelican', \"Three Pieces By O'Carolan\", 'English Dance', 'Pavane Belle Que Tiens Ma Vie']||name=Heritage | artist=John Renbourn | duration=3856.0 | tracks=['Judy', 'Candy Man', 'Lost Lover Blues', \"Nobody's Fault But Mine\", 'After The Dance', 'Another Monday', 'Waltz', 'Gypsy dance', \"Ladye's nothing's toye puffe\", 'The Lady and the Unicorn', 'The Moon Shines Bright', 'My johnny was a showmaker', 'Melancholy galliard', 'The Pelican', \"Three Pieces By O'Carolan\", 'English dance', 'Pavane belle que tiens ma vie']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Heritage | artist=John Renbourn | release-date=2001 | release-country=Europe | genre=Folk, World, & Country | tracks=['Judy', 'Candy Man', 'Lost Lover Blues', \"Nobody's Fault But Mine\", 'After The Dance', 'Another Monday', 'Waltz', 'Gipsy Dance', \"Ladye's Nothing's Yoye Puffe\", 'The Lady And The Unicorn', 'The Moon Shines Bright', 'My Johnny Was A Shoemaker', 'Melancholy Galliard', 'The Pelican', \"Three Pieces By O'Carolan\", 'English Dance', 'Pavane Belle Que Tiens Ma Vie']\nRecord B: name=Heritage | artist=John Renbourn | duration=3856.0 | tracks=['Judy', 'Candy Man', 'Lost Lover Blues', \"Nobody's Fault But Mine\", 'After The Dance', 'Another Monday', 'Waltz', 'Gypsy dance', \"Ladye's nothing's toye puffe\", 'The Lady and the Unicorn', 'The Moon Shines Bright', 'My johnny was a showmaker', 'Melancholy galliard', 'The Pelican', \"Three Pieces By O'Carolan\", 'English dance', 'Pavane belle que tiens ma vie']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

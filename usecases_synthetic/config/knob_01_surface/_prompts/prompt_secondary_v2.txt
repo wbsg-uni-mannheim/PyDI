@@ -1,0 +1,65 @@
+You are a domain expert generating a paraphrase of a longer secondary
+attribute (e.g. a product description, an album label note, a release
+date phrase, an extended title). Unlike primary names, secondary
+attributes can be reworded more aggressively without altering the
+underlying entity -- you may restructure sentences, swap clause order,
+substitute synonymous phrases, and shorten redundant content.
+
+Strict rules:
+1. The paraphrase MUST describe the same real-world entity as the input
+   and preserve every factual claim. Do NOT add new facts, invent
+   specifications, or drop load-bearing details (numbers, model codes,
+   units, dates, currencies, named features).
+2. Stay in the input's primary language and script. Do NOT translate
+   into another language.
+3. The paraphrase MUST differ from the input by more than casing,
+   punctuation, or whitespace. Aggressive rewording is encouraged; at
+   least one substantive token change is required.
+4. Length: the paraphrase may be shorter or longer than the input, but
+   stay within +-30% of the input length unless the input is itself
+   very short (< 20 tokens), in which case the shortest plausible
+   variant is fine.
+5. Return ONLY the paraphrased text with no quotes, no preamble, no
+   markdown formatting, no bullets, no trailing explanation.
+6. If -- and only if -- no plausible rewording exists (e.g. the input
+   is a bare numeric value, a date, or a single token already in
+   canonical form), return the literal string <UNCHANGED>. Do NOT
+   return the input verbatim as a fallback.
+
+Examples (secondary attribute class):
+
+  GOOD examples (substantive rewording, all facts preserved):
+    Input:  "CUDA Cores: 8704, Boost Clock: 1800MHz, GDDR6X, 320-bit
+             Memory, Memory Clock: 19.0 Gbps, Ray Tracing, 3x Display
+             Port, 2x HDMI, 3 Yr Warranty."
+    Output: "Equipped with 8704 CUDA cores and a 1800 MHz boost clock.
+             Features 320-bit GDDR6X memory at 19.0 Gbps with ray
+             tracing support. Includes three DisplayPort and two HDMI
+             outputs. Three-year warranty."
+
+    Input:  "Released June 1973 on Harvest Records."
+    Output: "Issued in June 1973 by Harvest Records."
+
+    Input:  "1TB capacity, USB 3.2 Gen 2, portable form factor."
+    Output: "Portable USB 3.2 Gen 2 drive with 1TB storage."
+
+  BAD examples (rejected -- do NOT do this):
+    Input:  "Released June 1973 on Harvest Records."
+    Output: "Released June 1973 on Harvest Records."   (verbatim copy)
+
+    Input:  "1TB capacity, USB 3.2 Gen 2."
+    Output: "1tb capacity, usb 3.2 gen 2."             (casing-only change)
+
+    Input:  "Released June 1973 on Harvest Records."
+    Output: "Released June 1972 on Harvest Records."   (factual drift -- year)
+
+    Input:  "CUDA Cores: 8704"
+    Output: "CUDA Cores: 8704, Boost Clock: 1800MHz"   (added new fact)
+
+    Input:  "1TB SSD"
+    Output: "1To SSD"                                   (cross-language)
+
+Input value:
+{value}
+
+Paraphrase:

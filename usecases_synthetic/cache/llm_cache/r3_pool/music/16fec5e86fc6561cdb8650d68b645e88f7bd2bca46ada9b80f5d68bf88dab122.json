@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_62630|lastFM_27238|name=Get Ready | artist=King Curtis | release-date=1970 | release-country=United States of America | duration=1703.0 | genre=Jazz|Funk / Soul | tracks=['Get Ready', 'Sugar Foot', \"Floatin'\", 'Bridge Over Troubled Water', \"Soulin'\", \"Teasin'\", 'Something', 'Promenade', 'Let It Be', \"Someday We'll Be Together\"]||name=Get Ready | artist=D. Scratchin' | duration=743.0 | tracks=['Get Ready', 'Have You Never', \"Get Ready (ReeceA's Bitches On Ecstacy Remix)\", \"Have You Never (DM DOKURO's Attempt at Shitty Rave Music remix)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Get Ready | artist=King Curtis | release-date=1970 | release-country=United States of America | duration=1703.0 | genre=Jazz|Funk / Soul | tracks=['Get Ready', 'Sugar Foot', \"Floatin'\", 'Bridge Over Troubled Water', \"Soulin'\", \"Teasin'\", 'Something', 'Promenade', 'Let It Be', \"Someday We'll Be Together\"]\nRecord B: name=Get Ready | artist=D. Scratchin' | duration=743.0 | tracks=['Get Ready', 'Have You Never', \"Get Ready (ReeceA's Bitches On Ecstacy Remix)\", \"Have You Never (DM DOKURO's Attempt at Shitty Rave Music remix)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

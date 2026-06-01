@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_476|mbrainz_17562|name=Elevator 3 | artist=C. Duca | duration=2335.0 | tracks=['Car', 'Faith One', 'Quiet Nights Intro', 'Quiet Nights', 'Mid a4', 'Stim', 'Fl Peak', 'Plasma', 'MacIntosh Suite', 'Digital Basics', 'Geister', 'Laura', 'Rev', 'Slip & Slide', 'Love b3', 'Lalo', 'Scream', 'Dark Perc', 'Tristan', 'Sounds in the Night', 'Evie Peak', 'Fire', 'Earth', 'Lo', 'Mid', 'Hi', 'Rec 4', 'Giant Swing', 'Japan', 'Schweb', 'Bliss', 'Manc', 'Syte', 'Gunshot', 'Schwirr', 'Uranus', 'Click & Roll', 'Misty', 'Metal', 'Dorf', 'Nave', 'Alpine Bells', 'Walzer', 'Serge b1', 'Tubbies', 'Soul', 'Midnight', 'm2']||name=Elevator | artist=Endless Shame | release-date=2012-10-26 | release-country=Italy | duration=2335 | tracks=['Freakshow', 'Hear Me Now', 'Winter Skies', 'I Am Nothing', 'Lack of Communication', 'Universe', 'Rites', 'Twilight Zone', 'People of the Sun', 'Saviour']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Elevator 3 | artist=C. Duca | duration=2335.0 | tracks=['Car', 'Faith One', 'Quiet Nights Intro', 'Quiet Nights', 'Mid a4', 'Stim', 'Fl Peak', 'Plasma', 'MacIntosh Suite', 'Digital Basics', 'Geister', 'Laura', 'Rev', 'Slip & Slide', 'Love b3', 'Lalo', 'Scream', 'Dark Perc', 'Tristan', 'Sounds in the Night', 'Evie Peak', 'Fire', 'Earth', 'Lo', 'Mid', 'Hi', 'Rec 4', 'Giant Swing', 'Japan', 'Schweb', 'Bliss', 'Manc', 'Syte', 'Gunshot', 'Schwirr', 'Uranus', 'Click & Roll', 'Misty', 'Metal', 'Dorf', 'Nave', 'Alpine Bells', 'Walzer', 'Serge b1', 'Tubbies', 'Soul', 'Midnight', 'm2']\nRecord B: name=Elevator | artist=Endless Shame | release-date=2012-10-26 | release-country=Italy | duration=2335 | tracks=['Freakshow', 'Hear Me Now', 'Winter Skies', 'I Am Nothing', 'Lack of Communication', 'Universe', 'Rites', 'Twilight Zone', 'People of the Sun', 'Saviour']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

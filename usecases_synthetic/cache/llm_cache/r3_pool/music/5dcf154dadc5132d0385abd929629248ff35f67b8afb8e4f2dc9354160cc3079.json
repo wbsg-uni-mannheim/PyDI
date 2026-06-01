@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_134167|lastFM_76297|name=Elephant Mountain | artist=The Youngbloods | release-date=1988 | release-country=France | duration=2347.0 | genre=Rock | tracks=['Darkness, Darkness', 'Smug', 'On Sir Francis Drake', 'Sunlight', 'Double Sunlight', 'Beautiful', 'Turn It Over', 'Rain Song', 'Trillium', 'Quicksand', 'Black Mountain Breakdown', 'Sham', 'Ride The Wind']||name=Elephant | artist=The Nice Jenkins | duration=2331.0 | tracks=['So What 2', 'Ladies', 'Foreboding Love', 'So What I', 'Needs', 'When The Morning Comes', 'Cowboy', 'Ordinary Life', 'Down the Well']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Elephant Mountain | artist=The Youngbloods | release-date=1988 | release-country=France | duration=2347.0 | genre=Rock | tracks=['Darkness, Darkness', 'Smug', 'On Sir Francis Drake', 'Sunlight', 'Double Sunlight', 'Beautiful', 'Turn It Over', 'Rain Song', 'Trillium', 'Quicksand', 'Black Mountain Breakdown', 'Sham', 'Ride The Wind']\nRecord B: name=Elephant | artist=The Nice Jenkins | duration=2331.0 | tracks=['So What 2', 'Ladies', 'Foreboding Love', 'So What I', 'Needs', 'When The Morning Comes', 'Cowboy', 'Ordinary Life', 'Down the Well']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_58161|mbrainz_8495|name=Across The Concrete Sky | artist=Air Supply | release-date=2003-06-25 | release-country=Japan | duration=2973.0 | genre=Pop|Rock | tracks=['Shadow Of The Sun', 'Big Cat', 'Love Is The Arrow', 'We Are All Children', 'A Place Where We Belong', 'Feel Like Screaming', \"I'll Find You\", 'Come To Me', 'I Want You', 'You Belong To Me', 'Goodnight']||name=Across the Concrete Sky | artist=Air Supply | release-date=2003-07-07 | release-country=United States of America | duration=2971 | tracks=['Shadow Of The Sun', 'Big Cat', 'Love Is The Arrow', 'We Are All Children', 'A Place Where We Belong', 'Feel Like Screaming', \"I'll Find You\", 'Come To Me', 'I Want You', 'You Belong To Me', 'Goodnight']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Across The Concrete Sky | artist=Air Supply | release-date=2003-06-25 | release-country=Japan | duration=2973.0 | genre=Pop|Rock | tracks=['Shadow Of The Sun', 'Big Cat', 'Love Is The Arrow', 'We Are All Children', 'A Place Where We Belong', 'Feel Like Screaming', \"I'll Find You\", 'Come To Me', 'I Want You', 'You Belong To Me', 'Goodnight']\nRecord B: name=Across the Concrete Sky | artist=Air Supply | release-date=2003-07-07 | release-country=United States of America | duration=2971 | tracks=['Shadow Of The Sun', 'Big Cat', 'Love Is The Arrow', 'We Are All Children', 'A Place Where We Belong', 'Feel Like Screaming', \"I'll Find You\", 'Come To Me', 'I Want You', 'You Belong To Me', 'Goodnight']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

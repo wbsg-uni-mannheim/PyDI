@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "630.49"
+    },
+    {
+      "source": "products_2",
+      "value": "15443.0"
+    },
+    {
+      "source": "products_3",
+      "value": "2988.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates are inconsistent outliers, and 2988.0 appears most plausible as a central price point without evidence to aggregate.",
+    "value": 2988.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2988.0,\"operation\":\"verbatim_pick\",\"confidence\":0.74,\"reasoning\":\"The candidates are inconsistent outliers, and 2988.0 appears most plausible as a central price point without evidence to aggregate.\"}"
+}

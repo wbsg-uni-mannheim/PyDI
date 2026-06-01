@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "317.53"
+    },
+    {
+      "source": "products_2",
+      "value": "309.99"
+    },
+    {
+      "source": "products_3",
+      "value": "319.09"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.84,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric prices with small variance, so a mean provides a robust canonical estimate.",
+    "value": 315.5366666666667
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":315.5366666666667,\"operation\":\"aggregation\",\"confidence\":0.84,\"reasoning\":\"The candidates are numeric prices with small variance, so a mean provides a robust canonical estimate.\"}"
+}

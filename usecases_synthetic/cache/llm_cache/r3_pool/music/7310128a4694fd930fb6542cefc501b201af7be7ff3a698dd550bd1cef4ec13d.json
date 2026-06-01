@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_14315|lastFM_6963|name=Urban Voodoo | artist=Nuttea | release-date=2004 | release-country=France | genre=Hip Hop | tracks=['De Retour Sur Les Ondes', 'Est-Ce Que Ca Vaut La Peine', \"Partout Où J'Irai\", 'Abraham, Martin And John', 'Je Lève Mon Verre', 'Encore Là', 'Sans Un Mot', 'We Are One', \"J'Ai Fait Tout Ce Que Je Pouvais\", 'Mégalotrip', 'Femmes', \"Perdu D'Avance\"]||name=Voodoo | artist=Nuttea | duration=3179.0 | tracks=['De Retour Sur Les Ondes', 'Est-Ce Que Ca Vaut La Peine?', \"Partout OÃƒÂ¹ J'irai\", 'Abraham, Martin & John', 'Je LÃƒÂ¨ve Mon Verre (Avec Oxmo Puccino)', 'Encore LÃƒÂ', 'Sans Un Mot', 'We Are One (Avec Tiwony Et Fefe Typical)', \"J'ai Fait Tout Ce Que Je Pouvais\", 'MÃƒÂ©galotrip', 'Femmes (Avec Beres Hammond)', \"Perdu D'avance\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Urban Voodoo | artist=Nuttea | release-date=2004 | release-country=France | genre=Hip Hop | tracks=['De Retour Sur Les Ondes', 'Est-Ce Que Ca Vaut La Peine', \"Partout Où J'Irai\", 'Abraham, Martin And John', 'Je Lève Mon Verre', 'Encore Là', 'Sans Un Mot', 'We Are One', \"J'Ai Fait Tout Ce Que Je Pouvais\", 'Mégalotrip', 'Femmes', \"Perdu D'Avance\"]\nRecord B: name=Voodoo | artist=Nuttea | duration=3179.0 | tracks=['De Retour Sur Les Ondes', 'Est-Ce Que Ca Vaut La Peine?', \"Partout OÃƒÂ¹ J'irai\", 'Abraham, Martin & John', 'Je LÃƒÂ¨ve Mon Verre (Avec Oxmo Puccino)', 'Encore LÃƒÂ', 'Sans Un Mot', 'We Are One (Avec Tiwony Et Fefe Typical)', \"J'ai Fait Tout Ce Que Je Pouvais\", 'MÃƒÂ©galotrip', 'Femmes (Avec Beres Hammond)', \"Perdu D'avance\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

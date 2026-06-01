@@ -1,0 +1,30 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "SEK"
+    },
+    {
+      "source": "products_2",
+      "value": "DKK"
+    },
+    {
+      "source": "products_3",
+      "value": "EUR"
+    },
+    {
+      "source": "products_4",
+      "value": "NOK"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.33,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are plausible currency codes with no contextual signal to disambiguate, so one candidate is selected as a canonical placeholder.",
+    "value": "EUR"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"EUR\",\"operation\":\"verbatim_pick\",\"confidence\":0.33,\"reasoning\":\"All candidates are plausible currency codes with no contextual signal to disambiguate, so one candidate is selected as a canonical placeholder.\"}"
+}

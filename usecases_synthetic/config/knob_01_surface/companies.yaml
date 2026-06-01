@@ -1,0 +1,225 @@
+# Knob 01 - Surface Augmentation Intensity - Companies
+#
+# Authored per knobs/knob_01_surface_augmentation.md §"Per-domain notes"
+# and §"Domain-specific adjustments".
+#
+# Refreshed 2026-05-07 against the post-2026-05-04 CSV sources at
+# usecases/companies/input/data/{dbpedia,forbes,fullcontact}.csv.
+# Column-name remap from pre-refresh schema:
+#   dbpedia: name -> org_name, countryName -> nation,
+#            cityName -> headquarters, industryName -> sector,
+#            founders -> keypeople_name
+#   forbes:  Company -> company, Country -> region,
+#            Industry/Sector -> business_segment
+#   fullcontact: blind columns Attribute_1..6 (id/name/country/city/
+#                key-person/founded). Per K2 mapping:
+#                Attribute_2=name, _3=country, _4=city, _5=keypersons.
+#
+# Baseline sits at medium for short fields (per-source country forms
+# differ - Forbes long-form vs DBpedia / FullContact short).
+# `paraphrase_long` is DEAD (no long-text target attribute).
+
+domain: companies
+
+# ID column per source. The loader renames each source's native id
+# column (dbpedia.entity_uri / forbes.forbes_url / fullcontact.Attribute_1)
+# to `id` immediately after read - see usecases_synthetic/lib/loaders.py
+# - so downstream code uniformly references `id`.
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# Per-source column -> attribute class.
+# Columns NOT listed here are never touched by Knob 01.
+attribute_classes:
+  dbpedia:
+    org_name: primary
+    nation: key
+    headquarters: key
+    sector: categorical
+    keypeople_name: secondary
+  forbes:
+    company: primary
+    region: key
+    business_segment: categorical
+  fullcontact:
+    Attribute_2: primary
+    Attribute_3: key
+    Attribute_4: key
+    Attribute_5: secondary
+
+# Source column -> canonical target attribute (cross-source survivor floor).
+attribute_mapping:
+  dbpedia:
+    org_name: name
+    nation: country
+    headquarters: city
+    sector: industry
+    keypeople_name: founders
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: founders
+
+# Per-attribute-class paraphrase rates per level (monotone increasing).
+paraphrase_rate_primary:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+paraphrase_rate_key:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+paraphrase_rate_secondary:
+  easy: 0.0
+  medium: 0.16
+  hard: 0.30
+paraphrase_rate_categorical:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+
+# Operator mix per level (non-shrinking sets, weights are relative).
+operator_mix:
+  easy:
+    # Note: dormant under `paraphrase_rate_*.easy: 0.0` (the rate-based
+    # dispatcher short-circuits before reaching operator sampling at easy).
+    # The easy normalize-down work runs via `baseline_above_target_rules`
+    # at a separate code path. Kept as defensive placeholder for any future
+    # easy-rate bump.
+    normalize_to_canonical: 1.0
+  medium:
+    abbreviate: 2.0
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 1.0
+  hard:
+    abbreviate: 1.5
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 3.0
+
+# Baseline-above-target rules: easy-only normalize-down path.
+# Forbes `region` carries long-form country names; DBpedia `nation`
+# uses short forms. Easy projects to the shortest sibling.
+baseline_above_target_rules:
+  - source: forbes
+    attribute: region
+    canonical_from: dbpedia
+    canonical_attribute: nation
+    strategy: shortest
+
+# Companies abbreviation table (bidirectional).
+# Coverage: legal-form suffixes, common-word contractions, country
+# forms, industry vocab, frequent-entity aliases. Roughly 30 entries
+# per the 2026-05-07 K1 sign-off discussion.
+abbreviation_table:
+  # Legal-form suffixes
+  Incorporated: "Inc."
+  Corporation: "Corp."
+  Limited: "Ltd."
+  Company: "Co."
+  "Limited Liability Company": "LLC"
+  "Public Limited Company": "PLC"
+  # Common-word contractions
+  International: "Int'l"
+  Group: "Grp."
+  Holdings: "Hldgs"
+  Industries: "Ind."
+  Manufacturing: "Mfg."
+  Services: "Svcs."
+  Technologies: "Tech"
+  Communications: "Comm."
+  Pharmaceuticals: "Pharma"
+  Resources: "Res."
+  # Country forms (forbes.region / dbpedia.nation / fullcontact.Attribute_3)
+  "United States": "USA"
+  "United States of America": "USA"
+  "United Kingdom": "UK"
+  "Russian Federation": "Russia"
+  "People's Republic of China": "China"
+  "Republic of Korea": "South Korea"
+  "United Arab Emirates": "UAE"
+  # Frequent-entity aliases
+  "International Business Machines": "IBM"
+  "Bank of America Corporation": "Bank of America"
+  "JPMorgan Chase": "JPM"
+  "Berkshire Hathaway": "BRK"
+  "General Electric": "GE"
+  "Procter & Gamble": "P&G"
+  "American Express": "AmEx"
+  "Hewlett-Packard": "HP"
+  "The Coca-Cola Company": "Coca-Cola"
+  "McDonald's Corporation": "McDonald's"
+
+# Categorical vocab map (industry / sector synonyms). Read by the
+# `abbreviate` operator in addition to `abbreviation_table`; bidirectional.
+categorical_vocab_map:
+  "Information Technology": "IT"
+  "Financial Services": "Finance"
+  "Oil & Gas Operations": "Oil & Gas"
+  "Pharmaceuticals & Biotechnology": "Pharma & Biotech"
+  "Diversified Financials": "Financials"
+  "Consumer Goods": "Consumer"
+  "Health Care": "Healthcare"
+
+# Shared stopwords (loaded from _tables/stopwords_en.yaml if present).
+# The per-domain list is additive - extra domain-specific stopwords
+# extend the shared one.
+stopword_list:
+  - inc
+  - "inc."
+  - corp
+  - "corp."
+  - ltd
+  - "ltd."
+  - company
+  - co
+  - "co."
+  - llc
+  - plc
+  - the
+  - of
+  - and
+
+# Per-column key-token skiplist (tokens EDA operators must not touch).
+key_token_skiplist:
+  dbpedia:
+    org_name: []
+  forbes:
+    company: []
+  fullcontact:
+    Attribute_2: []
+
+# Global key-token skiplist (used by the paraphrase_value_for_knob_04
+# single-cell export since it does not know the column).
+key_token_skiplist_global: []
+
+# Hard-path LLM config. Default model is gpt-5.4-mini for cost
+# (~5x cheaper than full gpt-5.4); per the 2026-05-06 LLM-model-default
+# policy in plans/plan_s1_scale.md, ask the user before each K1 hard run
+# whether to bump to gpt-5.4 (invalidates cache).
+# R10-D 2026-05-29: prompt_version bumped to v2 -- minimum-divergence
+# rule, <UNCHANGED> sentinel escape, per-attribute-class prompt
+# split (primary/key -> short_v2, secondary -> secondary_v2,
+# categorical -> categorical_v2). Cache key under
+# cache/knob_01_paraphrases/<domain>/<level>/ rotates on this bump.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Anchor-survivor floor: per-entity, at least 1 source keeps a clean
+# primary. Hard constraint at every level. Per-cell clean-survivor
+# floor is opt-in per attribute class; will be re-evaluated against
+# the Pending #5 closeness contract before R6.1.
+anchor_survivor_floor:
+  primary: true
+  key: false
+  secondary: false
+  categorical: false

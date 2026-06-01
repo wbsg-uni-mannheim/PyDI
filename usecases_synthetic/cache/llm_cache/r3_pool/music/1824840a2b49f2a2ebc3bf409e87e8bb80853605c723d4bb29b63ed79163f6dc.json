@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_40271|lastFM_19094|name=Homesick | artist=Autonon | release-date=2009-04-15 | release-country=UK | duration=2824.0 | genre=Electronic | tracks=['Weelderige Bloemenpassage', 'You Are Very Welcome Song', 'If My Sweat Could Talk It Would Say AA', 'The Hype', 'Milan', 'Dubtones', 'Chiptune', 'Numb & Untitled', 'Couleurs Sont Faciles à Mélanger', 'Who Made Me Make Dub', 'The Nearing Computer Game Death Of Enter Your Name Here...', 'Love Song']||name=Homesick | artist=Autonon | duration=2813.0 | tracks=['Weelderige bloemenpassage', 'You are very welcome song', 'If my sweat could talk it would say AA', 'The Hype', 'Milan', 'Dubtones', 'Chiptune', 'Numb & Untitled', 'Couleurs sont faciles ÃƒÂ\\xa0 mÃƒÂ©langer', 'Who made me make dub', 'The nearing computer game death', 'Love Song']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Homesick | artist=Autonon | release-date=2009-04-15 | release-country=UK | duration=2824.0 | genre=Electronic | tracks=['Weelderige Bloemenpassage', 'You Are Very Welcome Song', 'If My Sweat Could Talk It Would Say AA', 'The Hype', 'Milan', 'Dubtones', 'Chiptune', 'Numb & Untitled', 'Couleurs Sont Faciles à Mélanger', 'Who Made Me Make Dub', 'The Nearing Computer Game Death Of Enter Your Name Here...', 'Love Song']\nRecord B: name=Homesick | artist=Autonon | duration=2813.0 | tracks=['Weelderige bloemenpassage', 'You are very welcome song', 'If my sweat could talk it would say AA', 'The Hype', 'Milan', 'Dubtones', 'Chiptune', 'Numb & Untitled', 'Couleurs sont faciles ÃƒÂ\\xa0 mÃƒÂ©langer', 'Who made me make dub', 'The nearing computer game death', 'Love Song']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

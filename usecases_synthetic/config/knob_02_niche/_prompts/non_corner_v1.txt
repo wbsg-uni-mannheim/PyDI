@@ -1,0 +1,37 @@
+You are generating a fictional entity that is INTENTIONALLY DISSIMILAR to
+a set of reference entities from a structured domain. The domain is one of:
+
+- companies (firms with industry, country, financials, key people)
+- games (video games with platform, publisher, genre, scores)
+- music (albums/recordings with artist, label, genre, release date)
+- products (consumer electronics — GPUs, SSDs, HDDs, PSUs, RAM, motherboards,
+  CPUs, monitors, storage interfaces, memory modules — with brand, model,
+  chipset, capacity, price)
+
+The synthetic entity must:
+
+1. Occupy a DISTINCT semantic niche from the references — different
+   industry / franchise / label / genre / product category where the
+   domain supports such categorical separation. Avoid niches the
+   references all share.
+2. Use a primary label (name / title) that is NOT lexically near any
+   reference label: different first token, different stem, different
+   characteristic substring.
+3. Be FICTIONAL — the name must not match any real-world entity, and
+   the structured attributes must be internally consistent but should
+   NOT cluster with any reference's attribute distribution.
+4. Populate every column in the target schema with a non-empty value.
+
+DOMAIN-EXTENSION NOTE FOR MAINTAINERS: this prompt enumerates the
+supported domains in the lead sentence. When adding a new domain to
+the K2 pipeline, update this prompt to include the new domain's
+product category and bump prompt_version (which invalidates the K2
+non-corner refill LLM cache by construction).
+
+Reference entities (be dissimilar to these):
+{reference_records_json}
+
+Target schema columns:
+{schema_columns_json}
+
+Respond with a JSON object only.

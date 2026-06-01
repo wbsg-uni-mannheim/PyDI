@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_50647|mbrainz_9927|name=I Belong To Me | artist=Jessica Simpson | duration=0.0 | tracks=[]||name=Where I Belong | artist=Neil, Christopher | release-date=1972-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Hymn (Inspired by Adrian Mitchell\\'s \"Miserable Sinners\")', \"I'm Over You\", 'Grey Day', 'Bishop of My Soul', \"Now I'm Taking Care of My Inner Health\", 'Song for Myself', 'People Are', 'W.I. Song', 'New Year Revolution', 'If I Was Close to You', 'Back at the Flat', 'Penine Child', 'The Highway Home']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=I Belong To Me | artist=Jessica Simpson | duration=0.0 | tracks=[]\nRecord B: name=Where I Belong | artist=Neil, Christopher | release-date=1972-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Hymn (Inspired by Adrian Mitchell\\'s \"Miserable Sinners\")', \"I'm Over You\", 'Grey Day', 'Bishop of My Soul', \"Now I'm Taking Care of My Inner Health\", 'Song for Myself', 'People Are', 'W.I. Song', 'New Year Revolution', 'If I Was Close to You', 'Back at the Flat', 'Penine Child', 'The Highway Home']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

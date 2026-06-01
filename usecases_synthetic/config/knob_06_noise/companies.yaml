@@ -1,0 +1,189 @@
+# Knob 06 — Value Noise Injection Rate — Companies
+#
+# Per-attribute-class noise rates, operator mix, and constraint scalars.
+# See knobs/knob_06_value_noise.md for full specification.
+#
+# Refreshed 2026-05-07 against the schema.org-style CSV sources at
+# usecases/companies/input/data/. id_columns collapse to ``id`` via the
+# loader rename (see config/domains/companies.yaml). New blocks:
+# ``taxonomies`` (Pending #4 — taxonomy_walk operator wired to GICS),
+# ``numeric_attributes`` (Pending #6 — ±2% relative jitter cap on
+# continuous / year / date attributes).
+
+domain: companies
+
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# Per-source column to attribute class.
+# Columns NOT listed here are NOT managed by Knob 6 (never noised).
+attribute_classes:
+  dbpedia:
+    org_name: primary
+    nation: key
+    headquarters: key
+    sector: key
+    established: secondary
+    keypeople_name: secondary
+    total_assets_val: secondary
+    annual_income: secondary
+  forbes:
+    company: primary
+    region: key
+    business_segment: key
+    asset_value: secondary
+    sales_figure: secondary
+  fullcontact:
+    Attribute_2: primary
+    Attribute_3: key
+    Attribute_4: key
+    Attribute_5: secondary
+    Attribute_6: secondary
+
+# Source column to canonical attribute (per
+# config/domains/companies.yaml: name / country / city / assets /
+# revenue / founded / keypeople).
+attribute_mapping:
+  dbpedia:
+    org_name: name
+    nation: country
+    headquarters: city
+    sector: industry
+    established: founded
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded
+
+# Per-attribute-class noise rates per level (monotone increasing).
+# These are the *target* rates after the per-source shape transform.
+noise_rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.0
+    secondary: 0.01
+  medium:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.04
+  hard:
+    primary: 0.01
+    key: 0.06
+    secondary: 0.12
+
+# Per-source shape transform per level.
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+# Operator mix per level (monotone non-shrinking sets). Weights are
+# relative; the dispatcher normalises them. ``taxonomy_walk`` is a no-op
+# on cells whose column is not bound under ``taxonomies`` below.
+operator_mix:
+  easy:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+  medium:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+    typo_substitute: 1.5
+    ocr_confuse: 1.0
+    taxonomy_walk: 1.0
+  hard:
+    whitespace_corrupt: 0.5
+    case_corrupt: 0.5
+    typo_substitute: 2.0
+    ocr_confuse: 1.5
+    truncate: 1.0
+    taxonomy_walk: 1.5
+
+# Maximum edits per cell per level (for typo_substitute).
+max_edits_per_cell:
+  easy: 1
+  medium: 1
+  hard: 3
+
+# Maximum OCR confusions per cell per level.
+max_ocr_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2
+
+# Maximum truncation chars per level.
+max_truncate_chars:
+  easy: 1
+  medium: 2
+  hard: 3
+
+# Constraint: soft global primary cap at hard.
+# Upper bound on fraction of fusion-gold entities with ANY noised primary.
+soft_global_primary_cap_hard: 0.35
+
+# Compression / stretch factors for per-source shape transform.
+compression_factor: 0.5
+stretch_factor: 1.5
+
+# Pending #4: taxonomy-walk operator bindings. Each entry loads a
+# hierarchical CSV under usecases/<domain>/input/schemamatching/ and
+# binds it to (source, column) cells. The walk is single-level (up =
+# parent label; down = sibling at the next-deeper level).
+taxonomies:
+  industry:
+    csv: companies/input/schemamatching/GICS_Industry_Taxonomy.csv
+    levels:
+      - Sector Name
+      - Industry Group Name
+      - Industry Name
+      - Sub-Industry Name
+    bind:
+      dbpedia:
+        sector: industry
+      forbes:
+        business_segment: industry
+      # fullcontact.Attribute_4 is city/locality, NOT industry-like
+      # (verified 2026-05-07). Not bound.
+
+# Pending #6: ±2 % relative jitter cap on numeric attributes. Types:
+# ``continuous`` (relative), ``year`` (parse-equal), ``date`` (calendar
+# day). String corruption that makes the value unparseable is allowed
+# (canonical K6 behaviour); only parseable jitter beyond the cap is
+# rejected and retried.
+numeric_jitter_max_relative: 0.02
+
+numeric_attributes:
+  dbpedia:
+    established: year
+    total_assets_val: continuous
+    annual_income: continuous
+  forbes:
+    asset_value: continuous
+    sales_figure: continuous
+  fullcontact:
+    Attribute_6: year
+
+# Easy-only cleanup rules: per-(source, attribute) regex patterns to
+# fix at easy level (reverts known baseline noise). Refreshed 2026-05-07
+# against the new CSV sources.
+# - forbes.region: 47 cells carry a "[a]" footnote (e.g. "Taiwan,
+#   Province of China[a]") - strip it.
+# - dbpedia.org_name control-char cleanup retired: 0 matches on the
+#   refreshed CSV.
+cleanup_rules:
+  - source: forbes
+    attribute: region
+    pattern: '\s*\[a\]\s*$'
+    replacement: ""

@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "537.99"
+    },
+    {
+      "source": "products_2",
+      "value": "816.0"
+    },
+    {
+      "source": "products_3",
+      "value": "2810.43"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "No clear basis to aggregate or normalize, so I selected the middle candidate as the most plausible price.",
+    "value": 816.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":816.0,\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"No clear basis to aggregate or normalize, so I selected the middle candidate as the most plausible price.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25157|lastFM_3054|name=Daydream | artist=Obscenity Trial | release-date=2007 | release-country=Germany | duration=1192.0 | genre=Electronic | tracks=['Daydream', 'Desire', '7:30', 'Daydream', 'Daydream']||name=Daydream | artist=I. Monster | duration=221.0 | tracks=['Daydream', 'Full Speed To Metric']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Daydream | artist=Obscenity Trial | release-date=2007 | release-country=Germany | duration=1192.0 | genre=Electronic | tracks=['Daydream', 'Desire', '7:30', 'Daydream', 'Daydream']\nRecord B: name=Daydream | artist=I. Monster | duration=221.0 | tracks=['Daydream', 'Full Speed To Metric']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

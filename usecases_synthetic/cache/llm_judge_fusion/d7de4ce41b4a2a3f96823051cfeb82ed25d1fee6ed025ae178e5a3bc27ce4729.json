@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "GBP"
+    },
+    {
+      "source": "products_2",
+      "value": "JSC"
+    },
+    {
+      "source": "products_3",
+      "value": "EUR"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.88,
+    "operation": "verbatim_pick",
+    "reasoning": "GBP and EUR are valid currencies, while JSC is not a standard currency code, so GBP is the most plausible canonical value.",
+    "value": "GBP"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GBP\",\"operation\":\"verbatim_pick\",\"confidence\":0.88,\"reasoning\":\"GBP and EUR are valid currencies, while JSC is not a standard currency code, so GBP is the most plausible canonical value.\"}"
+}

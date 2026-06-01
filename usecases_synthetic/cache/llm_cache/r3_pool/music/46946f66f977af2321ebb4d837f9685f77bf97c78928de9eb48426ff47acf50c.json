@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_809|mbrainz_9452|name=Singles 8185 | artist=Depeche Mode | duration=4185.0 | tracks=['Dreaming of Me', 'New Life', \"Just Can't Get Enough\", 'See You', 'The Meaning of Love', 'Leave in Silence', 'Get The Balance Right', 'Everything Counts', 'Love In Itself', 'People Are People', 'Master and Servant', 'Blasphemous Rumours', 'Somebody', 'Shake the Disease', \"It's Called a Heart\", 'Photographic (Some Bizzare Version)', \"Just Can't Get Enough (Schizo mix)\"]||name=Devotional Tour | artist=Depeche Mode | release-date=1994-01-01 | release-country=Italy | duration=3103 | tracks=['Higher Love', 'Policy of Truth', 'World in My Eyes', 'Walking in My Shoes', 'Behind the Wheel', 'Halo', 'Stripped', 'Condemnation', 'A Question of Lust', \"Death's Door\", 'Mercy in You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy the Silence', 'Fly on the Windscreen', 'Everything Counts']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles 8185 | artist=Depeche Mode | duration=4185.0 | tracks=['Dreaming of Me', 'New Life', \"Just Can't Get Enough\", 'See You', 'The Meaning of Love', 'Leave in Silence', 'Get The Balance Right', 'Everything Counts', 'Love In Itself', 'People Are People', 'Master and Servant', 'Blasphemous Rumours', 'Somebody', 'Shake the Disease', \"It's Called a Heart\", 'Photographic (Some Bizzare Version)', \"Just Can't Get Enough (Schizo mix)\"]\nRecord B: name=Devotional Tour | artist=Depeche Mode | release-date=1994-01-01 | release-country=Italy | duration=3103 | tracks=['Higher Love', 'Policy of Truth', 'World in My Eyes', 'Walking in My Shoes', 'Behind the Wheel', 'Halo', 'Stripped', 'Condemnation', 'A Question of Lust', \"Death's Door\", 'Mercy in You', 'I Feel You', 'Never Let Me Down Again', 'Rush', 'In Your Room', 'Personal Jesus', 'Enjoy the Silence', 'Fly on the Windscreen', 'Everything Counts']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

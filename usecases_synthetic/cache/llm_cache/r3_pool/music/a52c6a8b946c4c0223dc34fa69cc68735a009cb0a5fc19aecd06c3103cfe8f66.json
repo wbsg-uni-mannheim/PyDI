@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_63658|mbrainz_25231|name=[explicit] Live at Spirit Square | artist=M. Jones | duration=3777.0 | tracks=['Hiding The Boy', 'Tourist Town', 'Wind In The Trees', \"I've Got Second Sight\", 'Read My Heart', 'The Real One', 'If I Can Love Somebody', 'Living Inside The Wind', 'Second Choice', 'Old Friend', 'Is This The Game?', 'Percussion Solo', 'Just A Memory', 'Twisted Vines', 'ClichÃƒÂ©', 'Inside These Arms']||name=Live at Spirit Square | artist=Jones, Marti | release-date=1996-01-01 | release-country=United States of America | duration=4270 | tracks=['Intro', 'Hiding the Boy', 'Tourist Town', 'Wind in the Trees', \"I've Got Second Sight\", 'Read My Heart', 'Any Kind of Lie', 'The Real One', 'If I Can Love Somebody', 'Follow You All Over the World', 'Living Inside the Wind', 'Second Choice', 'Old Friend', 'Is This the Game?', 'Percussion Solo', 'Just a Memory', 'Twisted Vines', 'Cliche', 'Inside These Arms']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=[explicit] Live at Spirit Square | artist=M. Jones | duration=3777.0 | tracks=['Hiding The Boy', 'Tourist Town', 'Wind In The Trees', \"I've Got Second Sight\", 'Read My Heart', 'The Real One', 'If I Can Love Somebody', 'Living Inside The Wind', 'Second Choice', 'Old Friend', 'Is This The Game?', 'Percussion Solo', 'Just A Memory', 'Twisted Vines', 'ClichÃƒÂ©', 'Inside These Arms']\nRecord B: name=Live at Spirit Square | artist=Jones, Marti | release-date=1996-01-01 | release-country=United States of America | duration=4270 | tracks=['Intro', 'Hiding the Boy', 'Tourist Town', 'Wind in the Trees', \"I've Got Second Sight\", 'Read My Heart', 'Any Kind of Lie', 'The Real One', 'If I Can Love Somebody', 'Follow You All Over the World', 'Living Inside the Wind', 'Second Choice', 'Old Friend', 'Is This the Game?', 'Percussion Solo', 'Just a Memory', 'Twisted Vines', 'Cliche', 'Inside These Arms']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

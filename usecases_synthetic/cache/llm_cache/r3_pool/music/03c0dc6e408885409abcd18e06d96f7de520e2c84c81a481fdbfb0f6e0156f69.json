@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_19766|mbrainz_9294|name=Thirty Five Whirlpools  Sound | artist=Mexico 7. | duration=2402.0 | tracks=['Hello Hello', 'Indian Ink', 'Peace & Love', \"Movin' On\", 'In Everything', 'Bomb Poem', 'Really Love', \"You've Really Gone & Done It This Time\", 'Mr. Magpie', 'End of the World', 'Never Meant To Be', 'Shed Song', 'I Want You']||name=Thirty Five Whirlpoos Below Sound | artist=Mexico 70 | release-date=2008-01-29 | release-country=United States of America | duration=2420 | tracks=['Hello Hello', 'Indian Ink', 'Peace & Love', \"Movin' On\", 'In Everything', 'Bomb Poem', 'Really Love', \"You've Really Gone & Done It This Time\", 'Mr. Magpie', 'End of the World', 'Never Meant to Be', 'Shed Song', 'I Want You']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Thirty Five Whirlpools  Sound | artist=Mexico 7. | duration=2402.0 | tracks=['Hello Hello', 'Indian Ink', 'Peace & Love', \"Movin' On\", 'In Everything', 'Bomb Poem', 'Really Love', \"You've Really Gone & Done It This Time\", 'Mr. Magpie', 'End of the World', 'Never Meant To Be', 'Shed Song', 'I Want You']\nRecord B: name=Thirty Five Whirlpoos Below Sound | artist=Mexico 70 | release-date=2008-01-29 | release-country=United States of America | duration=2420 | tracks=['Hello Hello', 'Indian Ink', 'Peace & Love', \"Movin' On\", 'In Everything', 'Bomb Poem', 'Really Love', \"You've Really Gone & Done It This Time\", 'Mr. Magpie', 'End of the World', 'Never Meant to Be', 'Shed Song', 'I Want You']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

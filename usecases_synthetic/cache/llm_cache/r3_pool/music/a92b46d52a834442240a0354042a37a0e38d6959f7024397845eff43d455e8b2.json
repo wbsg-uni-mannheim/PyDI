@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_50248|mbrainz_11015|name=Swingin' Singles | artist=The Bomboras | release-date=1996 | release-country=United States of America | duration=2129.0 | genre=Rock | tracks=['Forbidden Planet', 'Moon Probe', 'Time Bomb', \"Surfin' Bull\", 'Last Call', 'Drag Strip Tease', 'Chunky', 'Outlaw', 'Twice Pipes', 'The Clutch', 'Rodan', \"Lil' Drummer Boy\", 'Tube City', 'Slingshot', 'Skater Dater']||name=Swinginâ€™ Singles | artist=Bomboras, The | release-date=1996-01-01 | release-country=United States of America | duration=2138 | tracks=['Forbidden Planet', 'Moon Probe', 'Time Bomb', 'Surfinâ€™ Bull', 'Last Call', 'Drag Strip Tease', 'Chunky', 'Outlaw', 'Twice Pipes', 'The Clutch', 'Rodan', 'Lilâ€™ Drummer Boy', 'Tube City', 'Slingshot', 'Skater Dater']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Swingin' Singles | artist=The Bomboras | release-date=1996 | release-country=United States of America | duration=2129.0 | genre=Rock | tracks=['Forbidden Planet', 'Moon Probe', 'Time Bomb', \"Surfin' Bull\", 'Last Call', 'Drag Strip Tease', 'Chunky', 'Outlaw', 'Twice Pipes', 'The Clutch', 'Rodan', \"Lil' Drummer Boy\", 'Tube City', 'Slingshot', 'Skater Dater']\nRecord B: name=Swinginâ€™ Singles | artist=Bomboras, The | release-date=1996-01-01 | release-country=United States of America | duration=2138 | tracks=['Forbidden Planet', 'Moon Probe', 'Time Bomb', 'Surfinâ€™ Bull', 'Last Call', 'Drag Strip Tease', 'Chunky', 'Outlaw', 'Twice Pipes', 'The Clutch', 'Rodan', 'Lilâ€™ Drummer Boy', 'Tube City', 'Slingshot', 'Skater Dater']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

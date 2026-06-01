@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "14750.0"
+    },
+    {
+      "source": "products_3",
+      "value": "276.14"
+    },
+    {
+      "source": "products_4",
+      "value": "74.99"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "verbatim_pick",
+    "reasoning": "Two candidates are ordinary retail prices while 14750.0 is a strong outlier, so the most plausible canonical price is 276.14.",
+    "value": 276.14
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":276.14,\"operation\":\"verbatim_pick\",\"confidence\":0.86,\"reasoning\":\"Two candidates are ordinary retail prices while 14750.0 is a strong outlier, so the most plausible canonical price is 276.14.\"}"
+}

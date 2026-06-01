@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_37177|mbrainz_22348|name=Broken Bow | artist=E. Autres | duration=2219.0 | tracks=['Jamais', 'Queen Turner', 'Under Rays', 'Wind Me Up', 'A Band Undone', \"You're Alight\", 'Rosehill', 'Go Dancing', 'My Love Will Not Let You Down', 'Take It Or Leave It', 'Cover Rights']||name=...Sun, Broken... | artist=Mugstar | release-date=2010-03-23 | release-country=United States of America | duration=2229 | tracks=['Technical Knowledge as a Weapon', 'Ouroboros', 'Labrador Hatchet', 'Today is the Wrong Shape', 'She Ran Away with My Medicine', 'Furklausundbo']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken Bow | artist=E. Autres | duration=2219.0 | tracks=['Jamais', 'Queen Turner', 'Under Rays', 'Wind Me Up', 'A Band Undone', \"You're Alight\", 'Rosehill', 'Go Dancing', 'My Love Will Not Let You Down', 'Take It Or Leave It', 'Cover Rights']\nRecord B: name=...Sun, Broken... | artist=Mugstar | release-date=2010-03-23 | release-country=United States of America | duration=2229 | tracks=['Technical Knowledge as a Weapon', 'Ouroboros', 'Labrador Hatchet', 'Today is the Wrong Shape', 'She Ran Away with My Medicine', 'Furklausundbo']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

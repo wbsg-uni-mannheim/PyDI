@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "323.99"
+    },
+    {
+      "source": "products_2",
+      "value": "1,843.81"
+    },
+    {
+      "source": "products_3",
+      "value": "358.28"
+    },
+    {
+      "source": "products_4",
+      "value": "699.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.42,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates are conflicting numeric prices with no clear basis for aggregation, so I selected a plausible single observed value.",
+    "value": 699.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\": 699.0, \"operation\": \"verbatim_pick\", \"confidence\": 0.42, \"reasoning\": \"The candidates are conflicting numeric prices with no clear basis for aggregation, so I selected a plausible single observed value.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_88852|mbrainz_13883|name=Donuts With Buddah | artist=Eboman | release-date=1996 | release-country=Netherlands | genre=Electronic | tracks=['Donuts With Buddah']||name=Donuts With Buddah | artist=EBOMAN | release-date=1996-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3799 | tracks=['Donuts With Buddah (Edit)', 'Ebo Intro', 'Callippo Sinas', 'Hmmmm...Hmmmmm....(Ebo Meets The Madman!)', 'Callippo Bospad', 'Donuts With Buddah (Original)', 'Karaoke With Buddah', 'Donuts With Buddah (Depth Charge Freak Out)', 'Psycho Crazed Donuts With Buddah']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Donuts With Buddah | artist=Eboman | release-date=1996 | release-country=Netherlands | genre=Electronic | tracks=['Donuts With Buddah']\nRecord B: name=Donuts With Buddah | artist=EBOMAN | release-date=1996-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3799 | tracks=['Donuts With Buddah (Edit)', 'Ebo Intro', 'Callippo Sinas', 'Hmmmm...Hmmmmm....(Ebo Meets The Madman!)', 'Callippo Bospad', 'Donuts With Buddah (Original)', 'Karaoke With Buddah', 'Donuts With Buddah (Depth Charge Freak Out)', 'Psycho Crazed Donuts With Buddah']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "19.0"
+    },
+    {
+      "source": "products_2",
+      "value": "200.0"
+    },
+    {
+      "source": "products_3",
+      "value": "15.0"
+    },
+    {
+      "source": "products_4",
+      "value": "6.99"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "aggregation",
+    "reasoning": "The candidates vary widely, so a robust aggregate (median) best reduces outlier influence.",
+    "value": 17
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":17,\"operation\":\"aggregation\",\"confidence\":0.74,\"reasoning\":\"The candidates vary widely, so a robust aggregate (median) best reduces outlier influence.\"}"
+}

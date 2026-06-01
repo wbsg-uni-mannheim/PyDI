@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_3",
+      "value": "128.0 GB"
+    },
+    {
+      "source": "products_4",
+      "value": "128000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Both candidates indicate 128 GB; normalized 128000 MB-style value to GB.",
+    "value": 128
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":128,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Both candidates indicate 128 GB; normalized 128000 MB-style value to GB.\"}"
+}

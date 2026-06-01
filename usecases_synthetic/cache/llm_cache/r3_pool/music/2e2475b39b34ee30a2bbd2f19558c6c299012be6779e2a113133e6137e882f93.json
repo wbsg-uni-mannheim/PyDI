@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_4172|lastFM_2074|name=Bju-Ty (The Skin Is Broken By Tears) | artist=Silence Gift | release-date=1994-04-11 | release-country=Germany | duration=2833.0 | genre=Electronic | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine - Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince Mc Gee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']||name=Bju-Ty (The Skin Is Broken By | artist=Silence Gift | duration=2814.0 | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine-Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince McGee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bju-Ty (The Skin Is Broken By Tears) | artist=Silence Gift | release-date=1994-04-11 | release-country=Germany | duration=2833.0 | genre=Electronic | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine - Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince Mc Gee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']\nRecord B: name=Bju-Ty (The Skin Is Broken By | artist=Silence Gift | duration=2814.0 | tracks=['Ard-Nas', 'Come Close', '... From The Inside', 'God Has Saved The Queen', 'Aquamarine-Lagoon So Blue', 'Crossroads (Travelled With Bju-Ty)', 'Un-Jahre', 'Prince McGee', 'I Will', \"Tell God I'm Here\", 'Cathrine', 'The Giving Tree']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

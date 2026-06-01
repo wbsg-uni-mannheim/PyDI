@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "a certain frank feat."
+    },
+    {
+      "source": "discogs",
+      "value": "a certain frank"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The Discogs form appears to be the normalized artist name, while the MusicBrainz value includes a feat. suffix.",
+    "value": "a certain frank"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"a certain frank\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The Discogs form appears to be the normalized artist name, while the MusicBrainz value includes a feat. suffix.\"}"
+}

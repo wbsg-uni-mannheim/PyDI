@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_94539|mbrainz_2738|name=Wolfmother | artist=Wolfmother | release-date=2006 | release-country=UK | duration=3266.0 | genre=Rock | tracks=['Dimension', 'White Unicorn', 'Woman', 'Where Eagles Have Been', 'Apple Tree', 'Joker & The Thief', 'Colossal', \"Mind's Eye\", 'Pyramid', 'Witchcraft', 'Tales From The Forest Of Gnomes', 'Vagabond', 'Love Train (Bonus Track)']||name=Wolfmother | artist=Wolfmother | release-date=2005-10-31 | release-country=Australia | duration=3084 | tracks=['Colossal', 'Woman', 'White Unicorn', 'Pyramid', 'Mindâ€™s Eye', 'Joker & the Thief', 'Dimension', 'Where Eagles Have Been', 'Apple Tree', 'Tales', 'Witchcraft', 'Vagabond']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wolfmother | artist=Wolfmother | release-date=2006 | release-country=UK | duration=3266.0 | genre=Rock | tracks=['Dimension', 'White Unicorn', 'Woman', 'Where Eagles Have Been', 'Apple Tree', 'Joker & The Thief', 'Colossal', \"Mind's Eye\", 'Pyramid', 'Witchcraft', 'Tales From The Forest Of Gnomes', 'Vagabond', 'Love Train (Bonus Track)']\nRecord B: name=Wolfmother | artist=Wolfmother | release-date=2005-10-31 | release-country=Australia | duration=3084 | tracks=['Colossal', 'Woman', 'White Unicorn', 'Pyramid', 'Mindâ€™s Eye', 'Joker & the Thief', 'Dimension', 'Where Eagles Have Been', 'Apple Tree', 'Tales', 'Witchcraft', 'Vagabond']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

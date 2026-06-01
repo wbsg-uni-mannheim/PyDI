@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_177028|mbrainz_6828|name=Return To Forever | artist=Seba | release-date=2015-10-05 | release-country=Sweden | duration=3815.0 | genre=Electronic | tracks=['External Reality', 'Silicone', 'Blaze & Fade Out', 'As Long As It Takes', 'Breaks Selection (Jesper Dahlbäck Version)', 'Special Ops', 'Forever', 'Day By Night', 'Tomorrow', 'Crockett', 'Blaze & Fade Out (Original 12\" Version)']||name=Return to Forever | artist=Seba | release-date=2008-08-28 | release-country=Germany | duration=3421 | tracks=['External Reality (Shapeshifted)', 'Silicone', 'Blaze & Fade Out', 'As Long as It Takes', 'Breaks Selection (Jesper DahlbÃ¤ck version)', 'Special Ops', 'Forever', 'Day by Night', 'Tomorrow', 'Crockett']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Return To Forever | artist=Seba | release-date=2015-10-05 | release-country=Sweden | duration=3815.0 | genre=Electronic | tracks=['External Reality', 'Silicone', 'Blaze & Fade Out', 'As Long As It Takes', 'Breaks Selection (Jesper Dahlbäck Version)', 'Special Ops', 'Forever', 'Day By Night', 'Tomorrow', 'Crockett', 'Blaze & Fade Out (Original 12\" Version)']\nRecord B: name=Return to Forever | artist=Seba | release-date=2008-08-28 | release-country=Germany | duration=3421 | tracks=['External Reality (Shapeshifted)', 'Silicone', 'Blaze & Fade Out', 'As Long as It Takes', 'Breaks Selection (Jesper DahlbÃ¤ck version)', 'Special Ops', 'Forever', 'Day by Night', 'Tomorrow', 'Crockett']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

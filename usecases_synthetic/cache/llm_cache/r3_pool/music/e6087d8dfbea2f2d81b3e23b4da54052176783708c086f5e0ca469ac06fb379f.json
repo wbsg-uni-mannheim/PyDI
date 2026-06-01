@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_131611|lastFM_54914|name=Run The Jewels | artist=Run The Jewels | release-date=2014-01-13 | release-country=UK | genre=Hip Hop | tracks=['Run The Jewels', 'Banana Clipper', '36\" Chain', 'DDFH', 'Sea Legs', 'Job Well Done', 'No Come Down', 'Get It', 'Twin Hype Back', 'A Christmas Fucking Miracle']||name=Run the Jewels (Deluxe European Edition) | artist=R. the Jewels | duration=2524.0 | tracks=['Run the Jewels', 'Banana Clipper', '36Ã¢â‚¬Â³ Chain', 'DDFH', 'Sea Legs', 'Job Well Done', 'No Come Down', 'Get It', 'Twin Hype Back', 'A Christmas Fucking Miracle', 'Pew Pew Pew', 'Sea Legs (Dave Sitek Remix)', '36Ã¢â‚¬Â³ Chain (BSBD remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Run The Jewels | artist=Run The Jewels | release-date=2014-01-13 | release-country=UK | genre=Hip Hop | tracks=['Run The Jewels', 'Banana Clipper', '36\" Chain', 'DDFH', 'Sea Legs', 'Job Well Done', 'No Come Down', 'Get It', 'Twin Hype Back', 'A Christmas Fucking Miracle']\nRecord B: name=Run the Jewels (Deluxe European Edition) | artist=R. the Jewels | duration=2524.0 | tracks=['Run the Jewels', 'Banana Clipper', '36Ã¢â‚¬Â³ Chain', 'DDFH', 'Sea Legs', 'Job Well Done', 'No Come Down', 'Get It', 'Twin Hype Back', 'A Christmas Fucking Miracle', 'Pew Pew Pew', 'Sea Legs (Dave Sitek Remix)', '36Ã¢â‚¬Â³ Chain (BSBD remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

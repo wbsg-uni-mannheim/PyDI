@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_30070|mbrainz_32195|name=Life Outside The | artist=Justifide | duration=2534.0 | tracks=['Change', 'The Way', 'Our Little Secret', 'Hold Us Down', 'Listen', 'Breakaway', 'No Reply', 'Why', 'Sweet New Found Joy', 'Escucha (Listen)', 'Gozo Nuevo', 'Gozo Nuevo (Sweet New Found Joy)']||name=Inside the Outside | artist=Inside the Outside | release-date=2002-03-26 | release-country=United States of America | duration=2505 | tracks=['For You (As Much as Me)', 'Blue Skies', 'Grin', 'Who Could Ask for More', 'The Least That You Could Do', 'Pieces', 'Lately', 'All Too Familiar', 'Empty', 'One More Time', 'Used to Be You']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Life Outside The | artist=Justifide | duration=2534.0 | tracks=['Change', 'The Way', 'Our Little Secret', 'Hold Us Down', 'Listen', 'Breakaway', 'No Reply', 'Why', 'Sweet New Found Joy', 'Escucha (Listen)', 'Gozo Nuevo', 'Gozo Nuevo (Sweet New Found Joy)']\nRecord B: name=Inside the Outside | artist=Inside the Outside | release-date=2002-03-26 | release-country=United States of America | duration=2505 | tracks=['For You (As Much as Me)', 'Blue Skies', 'Grin', 'Who Could Ask for More', 'The Least That You Could Do', 'Pieces', 'Lately', 'All Too Familiar', 'Empty', 'One More Time', 'Used to Be You']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

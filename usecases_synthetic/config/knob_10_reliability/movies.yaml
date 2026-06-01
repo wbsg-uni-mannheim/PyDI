@@ -1,0 +1,96 @@
+# Knob 10 — Source Reliability Differentiation: Movies domain config.
+#
+# Per-domain notes (placeholder until movies baseline is measured in S11):
+#   - academy_awards is the canonical source for Oscar-related fields
+#     (oscar flag) and tends to have well-curated titles + dates for
+#     nominees / winners.
+#   - actors is strongest on cast lists (with birthday + birthplace)
+#     and may be less complete on directors.
+#   - golden_globes provides a parallel awards perspective with
+#     director coverage and the `globe` flag.
+
+domain: movies
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+attribute_mapping:
+  academy_awards:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+  actors:
+    title: title
+    date: date
+    actors_actor_name: actors
+  golden_globes:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+
+attribute_targets:
+  title:
+    easy:
+      academy_awards: 0.45
+      actors: 0.10
+      golden_globes: 0.45
+    medium:
+      academy_awards: 0.40
+      actors: 0.20
+      golden_globes: 0.40
+    hard:
+      academy_awards: 0.34
+      actors: 0.33
+      golden_globes: 0.33
+  director:
+    easy:
+      academy_awards: 0.50
+      golden_globes: 0.50
+    medium:
+      academy_awards: 0.50
+      golden_globes: 0.50
+    hard:
+      academy_awards: 0.50
+      golden_globes: 0.50
+  date:
+    easy:
+      academy_awards: 0.50
+      actors: 0.10
+      golden_globes: 0.40
+    medium:
+      academy_awards: 0.40
+      actors: 0.25
+      golden_globes: 0.35
+    hard:
+      academy_awards: 0.34
+      actors: 0.33
+      golden_globes: 0.33
+  actors:
+    easy:
+      academy_awards: 0.10
+      actors: 0.85
+      golden_globes: 0.05
+    medium:
+      academy_awards: 0.20
+      actors: 0.65
+      golden_globes: 0.15
+    hard:
+      academy_awards: 0.34
+      actors: 0.33
+      golden_globes: 0.33
+
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+concentration_cap: 0.99

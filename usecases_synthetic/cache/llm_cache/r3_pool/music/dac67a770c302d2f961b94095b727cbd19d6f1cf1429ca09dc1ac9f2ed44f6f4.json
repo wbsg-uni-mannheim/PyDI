@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_6631|lastFM_3203|name=The Future Is Listening | artist=UFO! | release-date=2001 | release-country=United States of America | duration=4271.0 | genre=Electronic | tracks=['The Future Is Listening', 'Future Primitive', '6th & Market', 'Esfirro', 'Enemy Infiltration', 'Shut Up You Old Baster-ed', 'Science Fact', 'Wake Up, Ed!', \"Can't Turn Back Time\", 'Are You Recording?', 'Things Happen For A Reason', 'Airport', 'Release The Techno', 'Deckard -2021-', 'Joan Of Arc', 'Fuck Your Cigarette! (a.k.a. Tinnitus)', 'French Night Water', \"Don't Step On My Dog!\"]||name=The Future  Listening | artist=UFO! | duration=2545.0 | tracks=['the future is listening', '6th & Market', 'esfirro', 'science fact', 'wake up, ed!', 'Are you Recording?', 'things happen for a reason', 'airport', 'release the techno', 'joan of arc', 'Fuck Your Cigarette (a.k.a. Tinnitus)', 'french night water', \"don't step on my dog\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Future Is Listening | artist=UFO! | release-date=2001 | release-country=United States of America | duration=4271.0 | genre=Electronic | tracks=['The Future Is Listening', 'Future Primitive', '6th & Market', 'Esfirro', 'Enemy Infiltration', 'Shut Up You Old Baster-ed', 'Science Fact', 'Wake Up, Ed!', \"Can't Turn Back Time\", 'Are You Recording?', 'Things Happen For A Reason', 'Airport', 'Release The Techno', 'Deckard -2021-', 'Joan Of Arc', 'Fuck Your Cigarette! (a.k.a. Tinnitus)', 'French Night Water', \"Don't Step On My Dog!\"]\nRecord B: name=The Future  Listening | artist=UFO! | duration=2545.0 | tracks=['the future is listening', '6th & Market', 'esfirro', 'science fact', 'wake up, ed!', 'Are you Recording?', 'things happen for a reason', 'airport', 'release the techno', 'joan of arc', 'Fuck Your Cigarette (a.k.a. Tinnitus)', 'french night water', \"don't step on my dog\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_7638|lastFM_3640|name=Spirit Level | artist=Zephyr Timbre | release-date=2003 | release-country=Australia | duration=1476.0 | genre=Electronic | tracks=['Blackbeat (Edit)', 'Blackbeat', 'Urban Solace', 'Low Down', 'Dormir']||name=Zephyr Timbre -  Spirit Level | artist=Zephyr Timbre | duration=1250.0 | tracks=['Blackbeat', 'Urban Solace', 'Low Down', 'Dormir']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit Level | artist=Zephyr Timbre | release-date=2003 | release-country=Australia | duration=1476.0 | genre=Electronic | tracks=['Blackbeat (Edit)', 'Blackbeat', 'Urban Solace', 'Low Down', 'Dormir']\nRecord B: name=Zephyr Timbre -  Spirit Level | artist=Zephyr Timbre | duration=1250.0 | tracks=['Blackbeat', 'Urban Solace', 'Low Down', 'Dormir']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

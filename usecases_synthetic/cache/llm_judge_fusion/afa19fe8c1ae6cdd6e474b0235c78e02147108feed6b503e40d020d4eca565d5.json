@@ -1,0 +1,26 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "You, Me, the Music and Me"
+    },
+    {
+      "source": "discogs",
+      "value": "You, Me, The Music And Me"
+    },
+    {
+      "source": "lastfm",
+      "value": "Album: You, Me, the Music and Me"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Normalized capitalization and removed the source-prefixed label from the lastfm value.",
+    "value": "You, Me, the Music and Me"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"You, Me, the Music and Me\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Normalized capitalization and removed the source-prefixed label from the lastfm value.\"}"
+}

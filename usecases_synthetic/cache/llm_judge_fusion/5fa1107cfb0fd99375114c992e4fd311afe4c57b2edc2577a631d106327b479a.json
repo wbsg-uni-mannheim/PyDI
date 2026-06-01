@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "99999.99"
+    },
+    {
+      "source": "products_2",
+      "value": "499.99"
+    },
+    {
+      "source": "products_3",
+      "value": "6490.0"
+    },
+    {
+      "source": "products_4",
+      "value": "6590.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "aggregation",
+    "reasoning": "The three lower candidates cluster around a plausible price range while 99999.99 is a clear outlier, so a robust aggregate is appropriate.",
+    "value": 6490.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":6490.0,\"operation\":\"aggregation\",\"confidence\":0.94,\"reasoning\":\"The three lower candidates cluster around a plausible price range while 99999.99 is a clear outlier, so a robust aggregate is appropriate.\"}"
+}

@@ -1,0 +1,172 @@
+# Entity-matching BLOCKING committee roster - products domain.
+#
+# Per-domain fork of the canonical companies em_blocking_committee.yaml
+# (see plans/plan_s1_scale.md S10, 2026-04-29). Roster + composition
+# strategy match companies. What changes:
+#   - blocking_name_column = "title" (products canonical primary)
+#   - blocker text_cols / sort key reference "title" instead of "name"
+#   - column_mapping is empty per source (all four products_<n>.json
+#     files share an identical canonical schema; no renames needed)
+#
+# Products pool now lives at pools/products/pooled_positives.csv
+# (cluster_id-derived, see scripts/build_pool_products.py); source-
+# prefixed IDs are written into the canonical ``id`` column at-rest
+# (post-2026-05-15 rewrite). End-to-end variant generation is tracked
+# in plans/plan_s1_products.md.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+# Products canonical primary is ``title``. Same convention as movies.
+blocking_name_column: title
+
+members:
+  - name: token_blocker
+    description: "Token-set inverted-index blocker on title (lexical, incumbent)"
+    blocker:
+      class: TokenBlocker
+      module: PyDI.entitymatching.blocking.token_blocking
+      params:
+        column: title
+        min_token_len: 2
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: standard_blocker
+    description: >-
+      Equality on derived name_first_token key (lexical, incumbent).
+      Products' ``blocking_name_column`` is ``title`` - the runner
+      derives ``name_first_token`` from the title column.
+
+      R9 standard sub-sweep (2026-05-28) on products: 6 cells across
+      single-key and compound-key panels. Per-cell mean_recall:
+      token-on-title 0.619, prefix-3-on-title 0.624, prefix-5-on-title
+      0.539, value-on-product_type 0.5xx, compound title-token ×
+      product_type-value 0.5xx, compound title-prefix-5 × brand-value
+      0.5xx. All cells are far below the 0.97 recall_floor — standard
+      never wins composition on products. Keeping the
+      derived-name-first-token incumbent (equivalent to token-on-title
+      = 0.619) since switching to prefix-3-on-title (0.624) would need
+      runner-side support for a ``name_first_3`` derived key, which
+      isn't currently plumbed, and the gain is <0.01 recall on a
+      non-selected blocker.
+    blocker:
+      class: StandardBlocker
+      module: PyDI.entitymatching.blocking.standard
+      params:
+        "on": [name_first_token]
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: embedding_blocker
+    description: >-
+      Dense ANN top-k over a pretrained sentence encoder.
+      R9 embedding sub-sweep (2026-05-28) on products: 5 models
+      compared at top_k=50, threshold=0.3 across the 3 source pairs.
+      Winner: ``intfloat/e5-base-v2`` (recall=0.986, rr=0.931) beats
+      MiniLM-L6-v2 (0.938), all-mpnet-base-v2 (0.919), and both
+      BAAI/bge variants (0.964 each). Clears the 0.97 recall_floor;
+      selection still resolves to sc_block via the
+      ``tie_breaker: reduction_ratio`` rule (sc_block rr=0.972 vs
+      embedding 0.931).
+    blocker:
+      class: EmbeddingBlocker
+      module: PyDI.entitymatching.blocking.embedding
+      params:
+        text_cols: [title]
+        model: intfloat/e5-base-v2
+        top_k: 50
+        threshold: 0.3
+    blocking_type: embedding
+    enabled_by_default: true
+
+  - name: sorted_neighbourhood_blocker
+    description: >-
+      Sliding-window blocker over a sort key (lexical).
+      R9 SNB sub-sweep (2026-05-28) on products: 9 cells across the 3
+      candidate sort keys × 3 window sizes. Winner: prefix-5 on
+      ``title`` with window=40 (recall=0.373, rr=0.956) edges window=20
+      (0.260/0.981) and window=10 (0.162/0.992). Even the winner is
+      well below the 0.97 recall_floor — SNB never wins composition on
+      products, but the tuned config gives the best per-member
+      recall/RR trade-off when reported diagnostically.
+    blocker:
+      class: SortedNeighbourhoodBlocker
+      module: PyDI.entitymatching.blocking.sorted_neighbourhood
+      params:
+        key: title
+        window: 40
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: bm25_blocker
+    description: >-
+      Okapi BM25 over character n-grams (sparse, bm25s backend,
+      char_wb tokenisation). Char-ngrams give paraphrase / typo
+      tolerance that word-BM25 lacks at hard, where K1 paraphrase
+      rewrites the surface form. Word-level BM25 (previously here)
+      was retired 2026-05-22 per plan_revision.md §C4. Particularly
+      relevant for products: noisy product titles + descriptions are
+      exactly the surface where char-ngrams beat whole-word tokens.
+    blocker:
+      class: BM25Blocker
+      module: usecases_synthetic.lib.bm25_blocker
+      params:
+        text_cols: [title, description]
+        top_k: 50
+        tokenizer: char_ngram
+        ngram_range: [3, 5]
+        k1: 1.5
+        b: 0.75
+    blocking_type: sparse
+    enabled_by_default: true
+
+  - name: sc_block
+    description: >-
+      Supervised-contrastive encoder + FAISS ANN (hybrid). Per-domain
+      checkpoint at ``cache/sc_block_checkpoints/products/best`` — must
+      be retrained via ``scripts/sc_block/train.py`` against the
+      ``data_cleaned_final`` schema (plan_revision.md §R1 + §R3)
+      before re-running the committee, otherwise the blocker raises
+      FileNotFoundError on instantiation. ``text_cols`` mirrors the
+      ditto/llm/comem ``fields`` set per the canonical
+      "ditto fields = sc_block text_cols" invariant.
+
+      R9 sc_block sub-sweep RE-RUN (2026-05-30) on products against the
+      R10-H wide-scope checkpoint: 9 cells across top_k × threshold.
+      Winner: top_k=100, threshold=0.5 (recall=0.998, rr=0.873). The
+      prior narrow-checkpoint winner (top_k=20, threshold=0.0) collapses
+      to recall=0.918 on the wide 19-field checkpoint (top_k=50 → 0.983),
+      so the wide encoder needs the larger candidate budget to hold
+      recall; top_k=100/thr=0.5 edges thr=0.0/0.3 on RR at identical
+      recall. (Pre-2026-05-30 narrow-scope winner was top_k=20/thr=0.0,
+      recall=0.984 on the 9-field checkpoint — no longer valid post-R10-I.)
+    blocker:
+      class: SCBlockBlocker
+      module: usecases_synthetic.lib.sc_block_blocker
+      params:
+        text_cols: [title, brand, description, price, priceCurrency, title_description, product_type, model, model_number, chipset_name, vram_gb, storage_gb, bus_type, interface_type, memory_type, storage_connection_type, form_factor, read_speed_mb_s, write_speed_mb_s]
+        top_k: 100
+        threshold: 0.5
+        checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/products/best
+    blocking_type: hybrid
+    enabled_by_default: true
+
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+
+required_axes:
+  blocking_type: [lexical, sparse, embedding]
+
+# Column mapping - all four products_<n>.json files share the canonical
+# schema (id, title, brand, description, price, priceCurrency); no
+# per-source renames required. Empty dicts keep the cross-committee
+# column_mapping invariant satisfied for all four sources.
+column_mapping:
+  products_1: {}
+  products_2: {}
+  products_3: {}
+  products_4: {}

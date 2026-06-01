@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_254|lastFM_155|name=Mother Earth | artist=Dubtribe Sound System | release-date=1993 | release-country=United States of America | duration=1827.0 | genre=Electronic | tracks=['That Side', 'Mother Earth (Original)', 'Mother Earth (Remix)', 'This Side', \"Mother Earth (Sunshine's Remix Featuring DJ Collage)\", 'Memory (Edit)']||name=Dubtribe Sound System -  Mother Earth | artist=Dubtribe Sound System | duration=1444.0 | tracks=['Mother Earth', 'mother earth (remix)', \"Mother Earth (Sunshine's remix) (feat. DJ Collage)\", 'Memory (Edit)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mother Earth | artist=Dubtribe Sound System | release-date=1993 | release-country=United States of America | duration=1827.0 | genre=Electronic | tracks=['That Side', 'Mother Earth (Original)', 'Mother Earth (Remix)', 'This Side', \"Mother Earth (Sunshine's Remix Featuring DJ Collage)\", 'Memory (Edit)']\nRecord B: name=Dubtribe Sound System -  Mother Earth | artist=Dubtribe Sound System | duration=1444.0 | tracks=['Mother Earth', 'mother earth (remix)', \"Mother Earth (Sunshine's remix) (feat. DJ Collage)\", 'Memory (Edit)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_7897|mbrainz_4749|name=Supernatural | artist=Essen | duration=1319.0 | tracks=['King Size Blues', 'Supernatural', 'Cover Me', 'Daring To Breathe']||name=Supernatural | artist=Saafi Brothers | release-date=2007-05-21 | release-country=Germany | duration=4649 | tracks=['Supernatural, Part II', 'Ready for the Rise (Prepara)', 'Under the Sun', 'Frankfurt Beach', 'Take It Slow', 'Two Windows', 'Lunatic', 'High Moon', 'Something Outside', 'Under the Stars', 'Supernatural']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Supernatural | artist=Essen | duration=1319.0 | tracks=['King Size Blues', 'Supernatural', 'Cover Me', 'Daring To Breathe']\nRecord B: name=Supernatural | artist=Saafi Brothers | release-date=2007-05-21 | release-country=Germany | duration=4649 | tracks=['Supernatural, Part II', 'Ready for the Rise (Prepara)', 'Under the Sun', 'Frankfurt Beach', 'Take It Slow', 'Two Windows', 'Lunatic', 'High Moon', 'Something Outside', 'Under the Stars', 'Supernatural']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

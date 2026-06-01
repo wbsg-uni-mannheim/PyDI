@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_19415|mbrainz_17167|name=Funkin'  Classics | artist=Trouble Funk | duration=2028.0 | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down to DC', \"Dancin'\"]||name=Country Classics | artist=Confederate Railroad | release-date=2001-01-01 | release-country=United States of America | duration=2008 | tracks=['Queen of Memphis', 'Daddy Never Was the Cadillac Kind', 'Elvis and Andy', 'Summer in Dixie', 'See Ya', 'She Never Cried', 'When and Where', 'Trashy Women', 'Move Over Madonna', 'Roll the Dice']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Funkin'  Classics | artist=Trouble Funk | duration=2028.0 | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down to DC', \"Dancin'\"]\nRecord B: name=Country Classics | artist=Confederate Railroad | release-date=2001-01-01 | release-country=United States of America | duration=2008 | tracks=['Queen of Memphis', 'Daddy Never Was the Cadillac Kind', 'Elvis and Andy', 'Summer in Dixie', 'See Ya', 'She Never Cried', 'When and Where', 'Trashy Women', 'Move Over Madonna', 'Roll the Dice']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

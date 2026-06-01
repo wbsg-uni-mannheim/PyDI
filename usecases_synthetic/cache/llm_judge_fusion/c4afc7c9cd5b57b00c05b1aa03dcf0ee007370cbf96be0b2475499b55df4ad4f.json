@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "GBP"
+    },
+    {
+      "source": "products_2",
+      "value": "RON"
+    },
+    {
+      "source": "products_4",
+      "value": "AUD"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are plausible ISO currency codes with no basis to reconcile them, so I selected one verbatim.",
+    "value": "GBP"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GBP\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"All candidates are plausible ISO currency codes with no basis to reconcile them, so I selected one verbatim.\"}"
+}

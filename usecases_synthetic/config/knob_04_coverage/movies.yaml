@@ -1,0 +1,43 @@
+# Knob 04 — Per-entity Source Coverage Skew — Movies
+
+domain: movies
+source_count: 3
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+primary_columns:
+  academy_awards: title
+  actors: title
+  golden_globes: title
+
+target_coverage_histogram:
+  easy:
+    1: 0.0
+    2: 0.10
+    3: 0.90
+  medium: null
+  hard:
+    1: 0.55
+    2: 0.30
+    3: 0.15
+
+within_source_duplicate_rate:
+  easy: 0.0
+  medium: 0.0
+  hard: 0.02
+
+singleton_cap_hard: 0.60
+delta_softening_step: 0.05
+
+fabrication_mode: paraphrase_only
+
+llm_prompt_version: v1
+# Migrated 2026-05-22 (plan_revision.md §R2) from claude-opus-4-6 to
+# canonical gpt-5.4-mini per feedback_synth_llm_and_naming. Invalidates
+# the on-disk LLM cache (model_id is part of the key); regenerable on
+# next K4 run.
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0

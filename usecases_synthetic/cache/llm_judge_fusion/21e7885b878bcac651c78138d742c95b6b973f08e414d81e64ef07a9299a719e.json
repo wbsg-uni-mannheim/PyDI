@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "1083.32"
+    },
+    {
+      "source": "products_3",
+      "value": "289.95"
+    },
+    {
+      "source": "products_4",
+      "value": "1004.67"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.56,
+    "operation": "aggregation",
+    "reasoning": "Two candidates are close and likely reflect the same price with one outlier, so I used a robust aggregate near the central cluster.",
+    "value": 1004.67
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1004.67,\"operation\":\"aggregation\",\"confidence\":0.56,\"reasoning\":\"Two candidates are close and likely reflect the same price with one outlier, so I used a robust aggregate near the central cluster.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_99096|mbrainz_6188|name=The Best Of New Riders Of The Purple Sage | artist=New Riders Of The Purple Sage | release-date=1987-04-07 | release-country=United States of America | genre=Rock | tracks=[\"I Don't Know You\", 'Glendale Train', 'Hello Mary Lou (Goodbye Heart)', 'Louisiana Lady', 'Kick In The Head', 'Panama Red', 'Last Lonely Eagle', 'You Angel You', \"I Don't Need No Doctor\", 'Henry']||name=The Best of New Riders of the Purple Sage | artist=New Riders of the Purple Sage | release-date=1987-04-07 | release-country=United States of America | duration=1838 | tracks=[\"I Don't Know You\", 'Glendale Train', 'Hello Mary Lou (Goodbye Heart)', 'Louisiana Lady', 'Kick in the Head', 'Panama Red', 'Last Lonely Eagle', 'You Angel You', \"I Don't Need No Doctor\", 'Henry']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Best Of New Riders Of The Purple Sage | artist=New Riders Of The Purple Sage | release-date=1987-04-07 | release-country=United States of America | genre=Rock | tracks=[\"I Don't Know You\", 'Glendale Train', 'Hello Mary Lou (Goodbye Heart)', 'Louisiana Lady', 'Kick In The Head', 'Panama Red', 'Last Lonely Eagle', 'You Angel You', \"I Don't Need No Doctor\", 'Henry']\nRecord B: name=The Best of New Riders of the Purple Sage | artist=New Riders of the Purple Sage | release-date=1987-04-07 | release-country=United States of America | duration=1838 | tracks=[\"I Don't Know You\", 'Glendale Train', 'Hello Mary Lou (Goodbye Heart)', 'Louisiana Lady', 'Kick in the Head', 'Panama Red', 'Last Lonely Eagle', 'You Angel You', \"I Don't Need No Doctor\", 'Henry']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

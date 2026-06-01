@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_157710|lastFM_64465|name=Hier Encore | artist=Leslie | release-date=2010-11-22 | release-country=France | duration=202.0 | genre=Blues | tracks=['Hier Encore']||name=Hier Encore | artist=Charles Aznavour | duration=2233.0 | tracks=[\"Je T'Aimais Tant\", 'Ãƒâ‚¬ ma fille', \"Tu T'Amuses\", 'Le Jour Se LÃƒÂ¨ve', \"Il te suffisait que je t'aime\", 'Le temps', \"Chaque fois que j'aime\", 'Avec', \"Quand J'En Aurai Assez\", 'Tu ÃƒÂ©tais trop jolie', 'Ce sacrÃƒÂ© piano', 'Le palais de nos chimÃƒÂ¨res', 'Je hais les dimanches']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hier Encore | artist=Leslie | release-date=2010-11-22 | release-country=France | duration=202.0 | genre=Blues | tracks=['Hier Encore']\nRecord B: name=Hier Encore | artist=Charles Aznavour | duration=2233.0 | tracks=[\"Je T'Aimais Tant\", 'Ãƒâ‚¬ ma fille', \"Tu T'Amuses\", 'Le Jour Se LÃƒÂ¨ve', \"Il te suffisait que je t'aime\", 'Le temps', \"Chaque fois que j'aime\", 'Avec', \"Quand J'En Aurai Assez\", 'Tu ÃƒÂ©tais trop jolie', 'Ce sacrÃƒÂ© piano', 'Le palais de nos chimÃƒÂ¨res', 'Je hais les dimanches']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

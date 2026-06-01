@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_69233|lastFM_64052|name=The Singles | artist=Tullycraft | release-date=1999 | release-country=United States of America | genre=Electronic|Pop|Rock | tracks=['Skyway', 'Superboy & Supergirl', \"Pop SOngs Your New Boyfriend's Too Stupid To Know About\", 'Pink Lemonade', 'Bailey Park', 'Pedal', 'Josie', '1st String Teenage High', 'Not Quite Burning Bridges', 'Piano Lessons For Beauty Queens', 'Stay Cool', 'Falling Out Of Love', 'Guyana Punch', \"She's Got The Beat\", 'Break Seaside', 'Maybe Baby', 'Heroes And Villians', \"They're Not Trying On The Dance Floor\", '8 Great Ways', 'Crush The Scene', 'Look How We Killed The Riot Grrris', 'Loveless']||name=The Singles '67-'78 | artist=MUD | duration=3652.0 | tracks=['Tiger Feet', 'The Cat Crept in', 'Dyna-Mite', 'Rocket', 'Lucy', 'Hypnosis', 'Crazy', 'Secrets That You Keep', 'Oh Boy', 'One Night (With You)', 'Living Doll', \"Let's Have A Party\", 'In The Mood', \"Show Me You're A Woman\", 'Shake It Down', 'Beating Round The Bush', 'Slow Talking Boy', 'Lonely This Christmas', \"Won't Let It Go [*]\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles | artist=Tullycraft | release-date=1999 | release-country=United States of America | genre=Electronic|Pop|Rock | tracks=['Skyway', 'Superboy & Supergirl', \"Pop SOngs Your New Boyfriend's Too Stupid To Know About\", 'Pink Lemonade', 'Bailey Park', 'Pedal', 'Josie', '1st String Teenage High', 'Not Quite Burning Bridges', 'Piano Lessons For Beauty Queens', 'Stay Cool', 'Falling Out Of Love', 'Guyana Punch', \"She's Got The Beat\", 'Break Seaside', 'Maybe Baby', 'Heroes And Villians', \"They're Not Trying On The Dance Floor\", '8 Great Ways', 'Crush The Scene', 'Look How We Killed The Riot Grrris', 'Loveless']\nRecord B: name=The Singles '67-'78 | artist=MUD | duration=3652.0 | tracks=['Tiger Feet', 'The Cat Crept in', 'Dyna-Mite', 'Rocket', 'Lucy', 'Hypnosis', 'Crazy', 'Secrets That You Keep', 'Oh Boy', 'One Night (With You)', 'Living Doll', \"Let's Have A Party\", 'In The Mood', \"Show Me You're A Woman\", 'Shake It Down', 'Beating Round The Bush', 'Slow Talking Boy', 'Lonely This Christmas', \"Won't Let It Go [*]\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

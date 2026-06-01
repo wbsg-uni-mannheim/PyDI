@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Alchemic Storm"
+    },
+    {
+      "source": "lastfm",
+      "value": "Alchemic S."
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Last.fm abbreviation matches the more complete MusicBrainz artist name.",
+    "value": "Alchemic Storm"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Alchemic Storm\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Last.fm abbreviation matches the more complete MusicBrainz artist name.\"}"
+}

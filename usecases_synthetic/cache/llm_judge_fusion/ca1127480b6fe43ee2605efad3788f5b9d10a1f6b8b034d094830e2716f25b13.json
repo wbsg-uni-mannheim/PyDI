@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2014"
+    },
+    {
+      "source": "discogs",
+      "value": "1992.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.12,
+    "operation": "aggregation",
+    "reasoning": "The candidates conflict and appear to be malformed duration values, so I used a simple numeric aggregate as a low-confidence compromise.",
+    "value": 2003
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2003,\"operation\":\"aggregation\",\"confidence\":0.12,\"reasoning\":\"The candidates conflict and appear to be malformed duration values, so I used a simple numeric aggregate as a low-confidence compromise.\"}"
+}

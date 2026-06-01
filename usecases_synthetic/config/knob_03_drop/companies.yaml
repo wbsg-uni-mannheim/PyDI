@@ -1,0 +1,95 @@
+# Knob 03 — Per-source Attribute Drop Rate — Companies
+#
+# Refreshed CSV column names (post 2026-05-04 source migration).
+# See knobs/knob_03_attribute_drop.md for full specification.
+
+domain: companies
+
+# All sources collapse to the canonical "id" column post-loader-rename
+# (per K1/K5/K6/K10 sign-offs in plan_s1_scale.md).
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+attribute_classes:
+  dbpedia:
+    org_name: primary
+    nation: key
+    headquarters: key
+    established: secondary
+    sector: secondary
+    keypeople_name: secondary
+    total_assets_val: secondary
+    annual_income: secondary
+  forbes:
+    company: primary
+    region: key
+    business_segment: key
+    asset_value: secondary
+    sales_figure: secondary
+  fullcontact:
+    Attribute_2: primary
+    Attribute_3: key
+    Attribute_4: key
+    Attribute_5: secondary
+    Attribute_6: secondary
+
+attribute_mapping:
+  dbpedia:
+    org_name: name
+    nation: country
+    headquarters: city
+    sector: industry
+    established: founded
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_6: founded
+
+rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.05
+  medium:
+    primary: 0.0
+    key: 0.10
+    secondary: 0.15
+  hard:
+    primary: 0.03
+    key: 0.25
+    secondary: 0.35
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+compression_factor: 0.7
+stretch_factor: 1.5
+
+single_source_survivor_cap_hard: 0.05
+per_cell_ceiling_delta: 0.10
+
+# DBpedia financials and key-people column are already at-or-near hard
+# (assets 93.5%, revenue 79.6%, keypeople 90.8%) — tighten the ceiling
+# so stretch never demands negative headroom there. Same story for
+# fullcontact.Attribute_5 (90.1%).
+per_source_attribute_overrides:
+  dbpedia:
+    total_assets_val: 0.02
+    annual_income: 0.02
+    keypeople_name: 0.02
+  fullcontact:
+    Attribute_5: 0.02

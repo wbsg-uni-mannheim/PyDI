@@ -1,0 +1,27 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Purple Love Balloon', 'Remember What It Is That You Love', 'Purple Love Balloon (US album mix)', 'Purple Love Balloon (Killer Rabit mix (Omatosis))']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Purple Love Balloon', 'Remember What It Is That You Love', 'Purple Love Balloon (US Album Mix)', 'Purple Love Balloon (Killer Rabbit Mix (Omatosis))']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The track lists match aside from capitalization and a typo normalization ('RabIt'/'Rabbit', 'Album'/'album').",
+    "value": [
+      "Purple Love Balloon",
+      "Remember What It Is That You Love",
+      "Purple Love Balloon (US Album Mix)",
+      "Purple Love Balloon (Killer Rabbit Mix (Omatosis))"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Purple Love Balloon\",\"Remember What It Is That You Love\",\"Purple Love Balloon (US Album Mix)\",\"Purple Love Balloon (Killer Rabbit Mix (Omatosis))\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The track lists match aside from capitalization and a typo normalization ('RabIt'/'Rabbit', 'Album'/'album').\"}"
+}

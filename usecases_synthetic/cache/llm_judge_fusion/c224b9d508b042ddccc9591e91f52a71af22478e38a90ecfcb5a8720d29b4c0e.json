@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2543"
+    },
+    {
+      "source": "discogs",
+      "value": "2544.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "2993.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.83,
+    "operation": "aggregation",
+    "reasoning": "Two sources closely agree around 2544 seconds, so a robust aggregate best represents the duration.",
+    "value": 2543.5
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2543.5,\"operation\":\"aggregation\",\"confidence\":0.83,\"reasoning\":\"Two sources closely agree around 2544 seconds, so a robust aggregate best represents the duration.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_136567|mbrainz_11495|name=In Evening Air | artist=Future Islands | release-date=2014 | release-country=United States of America | duration=2163.0 | genre=Electronic|Rock | tracks=['Walking Trough That Door', 'Long Flight', 'Tin Man', 'An Apology', 'In Evening Air', 'Swept Inside', 'Inch Of Dust', \"Vireo's Eye\", 'As I Fall']||name=In Evening Air | artist=Future Islands | release-date=2010-05-04 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2157 | tracks=['Walking Through That Door', 'Long Flight', 'Tin Man', 'An Apology', 'In Evening Air', 'Swept Inside', 'Inch of Dust', \"Vireo's Eye\", 'As I Fall']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=In Evening Air | artist=Future Islands | release-date=2014 | release-country=United States of America | duration=2163.0 | genre=Electronic|Rock | tracks=['Walking Trough That Door', 'Long Flight', 'Tin Man', 'An Apology', 'In Evening Air', 'Swept Inside', 'Inch Of Dust', \"Vireo's Eye\", 'As I Fall']\nRecord B: name=In Evening Air | artist=Future Islands | release-date=2010-05-04 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2157 | tracks=['Walking Through That Door', 'Long Flight', 'Tin Man', 'An Apology', 'In Evening Air', 'Swept Inside', 'Inch of Dust', \"Vireo's Eye\", 'As I Fall']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

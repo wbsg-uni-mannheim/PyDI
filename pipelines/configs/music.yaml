@@ -1,0 +1,72 @@
+# Best-of-breed pipeline config for music.
+#
+# Music sources: musicbrainz (anchor), discogs, lastfm. Source ids carry
+# the prefixes mbrainz_ / discogs_ / lastFM_ (note the mixed-case lastFM
+# matches the data tree). The fusion gold uses MusicBrainz cluster ids.
+#
+# All stages enabled. LLM members default OFF in EM matching + Fusion per
+# the 2026-06-01 directive; LLM stays ON in SM.
+
+domain: music
+
+# Resolves via variant_loader.load_variant("music", "baseline") to
+# usecases/music/ (no synthetic data_root override).
+bundle_source: synthetic_baseline
+
+stages:
+  sm:
+    enabled: true
+    selection_metric: f1
+  norm:
+    enabled: true
+    selection_metric: macro_f1
+    apply_winner: false
+    vacuous_epsilon: 0.005
+  em:
+    enabled: true
+    blocking_selection_metric: reduction_ratio
+    matching_selection_metric: f1
+    clustering: greedy
+  refinement:
+    enabled: true
+    methods: [baseline, greedy, mbm]
+    selection_metric: f1
+  fusion:
+    enabled: true
+    selection_metric: macro_accuracy
+
+# Column type config for the e2e panel.
+# Derived from usecases/music/input/schemamatching/target_schema.json.
+column_types:
+  id: identifier
+  cluster_id: identifier
+  name: text
+  artist: text
+  release-date: temporal
+  release-country: categorical
+  label: categorical
+  genre: categorical
+  tracks: text
+  duration: numerical
+
+# Panel numerical tolerance. Music notebook uses
+# numeric_tolerance_match(tolerance=10) for duration (seconds). Other
+# attributes are categorical / text so tolerance only applies to
+# duration.
+panel_tolerance:
+  default: 0.05
+  overrides:
+    duration: 0.10
+
+composite_weights:
+  entity_coverage: 0.10
+  fact_coverage: 0.10
+  source_based_fact_coverage: 0.10
+  consistency: 0.10
+  cluster_correctness: 0.30
+  fact_correctness: 0.30
+
+source_prefix_map:
+  mbrainz_: musicbrainz
+  discogs_: discogs
+  lastFM_: lastfm

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_7568|mbrainz_1061|name=Absence | artist=VÃƒÂ©ronique RiviÃƒÂ¨re | duration=442.0 | tracks=['Absence', 'Histoires']||name=Absence | artist=In Absentia | release-date=1993-01-01 | release-country=Denmark | duration=2836 | tracks=['BPM4', 'Comprehension', 'From Your Devilâ€¦', 'Innocence', 'Passing the Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Absence | artist=VÃƒÂ©ronique RiviÃƒÂ¨re | duration=442.0 | tracks=['Absence', 'Histoires']\nRecord B: name=Absence | artist=In Absentia | release-date=1993-01-01 | release-country=Denmark | duration=2836 | tracks=['BPM4', 'Comprehension', 'From Your Devilâ€¦', 'Innocence', 'Passing the Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

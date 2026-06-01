@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_8246|mbrainz_95|name=Absolution | artist=Karthik | duration=0.0 | tracks=[]||name=Absolution E.P. | artist=G-Force | release-date=2000-01-01 | release-country=Belgium | duration=0 | tracks=['Action', 'Feeling', 'Feeling (Gaetano Parisio remix)', 'Action (Samuel L. remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Absolution | artist=Karthik | duration=0.0 | tracks=[]\nRecord B: name=Absolution E.P. | artist=G-Force | release-date=2000-01-01 | release-country=Belgium | duration=0 | tracks=['Action', 'Feeling', 'Feeling (Gaetano Parisio remix)', 'Action (Samuel L. remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

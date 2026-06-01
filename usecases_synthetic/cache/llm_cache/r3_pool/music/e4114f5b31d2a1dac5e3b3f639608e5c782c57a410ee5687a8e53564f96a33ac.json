@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_8633|mbrainz_31039|name=A Light Beyond The End | artist=Drunkness | duration=3973.0 | tracks=['...', 'Enough (love Me, Hate Me)', 'The Light beyond the End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des BÃƒÂ¶sen', 'Pyramids', 'Mysterious', 'Too late now', 'Instinct to survive', 'Galaxy (Drunkness Hymn)']||name=Beyond the Sunset | artist=Tillis, Mel | duration=3945 | tracks=['Beyond the Sunset', 'On the Wings of a Dove', 'He', 'Mansion Over the Hill Top', 'An Evening Prayer', 'His Eye Is on the Sparrow', 'Peace in the Valley', \"The Father's Son\", 'Bay the Good Lord Bless and Keep You', 'Were You There', 'Precious Memories', 'Just a Closer Walk With Thee', 'I Believe', 'My Friend', 'Passing By', 'Church in the Wildwood', \"He'll Understand and Say Will Done\", 'Night Watch', 'The Old House', 'God Walks These Hills With Me', 'Take My Hand Precious Lord', 'How Great Thou Are']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=A Light Beyond The End | artist=Drunkness | duration=3973.0 | tracks=['...', 'Enough (love Me, Hate Me)', 'The Light beyond the End', 'H-2-O', 'Leben', 'Stand By My Side', 'Little Star', 'Der Tanz Des BÃƒÂ¶sen', 'Pyramids', 'Mysterious', 'Too late now', 'Instinct to survive', 'Galaxy (Drunkness Hymn)']\nRecord B: name=Beyond the Sunset | artist=Tillis, Mel | duration=3945 | tracks=['Beyond the Sunset', 'On the Wings of a Dove', 'He', 'Mansion Over the Hill Top', 'An Evening Prayer', 'His Eye Is on the Sparrow', 'Peace in the Valley', \"The Father's Son\", 'Bay the Good Lord Bless and Keep You', 'Were You There', 'Precious Memories', 'Just a Closer Walk With Thee', 'I Believe', 'My Friend', 'Passing By', 'Church in the Wildwood', \"He'll Understand and Say Will Done\", 'Night Watch', 'The Old House', 'God Walks These Hills With Me', 'Take My Hand Precious Lord', 'How Great Thou Are']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,64 @@
+You are a domain expert generating a paraphrase of a short entity label
+or key attribute (e.g. a company name, a game title, a song or album
+title, a brand name, a product model name). The paraphrase must be a
+legitimate alternative surface form -- a marketing name, alias, vendor
+abbreviation, or romanization variant -- that a different data source
+might plausibly use for the same real-world entity.
+
+Strict rules:
+1. The paraphrase MUST refer to the same real-world entity as the input.
+   Do NOT invent, substitute, or drift to a different entity.
+2. Stay in the input's primary language and script. Do NOT translate
+   into another language; do NOT romanise non-Latin scripts unless the
+   input was already mixed-script. Code-switching is only permitted when
+   the input itself code-switches (e.g. a brand name that already
+   appears alongside non-Latin script).
+3. No added adjectives, descriptive phrases, or explanatory suffixes.
+4. The paraphrase MUST differ from the input by at least one substantive
+   token change. Pure casing changes, pure punctuation changes, and
+   pure whitespace edits do NOT count -- they will be rejected
+   server-side. At least one token must be added, removed, or replaced
+   with an alias / abbreviation / synonym.
+5. Return ONLY the paraphrased string with no quotes, no explanation, no
+   prefix, no suffix, and no trailing punctuation beyond what the input
+   already has.
+6. If -- and only if -- no plausible alternate surface form exists
+   (e.g. the input is already the most-canonical short form and any
+   change would alter the entity identity), return the literal string
+   <UNCHANGED>. Do NOT return the input verbatim as a fallback.
+
+Examples (primary / key attribute class):
+
+  GOOD examples (at least one substantive token change, same entity):
+    Input:  "Gigabyte NVIDIA GeForce RTX 3080 Gaming OC 10GB"
+    Output: "GIGABYTE GeForce RTX 3080 Gaming OC 10G"
+
+    Input:  "AMD RADEON PRO WX 4100 4 GB GDDR5"
+    Output: "Radeon Pro WX 4100 4GB GDDR5"
+
+    Input:  "The Dark Side of the Moon"
+    Output: "Dark Side of the Moon"
+
+    Input:  "Sony"
+    Output: "SONY Corporation"
+
+  BAD examples (rejected -- do NOT do this):
+    Input:  "The Dark Side of the Moon"
+    Output: "The Dark Side of the Moon"        (verbatim copy)
+
+    Input:  "The Dark Side of the Moon"
+    Output: "the dark side of the moon"        (casing-only change)
+
+    Input:  "Gigabyte RTX 3080"
+    Output: "Gigabyte  RTX 3080."               (whitespace + punctuation only)
+
+    Input:  "The Beatles"
+    Output: "Les Beatles"                       (cross-language translation)
+
+    Input:  "Sony"
+    Output: "Sony PlayStation 5"                (drifted to a different entity)
+
+Input value:
+{value}
+
+Paraphrase:

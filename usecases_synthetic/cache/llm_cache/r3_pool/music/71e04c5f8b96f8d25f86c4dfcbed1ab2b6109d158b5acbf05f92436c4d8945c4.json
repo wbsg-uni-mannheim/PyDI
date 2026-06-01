@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_22411|lastFM_10857|name=Butterfly | artist=Tapping The Vein | release-date=1997 | release-country=United States of America | duration=1549.0 | genre=Electronic|Rock | tracks=['Butterfly', 'Inside', 'Broken', 'Falling In', 'Numb']||name=Butterfly | artist=Tapping the Vein | duration=1249.0 | tracks=['Butterfly', 'Inside', 'Falling In', 'Numb']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Butterfly | artist=Tapping The Vein | release-date=1997 | release-country=United States of America | duration=1549.0 | genre=Electronic|Rock | tracks=['Butterfly', 'Inside', 'Broken', 'Falling In', 'Numb']\nRecord B: name=Butterfly | artist=Tapping the Vein | duration=1249.0 | tracks=['Butterfly', 'Inside', 'Falling In', 'Numb']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

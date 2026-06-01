@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_2",
+      "value": "CZK"
+    },
+    {
+      "source": "products_4",
+      "value": "PLN"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.6,
+    "operation": "verbatim_pick",
+    "reasoning": "Only two conflicting currency codes are provided with no additional context, so I selected one candidate verbatim.",
+    "value": "CZK"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"CZK\",\"operation\":\"verbatim_pick\",\"confidence\":0.6,\"reasoning\":\"Only two conflicting currency codes are provided with no additional context, so I selected one candidate verbatim.\"}"
+}

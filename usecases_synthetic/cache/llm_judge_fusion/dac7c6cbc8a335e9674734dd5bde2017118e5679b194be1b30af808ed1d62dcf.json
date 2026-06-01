@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "389.99"
+    },
+    {
+      "source": "products_2",
+      "value": "394.24"
+    },
+    {
+      "source": "products_3",
+      "value": "68.14"
+    },
+    {
+      "source": "products_4",
+      "value": "369.72"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.82,
+    "operation": "aggregation",
+    "reasoning": "Three candidates cluster around the high 300s, while one is a clear outlier, so a robust aggregate near the cluster is appropriate.",
+    "value": 389.99
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":389.99,\"operation\":\"aggregation\",\"confidence\":0.82,\"reasoning\":\"Three candidates cluster around the high 300s, while one is a clear outlier, so a robust aggregate near the cluster is appropriate.\"}"
+}

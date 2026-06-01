@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_104|lastFM_15751|name=Surrender | artist=Seek | release-date=2000-12-05 | release-country=United States of America | genre=Electronic | tracks=['Surrender (Original)', 'Surrender (Ron Trent Remix)', 'Ever After (Original)', 'Ever After (Afterlife Remix)']||name=Surrender | artist=Camille J. | duration=2446.0 | tracks=['Welcome Stranger', 'The creeps (featuring booty colone)', 'Woman', 'Surrender', 'Here Comes Maddy', 'What About You', 'Let me stay', 'On A Ride', 'Dancing With The Devil', 'Woman (abdullah s - remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Surrender | artist=Seek | release-date=2000-12-05 | release-country=United States of America | genre=Electronic | tracks=['Surrender (Original)', 'Surrender (Ron Trent Remix)', 'Ever After (Original)', 'Ever After (Afterlife Remix)']\nRecord B: name=Surrender | artist=Camille J. | duration=2446.0 | tracks=['Welcome Stranger', 'The creeps (featuring booty colone)', 'Woman', 'Surrender', 'Here Comes Maddy', 'What About You', 'Let me stay', 'On A Ride', 'Dancing With The Devil', 'Woman (abdullah s - remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

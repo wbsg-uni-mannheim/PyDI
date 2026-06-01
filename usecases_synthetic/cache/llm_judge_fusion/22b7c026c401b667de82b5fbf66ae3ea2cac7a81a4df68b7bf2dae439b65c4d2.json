@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "600.0 GB"
+    },
+    {
+      "source": "products_3",
+      "value": "1,800.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "aggregation",
+    "reasoning": "The candidates differ by a factor of three, so I used a robust aggregate (mean) of the numeric values 600 and 1800.",
+    "value": 1200
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1200,\"operation\":\"aggregation\",\"confidence\":0.74,\"reasoning\":\"The candidates differ by a factor of three, so I used a robust aggregate (mean) of the numeric values 600 and 1800.\"}"
+}

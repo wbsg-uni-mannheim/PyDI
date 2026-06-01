@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "United Kingdom of Great Britain and Northern Ireland"
+    },
+    {
+      "source": "discogs",
+      "value": "Europe"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.72,
+    "operation": "normalization",
+    "reasoning": "The MusicBrainz value is the specific country name and is the canonical form over the broader region label 'Europe'.",
+    "value": "United Kingdom of Great Britain and Northern Ireland"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United Kingdom of Great Britain and Northern Ireland\",\"operation\":\"normalization\",\"confidence\":0.72,\"reasoning\":\"The MusicBrainz value is the specific country name and is the canonical form over the broader region label 'Europe'.\"}"
+}

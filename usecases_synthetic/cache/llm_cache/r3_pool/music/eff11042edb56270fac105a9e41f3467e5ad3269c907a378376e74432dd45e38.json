@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_9373|mbrainz_2488|name=Fearless | artist=Lamat | duration=1593.0 | tracks=['Alien Invasion', 'Fearless', 'Fenix']||name=Fearless | artist=Delgado, Junior | release-date=1998-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4418 | tracks=['Hypocrites', 'Buffalo Soldier', \"She's Gonna Marry Me\", \"Fussin' & Fightin'\", 'Sons of Slaves', 'Fearless', 'Storm Is Coming', 'Streets Desire', 'Armed Robbery', 'Tichion', '23rd Psalm', 'Temptation', 'Hands Around the World']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fearless | artist=Lamat | duration=1593.0 | tracks=['Alien Invasion', 'Fearless', 'Fenix']\nRecord B: name=Fearless | artist=Delgado, Junior | release-date=1998-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4418 | tracks=['Hypocrites', 'Buffalo Soldier', \"She's Gonna Marry Me\", \"Fussin' & Fightin'\", 'Sons of Slaves', 'Fearless', 'Storm Is Coming', 'Streets Desire', 'Armed Robbery', 'Tichion', '23rd Psalm', 'Temptation', 'Hands Around the World']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

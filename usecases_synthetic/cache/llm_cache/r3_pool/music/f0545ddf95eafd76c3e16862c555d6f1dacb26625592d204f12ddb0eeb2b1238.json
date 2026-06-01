@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_147648|mbrainz_18982|name=MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009 | release-country=Europe | genre=Pop|Rock | tracks=['Alles Roger', 'Ungewöhnlich', 'Hallo Du', 'Der Titel Vom Nächsten Kapitel', 'Heimatlied', 'Ein Kleiner Schritt', '¡Vamos!', \"'54, '74, '90, 2010\", 'Mag Tischtennis!', 'Ein Kompliment', 'Fast Wie Von Selbst', 'Fahrt Ins Grüne', \"Wellenreiten '54\", '1. Wahl', 'Auf Der Guten Seite', 'Lass Mich Nie Mehr Los', 'Frühling', 'Wie Lange Sollen Wir Noch Warten?', 'Wunderbaren Jahren', '(Tu Nur Das) Was Dein Herz Dir Sagt', 'Supersonnig', \"Rock'N'Roll Queen\", '7 Tage 7 Nächte', 'Ich War Noch Niemals In New York', 'Siehst Du Das Genauso?', 'Ich, Roque']||name=Ein Kompliment - MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009-01-01 | release-country=Germany | duration=267 | tracks=['Ein Kompliment']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009 | release-country=Europe | genre=Pop|Rock | tracks=['Alles Roger', 'Ungewöhnlich', 'Hallo Du', 'Der Titel Vom Nächsten Kapitel', 'Heimatlied', 'Ein Kleiner Schritt', '¡Vamos!', \"'54, '74, '90, 2010\", 'Mag Tischtennis!', 'Ein Kompliment', 'Fast Wie Von Selbst', 'Fahrt Ins Grüne', \"Wellenreiten '54\", '1. Wahl', 'Auf Der Guten Seite', 'Lass Mich Nie Mehr Los', 'Frühling', 'Wie Lange Sollen Wir Noch Warten?', 'Wunderbaren Jahren', '(Tu Nur Das) Was Dein Herz Dir Sagt', 'Supersonnig', \"Rock'N'Roll Queen\", '7 Tage 7 Nächte', 'Ich War Noch Niemals In New York', 'Siehst Du Das Genauso?', 'Ich, Roque']\nRecord B: name=Ein Kompliment - MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009-01-01 | release-country=Germany | duration=267 | tracks=['Ein Kompliment']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

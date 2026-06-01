@@ -1,0 +1,32 @@
+domain: music-small
+master_seed: 42
+knob_config_alias: music
+sources:
+- name: musicbrainz
+  file: musicbrainz.csv
+  format: csv
+  id_prefix: mbrainz_
+- name: discogs
+  file: discogs.csv
+  format: csv
+  id_prefix: discogs_
+- name: lastfm
+  file: lastfm.csv
+  format: csv
+  id_prefix: lastFM_
+source_pairs:
+- - musicbrainz
+  - discogs
+- - musicbrainz
+  - lastfm
+fusion_files:
+  validation: validation_set_final.xml
+  test: test_set_final.xml
+attribute_classes:
+  name: primary
+  artist: key
+  release-country: key
+  genre: key
+  release-date: secondary
+  duration: secondary
+  label: secondary

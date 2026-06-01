@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_121541|mbrainz_21414|name=Confessions | artist=Buckcherry | release-date=2013 | release-country=United States of America | genre=Rock | tracks=['Side A', 'Gluttony', 'Wrath', 'Nothing Left But Tears', 'The Truth', 'Greed', 'Side B', 'Water', 'Seven Ways To Die', 'Air', 'Sloth', 'Side C', 'Pride', 'Envy', 'Lust', \"Dreamin' Of You\", 'Side D', 'Give Em What The Want', 'When The Fire Starts']||name=Confessions | artist=Buckcherry | release-date=2013-02-15 | release-country=United States of America | duration=3457 | tracks=['Gluttony', 'Wrath', 'Nothing Left but Tears', 'The Truth', 'Greed', 'Water', 'Seven Ways to Die', 'Air', 'Sloth', 'Pride', 'Envy', 'Lust', \"Dreamin' of You\", 'Give â€™em What They Want', 'When the Fire Starts', 'â€œGluttonyâ€? Music Video', 'On The Set: â€œGluttonyâ€? Video Shoot', 'The Story Behind Confessions', 'â€œGluttonyâ€? Lyric Video']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Confessions | artist=Buckcherry | release-date=2013 | release-country=United States of America | genre=Rock | tracks=['Side A', 'Gluttony', 'Wrath', 'Nothing Left But Tears', 'The Truth', 'Greed', 'Side B', 'Water', 'Seven Ways To Die', 'Air', 'Sloth', 'Side C', 'Pride', 'Envy', 'Lust', \"Dreamin' Of You\", 'Side D', 'Give Em What The Want', 'When The Fire Starts']\nRecord B: name=Confessions | artist=Buckcherry | release-date=2013-02-15 | release-country=United States of America | duration=3457 | tracks=['Gluttony', 'Wrath', 'Nothing Left but Tears', 'The Truth', 'Greed', 'Water', 'Seven Ways to Die', 'Air', 'Sloth', 'Pride', 'Envy', 'Lust', \"Dreamin' of You\", 'Give â€™em What They Want', 'When the Fire Starts', 'â€œGluttonyâ€? Music Video', 'On The Set: â€œGluttonyâ€? Video Shoot', 'The Story Behind Confessions', 'â€œGluttonyâ€? Lyric Video']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

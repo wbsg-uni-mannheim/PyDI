@@ -1,0 +1,147 @@
+# Knob 05 — Format/Unit Diversity: Products domain config.
+#
+# Per-domain baseline:
+#   - price is a string-encoded decimal across all four sources
+#     (e.g. "799.99"); priceCurrency is a 3-letter ISO code (GBP).
+#   - No date attributes in the raw schema.
+#   - description carries unit-style text (GB, GHz, ...) but those
+#     belong to K6 / K1 noise + abbreviation handling, not K5.
+
+domain: products
+
+# ``file_size`` is a separate attribute class from ``money``: each
+# class has its own unit pool in ``unit_pool_per_level`` so byte-
+# quantity attributes (vram_gb / storage_gb, GB/MB/GiB/TB) don't
+# share GBP/USD/EUR with price. Multi-class support on the same
+# source requires the per-column ``source_magnitude_context.columns``
+# map form (below) — the list form would apply implicit_currency
+# to every managed column on the source.
+attribute_classes:
+  products_1: &products_attr_classes
+    price: money
+    vram_gb: file_size
+    storage_gb: file_size
+    read_speed_mb_s: rate
+    write_speed_mb_s: rate
+  products_2: *products_attr_classes
+  products_3: *products_attr_classes
+  products_4: *products_attr_classes
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+# No date attributes; format pools route to money + file_size.
+# ``file_size`` format pool entries are locale IDs for the numeric
+# portion (decimal separator, digit grouping) — same shape as money.
+# The ``bare`` entry at hard suppresses the unit suffix (``8`` → ``8192``
+# raw MB count without "MB"), exercising the "unit absent" rung.
+format_pools_per_level:
+  easy:
+    money:
+      - en_US
+      - plain
+    file_size:
+      - en_US
+      - plain
+    rate:
+      - en_US
+      - plain
+  medium:
+    money:
+      - en_US
+      - de_DE
+      - plain
+    file_size:
+      - en_US
+      - de_DE
+      - plain
+    rate:
+      - en_US
+      - de_DE
+      - plain
+  hard:
+    money:
+      - en_US
+      - de_DE
+      - fr_FR
+      - plain
+    file_size:
+      - en_US
+      - de_DE
+      - plain
+      - bare
+    rate:
+      - en_US
+      - de_DE
+      - plain
+      - bare
+
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+within_source_consistency:
+  easy: source
+  medium: source
+  hard: row
+
+unit_pool_per_level:
+  easy:
+    money:
+      currencies: [GBP]
+      magnitude: [raw]
+    file_size:
+      units: [GB]
+    rate:
+      units: [MB/s]
+  medium:
+    money:
+      currencies: [GBP, USD, EUR]
+      magnitude: [raw]
+    file_size:
+      units: [GB, GiB]
+    rate:
+      units: [MB/s, GB/s]
+  hard:
+    money:
+      currencies: [GBP, USD, EUR]
+      magnitude: [raw, thousands]
+    file_size:
+      units: [GB, GiB, MB]
+    rate:
+      units: [MB/s, GB/s, KB/s]
+
+normalize_down_threshold: 0.85
+
+# Per-column map form (plan_revision §K5, 2026-05-22). Required when
+# a source has columns of mixed classes (price → money, vram_gb /
+# storage_gb → file_size) — the legacy ``columns: [price]`` list form
+# would apply ``implicit_currency: GBP`` to every managed column on
+# the source, conflating GBP with GB.
+source_magnitude_context:
+  products_1: &products_mag_ctx
+    columns:
+      price:
+        implicit_magnitude: raw
+        implicit_currency: GBP
+      vram_gb:
+        implicit_unit: GB
+      storage_gb:
+        implicit_unit: GB
+      read_speed_mb_s:
+        implicit_unit: MB/s
+      write_speed_mb_s:
+        implicit_unit: MB/s
+  products_2: *products_mag_ctx
+  products_3: *products_mag_ctx
+  products_4: *products_mag_ctx

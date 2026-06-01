@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_11520|mbrainz_893|name=Electronica Gainsbourg 1 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1085.0 | genre=Electronic | tracks=[\"L'Hôtel Particulier (Stratus)\", \"Aéroplanes (Readymade's Bold Mix)\", 'New York-U.S.A. (Snooze)', 'Lola Rastaquouère (Chateau Flight)', \"Je T'Aime... Moi, Non Plus (Dampfad Dub)\", 'Ballade De Melody Nelson (Howie B.)']||name=Electronica Gainsbourg M1 | artist=Gainsbourg, Serge | release-date=2001-01-01 | release-country=France | duration=1311 | tracks=[\"Bonnie & Clyde (Herbert's Fred & Ginger mix)\", \"Je t'aime... Moi, non plus (Dampfbad dub)\", 'Lola rastaquouÃ¨re (ChÃ¢teau Flight remix)', 'New York USA (Snooze remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Electronica Gainsbourg 1 | artist=Serge Gainsbourg | release-date=2001 | release-country=France | duration=1085.0 | genre=Electronic | tracks=[\"L'Hôtel Particulier (Stratus)\", \"Aéroplanes (Readymade's Bold Mix)\", 'New York-U.S.A. (Snooze)', 'Lola Rastaquouère (Chateau Flight)', \"Je T'Aime... Moi, Non Plus (Dampfad Dub)\", 'Ballade De Melody Nelson (Howie B.)']\nRecord B: name=Electronica Gainsbourg M1 | artist=Gainsbourg, Serge | release-date=2001-01-01 | release-country=France | duration=1311 | tracks=[\"Bonnie & Clyde (Herbert's Fred & Ginger mix)\", \"Je t'aime... Moi, non plus (Dampfbad dub)\", 'Lola rastaquouÃ¨re (ChÃ¢teau Flight remix)', 'New York USA (Snooze remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

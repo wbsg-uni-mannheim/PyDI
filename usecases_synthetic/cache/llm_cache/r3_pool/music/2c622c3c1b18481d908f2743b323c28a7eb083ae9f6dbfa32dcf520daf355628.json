@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_127444|mbrainz_1493|name=The Singles Album | artist=UB40 | release-date=1982 | release-country=Netherlands | genre=Reggae | tracks=['Food For Thought', 'King', 'My Way Of Thinking', 'I Think Its Going To Rain Today', 'Dream A Lie', 'Tyler', 'Adella', 'Little By Little', 'The Earth Dies Screaming (12 Inch Version)']||name=The Singles Album | artist=UB40 | release-date=1980-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Food for Thought', 'King', 'My Way of Thinking', \"I Think It's Going to Rain Today\", 'Dream a Lie', 'Tyler', 'Adella', 'Little by Little', 'The Earth Dies Screaming (12\" version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles Album | artist=UB40 | release-date=1982 | release-country=Netherlands | genre=Reggae | tracks=['Food For Thought', 'King', 'My Way Of Thinking', 'I Think Its Going To Rain Today', 'Dream A Lie', 'Tyler', 'Adella', 'Little By Little', 'The Earth Dies Screaming (12 Inch Version)']\nRecord B: name=The Singles Album | artist=UB40 | release-date=1980-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Food for Thought', 'King', 'My Way of Thinking', \"I Think It's Going to Rain Today\", 'Dream a Lie', 'Tyler', 'Adella', 'Little by Little', 'The Earth Dies Screaming (12\" version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

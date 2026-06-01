@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_30103|mbrainz_29937|name=On and on | artist=Paul Nazca | duration=709.0 | tracks=['On And On', 'On and On']||name=On and On | artist=Autre Ne Veut | release-date=2013-07-15 | duration=210 | tracks=['On and On']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=On and on | artist=Paul Nazca | duration=709.0 | tracks=['On And On', 'On and On']\nRecord B: name=On and On | artist=Autre Ne Veut | release-date=2013-07-15 | duration=210 | tracks=['On and On']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

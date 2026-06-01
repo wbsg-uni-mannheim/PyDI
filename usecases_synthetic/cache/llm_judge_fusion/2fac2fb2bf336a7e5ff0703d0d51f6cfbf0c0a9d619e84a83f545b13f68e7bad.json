@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1898"
+    },
+    {
+      "source": "discogs",
+      "value": "1888.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "1894.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric durations with small variance, so a robust aggregate is appropriate.",
+    "value": 1894
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1894,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"The candidates are numeric durations with small variance, so a robust aggregate is appropriate.\"}"
+}

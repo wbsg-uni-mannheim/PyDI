@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_47729|mbrainz_7953|name=Three Songs For Weddings And Funerals | artist=The Illegal Artists | release-date=1993 | release-country=Germany | duration=823.0 | genre=Rock | tracks=['New World (Killing A Kennedy)', 'Avalanche Drive', 'The Angel, The Tricker And Me']||name=Songs for Weddings and Funerals | artist=Illegal Artists, The | release-date=1993-01-01 | release-country=Germany | duration=2569 | tracks=['New World (Killing a Kennedy)', 'Avalanche Drive', 'Destiny Train', 'A Minute That Counts', 'Love Easy? No!', 'Under the Waves and Into Your Heart', \"Ain't No Love\", 'Eat Tokyo', 'Leather Boots', 'In the Garden', 'Why Do You Go Tense?']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Three Songs For Weddings And Funerals | artist=The Illegal Artists | release-date=1993 | release-country=Germany | duration=823.0 | genre=Rock | tracks=['New World (Killing A Kennedy)', 'Avalanche Drive', 'The Angel, The Tricker And Me']\nRecord B: name=Songs for Weddings and Funerals | artist=Illegal Artists, The | release-date=1993-01-01 | release-country=Germany | duration=2569 | tracks=['New World (Killing a Kennedy)', 'Avalanche Drive', 'Destiny Train', 'A Minute That Counts', 'Love Easy? No!', 'Under the Waves and Into Your Heart', \"Ain't No Love\", 'Eat Tokyo', 'Leather Boots', 'In the Garden', 'Why Do You Go Tense?']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

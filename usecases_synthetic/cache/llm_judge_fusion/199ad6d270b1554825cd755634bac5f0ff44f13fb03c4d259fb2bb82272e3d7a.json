@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Lurkers, The"
+    },
+    {
+      "source": "discogs",
+      "value": "The Lurkers"
+    },
+    {
+      "source": "lastfm",
+      "value": "T. Lurkers"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "The candidates are variant renderings of the same artist name, with \"The Lurkers\" being the standard canonical form.",
+    "value": "The Lurkers"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Lurkers\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"The candidates are variant renderings of the same artist name, with \\\"The Lurkers\\\" being the standard canonical form.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_2874|mbrainz_634|name=Sonic Empire | artist=Members Of Mayday | release-date=1997 | release-country=Italy | duration=1167.0 | genre=Electronic | tracks=['Sonic Empire', 'Sonic Empire (Short Mix)', \"Sonic Empire (Three 'N One Remix)\"]||name=Sonic Empire | artist=Members of Mayday | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=235 | tracks=['Sonic Empire', 'Sonic Empire (radio edit)', 'Sonic Empire (3 in 1 mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sonic Empire | artist=Members Of Mayday | release-date=1997 | release-country=Italy | duration=1167.0 | genre=Electronic | tracks=['Sonic Empire', 'Sonic Empire (Short Mix)', \"Sonic Empire (Three 'N One Remix)\"]\nRecord B: name=Sonic Empire | artist=Members of Mayday | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=235 | tracks=['Sonic Empire', 'Sonic Empire (radio edit)', 'Sonic Empire (3 in 1 mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

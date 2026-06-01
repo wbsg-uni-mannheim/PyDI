@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_24900|lastFM_12057|name=Kiss Kiss Bang Bang | artist=Slyde | release-date=2008-01-01 | release-country=UK | genre=Electronic | tracks=['Kiss Kiss Bang Bang (Original Mix)', \"Kiss Kiss Bang Bang (Twocker's Get Busy Mix)\"]||name=Kiss Kiss Bang Bang | artist=Slyde | duration=807.0 | tracks=['Kiss Kiss Bang Bang (Original Mix)', 'Kiss Kiss Bang Bang (Twocker Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Kiss Kiss Bang Bang | artist=Slyde | release-date=2008-01-01 | release-country=UK | genre=Electronic | tracks=['Kiss Kiss Bang Bang (Original Mix)', \"Kiss Kiss Bang Bang (Twocker's Get Busy Mix)\"]\nRecord B: name=Kiss Kiss Bang Bang | artist=Slyde | duration=807.0 | tracks=['Kiss Kiss Bang Bang (Original Mix)', 'Kiss Kiss Bang Bang (Twocker Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

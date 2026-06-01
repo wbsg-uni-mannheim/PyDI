@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "0.39"
+    },
+    {
+      "source": "products_3",
+      "value": "57.99"
+    },
+    {
+      "source": "products_4",
+      "value": "369.72"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.61,
+    "operation": "aggregation",
+    "reasoning": "The 0.39 and 369.72 values appear to be outliers relative to the remaining candidate, so the central price estimate is 57.99.",
+    "value": 57.99
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":57.99,\"operation\":\"aggregation\",\"confidence\":0.61,\"reasoning\":\"The 0.39 and 369.72 values appear to be outliers relative to the remaining candidate, so the central price estimate is 57.99.\"}"
+}

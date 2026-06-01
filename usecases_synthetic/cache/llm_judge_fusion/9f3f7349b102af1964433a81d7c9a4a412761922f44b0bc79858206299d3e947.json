@@ -1,0 +1,30 @@
+{
+  "attribute": "description",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "setTimeout(function(){IcecatLive.getDatasheet(\\\"#IcecatLive\\\",{\\\"UserName\\\":\\\"logicit\\\",\\\"Brand\\\":\\\"kingston\\\",\\\"ProductCode\\\":\\\"DT50/64GB\\\",\\\"Type\\\":\\\"html\\\"},\\\"hu\\\");}, 200);"
+    },
+    {
+      "source": "products_2",
+      "value": "Kingston Technology DataTraveler 50 64GB, 64 GB, USB tipo A,"
+    },
+    {
+      "source": "products_3",
+      "value": "Kingston USB Flash Drive DT50/64GB- DataTraveler® 50, Speed2 USB 3.1 Gen 1 3- 110MB/s read, 15MB/s write, 64GB, Metal casing with blue"
+    },
+    {
+      "source": "products_4",
+      "value": "Kingston DataTraveler 50 64GB USB 3.0 Metal/Blue Kingston"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Candidates describe the same Kingston DT50/64GB product; I normalized the name and removed the script artifact.",
+    "value": "Kingston DataTraveler 50 64GB USB 3.0 metal/blue"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Kingston DataTraveler 50 64GB USB 3.0 metal/blue\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Candidates describe the same Kingston DT50/64GB product; I normalized the name and removed the script artifact.\"}"
+}

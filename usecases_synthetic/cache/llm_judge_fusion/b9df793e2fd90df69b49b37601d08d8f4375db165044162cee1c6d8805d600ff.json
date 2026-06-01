@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2003-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2003"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "interpolation",
+    "reasoning": "The year-only candidate is best resolved to the full release date implied by the more specific source, using the common placeholder date for an unknown day/month.",
+    "value": "2003-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2003-01-01\",\"operation\":\"interpolation\",\"confidence\":0.94,\"reasoning\":\"The year-only candidate is best resolved to the full release date implied by the more specific source, using the common placeholder date for an unknown day/month.\"}"
+}

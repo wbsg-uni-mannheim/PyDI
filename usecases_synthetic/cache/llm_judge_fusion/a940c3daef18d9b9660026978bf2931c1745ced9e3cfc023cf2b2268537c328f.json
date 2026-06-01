@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "99999.99"
+    },
+    {
+      "source": "products_2",
+      "value": "587.53"
+    },
+    {
+      "source": "products_3",
+      "value": "7,626.29"
+    },
+    {
+      "source": "products_4",
+      "value": "6590.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.36,
+    "operation": "aggregation",
+    "reasoning": "One candidate is closest to the central tendency after removing the clear high outlier.",
+    "value": 6590.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":6590.0,\"operation\":\"aggregation\",\"confidence\":0.36,\"reasoning\":\"One candidate is closest to the central tendency after removing the clear high outlier.\"}"
+}

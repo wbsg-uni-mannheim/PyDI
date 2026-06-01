@@ -1,0 +1,143 @@
+# Entity-matching MATCHING committee roster - movies domain.
+#
+# Per-domain fork of the canonical companies em_matching_committee.yaml
+# (see plans/plan_s1_scale.md S10, 2026-04-29). Same 4-member roster.
+# Per-domain changes: column_mapping, ditto checkpoint path, fields
+# list (uses "title" as primary instead of "name"), training_gold_path
+# placeholder, demonstrations_path placeholder.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). Per-domain
+      checkpoint path - movies checkpoint trained in S11.
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/movies/best
+        fields: [title, director, date, actors]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style LLM matcher (opt-in until C2.4c).
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [title, director, date, actors]
+        chat_model_name: openai/gpt-4o-mini
+        temperature: 0.0
+        max_tokens: 2048
+        demonstrations_path: usecases/movies/input/entitymatching/academy_awards_2_actors_training.csv
+        k_shot: 3
+        embedding_model: sentence-transformers/all-MiniLM-L6-v2
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: false
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher (comparator-vector features + sklearn
+      RandomForest).
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        training_gold_path: usecases/movies/input/entitymatching/academy_awards_2_actors_training.csv
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        classifier_params:
+          n_estimators: 100
+          max_depth: 10
+          random_state: 42
+        preprocess: normalize_text
+        seed: 42
+        comparators:
+          - class: StringComparator
+            module: PyDI.entitymatching.comparators
+            params:
+              column: title
+              similarity_function: jaccard
+          - class: StringComparator
+            module: PyDI.entitymatching.comparators
+            params:
+              column: director
+              similarity_function: jaccard
+          - class: StringComparator
+            module: PyDI.entitymatching.comparators
+            params:
+              column: actors
+              similarity_function: jaccard
+    comparators:
+      - class: StringComparator
+        module: PyDI.entitymatching.comparators
+        params:
+          column: title
+          similarity_function: jaccard
+      - class: StringComparator
+        module: PyDI.entitymatching.comparators
+        params:
+          column: director
+          similarity_function: jaccard
+      - class: StringComparator
+        module: PyDI.entitymatching.comparators
+        params:
+          column: actors
+          similarity_function: jaccard
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: false
+    enabled_by_default: false
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM). Two-stage LLM pipeline.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [title, director, date, actors]
+        stage1_model: openai/gpt-4o-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: false
+
+required_axes:
+  matching_type: [learned]
+  missing_value_tolerant: [true]
+
+# Column mapping - keep in sync with em_blocking_committee_movies.yaml.
+column_mapping:
+  academy_awards:
+    director_name: director
+    actors_actor_name: actors
+  actors:
+    actors_actor_name: actors
+  golden_globes:
+    director_name: director
+    actors_actor_name: actors

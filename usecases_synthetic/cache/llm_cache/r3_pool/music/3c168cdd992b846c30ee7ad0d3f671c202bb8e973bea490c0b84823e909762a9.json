@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_187705|mbrainz_14952|name=Puzzle | artist=Biffy Clyro | release-date=2006 | release-country=United States of America | duration=2752.0 | genre=Rock | tracks=['Living Is A Problem Because Everything Dies (Clean Radio Edit)', 'Saturday Superhouse', \"Who's Got A Match?\", 'As Dust Dances', '2/15ths', 'A Whole Child Ago', 'The Conversation Is...', \"Now I'm Everyone\", 'Semi-Mental', 'Love Has A Diameter', 'Folding Stars', '9/15ths', 'Machines']||name=Puzzle | artist=Biffy Clyro | release-date=2007-09-18 | release-country=United States of America | duration=2988 | tracks=['Intro', 'Living Is a Problem Because Everything Dies', 'Saturday Superhouse', 'Whoâ€™s Got a Match?', 'As Dust Dances / 2/15ths', 'A Whole Child Ago', 'The Conversation Isâ€¦', 'Now Iâ€™m Everyone', 'Semi-Mental / 4/15ths', 'Love Has a Diameter', 'Get Fucked Stud', 'Folding Stars', '9/15ths', 'Machines']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Puzzle | artist=Biffy Clyro | release-date=2006 | release-country=United States of America | duration=2752.0 | genre=Rock | tracks=['Living Is A Problem Because Everything Dies (Clean Radio Edit)', 'Saturday Superhouse', \"Who's Got A Match?\", 'As Dust Dances', '2/15ths', 'A Whole Child Ago', 'The Conversation Is...', \"Now I'm Everyone\", 'Semi-Mental', 'Love Has A Diameter', 'Folding Stars', '9/15ths', 'Machines']\nRecord B: name=Puzzle | artist=Biffy Clyro | release-date=2007-09-18 | release-country=United States of America | duration=2988 | tracks=['Intro', 'Living Is a Problem Because Everything Dies', 'Saturday Superhouse', 'Whoâ€™s Got a Match?', 'As Dust Dances / 2/15ths', 'A Whole Child Ago', 'The Conversation Isâ€¦', 'Now Iâ€™m Everyone', 'Semi-Mental / 4/15ths', 'Love Has a Diameter', 'Get Fucked Stud', 'Folding Stars', '9/15ths', 'Machines']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

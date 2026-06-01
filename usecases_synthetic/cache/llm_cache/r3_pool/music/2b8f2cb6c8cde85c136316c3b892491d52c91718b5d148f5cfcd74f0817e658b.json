@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_17986|mbrainz_2398|name=Get Ready | artist=Rare Earth | release-date=1969 | release-country=Netherlands | duration=2630.0 | genre=Funk / Soul|Rock | tracks=['Magic Key', 'Tobacco Road', \"Feelin' Alright\", 'In Bed', 'Train To Nowhere', 'Get Ready']||name=Get Ready | artist=Rare Earth | release-date=1969-01-01 | release-country=United States of America | duration=2654 | tracks=['Magic Key', 'Tobacco Road', \"Feelin' Alright\", 'In Bed', 'Train to Nowhere', 'Get Ready']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Get Ready | artist=Rare Earth | release-date=1969 | release-country=Netherlands | duration=2630.0 | genre=Funk / Soul|Rock | tracks=['Magic Key', 'Tobacco Road', \"Feelin' Alright\", 'In Bed', 'Train To Nowhere', 'Get Ready']\nRecord B: name=Get Ready | artist=Rare Earth | release-date=1969-01-01 | release-country=United States of America | duration=2654 | tracks=['Magic Key', 'Tobacco Road', \"Feelin' Alright\", 'In Bed', 'Train to Nowhere', 'Get Ready']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_7658|mbrainz_1156|name=ATLiens (Instrumental Album) | artist=OutKast | release-date=1996 | release-country=United States of America | duration=3270.0 | genre=Hip Hop | tracks=['Two Dope Boyz (In A Cadillac)', 'ATLiens', 'Wheelz Of Steel', 'Jazzy Belle', 'Elevators (Me & You)', 'Ova Da Wudz', 'Babylon', \"Wailin'\", 'Mainstream', 'Decatur Psalm', 'Millennium', 'E.T. (Extraterrestrial)', 'Growing Old', 'Elevators (ONP 86)']||name=ATLiens / Wheelz of Steel | artist=OutKast | release-date=1997-01-01 | release-country=United States of America | duration=940 | tracks=['ATLiens', 'Wheelz of Steel', 'ATLiens (instrumental)', 'Wheelz of Steel (instrumental)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ATLiens (Instrumental Album) | artist=OutKast | release-date=1996 | release-country=United States of America | duration=3270.0 | genre=Hip Hop | tracks=['Two Dope Boyz (In A Cadillac)', 'ATLiens', 'Wheelz Of Steel', 'Jazzy Belle', 'Elevators (Me & You)', 'Ova Da Wudz', 'Babylon', \"Wailin'\", 'Mainstream', 'Decatur Psalm', 'Millennium', 'E.T. (Extraterrestrial)', 'Growing Old', 'Elevators (ONP 86)']\nRecord B: name=ATLiens / Wheelz of Steel | artist=OutKast | release-date=1997-01-01 | release-country=United States of America | duration=940 | tracks=['ATLiens', 'Wheelz of Steel', 'ATLiens (instrumental)', 'Wheelz of Steel (instrumental)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

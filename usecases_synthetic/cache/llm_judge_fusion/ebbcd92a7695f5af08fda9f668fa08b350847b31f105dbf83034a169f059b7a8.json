@@ -1,0 +1,22 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "6.59"
+    },
+    {
+      "source": "products_2",
+      "value": "44.64"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.56,
+    "operation": "aggregation",
+    "reasoning": "The candidates are conflicting numeric prices, so a simple mean provides a neutral aggregate.",
+    "value": 25.615
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":25.615,\"operation\":\"aggregation\",\"confidence\":0.56,\"reasoning\":\"The candidates are conflicting numeric prices, so a simple mean provides a neutral aggregate.\"}"
+}

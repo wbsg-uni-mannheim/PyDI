@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_7914|mbrainz_3804|name=Paradise of Replica | artist=A. Dinner | duration=1308.0 | tracks=['Paradise of Replica', 'A Walnut', 'Kitchen Life I', 'Motorcycle', 'Kitchen Life II', 'Ironclad Mermaid', 'Dancing Twins', \"I'll Just Go Birdwatching\"]||name=Paradise of Replica / Paradise of Remixes | artist=After Dinner | release-date=2000-01-01 | release-country=United States of America | duration=3598 | tracks=['Paradise of Replica', 'A Walnut', 'Kitchen Life I', 'Motorcycle', 'Kitchen Life II', 'Ironclad Mermaid', 'Dancing Twins', 'KA-NO-PU-SU-NO-HA-KO', \"I'll just go birdwatching\", 'Akai Kutsu no Ningyo (Red-Shoed Mermaid) / Pascal Plantinga', 'Paradaisu (Imada Kuufuku) / Terre Thaemlitz', 'A/B-ing the Bird / Skist', 'Reflector / Joshua McKay']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Paradise of Replica | artist=A. Dinner | duration=1308.0 | tracks=['Paradise of Replica', 'A Walnut', 'Kitchen Life I', 'Motorcycle', 'Kitchen Life II', 'Ironclad Mermaid', 'Dancing Twins', \"I'll Just Go Birdwatching\"]\nRecord B: name=Paradise of Replica / Paradise of Remixes | artist=After Dinner | release-date=2000-01-01 | release-country=United States of America | duration=3598 | tracks=['Paradise of Replica', 'A Walnut', 'Kitchen Life I', 'Motorcycle', 'Kitchen Life II', 'Ironclad Mermaid', 'Dancing Twins', 'KA-NO-PU-SU-NO-HA-KO', \"I'll just go birdwatching\", 'Akai Kutsu no Ningyo (Red-Shoed Mermaid) / Pascal Plantinga', 'Paradaisu (Imada Kuufuku) / Terre Thaemlitz', 'A/B-ing the Bird / Skist', 'Reflector / Joshua McKay']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

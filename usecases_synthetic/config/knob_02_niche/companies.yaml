@@ -1,0 +1,301 @@
+# Knob 02 - Entity Niche Density - Companies
+#
+# Authored per knobs/knob_02_niche_density.md.
+#
+# Per-level configuration carries only the target_corner_case_ratio.
+# The dispatcher derives operator counts from the data: it measures the
+# baseline ratio first, then either drops high-density entities (lower
+# the ratio) or interpolates corner cases (raise the ratio). When
+# interpolation fires, low-density entities are dropped in equal number
+# so the per-source row counts stay close to the originals.
+
+domain: companies
+
+# ID column per source. The loader renames each source's native id
+# column (configured via `id_column:` in `config/domains/companies.yaml`)
+# to `id` immediately after read — see usecases_synthetic/lib/loaders.py
+# §"Explicit `id` rename" — so downstream code uniformly references `id`.
+id_columns:
+  dbpedia: id
+  forbes: id
+  fullcontact: id
+
+# Primary label column per source (the per-source string most commonly
+# used as the human-readable identifier). Used for label lookups and
+# the niche-density primary-label tokenisation pipeline.
+primary_column_per_source:
+  dbpedia: org_name
+  forbes: company
+  fullcontact: Attribute_2
+
+# Attribute mapping from per-source columns to the canonical schema.
+# Coverage check (2026-05-04, refreshed CSVs):
+#   name      dbpedia 100%  forbes 100%  fullcontact 100%
+#   country   dbpedia 100%  forbes  97%  fullcontact  74%
+#   city      dbpedia  93%  forbes  --   fullcontact  71%
+#   industry  dbpedia  --   forbes  98%  fullcontact  --
+#   sector    dbpedia  68%  forbes  --   fullcontact  --
+#   founded   dbpedia 100%  forbes  --   fullcontact  55%
+canonical_schema:
+  - name
+  - country
+  - city
+  - industry
+  - sector
+  - founded
+
+attribute_mapping:
+  dbpedia:
+    org_name: name
+    nation: country
+    headquarters: city
+    sector: sector
+    established: founded
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_6: founded
+
+# Deterministic source fallback order used when building the canonical
+# view from linked per-source records. Earlier sources win on non-null
+# attributes; the same order drives S1 projection writes.
+source_priority:
+  - dbpedia
+  - forbes
+  - fullcontact
+
+# Columns concatenated into the embedding / TF-IDF / ext-Jaccard text
+# corpus. Order is significant — it is baked into the embedding cache
+# sidecar meta so a column reorder invalidates the cache.
+text_concat_order:
+  - name
+  - industry
+  - sector
+  - country
+  - city
+
+# Embedding model used for the embedding-cosine metric. Cache sidecar
+# stores model_id; switching models invalidates the cache automatically.
+embedding_model_id: BAAI/bge-base-en-v1.5
+
+# Niche-metric set toggles. Disabling any one of these degrades the
+# scorer + miner gracefully per the knob card §"Algorithm selection".
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+# Per-metric top-K for the neighbour retrieval. Companies' canonical
+# set is the smallest of the three domains so the literature default
+# is sufficient.
+metric_top_k: 20
+
+# RRF damping constant.
+rrf_k0: 60
+
+# Minimum metric agreement for a neighbour to contribute to density.
+c_min: 2
+
+# Label-collision density boost.
+boost_label_collision: 5.0
+
+# Extended Jaccard inner-token threshold.
+inner_token_threshold: 0.8
+
+# Per-metric thresholds for the pair miner. Same-cluster pair with
+# `sim < t_match[m]` => hard_match. Cross-cluster pair with
+# `sim > t_nonmatch[m]` => hard_non_match. Defaults follow WDC Products
+# and profiling_em_benchmarks.
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Attribute-overlap weights — companies per knob card §Domain-specific.
+attribute_overlap_weights:
+  industry: 0.4
+  country: 0.3
+  sector: 0.15
+  city: 0.15
+  founded: 0.1
+
+# Numeric tolerance bands for attribute_overlap. Year fields use ±1
+# absolute (3% relative on a 4-digit year is meaningless); continuous
+# quantities would use relative ±3% (none present in companies'
+# canonical schema).
+numeric_overlap:
+  founded:
+    kind: absolute
+    tolerance: 1
+
+# Stopwords pruned before tokenisation of the primary label.
+stopword_list:
+  - inc
+  - "inc."
+  - corp
+  - "corp."
+  - ltd
+  - "ltd."
+  - company
+  - co
+  - "co."
+  - the
+  - and
+
+# Per-level corner-case ratio targets. The dispatcher measures the
+# data's baseline ratio then closes the gap dynamically:
+#   baseline > target  -> drop high-density (densest niche) entities
+#                         until the target is reached.
+#   baseline < target  -> interpolate corner-case entities up to
+#                         max_interp_fraction; balance with low-density
+#                         drops so per-source row counts stay stable.
+#   baseline ~ target  -> no-op.
+# When the baseline cannot be reduced to the easy target without
+# violating protection, we accept the floor and report it.
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+  medium:
+    target_corner_case_ratio: 0.50
+  hard:
+    target_corner_case_ratio: 0.80
+
+# Hard-cap on interpolation fraction (never inject more than this
+# fraction of the canonical-set size).
+max_interp_fraction: 0.60
+
+# Per-interpolation corner-pair-contribution estimate. The dispatcher's
+# budget calc is:
+#   per_interp_corner = max(1, int(metric_top_k * interp_pair_factor))
+#   raw_count = ceil(needed_corner / per_interp_corner)
+# With factor=0.5 the formula assumes each interpolation lands ~10
+# corner pairs (metric_top_k=20), yielding a small interp budget. On
+# companies-small post-2026-05-04, realised corner ratio plateaued at
+# ~0.17 across all levels — a 60-80% under-shoot vs target 0.5 / 0.8.
+# Lowering to 0.05 makes the budget gap-realistic (per_interp_corner=1)
+# at the cost of more LLM calls per run. Mirrors music's 0.05 (F4,
+# plan_s1_final.md).
+# Bumped 2026-05-27 from 0.05 to 0.10 (companies-only) per step 4h
+# sign-off — companies-small realised under 50% of configured ratio
+# targets at all levels; doubled budget halves the LLM-call count to
+# close the gap.
+interp_pair_factor: 0.10
+
+# Fraction of interpolated entities placed across two sources rather
+# than within a single source. Cross-source placement creates new EM
+# corner-case pairs that didn't exist in the gold; within-source
+# placement creates SM/duplicate-detection challenge.
+# 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.
+# Was 0.6 (60% test / 40% train); user signed off equal distribution so the
+# regen splits have the same corner-case shape on both sides.
+placement_split: 0.5
+
+# Pair pool cap per class (same/cross) before stratified sampling —
+# bounds the O(n^2) pair-similarity pass that builds same_pairs /
+# cross_pairs candidate sets.
+em_test_regeneration:
+  candidate_pool_cap: 2000
+
+# Hard-path LLM config. See cross_cutting.md §"LLM hygiene". Bumping
+# model_id invalidates the on-disk LLM cache (cache key carries
+# model_id). The api_client adapter is wired by generate_variant.py;
+# until a GPT adapter lands, K2-hard runs use the deterministic
+# fallback in lib/entity_interpolation.py.
+#
+# Default model is gpt-5.4-mini for cost reasons (~5x cheaper than full
+# gpt-5.4). Before each K2 run, ask the user whether to bump to gpt-5.4
+# for higher-fidelity hard-negative interpolation; bumping invalidates
+# cache.
+# 2026-05-27 (step 4h): prompt v1 -> v2 — interpolate_v2.txt broadens
+# the lead-sentence domain enumeration to include products (GPUs / SSDs /
+# HDDs / etc.) and carries a domain-extension maintenance note.
+# Invalidates the existing K2 LLM cache by construction.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Step 4i (2026-05-27): drop-corner-touching operator + non-corner
+# refill. New K2 dispatch branch at baseline_ratio > target_ratio
+# replaces the legacy noop_baseline_above_target path — K2 now actually
+# moves the ratio downward when configured. Each drop pairs with a
+# 1-for-1 LLM-synthesized non-corner entity refill so canonical set
+# size stays stable.
+non_corner_refill:
+  enabled: true
+  reference_count: 5            # K reference entities for the dissimilarity anchor
+  contamination_check:
+    label_collision_block: true # synthesised primary label must not exist in current canonical set
+non_corner_prompt_version: v1
+
+# Pool quality flag. Companies has a two-source pooled_positives file.
+pool_quality: two_system
+
+# ----------------------------------------------------------------------------
+# Hard-negative score-margin gate (S3 in plans/plan_s1_scale.md)
+# ----------------------------------------------------------------------------
+# Applied to corner-case hard_non_match record pairs before they are
+# promoted into the regenerated EM test set. The gate requires an
+# honest PLM (Ditto checkpoint from R2) to agree the pair is not a
+# match; pairs the PLM thinks are matches are dropped as likely hidden
+# positives. The LLM adjudicator rescues the narrow ambiguity band
+# [theta - delta, theta).
+#
+# theta = 0.5 (fixed, no per-checkpoint tuning) comes from
+# run_20260504_150510 (R2.2 8-run sweep on ADI training data with
+# `--fixed-threshold 0.5`). Recipe: roberta-base, lr=1e-5, batch_size=32,
+# max_len=256, max_field_len=350, epochs=50 with early-stopping patience=5
+# (early-stopped at epoch 9), warmup_ratio=0.06, MixDA --da del, no
+# class-balance weighting. Trained on ADI's labeled pool across 3 pairs
+# (dbpedia_forbes, forbes_fullcontact, dbpedia_fullcontact) — train 5,713
+# (deduped, leak-free) / val 866 (ADI FAISS-mined) / test 599 (PyDI gold).
+# best_val_f1=0.9757 @ threshold=0.5; combined test F1=0.9261
+# (P=0.926, R=0.926, 13 FPs / 13 FNs); per-pair test F1: dbpedia_forbes
+# 0.968 (P=R=0.968, beats ADI 0.954 by +1.4pp), forbes_fullcontact 0.903
+# (P=R=0.903, 9pp behind ADI 0.995 due to fullcontact's abstract
+# Attribute_* schema).
+hard_negative_gate:
+  enabled: true
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/companies/best
+  plm_fields:
+    - name
+    - country
+    - city
+    - industry
+    - sector
+    - founded
+  plm_threshold_theta: 0.5
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 32
+  plm_margin_delta: 0.08
+  # 2026-05-27 (step 4h option a): full LLM adjudication on every
+  # gate decision via new gate_mode field. Mirrors bucket-C policy:
+  # PLM score becomes audit telemetry, not a decision shortcut.
+  # Insurance against transitional-state Ditto calibration on
+  # music / companies / products (pre-R7 padding fix).
+  gate_mode: full_llm
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    hard:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm

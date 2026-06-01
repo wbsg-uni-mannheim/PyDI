@@ -1,0 +1,54 @@
+# QWERTY keyboard adjacency map.
+#
+# For each key, lists the physically adjacent keys on a standard US QWERTY
+# keyboard.  Used by the ``typo_substitute`` operator to bias character
+# substitutions towards keys that a human typist would plausibly hit by
+# mistake.
+#
+# Source: Christen & Vatsalan, "Keyboard Proximity Corruption" method;
+# FEBRL keyboard-proximity weighting (line 224).
+
+adjacency:
+  # Number row
+  "1": ["2", "q"]
+  "2": ["1", "3", "q", "w"]
+  "3": ["2", "4", "w", "e"]
+  "4": ["3", "5", "e", "r"]
+  "5": ["4", "6", "r", "t"]
+  "6": ["5", "7", "t", "y"]
+  "7": ["6", "8", "y", "u"]
+  "8": ["7", "9", "u", "i"]
+  "9": ["8", "0", "i", "o"]
+  "0": ["9", "o", "p"]
+
+  # Top alpha row
+  "q": ["1", "2", "w", "a"]
+  "w": ["2", "3", "q", "e", "a", "s"]
+  "e": ["3", "4", "w", "r", "s", "d"]
+  "r": ["4", "5", "e", "t", "d", "f"]
+  "t": ["5", "6", "r", "y", "f", "g"]
+  "y": ["6", "7", "t", "u", "g", "h"]
+  "u": ["7", "8", "y", "i", "h", "j"]
+  "i": ["8", "9", "u", "o", "j", "k"]
+  "o": ["9", "0", "i", "p", "k", "l"]
+  "p": ["0", "o", "l"]
+
+  # Home row
+  "a": ["q", "w", "s", "z"]
+  "s": ["a", "w", "e", "d", "z", "x"]
+  "d": ["s", "e", "r", "f", "x", "c"]
+  "f": ["d", "r", "t", "g", "c", "v"]
+  "g": ["f", "t", "y", "h", "v", "b"]
+  "h": ["g", "y", "u", "j", "b", "n"]
+  "j": ["h", "u", "i", "k", "n", "m"]
+  "k": ["j", "i", "o", "l", "m"]
+  "l": ["k", "o", "p"]
+
+  # Bottom row
+  "z": ["a", "s", "x"]
+  "x": ["z", "s", "d", "c"]
+  "c": ["x", "d", "f", "v"]
+  "v": ["c", "f", "g", "b"]
+  "b": ["v", "g", "h", "n"]
+  "n": ["b", "h", "j", "m"]
+  "m": ["n", "j", "k"]

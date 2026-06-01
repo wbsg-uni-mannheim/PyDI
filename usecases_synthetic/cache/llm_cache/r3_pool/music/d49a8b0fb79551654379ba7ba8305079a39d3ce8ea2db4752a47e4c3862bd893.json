@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_137361|lastFM_7150|name=Where I Belong | artist=Hans Bouffmyhre | release-date=2013-12-09 | release-country=UK | duration=4188.0 | genre=Electronic | tracks=['Deep Space (Intro)', 'Fourteen', 'Remaining', 'Comatose', 'The Chase', 'Where I Belong', 'Sanction', 'Dominator', 'Bring It Back', 'Discipline', 'Flash Mode', 'Fortress']||name=Where We Belong | artist=Boyzone | duration=4127.0 | tracks=['Picture of You', 'Baby Can I Hold You (7\" Edit)', 'All That I Need (7\" Edit)', 'Must Have Been High', 'And I', \"That's How Love Goes\", 'Where Did You Go?', \"I'm Learning (Part 1)\", 'One Kiss at a Time', 'While The World Is Going Crazy', 'This Is Where I Belong', 'Will Be Yours', 'Good Conversation', 'You Flew Away', \"I'm Learning (Part 2)\", 'No Matter What', 'I Love the Way You Love Me']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Where I Belong | artist=Hans Bouffmyhre | release-date=2013-12-09 | release-country=UK | duration=4188.0 | genre=Electronic | tracks=['Deep Space (Intro)', 'Fourteen', 'Remaining', 'Comatose', 'The Chase', 'Where I Belong', 'Sanction', 'Dominator', 'Bring It Back', 'Discipline', 'Flash Mode', 'Fortress']\nRecord B: name=Where We Belong | artist=Boyzone | duration=4127.0 | tracks=['Picture of You', 'Baby Can I Hold You (7\" Edit)', 'All That I Need (7\" Edit)', 'Must Have Been High', 'And I', \"That's How Love Goes\", 'Where Did You Go?', \"I'm Learning (Part 1)\", 'One Kiss at a Time', 'While The World Is Going Crazy', 'This Is Where I Belong', 'Will Be Yours', 'Good Conversation', 'You Flew Away', \"I'm Learning (Part 2)\", 'No Matter What', 'I Love the Way You Love Me']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

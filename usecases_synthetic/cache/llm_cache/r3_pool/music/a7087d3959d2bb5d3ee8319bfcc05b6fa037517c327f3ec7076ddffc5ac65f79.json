@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_8457|lastFM_18811|name=Beyond The Gates | artist=Cans | release-date=2004 | release-country=UK | genre=Rock | tracks=['Fields Of Yesterday', 'Soul Collector', 'Red Light', 'Back To Hell', 'Beyond The Gates', 'The Key', 'Garden Of Evil', 'Merciless', 'Silent Cries', 'Dreams', 'Signs', 'Forever Ends']||name=Beyond the dream | artist=Fellirium | duration=3126.0 | tracks=['Beyond the dream (part 1)', 'Beyond the dream (part 2)', 'Beyond the dream (part 3)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond The Gates | artist=Cans | release-date=2004 | release-country=UK | genre=Rock | tracks=['Fields Of Yesterday', 'Soul Collector', 'Red Light', 'Back To Hell', 'Beyond The Gates', 'The Key', 'Garden Of Evil', 'Merciless', 'Silent Cries', 'Dreams', 'Signs', 'Forever Ends']\nRecord B: name=Beyond the dream | artist=Fellirium | duration=3126.0 | tracks=['Beyond the dream (part 1)', 'Beyond the dream (part 2)', 'Beyond the dream (part 3)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

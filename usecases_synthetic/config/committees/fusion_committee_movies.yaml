@@ -1,0 +1,184 @@
+# Fusion committee roster - movies domain.
+#
+# Per-domain fork of the canonical companies fusion_committee.yaml
+# (see plans/plan_s1_scale.md S10, 2026-04-29). Per-attribute strategy
+# lists tailored to the movies schema (title / director / date /
+# actors).
+#
+# Per plans/plan_s1_scale.md "movies" specifics: XML-native sources,
+# date-heavy domain. The fusion test_set.xml schema has only four
+# canonical attributes (id, title, director, actors, date), so the
+# committee per-attribute spread is correspondingly compact:
+#   - title (primary string): voting + longest_string + most_complete +
+#     prefer_higher_trust + accusim/fusionquery/casefusion + llm_judge
+#   - director (key string): voting + longest_string + prefer_higher_trust
+#     + truthfinder + llm_judge
+#   - date (date): voting + earliest + prefer_higher_trust
+#   - actors (list): union + voting + prefer_higher_trust + ltm
+#
+# Also covered (cross_cutting.md "Lists"): actors is the multi-truth
+# attribute - LTM is the only TD member with native multi-truth support.
+
+seed: 42
+
+fused_id_column: id
+gold_id_column: id
+
+# Trust scores: no clear quality prior across the three movie sources
+# (academy_awards / actors / golden_globes are all curated awards lists
+# from different organisations). Default ordering matches K2
+# source_priority but with low spread - 1/2/3 just provides a tie-
+# breaker for prefer_higher_trust without overriding learned TD.
+trust_scores:
+  academy_awards: 2
+  actors: 3
+  golden_globes: 1
+
+# Column mapping - keep in sync with em_blocking / em_matching movies
+# yamls.
+column_mapping:
+  academy_awards:
+    director_name: director
+    actors_actor_name: actors
+  actors:
+    actors_actor_name: actors
+  golden_globes:
+    director_name: director
+    actors_actor_name: actors
+
+evaluation_functions:
+  title: tokenized_match
+  director: tokenized_match
+  date: year_only_match
+  actors: set_equality_match
+
+attributes:
+  # ---- primary string ------------------------------------------------------
+  title:
+    attribute_class: primary
+    strategies:
+      - name: voting
+        function: voting
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: cell_local
+        params: {}
+      - name: longest_string
+        function: longest_string
+        module: PyDI.fusion.conflict_resolution.string
+        strategy_type: cell_local
+        params: {}
+      - name: most_complete
+        function: most_complete
+        module: PyDI.fusion.conflict_resolution.string
+        strategy_type: cell_local
+        params: {}
+      - name: prefer_higher_trust
+        function: prefer_higher_trust
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: trust_weighted
+        params: {}
+      - name: accusim
+        function: make_accusim_resolver
+        module: usecases_synthetic.lib.td_batch_fusion
+        strategy_type: truth_discovery
+        factory: true
+        params: {}
+      - name: fusionquery
+        function: make_fusionquery_resolver
+        module: usecases_synthetic.lib.td_batch_fusion
+        strategy_type: truth_discovery
+        factory: true
+        params: {}
+      - name: casefusion
+        function: make_casefusion_resolver
+        module: usecases_synthetic.lib.td_batch_fusion
+        strategy_type: truth_discovery
+        factory: true
+        params: {}
+      - name: llm_judge
+        function: llm_judge
+        module: usecases_synthetic.lib.llm_judge_fusion
+        strategy_type: llm_adjudicated
+        params:
+          cache_dir: usecases_synthetic/cache/llm_judge_fusion
+
+  # ---- key string (director) -----------------------------------------------
+  director:
+    attribute_class: key
+    strategies:
+      - name: voting
+        function: voting
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: cell_local
+        params: {}
+      - name: longest_string
+        function: longest_string
+        module: PyDI.fusion.conflict_resolution.string
+        strategy_type: cell_local
+        params: {}
+      - name: prefer_higher_trust
+        function: prefer_higher_trust
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: trust_weighted
+        params: {}
+      - name: truthfinder
+        function: make_truthfinder_resolver
+        module: usecases_synthetic.lib.td_batch_fusion
+        strategy_type: truth_discovery
+        factory: true
+        params: {}
+      - name: llm_judge
+        function: llm_judge
+        module: usecases_synthetic.lib.llm_judge_fusion
+        strategy_type: llm_adjudicated
+        params:
+          cache_dir: usecases_synthetic/cache/llm_judge_fusion
+
+  # ---- date (date) ---------------------------------------------------------
+  date:
+    attribute_class: key
+    strategies:
+      - name: voting
+        function: voting
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: cell_local
+        params: {}
+      - name: earliest
+        function: earliest
+        module: PyDI.fusion.conflict_resolution.date
+        strategy_type: cell_local
+        params: {}
+      - name: prefer_higher_trust
+        function: prefer_higher_trust
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: trust_weighted
+        params: {}
+
+  # ---- list / multi-truth (actors) -----------------------------------------
+  actors:
+    attribute_class: secondary
+    strategies:
+      - name: union
+        function: union
+        module: PyDI.fusion.conflict_resolution.list
+        strategy_type: cell_local
+        params: {}
+      - name: voting
+        function: voting
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: cell_local
+        params: {}
+      - name: prefer_higher_trust
+        function: prefer_higher_trust
+        module: PyDI.fusion.conflict_resolution.general
+        strategy_type: trust_weighted
+        params: {}
+      - name: ltm
+        function: make_ltm_resolver
+        module: usecases_synthetic.lib.td_batch_fusion
+        strategy_type: truth_discovery
+        factory: true
+        params: {}
+
+required_axes:
+  strategy_type: [cell_local, trust_weighted]

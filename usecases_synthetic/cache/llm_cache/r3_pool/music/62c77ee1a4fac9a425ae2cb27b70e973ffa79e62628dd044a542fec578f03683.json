@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_34882|lastFM_65291|name=Spirit Of The Wild | artist=Ted Nugent | release-country=United States of America | duration=3656.0 | genre=Blues|Rock | tracks=['Thighraceous', 'Wrong Side Of Town', 'I Shoot Back', 'Tooth, Fang, & Claw', 'Lovejacker', 'Fred Bear', 'Primitive Man', 'Hot Or Cold', 'Kiss My Ass', 'Heart & Soul', 'Spirit Of The Wild', 'Just Do It Like This']||name=Spirit  the Bride | artist=Spirit a. the Bride | duration=3687.0 | tracks=['Soaking', 'Spirit and the Bride', 'Dodi Duse Sveti', 'The Veil Is Torn', 'A Shadow-Days Upon Earth', 'A.M. Radio Ghost', 'Rama', 'Glimmer', 'Oce Nas', 'The Servant', 'Metanoia', 'Processional', 'Garden', 'The Here and Yet to Come']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit Of The Wild | artist=Ted Nugent | release-country=United States of America | duration=3656.0 | genre=Blues|Rock | tracks=['Thighraceous', 'Wrong Side Of Town', 'I Shoot Back', 'Tooth, Fang, & Claw', 'Lovejacker', 'Fred Bear', 'Primitive Man', 'Hot Or Cold', 'Kiss My Ass', 'Heart & Soul', 'Spirit Of The Wild', 'Just Do It Like This']\nRecord B: name=Spirit  the Bride | artist=Spirit a. the Bride | duration=3687.0 | tracks=['Soaking', 'Spirit and the Bride', 'Dodi Duse Sveti', 'The Veil Is Torn', 'A Shadow-Days Upon Earth', 'A.M. Radio Ghost', 'Rama', 'Glimmer', 'Oce Nas', 'The Servant', 'Metanoia', 'Processional', 'Garden', 'The Here and Yet to Come']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

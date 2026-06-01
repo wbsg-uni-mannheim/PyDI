@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_66530|mbrainz_9028|name=Broken | artist=J. Bugg | duration=246.0 | tracks=['Broken']||name=Broken | artist=Straight Faced | release-date=1996-10-30 | release-country=United States of America | duration=2159 | tracks=['Convictions', 'Negative', 'Gone Too Far', 'Change', 'No Ambition', 'Insecure', 'Who Am I to Say', 'Apology', 'Potential Genius', 'A Week Ago Today', 'Broken', 'Lit', 'Show Me Your Gun', 'Wrong']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken | artist=J. Bugg | duration=246.0 | tracks=['Broken']\nRecord B: name=Broken | artist=Straight Faced | release-date=1996-10-30 | release-country=United States of America | duration=2159 | tracks=['Convictions', 'Negative', 'Gone Too Far', 'Change', 'No Ambition', 'Insecure', 'Who Am I to Say', 'Apology', 'Potential Genius', 'A Week Ago Today', 'Broken', 'Lit', 'Show Me Your Gun', 'Wrong']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

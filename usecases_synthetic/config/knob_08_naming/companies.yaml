@@ -1,0 +1,164 @@
+# Knob 08 — Schema Naming Divergence: Companies
+#
+# Rename tables per source per column at each rung on the
+# descriptive -> abbreviated -> cryptic -> anonymized ladder.
+#
+# Refreshed against the 2026-05-04 CSV sources (post-loader column
+# names). FullContact ships physically anonymized as `Attribute_1..6`,
+# so its rename_table keys ARE the `Attribute_X` strings; the
+# descriptive rung lifts to canonical target attribute names per the
+# K10 attribute_mapping sign-off.
+
+# Which rung each source lands on at each difficulty level.
+level_assignments:
+  easy:
+    dbpedia: descriptive
+    forbes: descriptive
+    fullcontact: descriptive
+  medium:
+    dbpedia: abbreviated
+    forbes: descriptive
+    fullcontact: cryptic
+  hard:
+    dbpedia: cryptic
+    forbes: abbreviated
+    fullcontact: anonymized
+
+# Ground-truth schema mapping: source_col -> target_col.
+# Only columns with a target correspondence are listed.
+# Canonical target names follow the K10 sign-off attribute_mapping.
+sm_mapping:
+  dbpedia:
+    id: id
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: industry
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    id: id
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+  fullcontact:
+    id: id
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: industry
+    Attribute_6: founded
+
+# Per-source, per-column rename table.
+# Each non-id column has four rungs.
+#
+# Id columns (sm_mapping target == "id") are intentionally OMITTED
+# from this table — renaming them breaks downstream pipeline stages
+# that reference records by id (EM correspondences, fusion engine
+# id_column lookup). The apply_knob_08 script also guards against this
+# defensively; the omission here makes the intent explicit in config.
+rename_table:
+  dbpedia:
+    org_name:
+      descriptive: name
+      abbreviated: org_nm
+      cryptic: nm
+      anonymized: Attribute_2
+    established:
+      descriptive: founded
+      abbreviated: est_yr
+      cryptic: ey
+      anonymized: Attribute_3
+    nation:
+      descriptive: country
+      abbreviated: ctry
+      cryptic: cn
+      anonymized: Attribute_4
+    headquarters:
+      descriptive: city
+      abbreviated: hq_city
+      cryptic: hq
+      anonymized: Attribute_5
+    sector:
+      descriptive: industry
+      abbreviated: sect
+      cryptic: sg
+      anonymized: Attribute_6
+    keypeople_name:
+      descriptive: keypeople
+      abbreviated: kp_nm
+      cryptic: kpn
+      anonymized: Attribute_7
+    total_assets_val:
+      descriptive: assets
+      abbreviated: tot_ast
+      cryptic: ta
+      anonymized: Attribute_8
+    annual_income:
+      descriptive: revenue
+      abbreviated: ann_inc
+      cryptic: ai
+      anonymized: Attribute_9
+
+  forbes:
+    company:
+      descriptive: name
+      abbreviated: co_nm
+      cryptic: cn
+      anonymized: Attribute_2
+    url:
+      descriptive: website
+      abbreviated: url
+      cryptic: u
+      anonymized: Attribute_3
+    region:
+      descriptive: country
+      abbreviated: region
+      cryptic: reg
+      anonymized: Attribute_4
+    business_segment:
+      descriptive: industry
+      abbreviated: bus_seg
+      cryptic: bs
+      anonymized: Attribute_5
+    asset_value:
+      descriptive: assets
+      abbreviated: ast_val
+      cryptic: av
+      anonymized: Attribute_6
+    sales_figure:
+      descriptive: revenue
+      abbreviated: sls_fig
+      cryptic: sf
+      anonymized: Attribute_7
+
+  fullcontact:
+    Attribute_2:
+      descriptive: name
+      abbreviated: co_nm
+      cryptic: nm
+      anonymized: Attribute_2
+    Attribute_3:
+      descriptive: country
+      abbreviated: ctry
+      cryptic: cn
+      anonymized: Attribute_3
+    Attribute_4:
+      descriptive: city
+      abbreviated: loc
+      cryptic: cy
+      anonymized: Attribute_4
+    Attribute_5:
+      descriptive: industry
+      abbreviated: ind
+      cryptic: isg
+      anonymized: Attribute_5
+    Attribute_6:
+      descriptive: founded
+      abbreviated: found_yr
+      cryptic: fy
+      anonymized: Attribute_6

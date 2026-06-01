@@ -1,0 +1,264 @@
+{
+  "cluster_size_distribution": {
+    "available": true,
+    "max_size": 43,
+    "n_components": 8974,
+    "p95_size": 5,
+    "p99_size": 8,
+    "top_sizes": [
+      43,
+      30,
+      26,
+      24,
+      21,
+      21,
+      20,
+      17,
+      17,
+      16
+    ]
+  },
+  "delta_estimation": {
+    "cap": 0.2,
+    "delta_used": 0.2,
+    "floor": 0.05,
+    "n_misclassified": 43,
+    "n_predictions": 1321,
+    "percentile": 90.0,
+    "raw_percentile": 0.4967323492746801
+  },
+  "ditto_checkpoint": "/Users/ralph/Dev/PyDI/cache/ditto_checkpoints/games/best",
+  "ditto_threshold": 0.5,
+  "domain": "games",
+  "llm_model_id": "gpt-5.4",
+  "llm_used": true,
+  "per_pair": {
+    "dbpedia_metacritic": {
+      "blocker_sweep": {
+        "cleared_floor": false,
+        "per_blocker": {
+          "bm25_blocker": {
+            "n_candidates": 465800,
+            "n_gold_positives_seen": 284,
+            "n_gold_positives_total": 302,
+            "pair_recall": 0.9403973509933775,
+            "reduction_ratio": 0.9995120523079926
+          },
+          "embedding_blocker": {
+            "n_candidates": 465753,
+            "n_gold_positives_seen": 287,
+            "n_gold_positives_total": 302,
+            "pair_recall": 0.9503311258278145,
+            "reduction_ratio": 0.9995121015427318
+          },
+          "sorted_neighbourhood_blocker": {
+            "n_candidates": 474112,
+            "n_gold_positives_seen": 261,
+            "n_gold_positives_total": 302,
+            "pair_recall": 0.8642384105960265,
+            "reduction_ratio": 0.9995033450919858
+          },
+          "standard_blocker": {
+            "n_candidates": 3725598,
+            "n_gold_positives_seen": 290,
+            "n_gold_positives_total": 302,
+            "pair_recall": 0.9602649006622517,
+            "reduction_ratio": 0.9960972585971501
+          },
+          "token_blocker": {
+            "n_candidates": 45203339,
+            "n_gold_positives_seen": 292,
+            "n_gold_positives_total": 302,
+            "pair_recall": 0.9668874172185431,
+            "reduction_ratio": 0.9526473487847169
+          }
+        },
+        "winner": "embedding_blocker"
+      },
+      "buckets": {
+        "a_gold": 302,
+        "b_agreement": 6280,
+        "c_dropped_confident": 161,
+        "c_dropped_llm": 1459,
+        "c_kept_confident": 4144,
+        "c_kept_llm": 826,
+        "c_total": 6590
+      },
+      "closure": {
+        "closure_only_pair": false,
+        "ditto_added": 3130,
+        "human_added": 0,
+        "n_ditto_pos_pre_closure": 12565,
+        "n_human_pre_closure": 6778
+      },
+      "delta_used": 0.2,
+      "n_candidates": 465792,
+      "n_ditto_positive_at_theta": 12821,
+      "n_gold_positives": 302,
+      "n_human_pairs_expanded": 6778,
+      "n_left": 46580,
+      "n_right": 20494,
+      "pool_size": 11552,
+      "sources": [
+        "dbpedia",
+        "metacritic"
+      ]
+    },
+    "dbpedia_sales": {
+      "blocker_sweep": {
+        "cleared_floor": false,
+        "per_blocker": {
+          "bm25_blocker": {
+            "n_candidates": 465800,
+            "n_gold_positives_seen": 301,
+            "n_gold_positives_total": 320,
+            "pair_recall": 0.940625,
+            "reduction_ratio": 0.9987304811476451
+          },
+          "embedding_blocker": {
+            "n_candidates": 465114,
+            "n_gold_positives_seen": 301,
+            "n_gold_positives_total": 320,
+            "pair_recall": 0.940625,
+            "reduction_ratio": 0.9987323508125929
+          },
+          "sorted_neighbourhood_blocker": {
+            "n_candidates": 238160,
+            "n_gold_positives_seen": 289,
+            "n_gold_positives_total": 320,
+            "pair_recall": 0.903125,
+            "reduction_ratio": 0.9993509046589162
+          },
+          "standard_blocker": {
+            "n_candidates": 1367183,
+            "n_gold_positives_seen": 302,
+            "n_gold_positives_total": 320,
+            "pair_recall": 0.94375,
+            "reduction_ratio": 0.9962737986407917
+          },
+          "token_blocker": {
+            "n_candidates": 17133675,
+            "n_gold_positives_seen": 302,
+            "n_gold_positives_total": 320,
+            "pair_recall": 0.94375,
+            "reduction_ratio": 0.9533028694233087
+          }
+        },
+        "winner": "sorted_neighbourhood_blocker"
+      },
+      "buckets": {
+        "a_gold": 320,
+        "b_agreement": 2262,
+        "c_dropped_confident": 82,
+        "c_dropped_llm": 356,
+        "c_kept_confident": 2851,
+        "c_kept_llm": 629,
+        "c_total": 3918
+      },
+      "closure": {
+        "closure_only_pair": false,
+        "ditto_added": 2016,
+        "human_added": 0,
+        "n_ditto_pos_pre_closure": 5609,
+        "n_human_pre_closure": 2621
+      },
+      "delta_used": 0.2,
+      "n_candidates": 238274,
+      "n_ditto_positive_at_theta": 6325,
+      "n_gold_positives": 320,
+      "n_human_pairs_expanded": 2621,
+      "n_left": 46580,
+      "n_right": 7877,
+      "pool_size": 6062,
+      "sources": [
+        "dbpedia",
+        "sales"
+      ]
+    },
+    "metacritic_sales": {
+      "blocker_sweep": {
+        "cleared_floor": true,
+        "per_blocker": {
+          "bm25_blocker": {
+            "n_candidates": 204940,
+            "n_gold_positives_seen": 134,
+            "n_gold_positives_total": 135,
+            "pair_recall": 0.9925925925925926,
+            "reduction_ratio": 0.9987304811476451
+          },
+          "embedding_blocker": {
+            "n_candidates": 204299,
+            "n_gold_positives_seen": 135,
+            "n_gold_positives_total": 135,
+            "pair_recall": 1.0,
+            "reduction_ratio": 0.9987344518785144
+          },
+          "sorted_neighbourhood_blocker": {
+            "n_candidates": 219220,
+            "n_gold_positives_seen": 127,
+            "n_gold_positives_total": 135,
+            "pair_recall": 0.9407407407407408,
+            "reduction_ratio": 0.9986420224318666
+          },
+          "standard_blocker": {
+            "n_candidates": 737479,
+            "n_gold_positives_seen": 127,
+            "n_gold_positives_total": 135,
+            "pair_recall": 0.9407407407407408,
+            "reduction_ratio": 0.9954316214808437
+          },
+          "token_blocker": {
+            "n_candidates": 7918711,
+            "n_gold_positives_seen": 134,
+            "n_gold_positives_total": 135,
+            "pair_recall": 0.9925925925925926,
+            "reduction_ratio": 0.950946848341707
+          }
+        },
+        "winner": "embedding_blocker"
+      },
+      "buckets": {
+        "a_gold": 135,
+        "b_agreement": 870,
+        "c_dropped_confident": 741,
+        "c_dropped_llm": 339,
+        "c_kept_confident": 1139,
+        "c_kept_llm": 1506,
+        "c_total": 3725
+      },
+      "closure": {
+        "closure_only_pair": false,
+        "ditto_added": 2988,
+        "human_added": 2157,
+        "n_ditto_pos_pre_closure": 3377,
+        "n_human_pre_closure": 0
+      },
+      "delta_used": 0.2,
+      "n_candidates": 204299,
+      "n_ditto_positive_at_theta": 3412,
+      "n_gold_positives": 135,
+      "n_human_pairs_expanded": 2157,
+      "n_left": 20494,
+      "n_right": 7877,
+      "pool_size": 3650,
+      "sources": [
+        "metacritic",
+        "sales"
+      ]
+    }
+  },
+  "pool_size": 21264,
+  "transitive_closure": {
+    "ditto_added_per_pair": {
+      "dbpedia__metacritic": 3130,
+      "dbpedia__sales": 2016,
+      "metacritic__sales": 2988
+    },
+    "extra_ditto_calls": 4323,
+    "human_added_per_pair": {
+      "dbpedia__metacritic": 0,
+      "dbpedia__sales": 0,
+      "metacritic__sales": 2157
+    }
+  }
+}

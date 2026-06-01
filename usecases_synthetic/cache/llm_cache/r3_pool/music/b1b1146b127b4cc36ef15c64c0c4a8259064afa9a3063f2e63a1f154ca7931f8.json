@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_10509|lastFM_82759|name=Discography (The Complete Singles Collection) | artist=Pet Shop Boys | release-date=1991 | release-country=United States of America | genre=Electronic | tracks=['West End Girls', 'Love Comes Quickly', \"Opportunities (Let's Make Lots Of Money)\", 'Suburbia', \"It's A Sin\", 'What Have I Done To Deserve This?', 'Rent', 'Always On My Mind', 'Heart', 'Domino Dancing', 'Left To My Own Devices', \"It's Alright\", 'So Hard', 'Being Boring', \"Where The Streets Have No Name (Can't Take My Eyes Off You)\", 'Jealousy', 'DJ Culture', 'Was It Worth It?']||name=Discography: The Complete Singles Collection | artist=Pet Shop Boys | duration=3433.0 | tracks=['Opportunities', \"It's a Sin\", 'What Have I Done to Deserve This', 'Rent', 'Always on My Mind', 'Heart', 'Domino Dancing', 'Left To My Own Devices', 'So Hard', 'Being Boring', 'Where the Streets Have No Name', 'Jealousy', 'Was It Worth It?']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Discography (The Complete Singles Collection) | artist=Pet Shop Boys | release-date=1991 | release-country=United States of America | genre=Electronic | tracks=['West End Girls', 'Love Comes Quickly', \"Opportunities (Let's Make Lots Of Money)\", 'Suburbia', \"It's A Sin\", 'What Have I Done To Deserve This?', 'Rent', 'Always On My Mind', 'Heart', 'Domino Dancing', 'Left To My Own Devices', \"It's Alright\", 'So Hard', 'Being Boring', \"Where The Streets Have No Name (Can't Take My Eyes Off You)\", 'Jealousy', 'DJ Culture', 'Was It Worth It?']\nRecord B: name=Discography: The Complete Singles Collection | artist=Pet Shop Boys | duration=3433.0 | tracks=['Opportunities', \"It's a Sin\", 'What Have I Done to Deserve This', 'Rent', 'Always on My Mind', 'Heart', 'Domino Dancing', 'Left To My Own Devices', 'So Hard', 'Being Boring', 'Where the Streets Have No Name', 'Jealousy', 'Was It Worth It?']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_153657|lastFM_4764|name=I Brought You My Bullets, You Brought Me Your Love | artist=My Chemical Romance | release-date=2005 | release-country=Russia | duration=2479.0 | genre=Rock | tracks=['Romance', \"Honey, The Mirror Isn't Big Enough For The Two Of Us\", 'Vampires Will Never Hurt You', 'Drowning Lessons', 'Our Lady Of Sorrows', 'Headfirst For Halos', 'Skylines And Turnstiles', 'Early Sunsets Over Monroeville', 'This Is The Best Day Ever', 'Cubicles', 'Demolition Lovers']||name=I Brought You My Bullets, You Brought Me Your Love | artist=My Chemical Romance | duration=1890.0 | tracks=['Romance', \"Honey, This Mirror Isn't Big Enough for the Two of Us\", 'Drowning Lessons', 'Our Lady of Sorrows', 'Headfirst for Halos', 'Skylines and Turnstiles', 'Early Sunsets Over Monroeville', 'This Is the Best Day Ever', 'Demolition Lovers']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=I Brought You My Bullets, You Brought Me Your Love | artist=My Chemical Romance | release-date=2005 | release-country=Russia | duration=2479.0 | genre=Rock | tracks=['Romance', \"Honey, The Mirror Isn't Big Enough For The Two Of Us\", 'Vampires Will Never Hurt You', 'Drowning Lessons', 'Our Lady Of Sorrows', 'Headfirst For Halos', 'Skylines And Turnstiles', 'Early Sunsets Over Monroeville', 'This Is The Best Day Ever', 'Cubicles', 'Demolition Lovers']\nRecord B: name=I Brought You My Bullets, You Brought Me Your Love | artist=My Chemical Romance | duration=1890.0 | tracks=['Romance', \"Honey, This Mirror Isn't Big Enough for the Two of Us\", 'Drowning Lessons', 'Our Lady of Sorrows', 'Headfirst for Halos', 'Skylines and Turnstiles', 'Early Sunsets Over Monroeville', 'This Is the Best Day Ever', 'Demolition Lovers']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

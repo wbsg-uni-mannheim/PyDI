@@ -1,0 +1,30 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "USD"
+    },
+    {
+      "source": "products_2",
+      "value": "AED"
+    },
+    {
+      "source": "products_3",
+      "value": "AUD"
+    },
+    {
+      "source": "products_4",
+      "value": "LEI"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict with no clear basis to derive a single canonical currency, so I selected one verbatim.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"The candidates conflict with no clear basis to derive a single canonical currency, so I selected one verbatim.\"}"
+}

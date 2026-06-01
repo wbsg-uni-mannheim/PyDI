@@ -1,0 +1,233 @@
+# Knob 02 - Entity Niche Density - Music
+#
+# Per-level configuration carries only the target_corner_case_ratio;
+# the dispatcher derives operator counts from the data — see
+# companies.yaml header for the full description.
+
+domain: music
+
+# All sources expose `id` after the loader (refreshed CSVs ship a
+# native `id` column with source-specific prefix mbrainz_/discogs_/lastFM_).
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+primary_column_per_source:
+  musicbrainz: name
+  discogs: name
+  lastfm: name
+
+# Refreshed 2026-05-04. All 3 sources share an identical CSV column
+# set: [id, name, artist, release-date, release-country, duration,
+# label, genre, tracks]. Canonical-field coverage:
+#   name             mb 100%  discogs 100%  lastfm 100%
+#   artist           mb 100%  discogs 100%  lastfm 100%
+#   release-date     mb  93%  discogs  90%  lastfm   0%
+#   release-country  mb  84%  discogs  97%  lastfm   0%
+#   duration         mb  90%  discogs  57%  lastfm  46%
+#   genre            mb   0%  discogs 100%  lastfm   0%
+#   label            mb   0%  discogs 100%  lastfm   0%  (also reserved by Ditto)
+canonical_schema:
+  - name
+  - artist
+  - release-date
+  - release-country
+  - duration
+  - genre
+  - label
+
+attribute_mapping:
+  musicbrainz:
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+  discogs:
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+    genre: genre
+    label: label
+  lastfm:
+    name: name
+    artist: artist
+    duration: duration
+
+source_priority:
+  - musicbrainz
+  - discogs
+  - lastfm
+
+text_concat_order:
+  - name
+  - artist
+  - release-country
+  - genre
+
+embedding_model_id: BAAI/bge-base-en-v1.5
+
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+# Music's canonical set is mid-sized (~9k entities); widen top-K
+# moderately compared to companies.
+metric_top_k: 30
+
+rrf_k0: 60
+c_min: 2
+boost_label_collision: 5.0
+inner_token_threshold: 0.8
+
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Attribute-overlap weights — music. Artist + name together identify
+# the release; country and genre are coarser categorical partitions.
+attribute_overlap_weights:
+  artist: 0.5
+  release-country: 0.2
+  genre: 0.2
+  duration: 0.1
+
+# Continuous duration uses relative ±3%; release-date would also use
+# relative tolerance but it is a string in the source, so it falls
+# back to exact match. (If date parsing is added later, switch to
+# {kind: absolute, tolerance: 90} for ±90-day matching.)
+numeric_overlap:
+  duration:
+    kind: relative
+    tolerance: 0.03
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+  - feat
+  - "feat."
+
+# 2026-05-31: targets lowered from 0.50/0.80 to achievable values. Music is
+# a naturally low-corner domain (~0.24 baseline). Raising the corner ratio
+# means injecting near-twin entities whose cross-cluster pairs are corner
+# cases; at the max_interp_fraction=0.60 cap (~19k interpolations on ~31k
+# entities) the reachable ceiling is only ~0.33, and reaching 0.50/0.80
+# would require +50-280% synthetic entities (infeasible + domain-distorting).
+# Easy stays 0.20 (drop path; baseline ~0.27 -> ~0.22). medium/hard are
+# modest monotone bumps within reach. K2 is intrinsically a small-range knob
+# for music; the difficulty signal leans on K1/K3/K4/K6/K8. (See the
+# capped-sample-metric note in apply_knob_02_niche / the 2026-05-31 K2 dig.)
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+  medium:
+    target_corner_case_ratio: 0.30
+  hard:
+    target_corner_case_ratio: 0.35
+
+max_interp_fraction: 0.60
+# 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.
+# Was 0.6 (60% test / 40% train); user signed off equal distribution so the
+# regen splits have the same corner-case shape on both sides.
+placement_split: 0.5
+# Calibrated 2026-05-14 from music-small smoke. The original 0.5 default
+# assumed ~15 corner-pair adds per interpolation (metric_top_k * 0.5);
+# realised contribution after RRF agreement filtering is ~1-2 pairs per
+# interpolation, so the gap-driven budget under-shot the target ratio
+# 7-15x. Drop to 0.05 (per_interp_corner=1.5 ≈ 1.5 corner pairs per LLM
+# call) so the budget actually closes the gap. Ceiling at
+# max_interp_fraction * n_entities still binds.
+interp_pair_factor: 0.05
+
+em_test_regeneration:
+  candidate_pool_cap: 2000
+
+# Default model gpt-5.4-mini for cost. Ask user before each K2 run
+# whether to bump to gpt-5.4 (invalidates cache).
+# 2026-05-27 (step 4h): prompt v1 -> v2 — interpolate_v2.txt broadens
+# the lead-sentence domain enumeration to include products (GPUs / SSDs /
+# HDDs / etc.) and carries a domain-extension maintenance note.
+# Invalidates the existing K2 LLM cache by construction.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Step 4i (2026-05-27): drop-corner-touching operator + non-corner
+# refill. New K2 dispatch branch at baseline_ratio > target_ratio
+# replaces the legacy noop_baseline_above_target path — K2 now actually
+# moves the ratio downward when configured. Each drop pairs with a
+# 1-for-1 LLM-synthesized non-corner entity refill so canonical set
+# size stays stable.
+non_corner_refill:
+  enabled: true
+  reference_count: 5            # K reference entities for the dissimilarity anchor
+  contamination_check:
+    label_collision_block: true # synthesised primary label must not exist in current canonical set
+non_corner_prompt_version: v1
+
+pool_quality: two_system
+
+# Hard-negative score-margin gate (S3). Pinned to the R2.2 winner from
+# plan_s1_scale.md: roberta-base, lr=1e-4, batch_size=32, max_len=256,
+# max_field_len=350, epochs=50 with early-stopping patience=5
+# (early-stopped at epoch 2), warmup_ratio=0.06, MixDA --da del,
+# class-balanced via --sample-weights-csv (pos≈5.62, neg≈0.55 — train
+# is 8.9% positive so positives are up-weighted), --fixed-threshold 0.5.
+# Trained on PyDI's natural train/val/test splits (option (b) — pure
+# PyDI throughout: train 36,658 / val 17,010 / test 2,000 pairs).
+# Combined test F1=0.9837 (P=0.969, R=0.998); per-pair test F1:
+# musicbrainz↔discogs 0.979 (P=0.960, R=1.000, **beats ADI 0.976**),
+# musicbrainz↔lastfm 0.988 (P=0.979, R=0.997, vs ADI 0.995, -0.7pp).
+# Run dir: cache/ditto_checkpoints/music/sweep_lr_1e-4_weighted/run_20260505_063929
+# Fields: drops `genre` (single-source — only discogs has it) and
+# `label` (S11 fix: collides with Ditto's reserved binary class column).
+# `duration` added in place of `genre` — 41-51% both-sides coverage,
+# better signal than 0% both-sides genre.
+hard_negative_gate:
+  enabled: true
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/music/best
+  plm_fields:
+    - name
+    - artist
+    - release-date
+    - release-country
+    - duration
+  plm_threshold_theta: 0.5
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 32
+  plm_margin_delta: 0.08
+  # 2026-05-27 (step 4h option a): full LLM adjudication on every
+  # gate decision via new gate_mode field. Mirrors bucket-C policy:
+  # PLM score becomes audit telemetry, not a decision shortcut.
+  # Insurance against transitional-state Ditto calibration on
+  # music / companies / products (pre-R7 padding fix).
+  gate_mode: full_llm
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    hard:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm

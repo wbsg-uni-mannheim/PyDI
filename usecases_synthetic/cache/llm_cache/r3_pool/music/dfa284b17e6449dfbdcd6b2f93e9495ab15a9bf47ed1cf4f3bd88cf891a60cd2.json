@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_17563|mbrainz_130|name=Fallen | artist=I. Rumore Del Fiore Di Carta | duration=1119.0 | tracks=['Mira', 'Ambassador', 'Nestor 10']||name=Fallen | artist=One Dove | release-date=1991-10-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1155 | tracks=['Fallen (Darkest Hour)', 'Fallen (Dawn)', 'Fallen (Dusk)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fallen | artist=I. Rumore Del Fiore Di Carta | duration=1119.0 | tracks=['Mira', 'Ambassador', 'Nestor 10']\nRecord B: name=Fallen | artist=One Dove | release-date=1991-10-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1155 | tracks=['Fallen (Darkest Hour)', 'Fallen (Dawn)', 'Fallen (Dusk)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_137806|lastFM_23106|name=Brothers Of The Road | artist=The Allman Brothers Band | release-date=1997 | release-country=United States of America | duration=2357.0 | genre=Rock | tracks=['Brothers Of The Road', \"Leavin'\", 'Straight From The Heart', 'The Heat Is On', 'Maybe We Can Go Back To Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much ( I Needed You )', 'Things You Used To Do', 'I Beg Of You']||name=The Allman Brothers Band At Fillmore East | artist=The Allman Brothers Band | duration=7902.0 | tracks=['Statesboro Blues', 'Done Somebody Wrong', 'Stormy Monday', 'Stormy Monday (Live At The Fillmore East)', \"You Don't Love Me\", \"You Don't Love Me / Soul Serenade\", \"Hot 'Lanta\", 'In Memory Of Elizabeth Reed (1971/Live At The Fillmore East)', 'Whipping Post', \"Hot 'Lanta\", 'In Memory Of Elizabeth Reed', 'Whipping Post']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Brothers Of The Road | artist=The Allman Brothers Band | release-date=1997 | release-country=United States of America | duration=2357.0 | genre=Rock | tracks=['Brothers Of The Road', \"Leavin'\", 'Straight From The Heart', 'The Heat Is On', 'Maybe We Can Go Back To Yesterday', 'The Judgment', 'Two Rights', 'Never Knew How Much ( I Needed You )', 'Things You Used To Do', 'I Beg Of You']\nRecord B: name=The Allman Brothers Band At Fillmore East | artist=The Allman Brothers Band | duration=7902.0 | tracks=['Statesboro Blues', 'Done Somebody Wrong', 'Stormy Monday', 'Stormy Monday (Live At The Fillmore East)', \"You Don't Love Me\", \"You Don't Love Me / Soul Serenade\", \"Hot 'Lanta\", 'In Memory Of Elizabeth Reed (1971/Live At The Fillmore East)', 'Whipping Post', \"Hot 'Lanta\", 'In Memory Of Elizabeth Reed', 'Whipping Post']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

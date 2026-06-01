@@ -1,0 +1,37 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['The Final Chord', 'A Day in the Life', 'Man on the Moon', 'Light My Fire', 'Jabberwocky', 'Coffee', 'One Note Samba', 'Ipanema Rap', 'Weather', 'Hockey', 'Behind the Scenes', 'Larry Siegel', 'Music and Love', 'Autobahn']"
+    },
+    {
+      "source": "discogs",
+      "value": "['The Final Chord', 'A Day In The Life', 'Man On The Moon', 'Light My Fire', 'Jabberwocky', 'Coffee', 'One Note Samba', 'Ipanema Rap', 'Weather', 'Hockey', 'Behind The Scenes', 'Larry Siegel', 'Music And Love', 'Autobahn']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Both sources list the same track set with only capitalization differences, so I normalized to a single consistent track list.",
+    "value": [
+      "The Final Chord",
+      "A Day in the Life",
+      "Man on the Moon",
+      "Light My Fire",
+      "Jabberwocky",
+      "Coffee",
+      "One Note Samba",
+      "Ipanema Rap",
+      "Weather",
+      "Hockey",
+      "Behind the Scenes",
+      "Larry Siegel",
+      "Music and Love",
+      "Autobahn"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"The Final Chord\",\"A Day in the Life\",\"Man on the Moon\",\"Light My Fire\",\"Jabberwocky\",\"Coffee\",\"One Note Samba\",\"Ipanema Rap\",\"Weather\",\"Hockey\",\"Behind the Scenes\",\"Larry Siegel\",\"Music and Love\",\"Autobahn\"],\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Both sources list the same track set with only capitalization differences, so I normalized to a single consistent track list.\"}"
+}

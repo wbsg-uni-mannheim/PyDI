@@ -1,0 +1,21 @@
+# EDA parameter defaults for Knob 01 — from Wei & Zou (2019).
+#
+# Knob 01 uses only random_swap and random_delete (synonym_replace and
+# random_insertion rejected per knob card §"Rejected alternatives"). The
+# `alpha = n / sentence_length` convention from the EDA paper is adopted
+# for paraphrase_rate_* in the per-domain configs.
+
+# Max fraction of non-stopword tokens an operator may touch in one pass.
+# The per-domain config overrides this when authored explicitly.
+max_fraction_touched_per_cell: 0.25
+
+# Minimum number of tokens a value must contain before EDA operators fire.
+# Shorter values are passed through unmodified.
+min_tokens_for_eda: 2
+
+# Maximum operator calls per cell per level. Hard cap (cross-checked by
+# the dispatcher against the per-level operator_mix).
+max_operators_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2

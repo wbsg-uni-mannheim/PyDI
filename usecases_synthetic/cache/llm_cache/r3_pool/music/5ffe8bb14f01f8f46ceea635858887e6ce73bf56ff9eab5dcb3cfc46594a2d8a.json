@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_184703|lastFM_77418|name=In Dreams | artist=Joseph McManners | release-date=2005 | duration=2718.0 | genre=Pop|Rock | tracks=['Bright Eyes', 'Pie Jesu', 'In Dreams', 'Psalm 23', 'Walking In The Air', 'Panis Angelicus', 'Circle of Life', 'Lullaby', 'Music of The Angels', 'Candlelight Carol', 'Morning Has Broken', 'Where Is Love?', 'The Little Prince Song (Bonus Track)']||name=Dreams | artist=Joseph McManners | duration=2725.0 | tracks=['Bright Eyes', 'Pie Jesu', 'In Dreams', 'Psalm 23', 'Walking in the Air', 'Panis Angelicus', 'Circle Of Life', 'Lullaby', 'Music Of The Angels', 'Candelight Carol', 'Morning Has Broken', 'Where Is Love', 'The Little Prince Song']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=In Dreams | artist=Joseph McManners | release-date=2005 | duration=2718.0 | genre=Pop|Rock | tracks=['Bright Eyes', 'Pie Jesu', 'In Dreams', 'Psalm 23', 'Walking In The Air', 'Panis Angelicus', 'Circle of Life', 'Lullaby', 'Music of The Angels', 'Candlelight Carol', 'Morning Has Broken', 'Where Is Love?', 'The Little Prince Song (Bonus Track)']\nRecord B: name=Dreams | artist=Joseph McManners | duration=2725.0 | tracks=['Bright Eyes', 'Pie Jesu', 'In Dreams', 'Psalm 23', 'Walking in the Air', 'Panis Angelicus', 'Circle Of Life', 'Lullaby', 'Music Of The Angels', 'Candelight Carol', 'Morning Has Broken', 'Where Is Love', 'The Little Prince Song']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

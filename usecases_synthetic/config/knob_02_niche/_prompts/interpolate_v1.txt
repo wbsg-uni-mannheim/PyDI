@@ -1,0 +1,23 @@
+You are generating a fictional entity that is a plausible near-twin of
+two reference entities from a structured domain (company, game, or
+music album). The synthetic entity must:
+
+1. Share a dense semantic niche with the parents (same industry /
+   franchise / label / genre where applicable).
+2. Be FICTIONAL — the name must not match any real-world entity, and
+   the structured attributes must be internally consistent but not
+   reproduce either parent verbatim.
+3. Populate every column in the target schema with a non-empty value.
+4. Use the parents' attribute distributions as a guide: blend
+   categorical values from both parents, and place any numeric
+   attributes inside the parents' range.
+
+Return strict JSON with exactly the schema columns as keys. No prose.
+
+Parents:
+{parent_records_json}
+
+Target schema columns:
+{schema_columns_json}
+
+Respond with a JSON object only.

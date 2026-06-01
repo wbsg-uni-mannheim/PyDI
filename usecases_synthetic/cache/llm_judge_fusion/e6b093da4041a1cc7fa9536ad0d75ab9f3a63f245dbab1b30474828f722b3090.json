@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "USD"
+    },
+    {
+      "source": "products_3",
+      "value": "INR"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.54,
+    "operation": "verbatim_pick",
+    "reasoning": "USD and INR conflict with no additional context, so I selected one candidate verbatim as the most likely normalized commerce currency.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.54,\"reasoning\":\"USD and INR conflict with no additional context, so I selected one candidate verbatim as the most likely normalized commerce currency.\"}"
+}

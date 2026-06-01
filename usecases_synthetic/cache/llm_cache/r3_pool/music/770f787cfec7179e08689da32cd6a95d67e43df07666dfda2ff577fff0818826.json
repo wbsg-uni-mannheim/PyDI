@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_187936|mbrainz_2835|name=Audioslave | artist=Audioslave | release-date=2002 | release-country=South Africa | duration=3924.0 | genre=Rock | tracks=['Cochise', 'Show Me How To Live', 'Gasoline', 'What You Are', 'Like A Stone', 'Set It Off', 'Shadow On The Sun', 'I Am The Highway', 'Exploder', 'Hypnotize', 'Bring Em Back Alive', 'Light My Way', 'Getaway Car', 'The Last Remaining Light']||name=Audioslave | artist=Audioslave | release-date=2002-11-15 | release-country=Australia | duration=3946 | tracks=['Cochise', 'Show Me How to Live', 'Gasoline', 'What You Are', 'Like a Stone', 'Set It Off', 'Shadow on the Sun', 'I Am the Highway', 'Exploder', 'Hypnotize', 'Bring Em Back Alive', 'Light My Way', 'Getaway Car', 'The Last Remaining Light']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Audioslave | artist=Audioslave | release-date=2002 | release-country=South Africa | duration=3924.0 | genre=Rock | tracks=['Cochise', 'Show Me How To Live', 'Gasoline', 'What You Are', 'Like A Stone', 'Set It Off', 'Shadow On The Sun', 'I Am The Highway', 'Exploder', 'Hypnotize', 'Bring Em Back Alive', 'Light My Way', 'Getaway Car', 'The Last Remaining Light']\nRecord B: name=Audioslave | artist=Audioslave | release-date=2002-11-15 | release-country=Australia | duration=3946 | tracks=['Cochise', 'Show Me How to Live', 'Gasoline', 'What You Are', 'Like a Stone', 'Set It Off', 'Shadow on the Sun', 'I Am the Highway', 'Exploder', 'Hypnotize', 'Bring Em Back Alive', 'Light My Way', 'Getaway Car', 'The Last Remaining Light']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

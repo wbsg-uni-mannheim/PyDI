@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1742|lastFM_55435|name=Tempest / Lexicon | artist=Tech Level 2 | release-date=2001-04-01 | release-country=UK | duration=692.0 | genre=Electronic | tracks=['Tempest', 'Lexicon']||name=Tempest | artist=Deftones | duration=365.0 | tracks=['Tempest']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tempest / Lexicon | artist=Tech Level 2 | release-date=2001-04-01 | release-country=UK | duration=692.0 | genre=Electronic | tracks=['Tempest', 'Lexicon']\nRecord B: name=Tempest | artist=Deftones | duration=365.0 | tracks=['Tempest']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

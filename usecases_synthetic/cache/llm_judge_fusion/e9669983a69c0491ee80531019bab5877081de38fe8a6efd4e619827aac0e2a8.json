@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2490"
+    },
+    {
+      "source": "discogs",
+      "value": "2490.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "2479.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "aggregation",
+    "reasoning": "Two sources agree exactly and the third is a close outlier, so the robust canonical duration is 2490.",
+    "value": 2490
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2490,\"operation\":\"aggregation\",\"confidence\":0.97,\"reasoning\":\"Two sources agree exactly and the third is a close outlier, so the robust canonical duration is 2490.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_17798|mbrainz_149|name=The Saturday Night Experience Volume 1 | artist=J. Watley | tracks=[]||name=Saturday Night Experience | artist=Watley, Jody | release-date=2001-01-01 | release-country=United States of America | duration=1720 | tracks=['Saturday Night Experience (Shelter vocal)', 'Saturday Night Experience (original)', 'Saturday Night Experience (Ron Trent vocal)', 'Saturday Night Experience (Shelter dub)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Saturday Night Experience Volume 1 | artist=J. Watley | tracks=[]\nRecord B: name=Saturday Night Experience | artist=Watley, Jody | release-date=2001-01-01 | release-country=United States of America | duration=1720 | tracks=['Saturday Night Experience (Shelter vocal)', 'Saturday Night Experience (original)', 'Saturday Night Experience (Ron Trent vocal)', 'Saturday Night Experience (Shelter dub)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

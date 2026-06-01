@@ -1,0 +1,133 @@
+# Entity-matching BLOCKING committee roster - movies domain.
+#
+# Per-domain fork of the canonical companies em_blocking_committee.yaml
+# (see plans/plan_s1_scale.md S10, 2026-04-29). Roster + composition
+# strategy match companies; what changes:
+#   - blocking_name_column = "title" (movies canonical primary)
+#   - blocker text_cols / sort key reference "title" instead of "name"
+#   - column_mapping mirrors knob_02_niche/movies.yaml attribute_mapping
+#
+# Note: S6 (movies pool) is upstream-blocked on a movies PLM run; this
+# YAML is structurally complete but Phase C cannot run on movies until
+# the pool lands.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+# Movies canonical primary is ``title``. The committee runner derives
+# ``name_first_token`` from this column before standard blocking; the
+# output column name (``name_first_token``) is fixed for all domains so
+# the standard blocker spec stays uniform.
+blocking_name_column: title
+
+members:
+  - name: token_blocker
+    description: "Token-set inverted-index blocker on title (lexical, incumbent)"
+    blocker:
+      class: TokenBlocker
+      module: PyDI.entitymatching.blocking.token_blocking
+      params:
+        column: title
+        min_token_len: 2
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: standard_blocker
+    description: >-
+      Equality on derived name_first_token key (lexical, incumbent).
+      Movies' ``blocking_name_column`` is ``title`` - the runner derives
+      ``name_first_token`` from the title column, so this spec is
+      identical to companies/games/music.
+    blocker:
+      class: StandardBlocker
+      module: PyDI.entitymatching.blocking.standard
+      params:
+        "on": [name_first_token]
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: embedding_blocker
+    description: >-
+      Sentence-BERT dense ANN top-k (embedding, incumbent).
+    blocker:
+      class: EmbeddingBlocker
+      module: PyDI.entitymatching.blocking.embedding
+      params:
+        text_cols: [title]
+        model: sentence-transformers/all-MiniLM-L6-v2
+        top_k: 50
+        threshold: 0.3
+    blocking_type: embedding
+    enabled_by_default: true
+
+  - name: sorted_neighbourhood_blocker
+    description: >-
+      Sliding-window blocker over a sort key (lexical, new - drop-in
+      from PyDI).
+    blocker:
+      class: SortedNeighbourhoodBlocker
+      module: PyDI.entitymatching.blocking.sorted_neighbourhood
+      params:
+        key: title
+        window: 20
+    blocking_type: lexical
+    enabled_by_default: true
+
+  - name: bm25_blocker
+    description: >-
+      Okapi BM25 over character n-grams (sparse, bm25s backend,
+      char_wb tokenisation). Char-ngrams give paraphrase / typo
+      tolerance that word-BM25 lacks at hard. Word-level BM25
+      (previously here) was retired 2026-05-22 per plan_revision.md §C4.
+    blocker:
+      class: BM25Blocker
+      module: usecases_synthetic.lib.bm25_blocker
+      params:
+        text_cols: [title]
+        top_k: 50
+        tokenizer: char_ngram
+        ngram_range: [3, 5]
+        k1: 1.5
+        b: 0.75
+    blocking_type: sparse
+    enabled_by_default: true
+
+  - name: sc_block
+    description: >-
+      DEFERRED. Supervised-contrastive encoder + FAISS ANN (hybrid).
+      Per-domain checkpoint required.
+    blocker:
+      class: SCBlockBlocker
+      module: usecases_synthetic.lib.sc_block_blocker
+      params:
+        text_cols: [title]
+        top_k: 50
+        checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/movies/best
+    blocking_type: hybrid
+    enabled_by_default: false
+
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+
+required_axes:
+  blocking_type: [lexical, sparse, embedding]
+
+# Column mapping - normalises heterogeneous source columns to the
+# canonical movies schema (title, director, date, actors). Mirrors
+# knob_02_niche/movies.yaml attribute_mapping; all three sources have
+# native ``id`` and ``title`` columns so no renames needed there. The
+# academy_awards / golden_globes XMLs nest director under
+# ``director/name`` -> the loader flattens to ``director_name`` which
+# we then rename to the canonical ``director``.
+column_mapping:
+  academy_awards:
+    director_name: director
+    actors_actor_name: actors
+  actors:
+    actors_actor_name: actors
+  golden_globes:
+    director_name: director
+    actors_actor_name: actors

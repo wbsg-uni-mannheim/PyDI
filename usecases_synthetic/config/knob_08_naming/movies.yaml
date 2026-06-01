@@ -1,0 +1,108 @@
+# Knob 08 — Schema Naming Divergence: Movies
+
+level_assignments:
+  easy:
+    academy_awards: descriptive
+    actors: descriptive
+    golden_globes: descriptive
+  medium:
+    academy_awards: abbreviated
+    actors: descriptive
+    golden_globes: cryptic
+  hard:
+    academy_awards: cryptic
+    actors: abbreviated
+    golden_globes: anonymized
+
+sm_mapping:
+  academy_awards:
+    id: id
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+  actors:
+    id: id
+    title: title
+    date: date
+    actors_actor_name: actors
+    actors_actor_birthday: actors_birthday
+    actors_actor_birthplace: actors_birthplace
+  golden_globes:
+    id: id
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+
+rename_table:
+  academy_awards:
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: t
+      anonymized: Attribute_2
+    director_name:
+      descriptive: director
+      abbreviated: dir
+      cryptic: dr
+      anonymized: Attribute_3
+    date:
+      descriptive: date
+      abbreviated: rel_dt
+      cryptic: dt
+      anonymized: Attribute_4
+    actors_actor_name:
+      descriptive: actors
+      abbreviated: act_nms
+      cryptic: act
+      anonymized: Attribute_5
+
+  actors:
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: t_nm
+      anonymized: Attribute_2
+    date:
+      descriptive: date
+      abbreviated: rel_dt
+      cryptic: dt
+      anonymized: Attribute_3
+    actors_actor_name:
+      descriptive: actors
+      abbreviated: act_nms
+      cryptic: cast
+      anonymized: Attribute_4
+    actors_actor_birthday:
+      descriptive: actors_birthday
+      abbreviated: act_bday
+      cryptic: bd
+      anonymized: Attribute_5
+    actors_actor_birthplace:
+      descriptive: actors_birthplace
+      abbreviated: act_bp
+      cryptic: bp
+      anonymized: Attribute_6
+
+  golden_globes:
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: ttl_str
+      anonymized: Attribute_2
+    director_name:
+      descriptive: director
+      abbreviated: dir
+      cryptic: dr_nm
+      anonymized: Attribute_3
+    date:
+      descriptive: date
+      abbreviated: rel_dt
+      cryptic: yr_dt
+      anonymized: Attribute_4
+    actors_actor_name:
+      descriptive: actors
+      abbreviated: act_nms
+      cryptic: ac
+      anonymized: Attribute_5

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1683|lastFM_15015|name=Dynamo | artist=Kate Mosh | release-date=2001-06-28 | release-country=United States of America | duration=4406.0 | genre=Electronic | tracks=['Across The Universe', \"Crawford's Theme 1\", 'The Fire This Time', 'Hectic', 'Lifelines', 'Suicide', \"Crawford's Theme 2\", 'Kate Mosh', 'Maniac', 'Genesis', 'Dynamo', 'Solar Death']||name=Dynamo City / Miasmatron | artist=Dynamo C. | duration=1280.0 | tracks=['Dynamo City', 'Miasmatron, Part 1', 'Miasmatron, Part 2']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dynamo | artist=Kate Mosh | release-date=2001-06-28 | release-country=United States of America | duration=4406.0 | genre=Electronic | tracks=['Across The Universe', \"Crawford's Theme 1\", 'The Fire This Time', 'Hectic', 'Lifelines', 'Suicide', \"Crawford's Theme 2\", 'Kate Mosh', 'Maniac', 'Genesis', 'Dynamo', 'Solar Death']\nRecord B: name=Dynamo City / Miasmatron | artist=Dynamo C. | duration=1280.0 | tracks=['Dynamo City', 'Miasmatron, Part 1', 'Miasmatron, Part 2']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

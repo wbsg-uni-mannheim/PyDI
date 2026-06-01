@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_11054|lastFM_142|name=Feel The Drums | artist=Native | release-date=2001 | release-country=Spain | genre=Electronic | tracks=['Feel The Drums (Public Domain Mix)', 'Feel The Drums (Original Mix)']||name=Feel The Drums | artist=Native | duration=865.0 | tracks=['Feel The Drums (Original Mix)', 'Feel the Drums (Tough mix)', 'Feel the drums (public domain mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Feel The Drums | artist=Native | release-date=2001 | release-country=Spain | genre=Electronic | tracks=['Feel The Drums (Public Domain Mix)', 'Feel The Drums (Original Mix)']\nRecord B: name=Feel The Drums | artist=Native | duration=865.0 | tracks=['Feel The Drums (Original Mix)', 'Feel the Drums (Tough mix)', 'Feel the drums (public domain mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

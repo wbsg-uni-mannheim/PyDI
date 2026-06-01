@@ -1,0 +1,73 @@
+# Shared English stopword list for Knob 01 — EDA random_swap / random_delete
+# operators treat these tokens as untouchable.
+#
+# Derived from the EDA paper's stopword list (Wei & Zou 2019) plus
+# domain-specific "legal form" tokens common across companies / games / music
+# (e.g. "Inc.", "Ltd.", "GmbH") that are never safe to reorder or delete.
+
+stopwords:
+  # EDA-standard English stopwords
+  - a
+  - an
+  - the
+  - and
+  - or
+  - but
+  - if
+  - of
+  - at
+  - by
+  - for
+  - with
+  - about
+  - to
+  - from
+  - in
+  - on
+  - is
+  - are
+  - was
+  - were
+  - be
+  - been
+  - being
+  - have
+  - has
+  - had
+  - do
+  - does
+  - did
+  - will
+  - would
+  - could
+  - should
+  - may
+  - might
+  - can
+  - this
+  - that
+  - these
+  - those
+  - it
+  - its
+  - their
+  - there
+  - as
+  # Companies / music / games: legal-form / label tokens
+  - inc
+  - "inc."
+  - incorporated
+  - corp
+  - "corp."
+  - corporation
+  - ltd
+  - "ltd."
+  - limited
+  - llc
+  - gmbh
+  - co
+  - "co."
+  - company
+  - plc
+  - sa
+  - ag

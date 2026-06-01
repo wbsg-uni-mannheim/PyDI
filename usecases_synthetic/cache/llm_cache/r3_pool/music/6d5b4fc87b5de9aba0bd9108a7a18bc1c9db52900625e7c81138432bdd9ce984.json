@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_42672|mbrainz_1884|name=The Singles Collection 1981 - | artist=K. Wilde | duration=2331.0 | tracks=['The Second Time', 'Rage To Love', \"You Keep Me Hangin' On\", 'Another Step (Closer To You)', 'You Came', 'Never Trust A Stranger', 'Four Letter Word', 'Love Is Holy', \"If I Can't Have You\", 'In My Life']||name=The Punk Singles Collection | artist=Adverts, The (and others) | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2356 | tracks=['One Chord Wonders', 'Quick Step', 'Gary Gilmoreâ€™s Eyes', 'Bored Teenagers', 'Safety in Numbers', 'We Who Wait', 'No Time to Be 21', 'New Day Dawning', 'Televisionâ€™s Over', 'Back From the Dead', 'My Place', 'New Church (live in Germany)', 'Cast of Thousands', 'I Will Walk You Home']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles Collection 1981 - | artist=K. Wilde | duration=2331.0 | tracks=['The Second Time', 'Rage To Love', \"You Keep Me Hangin' On\", 'Another Step (Closer To You)', 'You Came', 'Never Trust A Stranger', 'Four Letter Word', 'Love Is Holy', \"If I Can't Have You\", 'In My Life']\nRecord B: name=The Punk Singles Collection | artist=Adverts, The (and others) | release-date=1997-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2356 | tracks=['One Chord Wonders', 'Quick Step', 'Gary Gilmoreâ€™s Eyes', 'Bored Teenagers', 'Safety in Numbers', 'We Who Wait', 'No Time to Be 21', 'New Day Dawning', 'Televisionâ€™s Over', 'Back From the Dead', 'My Place', 'New Church (live in Germany)', 'Cast of Thousands', 'I Will Walk You Home']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

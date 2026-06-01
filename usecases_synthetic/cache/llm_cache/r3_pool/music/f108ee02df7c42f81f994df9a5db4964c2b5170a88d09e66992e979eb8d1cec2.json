@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_64805|lastFM_51628|name=An Empty Bliss Beyond This World | artist=The Caretaker | release-date=2011-05-19 | release-country=Europe | duration=2729.0 | genre=Electronic | tracks=['All You Are Going To Want To Do Is Get Back There', 'Moments Of Sufficient Lucidity', 'The Great Hidden Sea Of The Unconscious', \"Libet's Delay\", 'I Feel As If I Might Be Vanishing', 'An Empty Bliss Beyond This World', 'Bedded Deep In Long Term Memory', 'A Relationship With The Sublime', 'Mental Caverns Without Sunshine', 'Pared Back To The Minimal', 'Mental Caverns Without Sunshine', 'An Empty Bliss Beyond This World', 'Tiny Gradiations Of Loss', 'Camaraderie At Arms Length', 'The Sublime Is Disappointingly Elusive']||name=Town Beyond  Trees | artist=The Storys | duration=2675.0 | tracks=['LONG HARD ROAD', \"YOU COULDN'T MAKE IT UP\", 'Evangelina (Seven Days)', 'ALONE', \"IT'S ALL WE REALLY NEED\", 'NOBODY LOVES YOU', 'TOWN BEYOND THE TREES', 'HEAVEN HOLDS YOU NOW', 'FEELING SOMETHING', 'TROUBLE DEEP']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=An Empty Bliss Beyond This World | artist=The Caretaker | release-date=2011-05-19 | release-country=Europe | duration=2729.0 | genre=Electronic | tracks=['All You Are Going To Want To Do Is Get Back There', 'Moments Of Sufficient Lucidity', 'The Great Hidden Sea Of The Unconscious', \"Libet's Delay\", 'I Feel As If I Might Be Vanishing', 'An Empty Bliss Beyond This World', 'Bedded Deep In Long Term Memory', 'A Relationship With The Sublime', 'Mental Caverns Without Sunshine', 'Pared Back To The Minimal', 'Mental Caverns Without Sunshine', 'An Empty Bliss Beyond This World', 'Tiny Gradiations Of Loss', 'Camaraderie At Arms Length', 'The Sublime Is Disappointingly Elusive']\nRecord B: name=Town Beyond  Trees | artist=The Storys | duration=2675.0 | tracks=['LONG HARD ROAD', \"YOU COULDN'T MAKE IT UP\", 'Evangelina (Seven Days)', 'ALONE', \"IT'S ALL WE REALLY NEED\", 'NOBODY LOVES YOU', 'TOWN BEYOND THE TREES', 'HEAVEN HOLDS YOU NOW', 'FEELING SOMETHING', 'TROUBLE DEEP']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,31 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Why Free Myra Hindley', 'Hammer and the Gun', 'Ich bin ein Berliner', 'Agent Orange']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Why Free M.H.', 'Hammer And The Gun', 'Ich Bin Ein Berliner', 'Agent Orange']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Why Free Myra Hindley', 'Ich bin ein Berliner', 'Agent Orange']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "intersection",
+    "reasoning": "The shared track set across sources indicates the canonical tracks, with minor title casing and abbreviation differences normalized away.",
+    "value": [
+      "Why Free Myra Hindley",
+      "Hammer and the Gun",
+      "Ich bin ein Berliner",
+      "Agent Orange"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Why Free Myra Hindley\",\"Hammer and the Gun\",\"Ich bin ein Berliner\",\"Agent Orange\"],\"operation\":\"intersection\",\"confidence\":0.96,\"reasoning\":\"The shared track set across sources indicates the canonical tracks, with minor title casing and abbreviation differences normalized away.\"}"
+}

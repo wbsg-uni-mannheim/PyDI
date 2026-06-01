@@ -1,0 +1,140 @@
+# Entity-matching MATCHING committee roster — games domain.
+#
+# Per-domain fork of em_matching_committee.yaml (companies-canonical).
+# Same 4-member roster (ditto_plm / magellan / llm_matcher / comem),
+# same enable-all posture per R5 EM matching sign-off. What changes
+# per-domain: column_mapping, ditto checkpoint path, fields lists,
+# magellan numeric/date attribute hints.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). R2 checkpoint
+      at usecases_synthetic/cache/ditto_checkpoints/games/best — winner:
+      lr=1e-5 weighted, test F1=0.9388 (3 pairs).
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/games/best
+        fields: [name, releaseYear, developer, platform, genres, series, criticScore, userScore, ESRB, publisher, globalSales]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher: auto-generated comparator-vector features +
+      sklearn RandomForest. `training_gold_path` runner-injected per
+      source pair.
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        numeric_attributes: [releaseYear, criticScore, userScore, globalSales]
+        date_attributes: []
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        # Locked by R5 EM matching sweep (2026-05-11): games winner
+        # = n_estimators=100, max_depth=10, class_weight=balanced
+        # (mean closed-set F1 = 0.852, min F1 = 0.579 on the
+        # closure-affected pair; see plan_s1_scale.md §"R5 EM matching
+        # sign-off (2026-05-11)").
+        classifier_params:
+          n_estimators: 100
+          max_depth: 10
+          random_state: 42
+          n_jobs: 1
+          class_weight: balanced
+        preprocess: normalize_text
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style zero-shot LLM matcher. No demonstrations retrieval
+      — every pair scored zero-shot.
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [name, releaseYear, developer, platform, genres, series, criticScore, userScore, ESRB, publisher, globalSales]
+        chat_model_name: openai/gpt-5.4-mini
+        temperature: 0.0
+        max_tokens: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM). Two-stage LLM pipeline — Stage 1
+      Selecting + Stage 2 Matching. Paper defaults locked.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [name, releaseYear, developer, platform, genres, series, criticScore, userScore, ESRB, publisher, globalSales]
+        stage1_model: openai/gpt-5.4-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+required_axes:
+  matching_type: [learned, llm]
+  missing_value_tolerant: [true]
+
+# Column mapping — must stay identical to em_blocking_committee_games.yaml
+# and fusion_committee_games.yaml. Refreshed 2026-05-04.
+column_mapping:
+  dbpedia:
+    title: name
+    launch_yr: releaseYear
+    studio: developer
+    system: platform
+    genre: genres
+    franchise: series
+  metacritic:
+    game_title: name
+    year_published: releaseYear
+    made_by: developer
+    console: platform
+    press_rating: criticScore
+    player_rating: userScore
+    age_rating: ESRB
+  sales:
+    prod_title: name
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    hw: platform
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    age_classification: ESRB
+    units_sold_mm: globalSales

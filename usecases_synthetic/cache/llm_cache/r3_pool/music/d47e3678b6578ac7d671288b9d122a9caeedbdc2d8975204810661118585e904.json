@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_111963|lastFM_50314|name=Things Fall Apart | artist=Jason Kahn | release-date=2013-07-01 | release-country=Malaysia | duration=3177.0 | genre=Electronic | tracks=['Catcher', 'Im Raum', 'Dreaming Of', 'Message For', 'We Fall', 'Mornings', 'Split Hum', 'Calling', 'Semblance', 'An Arc', 'Wait', 'Speaker 13', 'Last Drum', 'Night']||name=[explicit] Things Fall Apart | artist=Jason Kahn | duration=2616.0 | tracks=['Catcher', 'Im Raum', 'Dreaming of', 'Message for', 'We Fall', 'Mornings', 'Calling', 'Semblance', 'An Arc', 'Wait', 'Last Drum', 'Night']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Things Fall Apart | artist=Jason Kahn | release-date=2013-07-01 | release-country=Malaysia | duration=3177.0 | genre=Electronic | tracks=['Catcher', 'Im Raum', 'Dreaming Of', 'Message For', 'We Fall', 'Mornings', 'Split Hum', 'Calling', 'Semblance', 'An Arc', 'Wait', 'Speaker 13', 'Last Drum', 'Night']\nRecord B: name=[explicit] Things Fall Apart | artist=Jason Kahn | duration=2616.0 | tracks=['Catcher', 'Im Raum', 'Dreaming of', 'Message for', 'We Fall', 'Mornings', 'Calling', 'Semblance', 'An Arc', 'Wait', 'Last Drum', 'Night']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

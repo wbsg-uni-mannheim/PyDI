@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_134176|mbrainz_22938|name=Everyday Robots | artist=Damon Albarn | release-date=2014-04-30 | release-country=Japan | duration=3269.0 | genre=Electronic|Pop|Rock|Folk, World, & Country | tracks=['Everyday Robots', 'Hostiles', 'Lonely Press Play', 'Mr Tembo', 'Parakeet', 'The Selfish Giant', 'You And Me', 'Hollow Ponds', 'Seven High', 'Photographs (You Are Taking Now)', 'The History Of A Cheating Heart', 'Heavy Seas Of Love', 'Electric Fences (Bonus Track)', \"Father's Daughter's Son (Bonus Track)\"]||name=Everyday Robots | artist=Albarn, Damon | release-date=2014-04-28 | duration=2792 | tracks=['Everyday Robots', 'Hostiles', 'Lonely Press Play', 'Mr Tembo', 'Parakeet', 'The Selfish Giant', 'You and Me', 'Hollow Ponds', 'Seven High', 'Photographs (You Are Taking Now)', 'The History of a Cheating Heart', 'Heavy Seas of Love']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Everyday Robots | artist=Damon Albarn | release-date=2014-04-30 | release-country=Japan | duration=3269.0 | genre=Electronic|Pop|Rock|Folk, World, & Country | tracks=['Everyday Robots', 'Hostiles', 'Lonely Press Play', 'Mr Tembo', 'Parakeet', 'The Selfish Giant', 'You And Me', 'Hollow Ponds', 'Seven High', 'Photographs (You Are Taking Now)', 'The History Of A Cheating Heart', 'Heavy Seas Of Love', 'Electric Fences (Bonus Track)', \"Father's Daughter's Son (Bonus Track)\"]\nRecord B: name=Everyday Robots | artist=Albarn, Damon | release-date=2014-04-28 | duration=2792 | tracks=['Everyday Robots', 'Hostiles', 'Lonely Press Play', 'Mr Tembo', 'Parakeet', 'The Selfish Giant', 'You and Me', 'Hollow Ponds', 'Seven High', 'Photographs (You Are Taking Now)', 'The History of a Cheating Heart', 'Heavy Seas of Love']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

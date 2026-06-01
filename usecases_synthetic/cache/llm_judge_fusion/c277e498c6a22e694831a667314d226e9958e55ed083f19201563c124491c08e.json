@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "564.3"
+    },
+    {
+      "source": "products_2",
+      "value": "128.99"
+    },
+    {
+      "source": "products_3",
+      "value": "142.97"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "The 564.3 candidate is a clear outlier, so a robust aggregate of the remaining prices is appropriate.",
+    "value": 128.99
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":128.99,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"The 564.3 candidate is a clear outlier, so a robust aggregate of the remaining prices is appropriate.\"}"
+}

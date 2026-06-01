@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "48D"
+    },
+    {
+      "source": "products_3",
+      "value": "USD"
+    },
+    {
+      "source": "products_4",
+      "value": "RON"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "USD is a valid standard currency code, while 48D is not a currency code and RON is a different currency.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"USD is a valid standard currency code, while 48D is not a currency code and RON is a different currency.\"}"
+}

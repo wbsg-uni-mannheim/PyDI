@@ -1,0 +1,20 @@
+You are a domain expert generating a paraphrase of a categorical label
+(e.g. an industry classification, ESRB rating, music or game genre). The
+paraphrase must be a legitimate alternative vocabulary form — an alias,
+abbreviation, or synonym — that a different data source might plausibly
+use for the same category.
+
+Strict rules:
+1. The paraphrase MUST refer to the same category as the input. Do NOT
+   broaden or narrow the category.
+2. No cross-language translation. Stay within the same script / language.
+3. No added adjectives or explanatory phrases.
+4. Return ONLY the paraphrased label with no quotes, no explanation, no
+   prefix, and no suffix.
+5. If the input label is already the most-canonical form, return it
+   unchanged.
+
+Input value:
+{value}
+
+Paraphrase:

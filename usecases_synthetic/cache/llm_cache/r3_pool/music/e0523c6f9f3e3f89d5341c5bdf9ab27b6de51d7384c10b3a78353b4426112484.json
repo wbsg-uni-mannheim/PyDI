@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_8285|lastFM_4011|name=Up All Night | artist=Gore Gore Girls | release-date=2002 | release-country=United States of America | duration=2317.0 | genre=Rock | tracks=['Astral Man', 'Automatic Love', \"I Don't Think So\", 'Up All Night', 'Shotgun Wedding', 'Keep Your Hands Off My Baby', 'Hot Rod Breakdown', 'Cross County Lines', 'Standing On The Corner', 'Atlanta', 'Your Last Chance', \"Tell Me (I'm Your True Love)\"]||name=G. Gore Girls -  Up All Night | artist=G. Gore Girls | duration=2164.0 | tracks=['Astral Man', 'Automatic Love', 'I dont think so', 'Up All Night', 'Shotgun Wedding', 'Keep Your Hands Off My Baby', 'Cross County Lines', 'Standing on the Corner', 'Atlanta', 'Your Last Chance', \"Tell Me (I'm Your True Love)\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Up All Night | artist=Gore Gore Girls | release-date=2002 | release-country=United States of America | duration=2317.0 | genre=Rock | tracks=['Astral Man', 'Automatic Love', \"I Don't Think So\", 'Up All Night', 'Shotgun Wedding', 'Keep Your Hands Off My Baby', 'Hot Rod Breakdown', 'Cross County Lines', 'Standing On The Corner', 'Atlanta', 'Your Last Chance', \"Tell Me (I'm Your True Love)\"]\nRecord B: name=G. Gore Girls -  Up All Night | artist=G. Gore Girls | duration=2164.0 | tracks=['Astral Man', 'Automatic Love', 'I dont think so', 'Up All Night', 'Shotgun Wedding', 'Keep Your Hands Off My Baby', 'Cross County Lines', 'Standing on the Corner', 'Atlanta', 'Your Last Chance', \"Tell Me (I'm Your True Love)\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

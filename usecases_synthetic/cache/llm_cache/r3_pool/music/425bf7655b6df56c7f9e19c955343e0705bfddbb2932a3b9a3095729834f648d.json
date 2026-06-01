@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_175578|mbrainz_21428|name=Modern Times | artist=Adam Kesher | release-date=2006 | release-country=France | genre=Pop|Rock | tracks=['Modern Times', 'Voyage Intérieur', 'Cent Soixante', 'You Make Me Feel Immoral', \"Where's My Place ?\", 'Modern Times (908 Remix)', 'Modern Times (Pedro&Panama Remix)', \"Where's My Place (Drixxxé Remix)\", 'Modern Times (Detect Remix)', 'Modern Times (Modern Dudes RMX by Jean Nipon)', 'Modern Times (Passions Remix)', 'Modern Times (Don Rimini Explosive Remix)']||name=Modern Times | artist=Adam Kesher | release-date=2006-01-01 | release-country=France | duration=0 | tracks=['Modern Times', 'Voyage intÃ©rieur', 'Cent soixante', 'You Make Me Feel Immoral', \"Where's My Place\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Modern Times | artist=Adam Kesher | release-date=2006 | release-country=France | genre=Pop|Rock | tracks=['Modern Times', 'Voyage Intérieur', 'Cent Soixante', 'You Make Me Feel Immoral', \"Where's My Place ?\", 'Modern Times (908 Remix)', 'Modern Times (Pedro&Panama Remix)', \"Where's My Place (Drixxxé Remix)\", 'Modern Times (Detect Remix)', 'Modern Times (Modern Dudes RMX by Jean Nipon)', 'Modern Times (Passions Remix)', 'Modern Times (Don Rimini Explosive Remix)']\nRecord B: name=Modern Times | artist=Adam Kesher | release-date=2006-01-01 | release-country=France | duration=0 | tracks=['Modern Times', 'Voyage intÃ©rieur', 'Cent soixante', 'You Make Me Feel Immoral', \"Where's My Place\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,30 @@
+{
+  "attribute": "description",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "3-year warranty provided by local distributor CDL"
+    },
+    {
+      "source": "products_2",
+      "value": "Available  CCL: Gigabyte GeForce GTX 1660 Ti Mini 6GB Overclocked Graphics Card. HDMI and DisplayPort inputs. Direct X 12 Support. VR Ready."
+    },
+    {
+      "source": "products_3",
+      "value": "Gigabyte GeForce GTX 1660 Ti ITX OC (Boost: 1785MHz), 6GB GDDR6 (12000MHz), PCI-E 3.0, 3x DisplayPort 1.4, HDMI 2.0b"
+    },
+    {
+      "source": "products_4",
+      "value": "GIGABYTE GF GTX 1660 TI PCIe x16, 6GB GDDR6, 3xDP, 1x HDMI, IX OC, 3YR WTY"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "normalization",
+    "reasoning": "Candidates 2-4 describe the same graphics card; candidate 3 is the most complete and clean canonical product description, while 1 is unrelated warranty text.",
+    "value": "Gigabyte GeForce GTX 1660 Ti ITX OC (Boost: 1785MHz), 6GB GDDR6 (12000MHz), PCI-E 3.0, 3x DisplayPort 1.4, HDMI 2.0b"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Gigabyte GeForce GTX 1660 Ti ITX OC (Boost: 1785MHz), 6GB GDDR6 (12000MHz), PCI-E 3.0, 3x DisplayPort 1.4, HDMI 2.0b\",\"operation\":\"normalization\",\"confidence\":0.92,\"reasoning\":\"Candidates 2-4 describe the same graphics card; candidate 3 is the most complete and clean canonical product description, while 1 is unrelated warranty text.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "NZD"
+    },
+    {
+      "source": "products_2",
+      "value": "лв."
+    },
+    {
+      "source": "products_3",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.46,
+    "operation": "verbatim_pick",
+    "reasoning": "GBP is a standard currency code, unlike the ambiguous symbol-based candidate.",
+    "value": "GBP"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GBP\",\"operation\":\"verbatim_pick\",\"confidence\":0.46,\"reasoning\":\"GBP is a standard currency code, unlike the ambiguous symbol-based candidate.\"}"
+}

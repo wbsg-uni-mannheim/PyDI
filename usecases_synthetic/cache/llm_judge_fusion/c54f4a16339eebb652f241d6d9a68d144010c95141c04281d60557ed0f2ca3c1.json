@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3649"
+    },
+    {
+      "source": "discogs",
+      "value": "10992.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.87,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric durations in the same units, so a robust aggregate (mean) is the best canonical estimate.",
+    "value": 6570.5
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":6570.5,\"operation\":\"aggregation\",\"confidence\":0.87,\"reasoning\":\"The candidates are numeric durations in the same units, so a robust aggregate (mean) is the best canonical estimate.\"}"
+}

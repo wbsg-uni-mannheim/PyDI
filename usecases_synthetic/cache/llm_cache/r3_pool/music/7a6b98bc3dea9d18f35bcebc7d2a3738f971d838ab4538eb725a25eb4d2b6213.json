@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_115108|mbrainz_20484|name=California Screamin' | artist=Dixie Dregs | release-date=2001 | release-country=Germany | genre=Jazz|Rock | tracks=['Wages Of Weirdness', 'Peaches En Regalia', 'Freefall', 'Aftershock', 'The Bash', 'Night Meets Light', 'Refried Funky Chicken', 'Jessica', 'What If', 'Sleeveless In Seattle', 'Ionized', 'The Great Spectacular', 'Dixie']||name=California Screaminâ€™ | artist=Dixie Dregs | release-date=2000-02-01 | release-country=United States of America | duration=3685 | tracks=['Wages of Weirdness', 'Peaches En Regalia', 'Freefall', 'Aftershock', 'The Bash', 'Night Meets Light', 'Refried Funky Chicken', 'Jessica', 'What If', 'Sleeveless in Seattle', 'Ionized', 'The Great Spectacular', 'Dixie']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=California Screamin' | artist=Dixie Dregs | release-date=2001 | release-country=Germany | genre=Jazz|Rock | tracks=['Wages Of Weirdness', 'Peaches En Regalia', 'Freefall', 'Aftershock', 'The Bash', 'Night Meets Light', 'Refried Funky Chicken', 'Jessica', 'What If', 'Sleeveless In Seattle', 'Ionized', 'The Great Spectacular', 'Dixie']\nRecord B: name=California Screaminâ€™ | artist=Dixie Dregs | release-date=2000-02-01 | release-country=United States of America | duration=3685 | tracks=['Wages of Weirdness', 'Peaches En Regalia', 'Freefall', 'Aftershock', 'The Bash', 'Night Meets Light', 'Refried Funky Chicken', 'Jessica', 'What If', 'Sleeveless in Seattle', 'Ionized', 'The Great Spectacular', 'Dixie']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

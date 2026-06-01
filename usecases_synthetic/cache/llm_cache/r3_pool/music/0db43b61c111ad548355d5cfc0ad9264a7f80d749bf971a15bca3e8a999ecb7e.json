@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_153964|mbrainz_26682|name=Hope For The Future | artist=Paul McCartney | release-date=2015-01-12 | release-country=United States of America | duration=1379.0 | genre=Rock | tracks=['Hope For The Future (Main)', 'Hope For The Future (Thrash)', 'Hope For The Future (Beatsession Mix)', 'Hope For The Future (Jaded Mix)', 'Hope For The Future (Mirwais Mix)']||name=Hope for the Future (release) | artist=McCartney, Paul | release-date=2014-12-08 | duration=1389 | tracks=['Hope for the Future (main)', 'Hope for the Future (Thrash)', 'Hope for the Future (Beatsession mix)', 'Hope for the Future (Jaded mix)', 'Hope for the Future (Mirwals mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hope For The Future | artist=Paul McCartney | release-date=2015-01-12 | release-country=United States of America | duration=1379.0 | genre=Rock | tracks=['Hope For The Future (Main)', 'Hope For The Future (Thrash)', 'Hope For The Future (Beatsession Mix)', 'Hope For The Future (Jaded Mix)', 'Hope For The Future (Mirwais Mix)']\nRecord B: name=Hope for the Future (release) | artist=McCartney, Paul | release-date=2014-12-08 | duration=1389 | tracks=['Hope for the Future (main)', 'Hope for the Future (Thrash)', 'Hope for the Future (Beatsession mix)', 'Hope for the Future (Jaded mix)', 'Hope for the Future (Mirwals mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42022|lastFM_19915|name=Take Me To Your Leader | artist=Erazerhead | release-date=1984 | release-country=UK | genre=Rock | tracks=['The Last Surprise', 'He Is So Neat', 'Tonight', 'Here Come The Sane', 'Obedience', 'Awful Night', 'The Ministry Of Truth', 'Pink Gin', 'The Strange One', 'Brain Washing Time (Part 1 & 2)']||name=Take Me  Your Leader | artist=Erazerhead | duration=2101.0 | tracks=['The Last Surprise', 'He Is So Neat', 'Tonight', 'Obedience', 'Awful Night', 'The Ministry Of Truth', 'Pink Gin', 'The Strange One', 'Brain Washing Time, Parts 1 & 2']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Take Me To Your Leader | artist=Erazerhead | release-date=1984 | release-country=UK | genre=Rock | tracks=['The Last Surprise', 'He Is So Neat', 'Tonight', 'Here Come The Sane', 'Obedience', 'Awful Night', 'The Ministry Of Truth', 'Pink Gin', 'The Strange One', 'Brain Washing Time (Part 1 & 2)']\nRecord B: name=Take Me  Your Leader | artist=Erazerhead | duration=2101.0 | tracks=['The Last Surprise', 'He Is So Neat', 'Tonight', 'Obedience', 'Awful Night', 'The Ministry Of Truth', 'Pink Gin', 'The Strange One', 'Brain Washing Time, Parts 1 & 2']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

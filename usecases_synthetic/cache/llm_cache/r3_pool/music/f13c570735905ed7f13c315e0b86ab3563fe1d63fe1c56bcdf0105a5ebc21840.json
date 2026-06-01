@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_184372|mbrainz_6117|name=Is This It | artist=The Strokes | release-date=2002 | release-country=Argentina | genre=Rock | tracks=['Is This It', 'The Modern Age', 'Soma', 'Barely Legal', 'Someday', 'Alone, Together', 'Last Nite', 'Hard To Explain', 'When It Started', 'Trying Your Luck', 'Take It Or Leave It']||name=Is This It | artist=Strokes, The | release-date=2001-01-01 | release-country=United States of America | duration=2144 | tracks=['Is This It', 'The Modern Age', 'Soma', 'Barely Legal', 'Someday', 'Alone, Together', 'Last Nite', 'Hard to Explain', 'When It Started', 'Trying Your Luck', 'Take It or Leave It']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Is This It | artist=The Strokes | release-date=2002 | release-country=Argentina | genre=Rock | tracks=['Is This It', 'The Modern Age', 'Soma', 'Barely Legal', 'Someday', 'Alone, Together', 'Last Nite', 'Hard To Explain', 'When It Started', 'Trying Your Luck', 'Take It Or Leave It']\nRecord B: name=Is This It | artist=Strokes, The | release-date=2001-01-01 | release-country=United States of America | duration=2144 | tracks=['Is This It', 'The Modern Age', 'Soma', 'Barely Legal', 'Someday', 'Alone, Together', 'Last Nite', 'Hard to Explain', 'When It Started', 'Trying Your Luck', 'Take It or Leave It']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

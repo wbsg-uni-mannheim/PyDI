@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_31469|mbrainz_302|name=Feel The Spirit | artist=Harlem Sunshine | release-date=2002 | release-country=United States of America | duration=1133.0 | genre=Electronic | tracks=['Feel The Spirit (Main Vocal)', 'Feel The Spirit (Dub Mix)']||name=Feel the Spirit | artist=Harlem Sunshine | release-date=2002-01-01 | release-country=United States of America | duration=1133 | tracks=['Feel the Spirit (main vocal)', 'Feel the Spirit (dub mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Feel The Spirit | artist=Harlem Sunshine | release-date=2002 | release-country=United States of America | duration=1133.0 | genre=Electronic | tracks=['Feel The Spirit (Main Vocal)', 'Feel The Spirit (Dub Mix)']\nRecord B: name=Feel the Spirit | artist=Harlem Sunshine | release-date=2002-01-01 | release-country=United States of America | duration=1133 | tracks=['Feel the Spirit (main vocal)', 'Feel the Spirit (dub mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "6000000"
+    },
+    {
+      "source": "products_2",
+      "value": "6000.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "aggregation",
+    "reasoning": "The 6000000 value is likely in MB and corresponds to 6000 GB, matching the other candidate.",
+    "value": 6000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":6000,\"operation\":\"aggregation\",\"confidence\":0.99,\"reasoning\":\"The 6000000 value is likely in MB and corresponds to 6000 GB, matching the other candidate.\"}"
+}

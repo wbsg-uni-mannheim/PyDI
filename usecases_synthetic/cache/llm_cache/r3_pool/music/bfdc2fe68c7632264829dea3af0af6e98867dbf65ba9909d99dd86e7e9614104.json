@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_106454|mbrainz_2033|name=Bona Drag | artist=Morrissey | release-date=1990 | release-country=UK | duration=2978.0 | genre=Rock | tracks=['Piccadilly Palare', 'Interesting Drug', 'November Spawned A Monster', 'Will Never Marry', 'Such A Little Thing Makes Such A Big Difference', 'The Last Of The Famous International Playboys', 'Ouija Board, Ouija Board', 'Hairdresser On Fire', 'Everyday Is Like Sunday', \"He Knows I'd Love To See Him\", 'Yes, I Am Blind', 'Lucky Lisp', 'Suedehead', 'Disappointed']||name=Bona Drag | artist=Morrissey | release-date=1990-10-08 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2979 | tracks=['Piccadilly Palare', 'Interesting Drug', 'November Spawned a Monster', 'Will Never Marry', 'Such a Little Thing Makes Such a Big Difference', 'The Last of the Famous International Playboys', 'Ouija Board, Ouija Board', 'Hairdresser on Fire', 'Everyday Is Like Sunday', 'He Knows Iâ€™d Love to See Him', 'Yes, I Am Blind', 'Lucky Lisp', 'Suedehead', 'Disappointed']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bona Drag | artist=Morrissey | release-date=1990 | release-country=UK | duration=2978.0 | genre=Rock | tracks=['Piccadilly Palare', 'Interesting Drug', 'November Spawned A Monster', 'Will Never Marry', 'Such A Little Thing Makes Such A Big Difference', 'The Last Of The Famous International Playboys', 'Ouija Board, Ouija Board', 'Hairdresser On Fire', 'Everyday Is Like Sunday', \"He Knows I'd Love To See Him\", 'Yes, I Am Blind', 'Lucky Lisp', 'Suedehead', 'Disappointed']\nRecord B: name=Bona Drag | artist=Morrissey | release-date=1990-10-08 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2979 | tracks=['Piccadilly Palare', 'Interesting Drug', 'November Spawned a Monster', 'Will Never Marry', 'Such a Little Thing Makes Such a Big Difference', 'The Last of the Famous International Playboys', 'Ouija Board, Ouija Board', 'Hairdresser on Fire', 'Everyday Is Like Sunday', 'He Knows Iâ€™d Love to See Him', 'Yes, I Am Blind', 'Lucky Lisp', 'Suedehead', 'Disappointed']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

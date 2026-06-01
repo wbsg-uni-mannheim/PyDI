@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_16174|lastFM_7845|name=Broken Wings | artist=K'Lee | release-date=2001 | release-country=New Zealand | genre=Electronic|Pop|Hip Hop | tracks=['Broken Wings (Radio Edit)', 'Broken Wings (Street Remix)', 'Broken Wings (Fly Away House Remix)', 'Broken Wings (2Hard2Step2 Garage Remix)', 'Broken Wings (Extended Single Version)', 'Broken Wings (Fly Away House Remix) (Vocal Edit)']||name=Broken Wings | artist=K'Lee | duration=2214.0 | tracks=['Broken Wings (Radio Edit)', 'Broken Wings (Street remix) (feat. Dei Hamo)', 'Broken Wings (Fly Away House Remix)', 'Broken Wings (2HARD2STEP2 Garage mix)', 'Broken Wings (extended version)', 'Broken Wings (Flyaway House remix vocal edit) (feat. Dei Hamo)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken Wings | artist=K'Lee | release-date=2001 | release-country=New Zealand | genre=Electronic|Pop|Hip Hop | tracks=['Broken Wings (Radio Edit)', 'Broken Wings (Street Remix)', 'Broken Wings (Fly Away House Remix)', 'Broken Wings (2Hard2Step2 Garage Remix)', 'Broken Wings (Extended Single Version)', 'Broken Wings (Fly Away House Remix) (Vocal Edit)']\nRecord B: name=Broken Wings | artist=K'Lee | duration=2214.0 | tracks=['Broken Wings (Radio Edit)', 'Broken Wings (Street remix) (feat. Dei Hamo)', 'Broken Wings (Fly Away House Remix)', 'Broken Wings (2HARD2STEP2 Garage mix)', 'Broken Wings (extended version)', 'Broken Wings (Flyaway House remix vocal edit) (feat. Dei Hamo)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

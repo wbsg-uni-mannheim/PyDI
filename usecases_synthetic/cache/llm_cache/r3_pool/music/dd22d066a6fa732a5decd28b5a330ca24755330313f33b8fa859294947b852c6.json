@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_188345|mbrainz_6947|name=Classics Live II | artist=Aerosmith | release-date=1987 | release-country=United States of America | duration=2330.0 | genre=Rock | tracks=['Back In The Saddle', 'Walk This Way', \"Movin' Out\", 'Draw The Line', 'Same Old Song And Dance', 'Last Child', 'Let The Music Do The Talking', 'Toys In The Attic']||name=Classics Live! | artist=Aerosmith | release-date=1986-01-01 | release-country=United States of America | duration=2292 | tracks=['Train Kept A-Rollinâ€™', 'Kings and Queens', 'Sweet Emotion', 'Dream On', 'Mama Kin', 'Three Mile Smile / Reefer Head Woman', 'Lord of the Thighs', 'Major Barbara']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Classics Live II | artist=Aerosmith | release-date=1987 | release-country=United States of America | duration=2330.0 | genre=Rock | tracks=['Back In The Saddle', 'Walk This Way', \"Movin' Out\", 'Draw The Line', 'Same Old Song And Dance', 'Last Child', 'Let The Music Do The Talking', 'Toys In The Attic']\nRecord B: name=Classics Live! | artist=Aerosmith | release-date=1986-01-01 | release-country=United States of America | duration=2292 | tracks=['Train Kept A-Rollinâ€™', 'Kings and Queens', 'Sweet Emotion', 'Dream On', 'Mama Kin', 'Three Mile Smile / Reefer Head Woman', 'Lord of the Thighs', 'Major Barbara']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

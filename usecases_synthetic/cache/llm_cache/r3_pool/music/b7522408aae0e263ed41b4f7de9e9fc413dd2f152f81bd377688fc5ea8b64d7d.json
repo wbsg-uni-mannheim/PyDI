@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_188781|mbrainz_2132|name=Alternating Currents | artist=Spyro Gyra | duration=2620.0 | genre=Jazz | tracks=['Shakedown', 'Alternating Currents', 'Taking The Plunge (For Jennifer)', \"Binky's Dream No. 6\", 'PG.', 'Heartbeat', 'Mardi Gras', 'I Believe In You', 'Sunflurry']||name=Alternating Currents | artist=Spyro Gyra | release-date=1985-01-01 | release-country=United States of America | duration=2651 | tracks=['Shakedown', 'Alternating Currents', 'Taking the Plunge (For Jennifer)', \"Binky's Dream No. 6\", 'PG', 'Heartbeat', 'Mardi Gras', 'I Believe in You', 'Sunflurry']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Alternating Currents | artist=Spyro Gyra | duration=2620.0 | genre=Jazz | tracks=['Shakedown', 'Alternating Currents', 'Taking The Plunge (For Jennifer)', \"Binky's Dream No. 6\", 'PG.', 'Heartbeat', 'Mardi Gras', 'I Believe In You', 'Sunflurry']\nRecord B: name=Alternating Currents | artist=Spyro Gyra | release-date=1985-01-01 | release-country=United States of America | duration=2651 | tracks=['Shakedown', 'Alternating Currents', 'Taking the Plunge (For Jennifer)', \"Binky's Dream No. 6\", 'PG', 'Heartbeat', 'Mardi Gras', 'I Believe in You', 'Sunflurry']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,39 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Yah (intro)', 'One Day', 'Wishing', 'Nova', 'So Amazing', 'Cry', 'Love Is You', 'Blackstar', 'Feel Me', 'Rooftop', 'Same Page', 'Bury It', 'Baby', 'Friday', 'Babylove', 'Blackstar (remix)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Yah Intro', 'One Day', 'Wishing', 'Nova', 'So Amazing', 'Cry', 'Love Is You', 'Blackstar', 'Feel Me', 'Roof Top', 'Same Page', 'Bury It', 'Baby', 'Friday', 'Babylove', 'Blackstar (Remix)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Both sources describe the same ordered tracklist; differences are minor formatting/casing/spaces and can be normalized.",
+    "value": [
+      "Yah (intro)",
+      "One Day",
+      "Wishing",
+      "Nova",
+      "So Amazing",
+      "Cry",
+      "Love Is You",
+      "Blackstar",
+      "Feel Me",
+      "Rooftop",
+      "Same Page",
+      "Bury It",
+      "Baby",
+      "Friday",
+      "Babylove",
+      "Blackstar (remix)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Yah (intro)\",\"One Day\",\"Wishing\",\"Nova\",\"So Amazing\",\"Cry\",\"Love Is You\",\"Blackstar\",\"Feel Me\",\"Rooftop\",\"Same Page\",\"Bury It\",\"Baby\",\"Friday\",\"Babylove\",\"Blackstar (remix)\"],\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Both sources describe the same ordered tracklist; differences are minor formatting/casing/spaces and can be normalized.\"}"
+}

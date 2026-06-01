@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_81921|lastFM_31759|name=Let Go The Mansion | artist=Tom Verlaine | release-date=1984 | release-country=UK | duration=376.0 | genre=Rock | tracks=['Let Go The Mansion', 'Let Go The Mansion (Instrumental Version)', 'Lindi-Lu', '']||name=Let Go  Mansion | artist=T. Verlaine | duration=600.0 | tracks=['Let Go The Mansion', 'Let Go the Mansion (instrumental version No. 2)', 'Lindi-Lu']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Let Go The Mansion | artist=Tom Verlaine | release-date=1984 | release-country=UK | duration=376.0 | genre=Rock | tracks=['Let Go The Mansion', 'Let Go The Mansion (Instrumental Version)', 'Lindi-Lu', '']\nRecord B: name=Let Go  Mansion | artist=T. Verlaine | duration=600.0 | tracks=['Let Go The Mansion', 'Let Go the Mansion (instrumental version No. 2)', 'Lindi-Lu']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

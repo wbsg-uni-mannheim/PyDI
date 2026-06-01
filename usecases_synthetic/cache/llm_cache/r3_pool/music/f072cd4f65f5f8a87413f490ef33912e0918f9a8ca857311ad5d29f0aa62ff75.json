@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_131607|lastFM_17891|name=Surrender | artist=Peaches & Herb | release-date=1980 | release-country=United States of America | duration=404.0 | genre=Funk / Soul | tracks=['Surrender', 'Surrender']||name=Surrender | artist=Jonathan B. | duration=4638.0 | tracks=['This Is Love', 'Pata Pata', 'Surrender', 'Take Me Back', 'Wake Up', 'Back to Love', 'River of Life', 'Many Faces', 'African Moon', 'Wake Up (Album Version)', 'This Is Love (Album Version)', 'Take Me Back (Album Version)', 'Back To Love (Album Version)', 'River Of Life (Album Version)', 'Many Faces (Album Version)', 'African Moon (Album Version)', 'Pata Pata', 'Thoughts Of You (Album Version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Surrender | artist=Peaches & Herb | release-date=1980 | release-country=United States of America | duration=404.0 | genre=Funk / Soul | tracks=['Surrender', 'Surrender']\nRecord B: name=Surrender | artist=Jonathan B. | duration=4638.0 | tracks=['This Is Love', 'Pata Pata', 'Surrender', 'Take Me Back', 'Wake Up', 'Back to Love', 'River of Life', 'Many Faces', 'African Moon', 'Wake Up (Album Version)', 'This Is Love (Album Version)', 'Take Me Back (Album Version)', 'Back To Love (Album Version)', 'River Of Life (Album Version)', 'Many Faces (Album Version)', 'African Moon (Album Version)', 'Pata Pata', 'Thoughts Of You (Album Version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

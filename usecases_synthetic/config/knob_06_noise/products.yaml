@@ -1,0 +1,180 @@
+# Knob 06 — Value Noise Injection Rate — Products
+#
+# Per plan_s1_scale.md "Per-domain specifics": "noisy product
+# descriptions suit K6 calibration differently". The description-only
+# secondary noise rate may need to be raised in S13 once baseline is
+# measured.
+
+domain: products
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+attribute_classes:
+  products_1: &products_attr_classes
+    title: primary
+    brand: key
+    description: secondary
+    price: secondary
+    priceCurrency: secondary
+    title_description: secondary
+    product_type: key
+    model: secondary
+    model_number: secondary
+    chipset_name: secondary
+    vram_gb: secondary
+    storage_gb: secondary
+    bus_type: secondary
+    interface_type: secondary
+    memory_type: secondary
+    storage_connection_type: secondary
+    form_factor: secondary
+    read_speed_mb_s: secondary
+    write_speed_mb_s: secondary
+  products_2: *products_attr_classes
+  products_3: *products_attr_classes
+  products_4: *products_attr_classes
+
+attribute_mapping:
+  products_1: &products_attr_mapping
+    title: title
+    brand: brand
+    description: description
+    price: price
+    priceCurrency: priceCurrency
+    title_description: title_description
+    product_type: product_type
+    model: model
+    model_number: model_number
+    chipset_name: chipset_name
+    vram_gb: vram_gb
+    storage_gb: storage_gb
+    bus_type: bus_type
+    interface_type: interface_type
+    memory_type: memory_type
+    storage_connection_type: storage_connection_type
+    form_factor: form_factor
+    read_speed_mb_s: read_speed_mb_s
+    write_speed_mb_s: write_speed_mb_s
+  products_2: *products_attr_mapping
+  products_3: *products_attr_mapping
+  products_4: *products_attr_mapping
+
+noise_rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.0
+    secondary: 0.01
+  medium:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.04
+  hard:
+    primary: 0.01
+    key: 0.06
+    secondary: 0.12
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+operator_mix:
+  easy:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+  medium:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+    typo_substitute: 1.5
+    ocr_confuse: 1.0
+    taxonomy_walk: 1.0
+  hard:
+    whitespace_corrupt: 0.5
+    case_corrupt: 0.5
+    typo_substitute: 2.0
+    ocr_confuse: 1.5
+    truncate: 1.0
+    taxonomy_walk: 1.5
+
+max_edits_per_cell:
+  easy: 1
+  medium: 1
+  hard: 3
+
+max_ocr_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2
+
+max_truncate_chars:
+  easy: 1
+  medium: 2
+  hard: 3
+
+soft_global_primary_cap_hard: 0.35
+
+compression_factor: 0.5
+stretch_factor: 1.5
+
+# Pending #4: taxonomy bindings authored 2026-05-27 for the products
+# cross-knob extension expansion. 3 hierarchical CSVs cover the
+# categorical extensions brought into K6 scope.
+taxonomies:
+  storage_interface:
+    csv: products/input/schemamatching/Storage_Interface_Taxonomy.csv
+    levels:
+      - Interface Family
+      - Generation
+      - Variant
+    bind:
+      products_1: &storage_interface_bind
+        bus_type: storage_interface
+        interface_type: storage_interface
+        storage_connection_type: storage_interface
+      products_2: *storage_interface_bind
+      products_3: *storage_interface_bind
+      products_4: *storage_interface_bind
+  gpu_memory:
+    csv: products/input/schemamatching/GPU_Memory_Taxonomy.csv
+    levels:
+      - Memory Family
+      - Generation
+      - Variant
+    bind:
+      products_1: &gpu_memory_bind
+        memory_type: gpu_memory
+      products_2: *gpu_memory_bind
+      products_3: *gpu_memory_bind
+      products_4: *gpu_memory_bind
+  product_type:
+    csv: products/input/schemamatching/Product_Type_Taxonomy.csv
+    levels:
+      - Category
+      - Subcategory
+      - Type
+    bind:
+      products_1: &product_type_bind
+        product_type: product_type
+      products_2: *product_type_bind
+      products_3: *product_type_bind
+      products_4: *product_type_bind
+
+# Pending #6: ±2 % relative jitter cap.
+numeric_jitter_max_relative: 0.02
+
+numeric_attributes:
+  products_1: &products_numeric
+    price: continuous
+    vram_gb: continuous
+    storage_gb: continuous
+    read_speed_mb_s: continuous
+    write_speed_mb_s: continuous
+  products_2: *products_numeric
+  products_3: *products_numeric
+  products_4: *products_numeric
+
+cleanup_rules: []

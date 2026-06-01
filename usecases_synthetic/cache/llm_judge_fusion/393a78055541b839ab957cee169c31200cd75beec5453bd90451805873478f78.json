@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Bassey, Shirley"
+    },
+    {
+      "source": "discogs",
+      "value": "Nelson Riddle And His Orchestra|Shirley Bassey"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Both candidates refer to Shirley Bassey; the second includes accompanying orchestra credit, so the canonical artist is the named vocalist.",
+    "value": "Shirley Bassey"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Shirley Bassey\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Both candidates refer to Shirley Bassey; the second includes accompanying orchestra credit, so the canonical artist is the named vocalist.\"}"
+}

@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "419.0"
+    },
+    {
+      "source": "products_2",
+      "value": "266.29"
+    },
+    {
+      "source": "products_3",
+      "value": "449.0"
+    },
+    {
+      "source": "products_4",
+      "value": "561.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.54,
+    "operation": "aggregation",
+    "reasoning": "Prices conflict, so I used a robust central estimate near the median of the candidates.",
+    "value": 449.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":449.0,\"operation\":\"aggregation\",\"confidence\":0.54,\"reasoning\":\"Prices conflict, so I used a robust central estimate near the median of the candidates.\"}"
+}

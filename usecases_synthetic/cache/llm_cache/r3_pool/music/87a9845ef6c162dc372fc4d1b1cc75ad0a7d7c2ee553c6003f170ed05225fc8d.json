@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_3093|mbrainz_9292|name=Smack My Bitch Up / Voodoo People (Remixes) | artist=The Prodigy | duration=794.0 | tracks=['Smack My Bitch Up (Guitars on Acid Remix)', 'Voodoo People (Eskimo remix)']||name=Psychedelic Voodoo People | artist=Prodigy, The | release-date=2004-01-01 | duration=2542 | tracks=['Voodoo People (Paranormal Attack remix)', 'Voodoo People (Eskimo remix)', 'Voodoo People (Sienis remix)', 'Voodoo People (Parasense remix)', 'Voodoo People (X-Ray vs Junya remix)', 'Smack My Bitch Up (Guitars on Mars remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Smack My Bitch Up / Voodoo People (Remixes) | artist=The Prodigy | duration=794.0 | tracks=['Smack My Bitch Up (Guitars on Acid Remix)', 'Voodoo People (Eskimo remix)']\nRecord B: name=Psychedelic Voodoo People | artist=Prodigy, The | release-date=2004-01-01 | duration=2542 | tracks=['Voodoo People (Paranormal Attack remix)', 'Voodoo People (Eskimo remix)', 'Voodoo People (Sienis remix)', 'Voodoo People (Parasense remix)', 'Voodoo People (X-Ray vs Junya remix)', 'Smack My Bitch Up (Guitars on Mars remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

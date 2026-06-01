@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "399.95"
+    },
+    {
+      "source": "products_2",
+      "value": "36,000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "99,999.99"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric and the smallest value is most plausible as the canonical retail price among clear outliers.",
+    "value": 399.95
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":399.95,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"The candidates are numeric and the smallest value is most plausible as the canonical retail price among clear outliers.\"}"
+}

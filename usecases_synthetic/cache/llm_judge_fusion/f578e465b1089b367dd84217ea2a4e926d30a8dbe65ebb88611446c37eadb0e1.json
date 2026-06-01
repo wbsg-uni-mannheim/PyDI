@@ -1,0 +1,30 @@
+{
+  "attribute": "description",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "250GB Seagate BarraCuda 120, 2.5\\\" SSD, SATA 3.0 (6Gb/s), TLC 3D NAND, 560MB/s Read, 540MB/s Write, 90k/90k IOPS, Retail"
+    },
+    {
+      "source": "products_2",
+      "value": "Seagate 250GB 2.5 Barracuda SSD SATA 6GBps"
+    },
+    {
+      "source": "products_3",
+      "value": "Seagate 2.5 250GB Barracuda SSD SATA 6GBps Boxed"
+    },
+    {
+      "source": "products_4",
+      "value": "Seagate Solid State Drive ZA250CM1A003 250GB BarraCud a 120 Retail"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "Combined consistent product name, capacity, form factor, interface, and retail packaging while omitting noisy spec variants.",
+    "value": "Seagate BarraCuda 120 250GB 2.5\" SSD SATA 6Gb/s Retail"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Seagate BarraCuda 120 250GB 2.5\\\" SSD SATA 6Gb/s Retail\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"Combined consistent product name, capacity, form factor, interface, and retail packaging while omitting noisy spec variants.\"}"
+}

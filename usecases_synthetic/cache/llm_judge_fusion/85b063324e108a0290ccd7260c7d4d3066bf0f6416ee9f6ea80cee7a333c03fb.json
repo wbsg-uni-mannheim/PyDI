@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "94.46"
+    },
+    {
+      "source": "products_2",
+      "value": "1199.0"
+    },
+    {
+      "source": "products_3",
+      "value": "86.36"
+    },
+    {
+      "source": "products_4",
+      "value": "100.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.79,
+    "operation": "aggregation",
+    "reasoning": "The 1199.0 value is a clear outlier relative to the other close prices, so a robust aggregate around the cluster is most plausible.",
+    "value": 100.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":100.0,\"operation\":\"aggregation\",\"confidence\":0.79,\"reasoning\":\"The 1199.0 value is a clear outlier relative to the other close prices, so a robust aggregate around the cluster is most plausible.\"}"
+}

@@ -1,0 +1,38 @@
+# OCR confusion character and character-pair lookup table.
+#
+# Used by the ``ocr_confuse`` operator to simulate OCR misrecognition.
+# Longest-match preferred: scan left-to-right, check pairs first, then
+# single characters.
+#
+# Source: Christen & Vatsalan, "OCR Error Simulation" method
+# (paper.md lines 316-318).
+
+# Single-character confusions (bidirectional where noted).
+single:
+  "O": "0"
+  "0": "O"
+  "l": "1"
+  "1": "l"
+  "I": "1"
+  "S": "5"
+  "5": "S"
+  "B": "8"
+  "8": "B"
+  "G": "6"
+  "6": "G"
+  "a": "o"
+  "e": "c"
+  "c": "e"
+  "h": "b"
+  "b": "h"
+
+# Character-pair confusions.  Key = source substring, value = replacement.
+# Applied before single-char to honour longest-match-first.
+pair:
+  "rn": "m"
+  "m": "rn"
+  "cl": "d"
+  "d": "cl"
+  "vv": "w"
+  "w": "vv"
+  "li": "h"

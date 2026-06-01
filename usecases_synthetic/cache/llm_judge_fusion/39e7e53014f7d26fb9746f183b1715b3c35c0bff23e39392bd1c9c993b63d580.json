@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "USD"
+    },
+    {
+      "source": "products_2",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.5,
+    "operation": "verbatim_pick",
+    "reasoning": "Conflicting currency candidates with no additional context; picked one verbatim.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.5,\"reasoning\":\"Conflicting currency candidates with no additional context; picked one verbatim.\"}"
+}

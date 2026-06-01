@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_34277|mbrainz_2502|name=Brown Sugar | artist=R. Dupre | duration=498.0 | tracks=['Brown Sugar']||name=Brown Sugar / Bitch | artist=Rolling Stones, The | release-date=1971-04-17 | release-country=United States of America | duration=452 | tracks=['Brown Sugar', 'Bitch']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Brown Sugar | artist=R. Dupre | duration=498.0 | tracks=['Brown Sugar']\nRecord B: name=Brown Sugar / Bitch | artist=Rolling Stones, The | release-date=1971-04-17 | release-country=United States of America | duration=452 | tracks=['Brown Sugar', 'Bitch']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

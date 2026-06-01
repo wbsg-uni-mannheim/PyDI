@@ -1,0 +1,102 @@
+# Knob 05 — Format/Unit Diversity: Games domain config.
+#
+# Refreshed schema (2026-05-04 source-data refresh):
+#   - dbpedia: launch_yr (ISO YYYY-01-01 padded; year-only at semantic level)
+#   - metacritic: year_published (ISO YYYY-01-01 padded; year-only at semantic level)
+#   - sales: launch_dt (ISO YYYY-01-01 padded), units_sold_mm (units in millions)
+#
+# All dates are uniform ISO at baseline — games is "below easy" at baseline
+# per the knob card; every level injects active heterogeneity.
+
+domain: games
+
+# Date format families per source. units_sold_mm gets the number/money
+# code path so the existing magnitude conversion (millions <-> raw <->
+# thousands) handles unit-of-measurement swap on sales.
+attribute_classes:
+  dbpedia:
+    launch_yr: date
+  metacritic:
+    year_published: date
+  sales:
+    launch_dt: date
+    units_sold_mm: money
+
+# All sources collapse to the canonical "id" column post-loader-rename.
+id_columns:
+  dbpedia: id
+  metacritic: id
+  sales: id
+
+# Pinned pool sizes: easy=2, medium=3, hard=4.
+format_pools_per_level:
+  easy:
+    date:
+      - iso           # YYYY-MM-DD
+      - long_english  # Month D, YYYY
+    money:
+      - en_US         # 1,234.56
+      - plain         # 1234.56
+  medium:
+    date:
+      - iso
+      - long_english
+      - us_slash      # MM/DD/YYYY
+    money:
+      - en_US
+      - de_DE
+      - plain
+  hard:
+    date:
+      - iso
+      - long_english
+      - us_slash
+      - eu_dot        # DD.MM.YYYY
+    money:
+      - en_US
+      - de_DE
+      - fr_FR
+      - plain
+
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+within_source_consistency:
+  easy: source
+  medium: source
+  hard: row
+
+# units_sold_mm is sold-units in millions (e.g. 82 = 82M units, NOT a
+# currency). The "money" branch is reused for its magnitude conversion;
+# currency stays flat (no FX). Easy keeps the implicit unit; medium adds
+# raw; hard widens to thousands so the dispatcher exercises the full
+# magnitude swap path.
+unit_pool_per_level:
+  easy:
+    money:
+      currencies: [units]
+      magnitude: [millions]
+  medium:
+    money:
+      currencies: [units]
+      magnitude: [millions, raw]
+  hard:
+    money:
+      currencies: [units]
+      magnitude: [millions, raw, thousands]
+
+normalize_down_threshold: 0.85
+
+source_magnitude_context:
+  sales:
+    columns: [units_sold_mm]
+    implicit_magnitude: millions
+    implicit_currency: units

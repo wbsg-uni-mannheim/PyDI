@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_75630|mbrainz_7672|name=Experience | artist=Cow'p | duration=2955.0 | tracks=['Mid West', 'Key of Solomon', 'Love Fool', 'sun', 'Stush Boy', '133', 'Into the Game', 'Threetennis', 'Bass & Organ', '0077 (Hally Remix)', 'Demolition X Boy', 'Beasie X', 'March (Live)']||name=Experience | artist=Tunnel Rats | duration=3162 | tracks=['Execution', 'Stripes And Stars', 'Broken Life', 'Poetry', 'Experience', 'Chance to Meet You', 'Sneak', 'Reload', 'Corner Chronicles', 'Womans Touch', 'Poetry 2', 'Wake Up Boy', 'Truth Hurts Lies Kill', 'Just Words']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Experience | artist=Cow'p | duration=2955.0 | tracks=['Mid West', 'Key of Solomon', 'Love Fool', 'sun', 'Stush Boy', '133', 'Into the Game', 'Threetennis', 'Bass & Organ', '0077 (Hally Remix)', 'Demolition X Boy', 'Beasie X', 'March (Live)']\nRecord B: name=Experience | artist=Tunnel Rats | duration=3162 | tracks=['Execution', 'Stripes And Stars', 'Broken Life', 'Poetry', 'Experience', 'Chance to Meet You', 'Sneak', 'Reload', 'Corner Chronicles', 'Womans Touch', 'Poetry 2', 'Wake Up Boy', 'Truth Hurts Lies Kill', 'Just Words']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

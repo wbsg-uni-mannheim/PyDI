@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_95294|lastFM_43560|name=I'm On An Island / Yer Momma | artist=Derislandz | release-date=1980 | release-country=United States of America | duration=361.0 | genre=Rock | tracks=[\"I'm On An Island\", 'Yer Momma']||name=Derislandz -  I'm on an Island / Yer Momma | artist=Derislandz | duration=361.0 | tracks=[\"I'm on an Island\", 'Yer Momma']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=I'm On An Island / Yer Momma | artist=Derislandz | release-date=1980 | release-country=United States of America | duration=361.0 | genre=Rock | tracks=[\"I'm On An Island\", 'Yer Momma']\nRecord B: name=Derislandz -  I'm on an Island / Yer Momma | artist=Derislandz | duration=361.0 | tracks=[\"I'm on an Island\", 'Yer Momma']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

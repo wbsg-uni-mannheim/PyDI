@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2011-01-21"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "interpolation",
+    "reasoning": "The full date from Discogs is consistent with the month-year from MusicBrainz and is the most precise canonical release date.",
+    "value": "2011-01-21"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-01-21\",\"operation\":\"interpolation\",\"confidence\":0.97,\"reasoning\":\"The full date from Discogs is consistent with the month-year from MusicBrainz and is the most precise canonical release date.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_88821|mbrainz_13044|name=One Crisis Short Of Chaos | artist=The Fixtures | release-date=1999 | release-country=Germany | genre=Rock | tracks=['Future Criminals Of America', \"What's Up Doctor?\", 'Mosh Pit Moron', 'Frankenstein Has Risen From The Grave, I Think', 'No Sale', 'The Redemption Game', 'Power', 'Red And Clear', 'Where Dreams Go To Die', 'Pornhogwraithe', 'International Know', 'Warning', 'Hard Head Full Of Hate', 'Monkeywrench', 'Quit Your Job', 'Screw The World', 'If', 'Guilty']||name=One Crisis Short Of Chaos | artist=Fixtures, The | release-country=United States of America | duration=2470 | tracks=['Future Criminals Of America', 'Whats Up Doctor', 'Mosh Pit Moron', 'Frankenstein Has Risen From The Grave, I Think', 'No Sale', 'The Redemption Song', 'Power', 'Red And Clear', 'Where Dreams Go To Die', 'Pornhogwraithe', 'International Know', 'Warning', 'Hard Head Full Of Hate', 'Monkey Wrench', 'Quit Your Job', 'Screw The World', 'If', 'Guilty']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=One Crisis Short Of Chaos | artist=The Fixtures | release-date=1999 | release-country=Germany | genre=Rock | tracks=['Future Criminals Of America', \"What's Up Doctor?\", 'Mosh Pit Moron', 'Frankenstein Has Risen From The Grave, I Think', 'No Sale', 'The Redemption Game', 'Power', 'Red And Clear', 'Where Dreams Go To Die', 'Pornhogwraithe', 'International Know', 'Warning', 'Hard Head Full Of Hate', 'Monkeywrench', 'Quit Your Job', 'Screw The World', 'If', 'Guilty']\nRecord B: name=One Crisis Short Of Chaos | artist=Fixtures, The | release-country=United States of America | duration=2470 | tracks=['Future Criminals Of America', 'Whats Up Doctor', 'Mosh Pit Moron', 'Frankenstein Has Risen From The Grave, I Think', 'No Sale', 'The Redemption Song', 'Power', 'Red And Clear', 'Where Dreams Go To Die', 'Pornhogwraithe', 'International Know', 'Warning', 'Hard Head Full Of Hate', 'Monkey Wrench', 'Quit Your Job', 'Screw The World', 'If', 'Guilty']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

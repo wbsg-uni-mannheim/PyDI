@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_5063|lastFM_2459|name=Absence | artist=In Absentia | release-date=1993 | release-country=Denmark | duration=2838.0 | genre=Electronic | tracks=['BPM4', 'Comprehension', 'From Your Devil', 'Innocence', 'Passing The Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']||name=Absence | artist=I. Absentia | duration=2836.0 | tracks=['BPM4', 'Comprehension', 'From Your DevilÃ¢â‚¬Â¦', 'Innocence', 'Passing The Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Absence | artist=In Absentia | release-date=1993 | release-country=Denmark | duration=2838.0 | genre=Electronic | tracks=['BPM4', 'Comprehension', 'From Your Devil', 'Innocence', 'Passing The Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']\nRecord B: name=Absence | artist=I. Absentia | duration=2836.0 | tracks=['BPM4', 'Comprehension', 'From Your DevilÃ¢â‚¬Â¦', 'Innocence', 'Passing The Future', 'Dig Those Teeth', 'The Messenger', 'Dissolve', 'BPM3', 'Prisoned', 'Absence', 'Clubprehension']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

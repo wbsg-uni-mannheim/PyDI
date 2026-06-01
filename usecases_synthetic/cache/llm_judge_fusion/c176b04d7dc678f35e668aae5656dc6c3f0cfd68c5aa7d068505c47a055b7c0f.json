@@ -1,0 +1,30 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "CAD"
+    },
+    {
+      "source": "products_2",
+      "value": "EUR"
+    },
+    {
+      "source": "products_3",
+      "value": "SGD"
+    },
+    {
+      "source": "products_4",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.25,
+    "operation": "verbatim_pick",
+    "reasoning": "Conflicting currency codes with no additional context to determine a single canonical currency.",
+    "value": "CAD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"CAD\",\"operation\":\"verbatim_pick\",\"confidence\":0.25,\"reasoning\":\"Conflicting currency codes with no additional context to determine a single canonical currency.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_15394|mbrainz_31847|name=Fallen Star | artist=C. Stone | duration=2826.0 | tracks=['Fallen Star (CJ Stone & Jean Elan Mix)', 'Fallen Star (Electronic Pleasure Mix)', 'Fallen Star (LavKastor Dub Mix)', 'Fallen Star (Mondo Remix)', 'Fallen Star (LavKastor Vocal Mix)', 'Fallen Star (Electronic Pleasure Dub Mix)', 'Fallen Star (Mondo Dub Mix)']||name=Fallen | artist=Burzum | release-date=2011-01-01 | duration=2861 | tracks=['Fra verdenstreet', 'Jeg faller', 'Valen', 'Vanvidd', 'Enhver til sitt', 'Budstikken', 'Til hel og tilbake igjen']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fallen Star | artist=C. Stone | duration=2826.0 | tracks=['Fallen Star (CJ Stone & Jean Elan Mix)', 'Fallen Star (Electronic Pleasure Mix)', 'Fallen Star (LavKastor Dub Mix)', 'Fallen Star (Mondo Remix)', 'Fallen Star (LavKastor Vocal Mix)', 'Fallen Star (Electronic Pleasure Dub Mix)', 'Fallen Star (Mondo Dub Mix)']\nRecord B: name=Fallen | artist=Burzum | release-date=2011-01-01 | duration=2861 | tracks=['Fra verdenstreet', 'Jeg faller', 'Valen', 'Vanvidd', 'Enhver til sitt', 'Budstikken', 'Til hel og tilbake igjen']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

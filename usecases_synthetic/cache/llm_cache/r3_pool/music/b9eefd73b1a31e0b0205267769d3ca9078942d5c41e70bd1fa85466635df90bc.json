@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_110126|lastFM_49563|name=Encores | artist=Patsy Cline | release-country=United States of America | duration=1739.0 | genre=Folk, World, & Country | tracks=['That Wonderful Someone', 'I Love You Honey', \"Poor Man's Roses Or Rich Man's Gold\", 'Tody, Tomorrow And Forever', 'A Stranger In My Arms', \"I've Loved And Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Fingerprints', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]||name=Encores | artist=P. Cline | duration=1477.0 | tracks=['That Wondeful Someone', 'I Love You Honey', \"Poor Man's Roses or Rich Man's Gold\", 'A Stranger in My Arms', \"I've Loved and Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Encores | artist=Patsy Cline | release-country=United States of America | duration=1739.0 | genre=Folk, World, & Country | tracks=['That Wonderful Someone', 'I Love You Honey', \"Poor Man's Roses Or Rich Man's Gold\", 'Tody, Tomorrow And Forever', 'A Stranger In My Arms', \"I've Loved And Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Fingerprints', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]\nRecord B: name=Encores | artist=P. Cline | duration=1477.0 | tracks=['That Wondeful Someone', 'I Love You Honey', \"Poor Man's Roses or Rich Man's Gold\", 'A Stranger in My Arms', \"I've Loved and Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

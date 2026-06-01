@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_102885|lastFM_46620|name=Ein Kompliment - MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009 | release-country=Europe | duration=267.0 | genre=Rock | tracks=['Ein Kompliment (Ton)', 'Ein Kompliment (Bild)']||name=Ein Kompliment -  unplugged in New York | artist=Sportfreunde S. | duration=0.0 | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ein Kompliment - MTV Unplugged In New York | artist=Sportfreunde Stiller | release-date=2009 | release-country=Europe | duration=267.0 | genre=Rock | tracks=['Ein Kompliment (Ton)', 'Ein Kompliment (Bild)']\nRecord B: name=Ein Kompliment -  unplugged in New York | artist=Sportfreunde S. | duration=0.0 | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

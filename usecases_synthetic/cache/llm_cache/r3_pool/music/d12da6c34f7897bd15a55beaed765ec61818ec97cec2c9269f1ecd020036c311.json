@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_18570|lastFM_3990|name=Dance To The Music | artist=Lady | release-date=2001 | release-country=France | duration=1259.0 | genre=Electronic | tracks=['Dance To The Music (Radio Edit)', 'Dance To The Music (Club Mix)', 'Dance To THe Music (US Club Mix)', 'In To The Music']||name=- new - Dance to the music | artist=Lady | duration=494.0 | tracks=['Dance to the music', 'Dance to the music (remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dance To The Music | artist=Lady | release-date=2001 | release-country=France | duration=1259.0 | genre=Electronic | tracks=['Dance To The Music (Radio Edit)', 'Dance To The Music (Club Mix)', 'Dance To THe Music (US Club Mix)', 'In To The Music']\nRecord B: name=- new - Dance to the music | artist=Lady | duration=494.0 | tracks=['Dance to the music', 'Dance to the music (remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

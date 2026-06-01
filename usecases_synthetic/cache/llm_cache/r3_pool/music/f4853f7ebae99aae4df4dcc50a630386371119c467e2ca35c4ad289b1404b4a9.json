@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_103951|lastFM_47070|name=The Trouble With Angels | artist=Jerry Goldsmith | release-date=2009 | release-country=UK | genre=Stage & Screen | tracks=['Main Title', 'Welcome To St. Francis', 'First Warning', 'Pot Of Tea', 'Dancing Lesson', 'Lifeguard', 'The Trouble With Angels', 'Sewing Circle', 'Future Plans', 'Marching Band', 'Rachel Says Goodbye', 'End Title']||name=The Trouble With | artist=Jerry Goldsmith | duration=1851.0 | tracks=['Main Title', 'Welcome To St. Francis', 'First Warning', 'A Pot Of Tea', 'The Dancing Lesson', 'The Lifeguard', 'The Trouble With Angels', 'The Sewing Circle', 'Future Plans', 'Marching Band', 'Rachel Says Goodbye', 'End Title']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Trouble With Angels | artist=Jerry Goldsmith | release-date=2009 | release-country=UK | genre=Stage & Screen | tracks=['Main Title', 'Welcome To St. Francis', 'First Warning', 'Pot Of Tea', 'Dancing Lesson', 'Lifeguard', 'The Trouble With Angels', 'Sewing Circle', 'Future Plans', 'Marching Band', 'Rachel Says Goodbye', 'End Title']\nRecord B: name=The Trouble With | artist=Jerry Goldsmith | duration=1851.0 | tracks=['Main Title', 'Welcome To St. Francis', 'First Warning', 'A Pot Of Tea', 'The Dancing Lesson', 'The Lifeguard', 'The Trouble With Angels', 'The Sewing Circle', 'Future Plans', 'Marching Band', 'Rachel Says Goodbye', 'End Title']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

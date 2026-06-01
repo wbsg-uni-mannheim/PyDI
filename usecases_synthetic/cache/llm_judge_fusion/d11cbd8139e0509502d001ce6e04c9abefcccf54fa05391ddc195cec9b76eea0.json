@@ -1,0 +1,30 @@
+{
+  "attribute": "description",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "Nen momentln k dispozici."
+    },
+    {
+      "source": "products_2",
+      "value": "(Solid, 3x4, 512GB, A80, Ace, Drive), Gen, M.2, PCI-E, Power, SSD, Silicon, Silicon Power, State, drive, internal, solid, state"
+    },
+    {
+      "source": "products_3",
+      "value": "Silicon Power P34A80, 512 GB, M.2, 3400 MB/s Silicon Power"
+    },
+    {
+      "source": "products_4",
+      "value": "SP512GBP34A80M28"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Source 3 provides the clearest product description, and source 2 plus source 4 confirm the model, capacity, form factor, and SSD type.",
+    "value": "Silicon Power P34A80 512 GB M.2 PCIe SSD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Silicon Power P34A80 512 GB M.2 PCIe SSD\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Source 3 provides the clearest product description, and source 2 plus source 4 confirm the model, capacity, form factor, and SSD type.\"}"
+}

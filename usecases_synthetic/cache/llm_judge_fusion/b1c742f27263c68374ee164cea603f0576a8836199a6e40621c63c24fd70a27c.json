@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Romani, Graziano"
+    },
+    {
+      "source": "discogs",
+      "value": "Graziano Romani"
+    },
+    {
+      "source": "lastfm",
+      "value": "Graziano R."
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Two sources agree on the full name and the others appear to be abbreviated/inverted variants.",
+    "value": "Graziano Romani"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Graziano Romani\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Two sources agree on the full name and the others appear to be abbreviated/inverted variants.\"}"
+}

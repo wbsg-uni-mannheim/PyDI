@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_36796|lastFM_4182|name=Me Against The World | artist=2Pac | release-date=1995 | release-country=Europe | duration=1116.0 | genre=Hip Hop | tracks=['Me Against The World (Soul Power Mix)', 'Me Against The World (LP Edit)', 'Me Against The World (Soul Power Radio Mix)', 'Me Against The World (Soul Power Hip Hop Mix)']||name=Me Against the World | artist=2Pac | duration=3881.0 | tracks=['Intro', 'If I Die 2Nite', 'Me Against the World', 'So Many Tears', 'Temptations', 'Young Niggaz', 'Heavy in the Game', 'Lord Knows', 'Dear Mama', \"It Ain't Easy\", 'Can U Get Away', 'Old School', 'Fuck the World', 'Death Around the Corner', 'Outlaw']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Me Against The World | artist=2Pac | release-date=1995 | release-country=Europe | duration=1116.0 | genre=Hip Hop | tracks=['Me Against The World (Soul Power Mix)', 'Me Against The World (LP Edit)', 'Me Against The World (Soul Power Radio Mix)', 'Me Against The World (Soul Power Hip Hop Mix)']\nRecord B: name=Me Against the World | artist=2Pac | duration=3881.0 | tracks=['Intro', 'If I Die 2Nite', 'Me Against the World', 'So Many Tears', 'Temptations', 'Young Niggaz', 'Heavy in the Game', 'Lord Knows', 'Dear Mama', \"It Ain't Easy\", 'Can U Get Away', 'Old School', 'Fuck the World', 'Death Around the Corner', 'Outlaw']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "23 Things Fall Apart"
+    },
+    {
+      "source": "lastfm",
+      "value": "Digitonal -  23 Things Fall Apart"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Removed the source/artist prefix from the Last.fm entry to match the canonical release name.",
+    "value": "23 Things Fall Apart"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"23 Things Fall Apart\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Removed the source/artist prefix from the Last.fm entry to match the canonical release name.\"}"
+}

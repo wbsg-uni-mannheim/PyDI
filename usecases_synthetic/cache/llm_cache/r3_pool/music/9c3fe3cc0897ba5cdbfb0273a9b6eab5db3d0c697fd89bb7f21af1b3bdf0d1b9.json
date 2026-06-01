@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_42605|mbrainz_9489|name=Personality Crisis | artist=Dino Felipe | release-date=2008 | release-country=France | duration=2101.0 | genre=Electronic | tracks=['Drug Buddies', 'Es T Diis', 'Scrolling Mice', 'Andrew', 'Alien Ation', 'Dilapitations', 'Occaaco', 'Kinetic Cuntree Fiend', 'This Song Is Live']||name=Personality Crisis | artist=Felipe, Dino | release-date=2008-01-01 | duration=0 | tracks=['Drug Buddies', \"Es't'diis\", 'Scrolling Mice', 'Andrew', 'Alien Ation', 'Dilapitations', 'Occaaco', 'Kinetic Cuntree Fiend', 'This Song Is Live']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Personality Crisis | artist=Dino Felipe | release-date=2008 | release-country=France | duration=2101.0 | genre=Electronic | tracks=['Drug Buddies', 'Es T Diis', 'Scrolling Mice', 'Andrew', 'Alien Ation', 'Dilapitations', 'Occaaco', 'Kinetic Cuntree Fiend', 'This Song Is Live']\nRecord B: name=Personality Crisis | artist=Felipe, Dino | release-date=2008-01-01 | duration=0 | tracks=['Drug Buddies', \"Es't'diis\", 'Scrolling Mice', 'Andrew', 'Alien Ation', 'Dilapitations', 'Occaaco', 'Kinetic Cuntree Fiend', 'This Song Is Live']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

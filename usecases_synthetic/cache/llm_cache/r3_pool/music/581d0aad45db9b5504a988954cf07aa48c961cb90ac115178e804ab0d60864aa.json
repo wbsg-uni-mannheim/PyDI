@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_63131|mbrainz_4170|name=Signs For The Fallen | artist=Suidakra | release-date=2003 | release-country=Russia | duration=2548.0 | genre=Rock | tracks=['Revenant', 'Crown The Lost', 'Threnody', 'Trails Of Gore', 'The Ember Deid', 'When Eternity Echoes', 'Signs For The Fallen', 'Dimorphic', 'Bound In Changes', \"A Vision's Demise\"]||name=Signs for the Fallen | artist=Suidakra | release-date=2003-07-28 | release-country=Germany | duration=2552 | tracks=['Revenant', 'Crown the Lost', 'Threnody', 'Trails of Gore', 'The Ember Deid', 'When Eternity Echoes', 'Signs for the Fallen', 'Dimorphic', 'Bound in Changes', \"A Vision's Demise\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Signs For The Fallen | artist=Suidakra | release-date=2003 | release-country=Russia | duration=2548.0 | genre=Rock | tracks=['Revenant', 'Crown The Lost', 'Threnody', 'Trails Of Gore', 'The Ember Deid', 'When Eternity Echoes', 'Signs For The Fallen', 'Dimorphic', 'Bound In Changes', \"A Vision's Demise\"]\nRecord B: name=Signs for the Fallen | artist=Suidakra | release-date=2003-07-28 | release-country=Germany | duration=2552 | tracks=['Revenant', 'Crown the Lost', 'Threnody', 'Trails of Gore', 'The Ember Deid', 'When Eternity Echoes', 'Signs for the Fallen', 'Dimorphic', 'Bound in Changes', \"A Vision's Demise\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

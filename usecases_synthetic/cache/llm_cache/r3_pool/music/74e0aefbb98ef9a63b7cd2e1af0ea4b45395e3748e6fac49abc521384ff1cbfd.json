@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_87352|lastFM_40226|name=Primary Colors / Local Live | artist=Finally Punk | release-date=2008 | release-country=United States of America | genre=Rock|Non-Music | tracks=['Boyfriend Application', 'Bitchwitch', 'Pirahna', 'Australia', 'Jazz Hit', 'Negative Creep', 'JD vs GR', 'Primary Colors', 'Dear Diary', 'Know Age', 'Henry', 'Baldcake']||name=Finally Punk -  Primary Colors / Local Live | artist=Finally Punk | duration=548.0 | tracks=['Pirahna', 'Australia', 'Jazz Hit', 'Negative Creep', 'JD vs GR', 'Know Age', 'Baldcake']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Primary Colors / Local Live | artist=Finally Punk | release-date=2008 | release-country=United States of America | genre=Rock|Non-Music | tracks=['Boyfriend Application', 'Bitchwitch', 'Pirahna', 'Australia', 'Jazz Hit', 'Negative Creep', 'JD vs GR', 'Primary Colors', 'Dear Diary', 'Know Age', 'Henry', 'Baldcake']\nRecord B: name=Finally Punk -  Primary Colors / Local Live | artist=Finally Punk | duration=548.0 | tracks=['Pirahna', 'Australia', 'Jazz Hit', 'Negative Creep', 'JD vs GR', 'Know Age', 'Baldcake']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

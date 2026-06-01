@@ -1,0 +1,63 @@
+# Normalization committee roster — products domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Three coherent
+# members: rule_per_attribute_optimal / llm_only / passthrough.
+#
+# Eligible canonical attributes for products (SM-resolved ∩ fusion-gold
+# ∩ kind taxonomy):
+#   title (long_string), brand (nominal), description (free_text),
+#   price (continuous), priceCurrency (nominal).
+#
+# Intentionally OMITTED rule normalizers (no applicable attribute):
+#   - date_iso (no date attribute)
+#   - country_iso (no country attribute)
+#   - taxonomy_lookup (no products taxonomy shipped)
+
+seed: 42
+
+fusion_protection_tolerance: {}
+
+rule_normalizers:
+  - name: text_clean
+    module: usecases_synthetic.lib.normalizer_members
+    class: TextCleanNormalizer
+    applies_to: [title, brand, description, priceCurrency]
+    params:
+      lowercase: false
+      strip_whitespace: true
+      normalize_unicode: true
+      remove_html: true
+      remove_punctuation: false
+    # Case preserved: products titles + brand cells use mixed case
+    # ("Gigabyte" / "WD Blue").
+
+  - name: number_locale
+    module: usecases_synthetic.lib.normalizer_members
+    class: NumberLocaleNormalizer
+    applies_to: [price]
+    params:
+      babel_candidate_locales: [en_US, de_DE, en_GB]
+      handle_currency: true
+      handle_percentages: false
+    # Babel locales picked to cover the dominant price formats in the
+    # source data (USD '1,099.99' / EUR '1.099,99' / GBP '199.99').
+
+# LLM normalizer config (used by ``llm_only``).
+llm_normalizer:
+  module: usecases_synthetic.lib.llm_normalizer
+  class: LLMCanonicalizer
+  params:
+    model_name: gpt-5.4-mini
+    num_examples: 5
+    temperature: 0.0
+    max_tokens: 2048
+    prompt_version: v2
+    cache_dir: usecases_synthetic/cache/llm_normalizer
+
+members:
+  - name: rule_per_attribute_optimal
+    params: {}
+  - name: llm_only
+    params: {}
+  - name: passthrough
+    params: {}

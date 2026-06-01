@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "661.78"
+    },
+    {
+      "source": "products_2",
+      "value": "7276.0"
+    },
+    {
+      "source": "products_3",
+      "value": "746.18"
+    },
+    {
+      "source": "products_4",
+      "value": "753.64"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "Three candidates cluster around the mid-hundreds, while 7276.0 is a clear outlier, so a robust aggregate is appropriate.",
+    "value": 753.64
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":753.64,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"Three candidates cluster around the mid-hundreds, while 7276.0 is a clear outlier, so a robust aggregate is appropriate.\"}"
+}

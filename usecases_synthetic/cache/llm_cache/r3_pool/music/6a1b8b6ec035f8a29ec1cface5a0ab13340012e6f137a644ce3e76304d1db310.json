@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_136507|lastFM_58619|name=Flocking Behaviour | artist=Julius Steinhoff | release-date=2014-07-01 | release-country=Germany | duration=3511.0 | genre=Electronic | tracks=['Where Days Begin', 'Treehouse', 'Under A Waterfall', 'Hey You', 'Sun And Stars', 'Flocking Behaviour', 'Cheetah Nights', 'All The Things You Are']||name=Julius Steinhoff -  Flocking Behaviour | artist=Julius Steinhoff | duration=2910.0 | tracks=['Where Days Begin', 'Under A Waterfall', 'Hey You', 'Sun And Stars', 'Flocking Behaviour', 'Cheetah Nights', 'All The Things You Are']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Flocking Behaviour | artist=Julius Steinhoff | release-date=2014-07-01 | release-country=Germany | duration=3511.0 | genre=Electronic | tracks=['Where Days Begin', 'Treehouse', 'Under A Waterfall', 'Hey You', 'Sun And Stars', 'Flocking Behaviour', 'Cheetah Nights', 'All The Things You Are']\nRecord B: name=Julius Steinhoff -  Flocking Behaviour | artist=Julius Steinhoff | duration=2910.0 | tracks=['Where Days Begin', 'Under A Waterfall', 'Hey You', 'Sun And Stars', 'Flocking Behaviour', 'Cheetah Nights', 'All The Things You Are']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

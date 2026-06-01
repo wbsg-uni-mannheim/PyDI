@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1999-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "1999"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "interpolation",
+    "reasoning": "The year-only candidate is consistent with the full date, so the canonical release date is the more precise 1999-01-01.",
+    "value": "1999-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1999-01-01\",\"operation\":\"interpolation\",\"confidence\":0.95,\"reasoning\":\"The year-only candidate is consistent with the full date, so the canonical release date is the more precise 1999-01-01.\"}"
+}

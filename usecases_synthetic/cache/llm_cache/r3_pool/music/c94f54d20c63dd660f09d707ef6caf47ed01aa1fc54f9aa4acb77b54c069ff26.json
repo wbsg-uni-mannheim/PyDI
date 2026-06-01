@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_48882|mbrainz_378|name=Warning! | artist=Adeva | duration=971.0 | tracks=['Warning! (High On Hope Mix)', 'Respect', 'Musical Freedom']||name=Warning | artist=Freestylers | release-date=1998-11-02 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1040 | tracks=['Warning (original 7\")', 'Warning (Soul Hooligan 7\")', \"Warning (Jay Rock's Refix)\", 'Warning (original 12\")']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Warning! | artist=Adeva | duration=971.0 | tracks=['Warning! (High On Hope Mix)', 'Respect', 'Musical Freedom']\nRecord B: name=Warning | artist=Freestylers | release-date=1998-11-02 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1040 | tracks=['Warning (original 7\")', 'Warning (Soul Hooligan 7\")', \"Warning (Jay Rock's Refix)\", 'Warning (original 12\")']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

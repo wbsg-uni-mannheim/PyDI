@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_22480|mbrainz_8045|name=Sunrise At Cala BenirrÃƒÂ¡s (Ibiza) | artist=S. Plomo | tracks=[]||name=Sunrise At ES Cavallet (Ibiza) | artist=Sin Plomo | release-date=2009-08-09 | release-country=Germany | duration=10809 | tracks=['Nature Groove', 'Einsame Nacht', 'Static', 'Wait (The Timewriter remix)', 'Listen (Running mix)', 'Cubos', 'Blueberry (Strykeâ€˜s Deep Blue dub)', 'Desierto', 'Estefania', 'Bambossa', 'Flicking Pages (Daniel Kyo remix)', 'Percy Thang', 'Room Stripes', 'Cigue', 'Sunrise at ES Cavallet (DJ mix by Sin Plomo)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sunrise At Cala BenirrÃƒÂ¡s (Ibiza) | artist=S. Plomo | tracks=[]\nRecord B: name=Sunrise At ES Cavallet (Ibiza) | artist=Sin Plomo | release-date=2009-08-09 | release-country=Germany | duration=10809 | tracks=['Nature Groove', 'Einsame Nacht', 'Static', 'Wait (The Timewriter remix)', 'Listen (Running mix)', 'Cubos', 'Blueberry (Strykeâ€˜s Deep Blue dub)', 'Desierto', 'Estefania', 'Bambossa', 'Flicking Pages (Daniel Kyo remix)', 'Percy Thang', 'Room Stripes', 'Cigue', 'Sunrise at ES Cavallet (DJ mix by Sin Plomo)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

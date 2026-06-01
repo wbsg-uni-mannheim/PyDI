@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "1000.0"
+    },
+    {
+      "source": "products_2",
+      "value": "1,000.0 GB"
+    },
+    {
+      "source": "products_3",
+      "value": "931.32 GiB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Candidates represent the same capacity in different units/formats, and 931.32 GiB is approximately 1000 GB.",
+    "value": 1000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1000.0,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Candidates represent the same capacity in different units/formats, and 931.32 GiB is approximately 1000 GB.\"}"
+}

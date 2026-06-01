@@ -1,0 +1,101 @@
+# Normalization committee roster — companies domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Three coherent
+# members: rule_per_attribute_optimal / llm_only / passthrough.
+#
+# Eligible canonical attributes for companies (SM-resolved ∩ fusion-gold
+# ∩ kind taxonomy):
+#   assets, city, country, founded, name, revenue.
+# (industry, keypeople, and other K10 attributes either lack a fusion
+# tag or are 1-source-only, so they are dropped from scoring.)
+
+seed: 42
+
+# Per-attribute tolerance overrides (Pending #5). Empty by default; the
+# locked closeness-metric specification in
+# protection._DEFAULT_TOLERANCE_BY_KIND applies.
+fusion_protection_tolerance: {}
+
+# Rule normalizer candidates available to the val-selection sweep.
+rule_normalizers:
+  - name: text_clean
+    module: usecases_synthetic.lib.normalizer_members
+    class: TextCleanNormalizer
+    applies_to: [name, country, city]
+    params:
+      lowercase: false
+      strip_whitespace: true
+      normalize_unicode: true
+      remove_html: true
+      remove_punctuation: false
+    # Case preserved (lowercase: false) because fusion canonical values
+    # are mixed-case (e.g. "United States", "Apple Inc."). The closeness
+    # contract for nominal uses Levenshtein ≥ 0.85.
+
+  - name: date_iso
+    module: usecases_synthetic.lib.normalizer_members
+    class: DateIsoNormalizer
+    applies_to: [founded]
+    params:
+      date_format: '%Y-%m-%d'
+      year_only_format: '%Y'
+      handle_timezone: true
+
+  - name: number_locale
+    module: usecases_synthetic.lib.normalizer_members
+    class: NumberLocaleNormalizer
+    applies_to: [assets, revenue]
+    params:
+      babel_candidate_locales: [en_US, de_DE]
+      handle_currency: true
+      handle_percentages: true
+
+  - name: country_iso
+    module: usecases_synthetic.lib.normalizer_members
+    class: CountryIsoNormalizer
+    applies_to: [country]
+    params:
+      output_format: name
+    # 'name' chosen because the companies fusion canonical values use
+    # pycountry's primary names (United States, Russia, United Kingdom).
+
+  - name: taxonomy_lookup
+    module: usecases_synthetic.lib.normalizer_members
+    class: TaxonomyLookupNormalizer
+    # 'industry' kept for forward-compat; it is not in the companies
+    # fusion gold so it will not score until the fusion val/test is
+    # extended.
+    applies_to: [industry]
+    params:
+      case_insensitive: true
+      taxonomies:
+        companies:
+          industry:
+            path: companies/input/schemamatching/GICS_Industry_Taxonomy.csv
+            columns:
+              [
+                'Sector Name',
+                'Industry Group Name',
+                'Industry Name',
+                'Sub-Industry Name',
+              ]
+
+# LLM normalizer config (used by ``llm_only``).
+llm_normalizer:
+  module: usecases_synthetic.lib.llm_normalizer
+  class: LLMCanonicalizer
+  params:
+    model_name: gpt-5.4-mini
+    num_examples: 5
+    temperature: 0.0
+    max_tokens: 2048
+    prompt_version: v2
+    cache_dir: usecases_synthetic/cache/llm_normalizer
+
+members:
+  - name: rule_per_attribute_optimal
+    params: {}
+  - name: llm_only
+    params: {}
+  - name: passthrough
+    params: {}

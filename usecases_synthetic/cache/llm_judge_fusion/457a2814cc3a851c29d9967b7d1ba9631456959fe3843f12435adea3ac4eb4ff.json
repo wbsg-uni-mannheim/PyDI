@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "USD"
+    },
+    {
+      "source": "products_2",
+      "value": "BGN"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.55,
+    "operation": "verbatim_pick",
+    "reasoning": "Conflicting currencies were provided with no disambiguating context, so one candidate must be selected verbatim.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.55,\"reasoning\":\"Conflicting currencies were provided with no disambiguating context, so one candidate must be selected verbatim.\"}"
+}

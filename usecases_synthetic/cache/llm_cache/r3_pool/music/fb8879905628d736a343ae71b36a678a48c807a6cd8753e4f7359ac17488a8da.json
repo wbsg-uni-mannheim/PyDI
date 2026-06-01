@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_18531|mbrainz_21256|name=Monsters | artist=S. Monsters | tracks=[]||name=Monsters in the Attic EP | artist=Monsters in the Attic | release-date=2001-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=592 | tracks=['13th Floor', 'See You in September', 'Silent Film']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monsters | artist=S. Monsters | tracks=[]\nRecord B: name=Monsters in the Attic EP | artist=Monsters in the Attic | release-date=2001-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=592 | tracks=['13th Floor', 'See You in September', 'Silent Film']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

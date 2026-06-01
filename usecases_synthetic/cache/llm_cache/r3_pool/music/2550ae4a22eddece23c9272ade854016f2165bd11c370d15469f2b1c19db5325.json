@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_33726|mbrainz_15336|name=Spooky E.P. | artist=Manuskript | duration=788.0 | tracks=['Plastic Fangs', 'Knives', 'Halloween']||name=The Spooky E.P. (release) | artist=Manuskript | duration=794 | tracks=['Plastic Fangs', 'Knives', 'Halloween']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spooky E.P. | artist=Manuskript | duration=788.0 | tracks=['Plastic Fangs', 'Knives', 'Halloween']\nRecord B: name=The Spooky E.P. (release) | artist=Manuskript | duration=794 | tracks=['Plastic Fangs', 'Knives', 'Halloween']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

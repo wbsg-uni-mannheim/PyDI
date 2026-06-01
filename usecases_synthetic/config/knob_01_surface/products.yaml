@@ -1,0 +1,134 @@
+# Knob 01 - Surface Augmentation Intensity - Products
+#
+# All four products_<n>.json sources share the same canonical schema
+# (id, title, brand, description, price, priceCurrency, cluster_id,
+# url). Post-2026-05-15 rewrite, the on-disk ``id`` column carries
+# source-prefixed string ids (``products_<n>_<original_int>``) that
+# are unambiguously cross-source unique.
+
+domain: products
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+attribute_classes:
+  products_1: &products_attr_classes
+    title: primary
+    brand: key
+    description: secondary
+    price: secondary
+    title_description: secondary
+    product_type: key
+    model: secondary
+    model_number: secondary
+    chipset_name: secondary
+    vram_gb: secondary
+    storage_gb: secondary
+  products_2: *products_attr_classes
+  products_3: *products_attr_classes
+  products_4: *products_attr_classes
+
+attribute_mapping:
+  products_1: &products_attr_mapping
+    title: title
+    brand: brand
+    description: description
+    price: price
+    title_description: title_description
+    product_type: product_type
+    model: model
+    model_number: model_number
+    chipset_name: chipset_name
+    vram_gb: vram_gb
+    storage_gb: storage_gb
+  products_2: *products_attr_mapping
+  products_3: *products_attr_mapping
+  products_4: *products_attr_mapping
+
+paraphrase_rate_primary:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+paraphrase_rate_key:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+paraphrase_rate_secondary:
+  easy: 0.0
+  medium: 0.16
+  hard: 0.30
+paraphrase_rate_categorical:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+
+operator_mix:
+  easy:
+    # Note: dormant under `paraphrase_rate_*.easy: 0.0` (the rate-based
+    # dispatcher short-circuits before reaching operator sampling at easy).
+    # The easy normalize-down work runs via `baseline_above_target_rules`
+    # at a separate code path. Kept as defensive placeholder for any future
+    # easy-rate bump.
+    normalize_to_canonical: 1.0
+  medium:
+    abbreviate: 2.0
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 1.0
+  hard:
+    abbreviate: 1.5
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 3.0
+
+baseline_above_target_rules: []
+
+# Products noisy-text characteristics suggest unit-symbol abbreviations
+# in description fields (GB, GHz, etc.). Stub table; expand in S13.
+abbreviation_table:
+  Gigabyte: "GB"
+  Megabyte: "MB"
+  Terabyte: "TB"
+  Megahertz: "MHz"
+  Gigahertz: "GHz"
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+  - with
+
+key_token_skiplist:
+  products_1: &products_key_token_skiplist
+    title: []
+    brand: []
+    product_type: []
+  products_2: *products_key_token_skiplist
+  products_3: *products_key_token_skiplist
+  products_4: *products_key_token_skiplist
+
+key_token_skiplist_global: []
+
+# Hard-path LLM config. Default model gpt-5.4-mini per the 2026-05-06
+# LLM-model-default decision (~5x cheaper than full gpt-5.4). Before
+# each K1 hard run, ask the user whether to bump to gpt-5.4
+# (invalidates the on-disk LLM cache via the model_id cache key).
+# R10-D 2026-05-29: prompt_version bumped to v2 -- minimum-divergence
+# rule, <UNCHANGED> sentinel escape, per-attribute-class prompt
+# split (primary/key -> short_v2, secondary -> secondary_v2,
+# categorical -> categorical_v2). Cache key under
+# cache/knob_01_paraphrases/<domain>/<level>/ rotates on this bump.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+anchor_survivor_floor:
+  primary: true
+  key: false
+  secondary: false
+  categorical: false

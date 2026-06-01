@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_3644|lastFM_60224|name=Spirit In Stone | artist=Lifesavas | release-date=2003 | release-country=United States of America | genre=Hip Hop | tracks=['Soldierfied', \"It's Over\", \"What If It's True?\", \"Livin' Time / Life: Movement 1\", \"Livin' Lude\", 'Fever', 'HelloHiHey', 'Head Exercise', 'Selector', \"Fa' Show (Door Drama) Skit\", \"Fa' Show\", 'State Of The World', 'Apocalypse / War', 'Resist', '5th Horseman', 'Thuggity Skit', 'Skeletons', 'Emerge', 'Blackbirds (My People) Interlude', 'Me', 'Spirit In Stone Outro']||name=Spirit | artist=Beatfarmer | duration=3958.0 | tracks=['Until Next Morning', 'Spirit', 'Rainy Season', 'Funky Monkey', \"Firecat (Beatfarmer's Lasqueti Beat Mix)\", 'Native State', 'Rites of Passage', 'Dub Finger', 'Cherished', 'The Long Day, Over']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit In Stone | artist=Lifesavas | release-date=2003 | release-country=United States of America | genre=Hip Hop | tracks=['Soldierfied', \"It's Over\", \"What If It's True?\", \"Livin' Time / Life: Movement 1\", \"Livin' Lude\", 'Fever', 'HelloHiHey', 'Head Exercise', 'Selector', \"Fa' Show (Door Drama) Skit\", \"Fa' Show\", 'State Of The World', 'Apocalypse / War', 'Resist', '5th Horseman', 'Thuggity Skit', 'Skeletons', 'Emerge', 'Blackbirds (My People) Interlude', 'Me', 'Spirit In Stone Outro']\nRecord B: name=Spirit | artist=Beatfarmer | duration=3958.0 | tracks=['Until Next Morning', 'Spirit', 'Rainy Season', 'Funky Monkey', \"Firecat (Beatfarmer's Lasqueti Beat Mix)\", 'Native State', 'Rites of Passage', 'Dub Finger', 'Cherished', 'The Long Day, Over']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

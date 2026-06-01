@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1992-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "1992"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "interpolation",
+    "reasoning": "The year-only candidate is best completed to the standard full release-date format using the more precise date.",
+    "value": "1992-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1992-01-01\",\"operation\":\"interpolation\",\"confidence\":0.98,\"reasoning\":\"The year-only candidate is best completed to the standard full release-date format using the more precise date.\"}"
+}

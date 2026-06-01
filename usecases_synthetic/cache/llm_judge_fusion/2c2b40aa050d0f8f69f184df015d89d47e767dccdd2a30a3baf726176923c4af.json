@@ -1,0 +1,33 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Another Universe', 'True No.9 Blues', 'Magic Touch', \"My Love Is a Seed That Doesn't Grow\", 'Here Comes the King', 'Shakes', 'Queen of the 21st Century', 'Please Venus', 'Arrows of Eros', 'Fade to Black']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Another Universe', 'True No.9 Blues', 'Magic Touch', \"My Love Is A Seed That Doesn't Grow\", 'Here Comes The King', 'Shakes', 'Queen Of The 21st Century', 'Please Venus', 'Arrows Of Eros', 'Fade To Black']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Both sources list the same track sequence with only capitalization and punctuation differences, so I normalized to a single canonical form.",
+    "value": [
+      "Another Universe",
+      "True No.9 Blues",
+      "Magic Touch",
+      "My Love Is a Seed That Doesn't Grow",
+      "Here Comes the King",
+      "Shakes",
+      "Queen of the 21st Century",
+      "Please Venus",
+      "Arrows of Eros",
+      "Fade to Black"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Another Universe\",\"True No.9 Blues\",\"Magic Touch\",\"My Love Is a Seed That Doesn't Grow\",\"Here Comes the King\",\"Shakes\",\"Queen of the 21st Century\",\"Please Venus\",\"Arrows of Eros\",\"Fade to Black\"],\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Both sources list the same track sequence with only capitalization and punctuation differences, so I normalized to a single canonical form.\"}"
+}

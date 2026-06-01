@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_40981|lastFM_19415|name=Funkin' The Classics | artist=Trouble Funk | release-date=2001 | release-country=United States of America | duration=2299.0 | genre=Funk / Soul | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down To DC', 'Cut The Cake', \"Dancin'\"]||name=Funkin'  Classics | artist=Trouble Funk | duration=2028.0 | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down to DC', \"Dancin'\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Funkin' The Classics | artist=Trouble Funk | release-date=2001 | release-country=United States of America | duration=2299.0 | genre=Funk / Soul | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down To DC', 'Cut The Cake', \"Dancin'\"]\nRecord B: name=Funkin'  Classics | artist=Trouble Funk | duration=2028.0 | tracks=[\"Da Trouble's Beat 2001\", \"Are You Funkin' Now\", 'Funky Stuff', 'Latin Funk', 'Devil Went Down to DC', \"Dancin'\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

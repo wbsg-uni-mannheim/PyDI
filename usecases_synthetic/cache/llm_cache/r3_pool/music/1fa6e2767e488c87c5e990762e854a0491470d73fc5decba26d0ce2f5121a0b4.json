@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_168007|mbrainz_20255|name=Love In The Future | artist=John Legend | release-date=2013 | release-country=Indonesia | genre=Funk / Soul|Hip Hop | tracks=['Love In The Future (Intro)', 'The Beginning...', 'Open Your Eyes', 'Made To Love', 'Who Do We Think We Are', 'All Of Me', 'Hold On Longer', 'Save The Night', 'Tomorrow', 'What If I Told You? (Interlude)', 'Dreams', 'Wanna Be Loved', 'Angel (Interlude)', 'You & I (Nobody In The World)', 'Asylum', 'Caught Up', 'Bonus Tracks', 'So Gone', 'We Loved It', 'Aim High', 'For The First Time']||name=Love in the Future | artist=Legend, John | release-date=2013-09-02 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4042 | tracks=['Love in the Future (intro)', 'The Beginningâ€¦', 'Open Your Eyes', 'Made to Love', 'Who Do We Think We Are', 'All of Me', 'Hold On Longer', 'Save the Night', 'Tomorrow', 'What If I Told You? (interlude)', 'Dreams', 'Wanna Be Loved', 'Angel (interlude)', 'You & I (Nobody in the World)', 'Asylum', 'Caught Up', 'So Gone', 'We Loved It', 'Aim High', 'For the First Time']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Love In The Future | artist=John Legend | release-date=2013 | release-country=Indonesia | genre=Funk / Soul|Hip Hop | tracks=['Love In The Future (Intro)', 'The Beginning...', 'Open Your Eyes', 'Made To Love', 'Who Do We Think We Are', 'All Of Me', 'Hold On Longer', 'Save The Night', 'Tomorrow', 'What If I Told You? (Interlude)', 'Dreams', 'Wanna Be Loved', 'Angel (Interlude)', 'You & I (Nobody In The World)', 'Asylum', 'Caught Up', 'Bonus Tracks', 'So Gone', 'We Loved It', 'Aim High', 'For The First Time']\nRecord B: name=Love in the Future | artist=Legend, John | release-date=2013-09-02 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4042 | tracks=['Love in the Future (intro)', 'The Beginningâ€¦', 'Open Your Eyes', 'Made to Love', 'Who Do We Think We Are', 'All of Me', 'Hold On Longer', 'Save the Night', 'Tomorrow', 'What If I Told You? (interlude)', 'Dreams', 'Wanna Be Loved', 'Angel (interlude)', 'You & I (Nobody in the World)', 'Asylum', 'Caught Up', 'So Gone', 'We Loved It', 'Aim High', 'For the First Time']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

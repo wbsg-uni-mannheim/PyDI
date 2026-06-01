@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_49443|lastFM_5913|name=The Butterfly Effect | artist=Moonspell | release-date=2005 | release-country=Russia | duration=3442.0 | genre=Rock | tracks=['Soulsick', 'Butterfly FX', \"Can't Bee\", 'Lustmord', 'Selfabuse', 'I Am The Eternal Spectator', 'Soulitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K', 'O Mal De Cristo']||name=The Butterfly | artist=Moonspell | duration=3435.0 | tracks=['Soulsick', 'Butterfly Fx', \"Can't Bee\", 'Lustmord', 'Self Abuse', 'I Am The Eternal Spectator', 'Solitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Butterfly Effect | artist=Moonspell | release-date=2005 | release-country=Russia | duration=3442.0 | genre=Rock | tracks=['Soulsick', 'Butterfly FX', \"Can't Bee\", 'Lustmord', 'Selfabuse', 'I Am The Eternal Spectator', 'Soulitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K', 'O Mal De Cristo']\nRecord B: name=The Butterfly | artist=Moonspell | duration=3435.0 | tracks=['Soulsick', 'Butterfly Fx', \"Can't Bee\", 'Lustmord', 'Self Abuse', 'I Am The Eternal Spectator', 'Solitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

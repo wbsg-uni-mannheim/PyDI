@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Radio Massacre International (and others)"
+    },
+    {
+      "source": "discogs",
+      "value": "Radio Massacre International"
+    },
+    {
+      "source": "lastfm",
+      "value": "R. Massacre International"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "Two sources match the full name and the abbreviated form clearly refers to the same artist.",
+    "value": "Radio Massacre International"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Radio Massacre International\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"Two sources match the full name and the abbreviated form clearly refers to the same artist.\"}"
+}

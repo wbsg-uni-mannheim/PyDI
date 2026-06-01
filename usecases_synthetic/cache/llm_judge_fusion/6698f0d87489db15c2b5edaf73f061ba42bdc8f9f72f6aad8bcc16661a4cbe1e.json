@@ -1,0 +1,30 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "931.32 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "1000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "953.67 GiB"
+    },
+    {
+      "source": "products_4",
+      "value": "1,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates indicate the same nominal storage capacity, and 1,000 GB is the standardized canonical form.",
+    "value": 1000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1000.0,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates indicate the same nominal storage capacity, and 1,000 GB is the standardized canonical form.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_6904|mbrainz_5127|name=beyond | artist=Fieldtriqp | duration=767.0 | tracks=['Dead Man Rides Subway for Hours', '90 Summer', 'Unspoken Place']||name=Above and Beyond | artist=Winter, Edgar | release-date=1979-01-01 | release-country=United States of America | duration=773 | tracks=['Above and Beyond', 'Above and Beyond (instrumental)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=beyond | artist=Fieldtriqp | duration=767.0 | tracks=['Dead Man Rides Subway for Hours', '90 Summer', 'Unspoken Place']\nRecord B: name=Above and Beyond | artist=Winter, Edgar | release-date=1979-01-01 | release-country=United States of America | duration=773 | tracks=['Above and Beyond', 'Above and Beyond (instrumental)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

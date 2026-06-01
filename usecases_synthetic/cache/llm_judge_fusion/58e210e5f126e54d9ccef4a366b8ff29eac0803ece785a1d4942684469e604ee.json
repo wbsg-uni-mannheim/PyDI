@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Taylor, Roger"
+    },
+    {
+      "source": "lastfm",
+      "value": "Roger Taylor"
+    },
+    {
+      "source": "lastfm",
+      "value": "R. Taylor"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Two candidates directly support the standard name form, and 'Taylor, Roger' is the inverted-name variant.",
+    "value": "Roger Taylor"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Roger Taylor\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Two candidates directly support the standard name form, and 'Taylor, Roger' is the inverted-name variant.\"}"
+}

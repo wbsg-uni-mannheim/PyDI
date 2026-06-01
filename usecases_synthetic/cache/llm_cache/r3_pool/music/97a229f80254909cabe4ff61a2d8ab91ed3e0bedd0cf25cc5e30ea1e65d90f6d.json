@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_68442|lastFM_31956|name=Above And Beyond | artist=Sleeping Gods | release-date=1995 | release-country=Germany | genre=Rock | tracks=['Scene Of Emptiness', 'The Die Is Cast', 'Blood Is Thicker Than Water', 'Vivianes Lamentation', 'Through The Timeless', 'Extreme Unction', 'Sleeping Goddess', 'Threats Of Providence']||name=Above And Beyond | artist=Sleeping G. | duration=2300.0 | tracks=['Scene Of Emptiness', 'The Die Is Cast', 'Blood Is Thicker Than Water', 'Vivianes Lamentation', 'Through The Timeless', 'Extreme Unction', 'Sleeping goddess', 'Threats Of Providence']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Above And Beyond | artist=Sleeping Gods | release-date=1995 | release-country=Germany | genre=Rock | tracks=['Scene Of Emptiness', 'The Die Is Cast', 'Blood Is Thicker Than Water', 'Vivianes Lamentation', 'Through The Timeless', 'Extreme Unction', 'Sleeping Goddess', 'Threats Of Providence']\nRecord B: name=Above And Beyond | artist=Sleeping G. | duration=2300.0 | tracks=['Scene Of Emptiness', 'The Die Is Cast', 'Blood Is Thicker Than Water', 'Vivianes Lamentation', 'Through The Timeless', 'Extreme Unction', 'Sleeping goddess', 'Threats Of Providence']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

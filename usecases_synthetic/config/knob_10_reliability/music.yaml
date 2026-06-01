@@ -1,0 +1,116 @@
+# Knob 10 — Source Reliability Differentiation: Music domain config.
+#
+# Refreshed-CSV column names (2026-05-07 K10 sign-off, plan_s1_scale.md
+# §"K10 sign-off"). MusicBrainz is the per-attribute winner everywhere
+# (community-curated cataloguing source — orthogonal to dbpedia's
+# auto-generated noise profile).
+#
+# Eligible attributes (>=2 sources after the refreshed-CSV remap):
+#   name (3), artist (3), release-date (2), release-country (2),
+#   duration (2). genre and label are discogs-only post-refresh
+#   (musicbrainz/lastfm 100% missing) so they are not eligible for K10.
+# lastfm is excluded from release-date/release-country/duration because
+# those columns are 0%-populated post-refresh (per K1/K3 sign-offs).
+
+domain: music
+
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+attribute_mapping:
+  musicbrainz:
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    duration: duration
+  discogs:
+    name: name
+    artist: artist
+    release-date: release-date
+    release-country: release-country
+    genre: genre
+    label: label
+    duration: duration
+  lastfm:
+    name: name
+    artist: artist
+
+# Winner identity (curated-source-preferred where the measured baseline
+# B[s, a] agrees; for two attributes the gold was authored from discogs):
+#   name             -> musicbrainz (B=0.93 vs discogs 0.92)
+#   artist           -> discogs     (B=0.84 vs musicbrainz 0.77 — gold from discogs)
+#   release-date     -> musicbrainz (B=0.85 vs discogs 0.59)
+#   release-country  -> musicbrainz (B=0.89 vs discogs 0.11)
+#   duration         -> discogs     (B=0.56 vs musicbrainz 0.32 — gold from discogs)
+attribute_targets:
+  name:
+    easy:
+      musicbrainz: 0.85
+      discogs: 0.10
+      lastfm: 0.05
+    medium:
+      musicbrainz: 0.65
+      discogs: 0.20
+      lastfm: 0.15
+    hard:
+      musicbrainz: 0.40
+      discogs: 0.30
+      lastfm: 0.30
+  artist:
+    easy:
+      musicbrainz: 0.10
+      discogs: 0.85
+      lastfm: 0.05
+    medium:
+      musicbrainz: 0.20
+      discogs: 0.65
+      lastfm: 0.15
+    hard:
+      musicbrainz: 0.30
+      discogs: 0.40
+      lastfm: 0.30
+  release-date:
+    easy:
+      musicbrainz: 0.85
+      discogs: 0.15
+    medium:
+      musicbrainz: 0.65
+      discogs: 0.35
+    hard:
+      musicbrainz: 0.50
+      discogs: 0.50
+  release-country:
+    easy:
+      musicbrainz: 0.85
+      discogs: 0.15
+    medium:
+      musicbrainz: 0.65
+      discogs: 0.35
+    hard:
+      musicbrainz: 0.50
+      discogs: 0.50
+  duration:
+    easy:
+      musicbrainz: 0.15
+      discogs: 0.85
+    medium:
+      musicbrainz: 0.35
+      discogs: 0.65
+    hard:
+      musicbrainz: 0.50
+      discogs: 0.50
+
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+concentration_cap: 0.99

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_10857|mbrainz_14665|name=Butterfly | artist=Tapping the Vein | duration=1249.0 | tracks=['Butterfly', 'Inside', 'Falling In', 'Numb']||name=Butterfly | artist=Tokey Tones, The | release-date=2003-07-28 | release-country=New Zealand | duration=1901 | tracks=['Glitter and Paste', 'Summerwind', 'Honeydew', 'Moon & So On', 'Yoghurt & Vinegar', 'Juxtapose', 'The Observatory', 'Cinema', 'Colins Column', 'Her Name Is Farguo-Tusi']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Butterfly | artist=Tapping the Vein | duration=1249.0 | tracks=['Butterfly', 'Inside', 'Falling In', 'Numb']\nRecord B: name=Butterfly | artist=Tokey Tones, The | release-date=2003-07-28 | release-country=New Zealand | duration=1901 | tracks=['Glitter and Paste', 'Summerwind', 'Honeydew', 'Moon & So On', 'Yoghurt & Vinegar', 'Juxtapose', 'The Observatory', 'Cinema', 'Colins Column', 'Her Name Is Farguo-Tusi']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

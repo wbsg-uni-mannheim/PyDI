@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_22533|mbrainz_8270|name=[explicit] Think About It / Spirit | artist=Pradera | tracks=[]||name=Crack the Skye | artist=Mastodon | release-date=2009-01-01 | release-country=United States of America | duration=3003 | tracks=['Oblivion', 'Divinations', 'Quintessence', 'The Czar: I. Usurper / II. Escape / III. Martyr / IV. Spiral', 'Ghost of Karelia', 'Crack the Skye', 'The Last Baron', 'Oblivion (instrumental)', 'Divinations (instrumental)', 'Quintessence (instrumental)', 'The Czar: I. Usurper / II. Escape / III. Martyr / IV. Spiral (instrumental)', 'Ghost of Karelia (instrumental)', 'Crack the Skye (instrumental)', 'The Last Baron (instrumental)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=[explicit] Think About It / Spirit | artist=Pradera | tracks=[]\nRecord B: name=Crack the Skye | artist=Mastodon | release-date=2009-01-01 | release-country=United States of America | duration=3003 | tracks=['Oblivion', 'Divinations', 'Quintessence', 'The Czar: I. Usurper / II. Escape / III. Martyr / IV. Spiral', 'Ghost of Karelia', 'Crack the Skye', 'The Last Baron', 'Oblivion (instrumental)', 'Divinations (instrumental)', 'Quintessence (instrumental)', 'The Czar: I. Usurper / II. Escape / III. Martyr / IV. Spiral (instrumental)', 'Ghost of Karelia (instrumental)', 'Crack the Skye (instrumental)', 'The Last Baron (instrumental)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

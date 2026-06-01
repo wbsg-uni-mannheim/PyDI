@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_178966|mbrainz_30648|name=Early In The Morning | artist=Louisiana Red|Peg Leg Sam | release-date=1994 | release-country=United States of America | genre=Blues | tracks=['Joshua Fit The Battle Of Jericho', 'Navaho Trail', 'John Henry', 'Going Train Blues', 'Mr. Ditty Wa Ditty', \"Strollin'\", 'I Got A Home', 'Dog Chase', 'Early In The Morning', 'Poor Boy']||name=Early in the Morning | artist=Peg Leg Sam | duration=2467 | tracks=['Joshua Fit the Battle of Jericho', 'Navaho Trail', 'John Henry', 'Going Train Blues', 'Mr. Ditty Wa Ditty', 'Strollin', 'I Got a Home', 'Dog Chase', 'Early in the Morning', 'Poor Boy']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Early In The Morning | artist=Louisiana Red|Peg Leg Sam | release-date=1994 | release-country=United States of America | genre=Blues | tracks=['Joshua Fit The Battle Of Jericho', 'Navaho Trail', 'John Henry', 'Going Train Blues', 'Mr. Ditty Wa Ditty', \"Strollin'\", 'I Got A Home', 'Dog Chase', 'Early In The Morning', 'Poor Boy']\nRecord B: name=Early in the Morning | artist=Peg Leg Sam | duration=2467 | tracks=['Joshua Fit the Battle of Jericho', 'Navaho Trail', 'John Henry', 'Going Train Blues', 'Mr. Ditty Wa Ditty', 'Strollin', 'I Got a Home', 'Dog Chase', 'Early in the Morning', 'Poor Boy']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

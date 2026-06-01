@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_39682|mbrainz_28868|name=The Singles 1992 - 2003 | artist=N. Doubt | tracks=[]||name=The Singles 1992â€“2003 | artist=No Doubt | release-date=2003-11-24 | release-country=Germany | duration=3593 | tracks=['Just a Girl', 'Itâ€™s My Life', 'Hey Baby', 'Bathwater', 'Sunday Morning', 'Hella Good', 'New', 'Underneath It All', 'Excuse Me Mr.', 'Running', 'Spiderwebs', 'Simple Kind of Life', 'Donâ€™t Speak', 'Exâ€?Girlfriend', 'Trapped in a Box']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Singles 1992 - 2003 | artist=N. Doubt | tracks=[]\nRecord B: name=The Singles 1992â€“2003 | artist=No Doubt | release-date=2003-11-24 | release-country=Germany | duration=3593 | tracks=['Just a Girl', 'Itâ€™s My Life', 'Hey Baby', 'Bathwater', 'Sunday Morning', 'Hella Good', 'New', 'Underneath It All', 'Excuse Me Mr.', 'Running', 'Spiderwebs', 'Simple Kind of Life', 'Donâ€™t Speak', 'Exâ€?Girlfriend', 'Trapped in a Box']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

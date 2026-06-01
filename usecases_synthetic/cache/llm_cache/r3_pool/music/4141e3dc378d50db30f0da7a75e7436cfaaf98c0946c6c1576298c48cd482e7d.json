@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_94853|lastFM_33991|name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-06 | release-country=Europe | duration=2689.0 | genre=Rock | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even The Birds', 'Black Lions', 'A Hole In The World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']||name=Crisis | artist=Y. Legionnaire | duration=1976.0 | tracks=['Numbers', 'Chapter, Verse', 'Black Lions', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crisis Works | artist=Young Legionnaire | release-date=2011-05-06 | release-country=Europe | duration=2689.0 | genre=Rock | tracks=['Twin Victory', 'Numbers', 'Chapter, Verse', 'Even The Birds', 'Black Lions', 'A Hole In The World', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']\nRecord B: name=Crisis | artist=Y. Legionnaire | duration=1976.0 | tracks=['Numbers', 'Chapter, Verse', 'Black Lions', 'These Arms', 'Blood Dance', 'Nova Scotia', 'Mortgage Rock', 'Youth Salute', 'Futures Finished']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

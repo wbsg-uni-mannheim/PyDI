@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Vale (mining company)"
+    },
+    {
+      "source": "forbes",
+      "value": "Vale"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Forbes provides the common canonical company name, while the DBpedia form is a disambiguated variant.",
+    "value": "Vale"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Vale\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Forbes provides the common canonical company name, while the DBpedia form is a disambiguated variant.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_21162|mbrainz_1056|name=Bang Bang | artist=Melanie Fiona | duration=808.0 | tracks=['Bang Bang', 'Bang Bang (Wawa Remix)', 'Bang Bang (Attacca Pesante Remix)']||name=Bang Bang | artist=Tomcraft | release-date=2002-04-09 | release-country=Germany | duration=844 | tracks=['Bang Bang (Goal mix)', 'Bang Bang (Dark Offside mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bang Bang | artist=Melanie Fiona | duration=808.0 | tracks=['Bang Bang', 'Bang Bang (Wawa Remix)', 'Bang Bang (Attacca Pesante Remix)']\nRecord B: name=Bang Bang | artist=Tomcraft | release-date=2002-04-09 | release-country=Germany | duration=844 | tracks=['Bang Bang (Goal mix)', 'Bang Bang (Dark Offside mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "product_type",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "3.5-inch HDD"
+    },
+    {
+      "source": "products_2",
+      "value": "HDD"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The more specific candidate normalizes the generic HDD type by preserving the form factor.",
+    "value": "3.5-inch HDD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"3.5-inch HDD\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The more specific candidate normalizes the generic HDD type by preserving the form factor.\"}"
+}

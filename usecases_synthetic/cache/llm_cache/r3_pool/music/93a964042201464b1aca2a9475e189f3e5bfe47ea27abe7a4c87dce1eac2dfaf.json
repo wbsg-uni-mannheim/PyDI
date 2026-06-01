@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_123572|lastFM_43115|name=Rage Against The Machine | artist=Rage Against The Machine | release-country=Poland | duration=3165.0 | genre=Rock|Hip Hop | tracks=['Bombtrack', 'Killing In The Name', 'Take The Power Back', 'Wake Up', 'Fistful Of Steel', 'Know Your Enemy', 'Settle For Nothing', 'Bullet In The Head', 'Township Rebellion', 'Freedom']||name=Rage Against The Machine XX | artist=Rage Against t. Machine | duration=6845.0 | tracks=['Bombtrack', 'Killing in the Name', 'Take the Power Back', 'Bullet in the Head', 'Know Your Enemy', 'Wake Up', 'Fistful of Steel', 'Township Rebellion', 'Freedom', 'Bombtrack (Live)', 'Bullet In The Head (Live)', 'Take The Power Back (Live)', 'Bombtrack', 'Take the Power Back', 'Bullet in the Head', 'Darkness of Greed', 'Clear the Lane', 'Township Rebellion', 'Know Your Enemy', \"Mindset's a Threat\", 'Killing in the Name', 'Freedom']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Rage Against The Machine | artist=Rage Against The Machine | release-country=Poland | duration=3165.0 | genre=Rock|Hip Hop | tracks=['Bombtrack', 'Killing In The Name', 'Take The Power Back', 'Wake Up', 'Fistful Of Steel', 'Know Your Enemy', 'Settle For Nothing', 'Bullet In The Head', 'Township Rebellion', 'Freedom']\nRecord B: name=Rage Against The Machine XX | artist=Rage Against t. Machine | duration=6845.0 | tracks=['Bombtrack', 'Killing in the Name', 'Take the Power Back', 'Bullet in the Head', 'Know Your Enemy', 'Wake Up', 'Fistful of Steel', 'Township Rebellion', 'Freedom', 'Bombtrack (Live)', 'Bullet In The Head (Live)', 'Take The Power Back (Live)', 'Bombtrack', 'Take the Power Back', 'Bullet in the Head', 'Darkness of Greed', 'Clear the Lane', 'Township Rebellion', 'Know Your Enemy', \"Mindset's a Threat\", 'Killing in the Name', 'Freedom']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

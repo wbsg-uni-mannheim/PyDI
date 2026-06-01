@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_47216|mbrainz_896|name=Born To Die | artist=Tiamat | duration=610.0 | tracks=['Born To Die', 'Paradise']||name=Born to Die | artist=Blind Passengers | release-date=1994-01-01 | release-country=Germany | duration=1301 | tracks=['Born to Die', 'Headache... (New Prosperity)', 'Born to Die (Gen-mix)', 'Yes Sir (Hospital-mix)', 'Sarajevo']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Born To Die | artist=Tiamat | duration=610.0 | tracks=['Born To Die', 'Paradise']\nRecord B: name=Born to Die | artist=Blind Passengers | release-date=1994-01-01 | release-country=Germany | duration=1301 | tracks=['Born to Die', 'Headache... (New Prosperity)', 'Born to Die (Gen-mix)', 'Yes Sir (Hospital-mix)', 'Sarajevo']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

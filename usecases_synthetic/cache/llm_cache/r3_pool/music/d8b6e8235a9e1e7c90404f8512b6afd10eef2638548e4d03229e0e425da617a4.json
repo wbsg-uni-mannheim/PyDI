@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_69246|mbrainz_31842|name=Guitar Monsters | artist=C. Atkins | tracks=[]||name=Tennessee Guitar Man | artist=Atkins, Chet | release-date=1984-01-01 | release-country=United States of America | duration=2530 | tracks=['Make the World Go Away', 'Oh Baby Mine (I Get So Lonely)', 'Release Me (And Let Me Love Again)', \"The Bells of St. Mary's\", 'April in Portugal', 'Hot Mocking Bird', 'San Antonio Rose', 'Kicky', 'Wabash Cannon Ball', 'Foggy Mountain Top', 'Bandera', 'Yankee Doodle Dixie', 'Lonesome Road', \"Goin' Down the Road (Feelin' Bad)\", 'Wildwood Flower', 'Oklahoma Hills', 'Early Times', \"Prancin' Filly\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Guitar Monsters | artist=C. Atkins | tracks=[]\nRecord B: name=Tennessee Guitar Man | artist=Atkins, Chet | release-date=1984-01-01 | release-country=United States of America | duration=2530 | tracks=['Make the World Go Away', 'Oh Baby Mine (I Get So Lonely)', 'Release Me (And Let Me Love Again)', \"The Bells of St. Mary's\", 'April in Portugal', 'Hot Mocking Bird', 'San Antonio Rose', 'Kicky', 'Wabash Cannon Ball', 'Foggy Mountain Top', 'Bandera', 'Yankee Doodle Dixie', 'Lonesome Road', \"Goin' Down the Road (Feelin' Bad)\", 'Wildwood Flower', 'Oklahoma Hills', 'Early Times', \"Prancin' Filly\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

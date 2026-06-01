@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2009-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2009"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "interpolation",
+    "reasoning": "The year 2009 from one source and the full date from another support the normalized release date 2009-01-01.",
+    "value": "2009-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2009-01-01\",\"operation\":\"interpolation\",\"confidence\":0.97,\"reasoning\":\"The year 2009 from one source and the full date from another support the normalized release date 2009-01-01.\"}"
+}

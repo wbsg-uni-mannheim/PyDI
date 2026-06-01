@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_12287|lastFM_6553|name=The Confused Designer | artist=Eight Frozen Modules | release-date=1997 | release-country=United States of America | duration=3049.0 | genre=Electronic | tracks=['Warm & The Cold Electrified Angel', 'Undeformed Allusions', 'Television Birds', 'Ex-Parte', 'Heartbeat Of A Dog', 'Sand Bubbles', 'Premature Wig', 'The Music/Magic Landing']||name=The  Electrician | artist=E. Frozen Modules | duration=2564.0 | tracks=['Warm & The Cold Electrified Angel', 'The New Sensitivity', 'Short Dub 2', 'Premature Wig', 'Delivery Four', 'White Mud Arrival', 'Under the Palace']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Confused Designer | artist=Eight Frozen Modules | release-date=1997 | release-country=United States of America | duration=3049.0 | genre=Electronic | tracks=['Warm & The Cold Electrified Angel', 'Undeformed Allusions', 'Television Birds', 'Ex-Parte', 'Heartbeat Of A Dog', 'Sand Bubbles', 'Premature Wig', 'The Music/Magic Landing']\nRecord B: name=The  Electrician | artist=E. Frozen Modules | duration=2564.0 | tracks=['Warm & The Cold Electrified Angel', 'The New Sensitivity', 'Short Dub 2', 'Premature Wig', 'Delivery Four', 'White Mud Arrival', 'Under the Palace']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

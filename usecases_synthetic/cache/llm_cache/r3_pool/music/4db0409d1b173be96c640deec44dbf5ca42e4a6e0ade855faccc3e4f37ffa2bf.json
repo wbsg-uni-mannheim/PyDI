@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_119145|lastFM_47619|name=Memory Of The Future | artist=Pet Shop Boys | release-date=2012-12-31 | release-country=UK | duration=2721.0 | genre=Electronic|Pop | tracks=['Memory Of The Future (New Radio Version)', 'Memory Of The Future (Stuart Price Extended Remix)', 'Memory Of The Future (Ulrich Schnauss Remix)', 'Memory Of The Future (DJ Waldo Squash Remix)', 'Memory Of The Future (Digital Dog Club Remix)', 'Memory Of The Future (Digital Dog Dub Mix)', 'Memory Of The Future (Instrumental Mix)', 'Listening (Non Album Track)', 'One Night (Non Album Track)', 'Inside (Non Album Track)']||name=Memory  The Future Remixed | artist=Pet Shop Boys | duration=1551.0 | tracks=['Memory of the future (Stuart Price Extended Mix)', 'Memory of the future (Ulrich Schnauss Remix)', 'Memory of the future (DJ Waldo Squash Remix)', 'Memory of the Future (Digital Dog Club Remix)', 'Memory Of The Future (Digital Dog Dub)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Memory Of The Future | artist=Pet Shop Boys | release-date=2012-12-31 | release-country=UK | duration=2721.0 | genre=Electronic|Pop | tracks=['Memory Of The Future (New Radio Version)', 'Memory Of The Future (Stuart Price Extended Remix)', 'Memory Of The Future (Ulrich Schnauss Remix)', 'Memory Of The Future (DJ Waldo Squash Remix)', 'Memory Of The Future (Digital Dog Club Remix)', 'Memory Of The Future (Digital Dog Dub Mix)', 'Memory Of The Future (Instrumental Mix)', 'Listening (Non Album Track)', 'One Night (Non Album Track)', 'Inside (Non Album Track)']\nRecord B: name=Memory  The Future Remixed | artist=Pet Shop Boys | duration=1551.0 | tracks=['Memory of the future (Stuart Price Extended Mix)', 'Memory of the future (Ulrich Schnauss Remix)', 'Memory of the future (DJ Waldo Squash Remix)', 'Memory of the Future (Digital Dog Club Remix)', 'Memory Of The Future (Digital Dog Dub)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

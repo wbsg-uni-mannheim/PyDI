@@ -1,0 +1,65 @@
+domain: games
+master_seed: 42
+
+# Sources refreshed 2026-05-04 to schema.org-style CSV format. Each
+# source ships a native id column whose values already carry the
+# expected prefix (``dbpedia_<n>`` / ``metacritic_<n>`` / ``sales_<n>``
+# matching the EM gold). The loader renames each ``id_column`` to
+# ``id``; the legacy ``inject_id`` machinery is retired for games on
+# the new sources. Pre-refresh XML/CSV/JSON sources are preserved at
+# usecases/games/input/data/old/ for reference.
+sources:
+  - name: dbpedia
+    file: dbpedia.csv
+    format: csv
+    id_prefix: "dbpedia_"
+    id_column: wiki_ref
+  - name: metacritic
+    file: metacritic.csv
+    format: csv
+    id_prefix: "metacritic_"
+    id_column: mc_id
+  - name: sales
+    file: sales.csv
+    format: csv
+    id_prefix: "sales_"
+    id_column: rec_id
+
+source_pairs:
+  - [dbpedia, sales]
+  - [metacritic, dbpedia]
+  # [metacritic, sales] dropped 2026-05-16 — F11 fix removed the EM gold
+  # for that pair (was 100% canonical-pair overlap with the test split,
+  # see plan_s1_final.md §F11). No surviving gold files for the pair, so
+  # source_pairs declaration would yield ``Original EM split missing``
+  # warnings and zero-sized regen.
+
+# Fusion val/test split. The workflow notebook (and downstream pipeline)
+# now reads the larger 200-entity sets shipped at *_set_final.xml; the
+# smaller 100-line legacy files are retained on disk but no longer
+# canonical. Companies still uses the canonical names (no _final.xml on
+# disk); the *-small variants default to validation_set.xml/test_set.xml
+# via DomainConfig.fusion_files.
+fusion_files:
+  validation: validation_set_final.xml
+  test: test_set_final.xml
+
+# Canonical attributes drawn from input/schemamatching/target_schema.json
+# (Videogame Record). Class assignments follow the pattern used for
+# companies: ``primary`` is the identifying label; ``key`` columns are
+# categorical/discrete attributes that materially partition the search
+# space (used by K2 niche-density blocking and K10 reliability gold
+# routing); ``secondary`` is everything else (numerics, free text,
+# lists, dates).
+attribute_classes:
+  name: primary
+  platform: key
+  ESRB: key
+  releaseYear: secondary
+  developer: secondary
+  publisher: secondary
+  genres: secondary
+  criticScore: secondary
+  userScore: secondary
+  globalSales: secondary
+  series: secondary

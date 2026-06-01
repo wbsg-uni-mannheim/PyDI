@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_182227|mbrainz_12085|name=Singles 2001-2005 | artist=Biffy Clyro | release-date=2008-07-07 | release-country=UK | genre=Rock | tracks=['27', 'Justly', '57', 'Joy. Discovery. Invention', 'Toys Toys Toys Choke, Toys Toys Toys (Single Version)', 'The Ideal Height (Single Version)', 'Questions And Answers', 'Eradicate The Doubt', \"There's No Such Thing As A Jaggy Snake\", 'Glitter And Trauma (Single Version)', 'My Recovery Injection (Single Version)', 'Only One Word Comes To Mind (Single Version)']||name=Singles 2001-2005 | artist=Biffy Clyro | release-date=2008-07-07 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2792 | tracks=['27', 'Justboy', '57', 'Joy.Discovery.Invention', 'Toys, Toys, Toys, Choke, Toys, Toys, Toys', 'The Ideal Height', 'Questions and Answers', 'Eradicate the Doubt', \"There's No Such Thing as a Jaggy Snake\", 'Glitter and Trauma', 'My Recovery Injection', 'Only One Word Comes to Mind']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles 2001-2005 | artist=Biffy Clyro | release-date=2008-07-07 | release-country=UK | genre=Rock | tracks=['27', 'Justly', '57', 'Joy. Discovery. Invention', 'Toys Toys Toys Choke, Toys Toys Toys (Single Version)', 'The Ideal Height (Single Version)', 'Questions And Answers', 'Eradicate The Doubt', \"There's No Such Thing As A Jaggy Snake\", 'Glitter And Trauma (Single Version)', 'My Recovery Injection (Single Version)', 'Only One Word Comes To Mind (Single Version)']\nRecord B: name=Singles 2001-2005 | artist=Biffy Clyro | release-date=2008-07-07 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2792 | tracks=['27', 'Justboy', '57', 'Joy.Discovery.Invention', 'Toys, Toys, Toys, Choke, Toys, Toys, Toys', 'The Ideal Height', 'Questions and Answers', 'Eradicate the Doubt', \"There's No Such Thing as a Jaggy Snake\", 'Glitter and Trauma', 'My Recovery Injection', 'Only One Word Comes to Mind']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

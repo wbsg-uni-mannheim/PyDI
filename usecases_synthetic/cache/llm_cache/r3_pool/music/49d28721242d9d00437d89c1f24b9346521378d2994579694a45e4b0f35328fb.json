@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_19863|mbrainz_2160|name=The Moment Of Truth - The 2nd | artist=The Real Milli Vanilli | tracks=[]||name=The Moment of Truth | artist=Real Milli Vanilli, The | release-date=1990-01-01 | release-country=Germany | duration=2789 | tracks=['Keep on Running', 'Tell Me Where It Hurts', 'Crazy Cane', 'When I Die', 'Body Slam', \"Nice'n'Easy\", 'Hard as Hell', 'In My Life', 'Too Late (True Love)', 'The End of Good Times', \"I'll Be Loving You\", 'Big Brother']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Moment Of Truth - The 2nd | artist=The Real Milli Vanilli | tracks=[]\nRecord B: name=The Moment of Truth | artist=Real Milli Vanilli, The | release-date=1990-01-01 | release-country=Germany | duration=2789 | tracks=['Keep on Running', 'Tell Me Where It Hurts', 'Crazy Cane', 'When I Die', 'Body Slam', \"Nice'n'Easy\", 'Hard as Hell', 'In My Life', 'Too Late (True Love)', 'The End of Good Times', \"I'll Be Loving You\", 'Big Brother']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

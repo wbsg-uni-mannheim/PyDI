@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_34063|mbrainz_3151|name=Show Your Bones Remixes | artist=Y. Yeah Yeahs | duration=489.0 | tracks=['Turn Into (Nick Zinner Remix)', 'Gold Lion (Diplo Remix)']||name=Show Your Bones | artist=Yeah Yeah Yeahs | release-date=2006-03-27 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2535 | tracks=['Gold Lion', 'Way Out', 'Fancy', 'Phenomena', 'Honeybear', 'Cheated Hearts', 'Dudley', 'Mysteries', 'The Sweets', 'Warrior', 'Turn Into', 'DÃ©jÃ\\xa0 Vu']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Show Your Bones Remixes | artist=Y. Yeah Yeahs | duration=489.0 | tracks=['Turn Into (Nick Zinner Remix)', 'Gold Lion (Diplo Remix)']\nRecord B: name=Show Your Bones | artist=Yeah Yeah Yeahs | release-date=2006-03-27 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2535 | tracks=['Gold Lion', 'Way Out', 'Fancy', 'Phenomena', 'Honeybear', 'Cheated Hearts', 'Dudley', 'Mysteries', 'The Sweets', 'Warrior', 'Turn Into', 'DÃ©jÃ\\xa0 Vu']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_163812|mbrainz_2365|name=Visions Of A New World | artist=Lonnie Liston Smith And The Cosmic Echoes | release-date=1993 | release-country=Europe | duration=2033.0 | genre=Jazz | tracks=['A Chance For Peace', 'Love Beams', 'Colours Of The Rainbow', 'Devica (Goddess)', 'Sunset', 'Visions Of A New World (Phase I)', 'Visions Of A New World (Phase II)', 'Summer Nights']||name=Visions of a New World | artist=Smith, Lonnie Liston & Cosmic Echoes, The | release-date=1993-01-01 | release-country=United States of America | duration=2041 | tracks=['A Chance for Peace', 'Love Beams', 'Colors of the Rainbow', 'Devika (Goddess)', 'Sunset', 'Visions of a New World (Phase I)', 'Visions of a New World (Phase II)', 'Summer Nights']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Visions Of A New World | artist=Lonnie Liston Smith And The Cosmic Echoes | release-date=1993 | release-country=Europe | duration=2033.0 | genre=Jazz | tracks=['A Chance For Peace', 'Love Beams', 'Colours Of The Rainbow', 'Devica (Goddess)', 'Sunset', 'Visions Of A New World (Phase I)', 'Visions Of A New World (Phase II)', 'Summer Nights']\nRecord B: name=Visions of a New World | artist=Smith, Lonnie Liston & Cosmic Echoes, The | release-date=1993-01-01 | release-country=United States of America | duration=2041 | tracks=['A Chance for Peace', 'Love Beams', 'Colors of the Rainbow', 'Devika (Goddess)', 'Sunset', 'Visions of a New World (Phase I)', 'Visions of a New World (Phase II)', 'Summer Nights']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

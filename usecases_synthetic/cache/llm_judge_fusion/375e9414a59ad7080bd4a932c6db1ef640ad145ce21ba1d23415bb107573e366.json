@@ -1,0 +1,22 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "6000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "6000000 MB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "6000000 MB equals 6000 GB, matching the other candidate.",
+    "value": 6000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":6000,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"6000000 MB equals 6000 GB, matching the other candidate.\"}"
+}

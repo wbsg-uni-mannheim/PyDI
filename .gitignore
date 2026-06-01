@@ -210,3 +210,55 @@ CLAUDE.md
 benchmark/
 
 scripts/output
+
+# Pipeline run artifacts (large CSVs / JSON / model checkpoints — regeneratable from configs)
+pipelines/*/run_*/
+pipelines/*/baselines/
+pipelines/*/checkpoints/
+
+# Re-allow project source dirs named "lib" that the Python-template "lib/" rule
+# (line 17) would otherwise swallow.
+!pipelines/lib/
+!pipelines/lib/**
+!usecases_synthetic/lib/
+!usecases_synthetic/lib/**
+# ...but the broad lib/** re-allow above also un-ignores Python bytecode caches
+# under lib/; keep those ignored (the former nested repo never tracked them).
+usecases_synthetic/lib/**/__pycache__/
+
+# === usecases_synthetic (folded-in subtree; was previously a nested git repo) ===
+# Generic Python/tooling artifacts are already ignored repo-wide by the rules
+# above. The entries below are the synthetic-pipeline-specific ones merged from
+# the former usecases_synthetic/.gitignore. Everything here is regenerable.
+
+# macOS cruft inside the subtree. Scoped (not global) because the outer repo
+# deliberately tracks .DS_Store files elsewhere.
+usecases_synthetic/**/.DS_Store
+
+# Generated pipeline output (top-level and per-domain output/ dirs, any depth).
+usecases_synthetic/**/output/
+
+# Transient run-window marker (bare Unix timestamp written at the subtree root).
+usecases_synthetic/.music_window
+
+# Large regenerable artifacts that must NOT go in git: trained model/blocker
+# checkpoints (multi-hundred-MB .pt/.safetensors that exceed GitHub's 100 MB
+# limit; retrain via scripts/{ditto,sc_block}/train.py), Ditto inference
+# memoization, the pool-builder cache, and the K2 embedding tensors (rebuilt
+# deterministically from the tracked *.meta.json sidecars).
+usecases_synthetic/cache/ditto_checkpoints/
+usecases_synthetic/cache/sc_block_checkpoints/
+usecases_synthetic/cache/ditto_inference/
+usecases_synthetic/cache/pool_builder/
+usecases_synthetic/cache/knob_02_embeddings/*.npy
+
+# The content-hash-keyed LLM prompt/response caches under cache/ are deliberately
+# NOT ignored (kept tracked, ~114 MB of small JSON) so variant generation and
+# committee validation reproduce exactly without re-calling the OpenAI API:
+#   knob_01_paraphrases/ knob_02_interpolations/ knob_02_non_corner/ llm_cache/
+#   matchgpt_prompts/ comem_prompts/ magneto_prompts/ llm_judge_fusion/ llm_normalizer/
+# To stop tracking any of them, add the matching usecases_synthetic/cache/<name>/ line here.
+
+# Central per-domain XLSX statistics (regenerable; binary, no useful diff).
+# The README.md alongside stays tracked.
+usecases_synthetic/statistics/*.xlsx

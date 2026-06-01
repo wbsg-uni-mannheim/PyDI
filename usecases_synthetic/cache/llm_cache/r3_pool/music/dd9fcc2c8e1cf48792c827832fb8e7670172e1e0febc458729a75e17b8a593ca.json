@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_55066|mbrainz_17995|name=- new - Beyond | artist=William J. | duration=3007.0 | tracks=['Standing The Storm', 'Beyond', 'Leningrad', 'Heroes', 'Once Upon Love [Featuring David Foster]', 'Kashmir', 'Sweet Remembrance Of You', 'Apasionada', 'Return With Honor', 'Cinema Paradiso', 'Asturias [Featuring Jesse Cook]', \"A Mother's Heart\"]||name=Beyond Words | artist=Egan, Mark | duration=2970 | tracks=['Campfire Stories', 'Swept Away', 'Durango Kid', 'Beyond Words', 'Serenade', 'The Bamboo Forest', 'After the Rain', 'Southeast Passage', 'Green', 'Napali Coast']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=- new - Beyond | artist=William J. | duration=3007.0 | tracks=['Standing The Storm', 'Beyond', 'Leningrad', 'Heroes', 'Once Upon Love [Featuring David Foster]', 'Kashmir', 'Sweet Remembrance Of You', 'Apasionada', 'Return With Honor', 'Cinema Paradiso', 'Asturias [Featuring Jesse Cook]', \"A Mother's Heart\"]\nRecord B: name=Beyond Words | artist=Egan, Mark | duration=2970 | tracks=['Campfire Stories', 'Swept Away', 'Durango Kid', 'Beyond Words', 'Serenade', 'The Bamboo Forest', 'After the Rain', 'Southeast Passage', 'Green', 'Napali Coast']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

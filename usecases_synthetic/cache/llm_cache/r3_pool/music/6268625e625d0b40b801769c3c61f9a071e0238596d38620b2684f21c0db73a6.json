@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_9006|mbrainz_1993|name=More Deep Cuts | artist=Thee More Shallows | release-date=2004-09-20 | release-country=UK | duration=2392.0 | genre=Rock | tracks=['Post-Present', 'Pre-Present', 'Freshman Thesis', '- Int -', 'Ave Grave', 'Cold Dis', 'Cloisterphobia', '2 AM', '- Int -', 'Walk Of Shame', 'Ask Me About Jon Stross', 'House Break']||name=More Deep Cuts (album) | artist=Thee More Shallows | release-date=2004-09-20 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2392 | tracks=['Post-Present', 'Pre-Present', 'Freshman Thesis', 'Int', 'Ave Grave', 'Cold Dis', 'Cloisterphobia', '2 AM', 'Int', 'Walk of Shame', 'Ask Me About Jon Stross', 'House Break']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=More Deep Cuts | artist=Thee More Shallows | release-date=2004-09-20 | release-country=UK | duration=2392.0 | genre=Rock | tracks=['Post-Present', 'Pre-Present', 'Freshman Thesis', '- Int -', 'Ave Grave', 'Cold Dis', 'Cloisterphobia', '2 AM', '- Int -', 'Walk Of Shame', 'Ask Me About Jon Stross', 'House Break']\nRecord B: name=More Deep Cuts (album) | artist=Thee More Shallows | release-date=2004-09-20 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2392 | tracks=['Post-Present', 'Pre-Present', 'Freshman Thesis', 'Int', 'Ave Grave', 'Cold Dis', 'Cloisterphobia', '2 AM', 'Int', 'Walk of Shame', 'Ask Me About Jon Stross', 'House Break']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

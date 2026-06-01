@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_1819|lastFM_999|name=Take Me To Your Leader | artist=Hanzel Und Gretyl | release-date=1997 | release-country=United States of America | duration=735.0 | genre=Electronic|Rock | tracks=['Take Me To Your Leader (Radio Edit)', 'Take Me To Your Leader (Album Version)', 'Take Me To Your Leader (Remix)']||name=[explicit] Take Me to Your Leader | artist=Hanzel u. Gretyl | duration=732.0 | tracks=['Take Me To Your Leader (Radio Edit)', 'Take Me To Your Leader (Album Version)', 'Take Me To Your Leader (Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Take Me To Your Leader | artist=Hanzel Und Gretyl | release-date=1997 | release-country=United States of America | duration=735.0 | genre=Electronic|Rock | tracks=['Take Me To Your Leader (Radio Edit)', 'Take Me To Your Leader (Album Version)', 'Take Me To Your Leader (Remix)']\nRecord B: name=[explicit] Take Me to Your Leader | artist=Hanzel u. Gretyl | duration=732.0 | tracks=['Take Me To Your Leader (Radio Edit)', 'Take Me To Your Leader (Album Version)', 'Take Me To Your Leader (Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

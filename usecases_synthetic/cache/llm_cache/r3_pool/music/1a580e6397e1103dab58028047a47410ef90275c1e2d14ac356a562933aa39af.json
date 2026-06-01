@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_132080|mbrainz_3503|name=Learning To Crawl | artist=The Pretenders | release-date=1983 | release-country=Brazil | duration=2363.0 | genre=Rock | tracks=['Middle Of The Road', 'Back On The Chain Gang', 'Time The Avenger', 'Watching The Clothes', 'Show Me', 'Thumbelina', 'My City Was Gone', 'Thin Line Between Love And Hate', 'I Hurt You', '2000 Miles']||name=Learning to Crawl | artist=Pretenders | release-date=1984-08 | release-country=United States of America | duration=2445 | tracks=['Middle of the Road', 'Back on the Chain Gang', 'Time the Avenger', 'Watching the Clothes', 'Show Me', 'Thumbelina', 'My City Was Gone', 'Thin Line Between Love and Hate', 'I Hurt You', '2000 Miles']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Learning To Crawl | artist=The Pretenders | release-date=1983 | release-country=Brazil | duration=2363.0 | genre=Rock | tracks=['Middle Of The Road', 'Back On The Chain Gang', 'Time The Avenger', 'Watching The Clothes', 'Show Me', 'Thumbelina', 'My City Was Gone', 'Thin Line Between Love And Hate', 'I Hurt You', '2000 Miles']\nRecord B: name=Learning to Crawl | artist=Pretenders | release-date=1984-08 | release-country=United States of America | duration=2445 | tracks=['Middle of the Road', 'Back on the Chain Gang', 'Time the Avenger', 'Watching the Clothes', 'Show Me', 'Thumbelina', 'My City Was Gone', 'Thin Line Between Love and Hate', 'I Hurt You', '2000 Miles']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

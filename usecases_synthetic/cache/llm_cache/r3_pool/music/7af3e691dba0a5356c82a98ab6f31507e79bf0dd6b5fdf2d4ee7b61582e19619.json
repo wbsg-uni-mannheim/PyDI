@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_31879|lastFM_15206|name=Last Rockers: The Singles | artist=Vice Squad | release-date=1991 | release-country=UK | genre=Rock | tracks=['Last Rockers', 'Living On Dreams', 'Latex Love', 'Young Blood', 'Humane', 'Resurrection', 'Out Of Reach', '(So) What For The Eighties', 'Sterile', 'Stand Strong, Stand Proud', \"Tomorrow's Soldier\", 'Rock And Roll Massacre', 'Darkest Hour', 'Upright Citizen', 'Scarred For Life', 'Faceless Men']||name=- new - Last Rockers: The Singles | artist=V. Squad | duration=2066.0 | tracks=['Last Rockers', 'Living on Dreams', 'Young Blood', 'Humane', 'Out of Reach', \"(So) What For The 80's\", 'Sterile', 'Stand Strong Stand Proud', \"Tomorrow's Soldier\", 'Darkest Hour', 'Upright Citizen', 'Scarred For Life', 'Faceless Men']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Last Rockers: The Singles | artist=Vice Squad | release-date=1991 | release-country=UK | genre=Rock | tracks=['Last Rockers', 'Living On Dreams', 'Latex Love', 'Young Blood', 'Humane', 'Resurrection', 'Out Of Reach', '(So) What For The Eighties', 'Sterile', 'Stand Strong, Stand Proud', \"Tomorrow's Soldier\", 'Rock And Roll Massacre', 'Darkest Hour', 'Upright Citizen', 'Scarred For Life', 'Faceless Men']\nRecord B: name=- new - Last Rockers: The Singles | artist=V. Squad | duration=2066.0 | tracks=['Last Rockers', 'Living on Dreams', 'Young Blood', 'Humane', 'Out of Reach', \"(So) What For The 80's\", 'Sterile', 'Stand Strong Stand Proud', \"Tomorrow's Soldier\", 'Darkest Hour', 'Upright Citizen', 'Scarred For Life', 'Faceless Men']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

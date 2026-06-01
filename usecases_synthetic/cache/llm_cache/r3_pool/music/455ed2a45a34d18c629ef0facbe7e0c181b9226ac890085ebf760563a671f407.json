@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_46941|lastFM_22174|name=Art Of Life Live | artist=X Japan | release-date=1998-03-18 | release-country=Japan | duration=2048.0 | genre=Rock|Classical | tracks=['Art Of Life Live']||name=Art of life live | artist=X Japan | duration=2054.0 | tracks=['Art of Life(Live)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Art Of Life Live | artist=X Japan | release-date=1998-03-18 | release-country=Japan | duration=2048.0 | genre=Rock|Classical | tracks=['Art Of Life Live']\nRecord B: name=Art of life live | artist=X Japan | duration=2054.0 | tracks=['Art of Life(Live)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

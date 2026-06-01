@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_138223|mbrainz_5996|name=Echoes Of Dreams | artist=Malia | release-date=2004-08-01 | release-country=France | duration=2652.0 | genre=Jazz|Funk / Soul | tracks=['Little Darling', 'After The Love', 'Echoes Of Dreams', 'Mary Mary', 'My Love', 'Maddy', 'Unfastened', 'Unfolding', 'Little Sparrow', 'I Miss You', 'Man In Your Eyes', 'Little Bee']||name=Echoes of Dreams | artist=Malia | release-date=2004-09-27 | release-country=France | duration=2670 | tracks=['Little Darling', 'After the Love', 'Echoes of Dreams', 'Mary Mary', 'My Love', 'Maddy', 'Unfastened', 'Unfolding', 'Little Sparrow', 'I Miss You', 'Man in Your Eyes', 'Little Bee']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Echoes Of Dreams | artist=Malia | release-date=2004-08-01 | release-country=France | duration=2652.0 | genre=Jazz|Funk / Soul | tracks=['Little Darling', 'After The Love', 'Echoes Of Dreams', 'Mary Mary', 'My Love', 'Maddy', 'Unfastened', 'Unfolding', 'Little Sparrow', 'I Miss You', 'Man In Your Eyes', 'Little Bee']\nRecord B: name=Echoes of Dreams | artist=Malia | release-date=2004-09-27 | release-country=France | duration=2670 | tracks=['Little Darling', 'After the Love', 'Echoes of Dreams', 'Mary Mary', 'My Love', 'Maddy', 'Unfastened', 'Unfolding', 'Little Sparrow', 'I Miss You', 'Man in Your Eyes', 'Little Bee']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

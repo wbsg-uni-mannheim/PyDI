@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_18529|mbrainz_7432|name=The  Singles 1965-1967 Volume 1 | artist=The Byrds | duration=3029.0 | tracks=['Mr. Tambourine Man', \"I'll Feel a Whole Lot Better\", 'Turn! Turn! Turn! (To Everything There  Is A Season)*', \"She Don't Care About Time\", 'Set You Free This Time', \"It Won't Be Wrong\", 'Eight Miles High', 'Why', '5 D (Fifth Dimension)', 'Captain  Soul (30 Minute Break)', 'Mr. Spaceman', \"What's  Happening?!?!\", \"So You  Want To Be A Rock 'N' Roll Star\", \"Everybody's Been Burned\"]||name=The Singles | artist=Electric Prunes, The | duration=2935 | tracks=[\"Ain't It Hard\", 'Little Olive', 'I Had Too Much to Dream Last Night', \"Luvin'\", 'Get Me to the World on Time', 'Are You Loving Me More', 'Dr. Do Good', 'Hideaway', \"Long Day's Flight\", 'The King Is in the Counting House', 'The Great Banana Hoax', 'Wind-Up Toys', 'You Never Had It Better', \"Everybody Knows You're Not in Love\", 'Hey Mr. President', 'Flowing Smoothly', 'Finders Keepers, Losers Weepers', 'Love Grows']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The  Singles 1965-1967 Volume 1 | artist=The Byrds | duration=3029.0 | tracks=['Mr. Tambourine Man', \"I'll Feel a Whole Lot Better\", 'Turn! Turn! Turn! (To Everything There  Is A Season)*', \"She Don't Care About Time\", 'Set You Free This Time', \"It Won't Be Wrong\", 'Eight Miles High', 'Why', '5 D (Fifth Dimension)', 'Captain  Soul (30 Minute Break)', 'Mr. Spaceman', \"What's  Happening?!?!\", \"So You  Want To Be A Rock 'N' Roll Star\", \"Everybody's Been Burned\"]\nRecord B: name=The Singles | artist=Electric Prunes, The | duration=2935 | tracks=[\"Ain't It Hard\", 'Little Olive', 'I Had Too Much to Dream Last Night', \"Luvin'\", 'Get Me to the World on Time', 'Are You Loving Me More', 'Dr. Do Good', 'Hideaway', \"Long Day's Flight\", 'The King Is in the Counting House', 'The Great Banana Hoax', 'Wind-Up Toys', 'You Never Had It Better', \"Everybody Knows You're Not in Love\", 'Hey Mr. President', 'Flowing Smoothly', 'Finders Keepers, Losers Weepers', 'Love Grows']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

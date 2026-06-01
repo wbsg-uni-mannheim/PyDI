@@ -1,0 +1,460 @@
+---
+# Machine-readable per-knob expected-signal expectations.
+#
+# Authored by hand from the "Committee expectations" section of each
+# knob card under `knobs/`. Consumed by
+# `usecases_synthetic/lib/monotonicity.py` (M8) to check whether the
+# easy -> medium -> hard levels move in the direction the knob cards
+# predict.
+#
+# Schema
+# ------
+# Each top-level key is a knob id (`knob_01` .. `knob_10`). Values:
+#   label          : short human name
+#   source_card    : path to the knob card (for traceability)
+#   primary_stage  : the stage the knob primarily targets
+#   signals        : list of expectation records (see below)
+#
+# A signal record has:
+#   id                 : short identifier unique within the knob
+#   stage              : sm | em | fusion
+#   metric             : EITHER a dotted path into the stage block
+#                        (e.g. `aggregated.macro_f1`,
+#                        `per_member.token_rule.metrics.f1`,
+#                        `per_attribute.name.best_strategy_accuracy`),
+#                        OR a spread spec of the form
+#                        `spread:<path_a>:<path_b>` meaning
+#                        "value at path_a minus value at path_b".
+#   direction          : down | up | flat
+#   qualitative_only   : true when the card gives direction but no
+#                        numeric magnitude. When true, target_delta_range
+#                        should be null.
+#   target_delta_range : [min, max] bounds for the
+#                        (hard value - baseline value) delta. null when
+#                        the card does not pin a number.
+#   pool_check         : true when a collapse on this metric should be
+#                        cross-checked against the EM pool-agreement
+#                        diagnostic (hidden-positive noise detection).
+#   notes              : free-form explanation for humans reading the
+#                        report.
+#
+# Magnitudes: NONE of the knob cards give numeric ranges. Every
+# magnitude is qualitative ("sharper", "mild", "collapse fast"). So
+# `qualitative_only: true` and `target_delta_range: null` are the
+# norm. The analyzer still checks direction, and flags qualitative
+# entries separately in the report.
+#
+# EM aggregated metric: `aggregated.macro_f1_variant_model_on_regen_test`
+# (R7b, 2026-05-27 — extends C10 with explicit dual-model evaluation).
+#
+# C10 (2026-05-22) established two closed-set test surfaces per pair:
+#   - `f1_baseline_test` (Set 1) — `em_test_baseline_pruned.csv`,
+#     i.e. the original baseline test pruned of dropped ids. Corner-
+#     biased subsample at higher levels; NOT a stable cross-level
+#     reference (level-by-level cardinality + composition drift).
+#   - `f1_regen_test`    (Set 2) — `em_test_corner_filled.csv`,
+#     i.e. baseline-pruned backfilled with K2-corner-mined pairs to
+#     the original cardinality + positive ratio (commensurable across
+#     levels).
+#
+# R7b (2026-05-27) adds the model axis: each committee member is
+# evaluated TWICE per pair — once as the baseline-trained checkpoint
+# (today's static model), once as the variant-trained checkpoint
+# (retrained per variant on the K2-regenerated train splits). All 4
+# cells are reported per (pair, member, level):
+#   - f1_baseline_model_on_baseline_test  (baseline model × Set 1)
+#   - f1_baseline_model_on_regen_test     (baseline model × Set 2)
+#   - f1_variant_model_on_baseline_test   (variant  model × Set 1)
+#   - f1_variant_model_on_regen_test      (variant  model × Set 2)
+#       ↑ load-bearing for monotonicity slope verdicts.
+#
+# Rationale for the variant-trained surface (paper argument):
+# variant-trained ON regen_test isolates intrinsic data difficulty
+# from transfer-learning gap. The headline claim becomes "even a
+# purpose-trained model degrades from easy → hard," not "a clean-
+# trained model fails to transfer to noisy variants" — the latter
+# would conflate distribution shift with intrinsic difficulty. Both
+# claims are valid; the dual-cell report exposes both. R7b picks the
+# variant-trained surface as the slope verdict because it answers the
+# stronger, more defensible claim form. Pre-R7b the headline surface
+# was `f1_regen_test` (= `f1_baseline_model_on_regen_test` under the
+# new naming); switching to the variant-model surface is the R7b
+# change captured here.
+#
+# Baseline has no K2 regen → the value is NaN at baseline, which is
+# fine under C2 (baseline is reference-only, not part of the slope
+# verdict). The open-set `f1_vs_test_gold` surface is retired (C10):
+# on large domains every prediction outside the small human-gold
+# positive list counted as FP, so the number was uninterpretable as
+# matching quality. The other 3 R7b cells are written to
+# `monotonicity_report.csv` as reference columns but do not drive
+# PASS/FAIL verdicts.
+
+schema_version: 1
+target_domain: companies
+
+knob_01:
+  label: Surface augmentation
+  source_card: knobs/knob_01_surface_augmentation.md
+  primary_stage: em
+  signals:
+    - id: sm_flat
+      stage: sm
+      metric: aggregated.macro_f1
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        SM largely unaffected — knob perturbs values, not headers.
+    - id: em_monotone_drop
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: true
+      notes: |
+        Monotone F1 drop across levels. Sharper for lexical blockers
+        than for embedding matchers.
+    - id: em_blocker_spread
+      stage: em_blocking
+      metric: "spread:per_member.standard_blocker.metrics.pair_recall:per_member.embedding_blocker.metrics.pair_recall"
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Spread between the lexical+rule blocker (standard_rule) and
+        embedding+rule blocker (embedding_rule) should shrink or even
+        invert as lexical suffers more than embedding on surface
+        perturbations. (Direction is 'down' because baseline spread is
+        positive with lexical ahead.)
+
+knob_02:
+  label: Niche density
+  source_card: knobs/knob_02_niche_density.md
+  primary_stage: em
+  signals:
+    - id: em_monotone_drop
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: true
+      notes: |
+        Monotone drop. Sharper for similarity-threshold matchers than
+        for learned matchers. Niche collisions pressurise precision.
+    - id: em_pool_precision_tightens
+      stage: em_matching
+      metric: aggregated.macro_precision
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Pool precision tightens at hard: near-duplicates create false
+        matches.
+    - id: fusion_flat
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Largely unaffected by construction. Interpolated entities carry
+        their own gold, removed entities take gold with them.
+
+knob_03:
+  label: Attribute drop
+  source_card: knobs/knob_03_attribute_drop.md
+  primary_stage: em
+  signals:
+    - id: em_pool_recall_drops
+      stage: em_blocking
+      metric: aggregated.macro_pair_recall
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Candidate recall drops monotonically as drop_rate_key rises.
+        Sharper for single-key blockers.
+    - id: em_monotone_drop
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: true
+      notes: |
+        Monotone F1 drop. Learned matchers with missing-value handling
+        degrade less than rule-based comparators.
+    - id: fusion_monotone_drop
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Fusion accuracy drops monotonically given conflict-preserving
+        constraint and survivor cap.
+
+knob_04:
+  label: Coverage skew
+  source_card: knobs/knob_04_coverage_skew.md
+  primary_stage: fusion
+  signals:
+    - id: em_flat_or_shift
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        EM mostly indifferent; any shift is through the singleton-prior,
+        direction unspecified by the card.
+    - id: fusion_monotone_drop
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Primary target. Voting-family strategies degrade faster than
+        trust-weighted / single-best-source strategies.
+    - id: fusion_spread_widens
+      stage: fusion
+      metric: "spread:aggregated.max_accuracy:aggregated.min_accuracy"
+      direction: up
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Spread between voting and best-source/trust widens. This is the
+        canonical K4 signal.
+
+knob_05:
+  label: Format / unit
+  source_card: knobs/knob_05_format_unit.md
+  primary_stage: fusion
+  signals:
+    - id: sm_flat
+      stage: sm
+      metric: aggregated.macro_f1
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: SM unaffected — per-value formatting.
+    - id: em_monotone_drop
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: true
+      notes: |
+        Monotone drop for non-normalizing comparators; minimal for
+        type-aware comparators.
+    - id: em_pool_recall_drops_for_lexical
+      stage: em_blocking
+      metric: per_member.standard_blocker.metrics.pair_recall
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Raw-string blocker (lexical+rule) sees a monotone pool_recall
+        drop; embedding+rule blocker holds steadier.
+    - id: fusion_spread_is_signal
+      stage: fusion
+      metric: "spread:aggregated.max_accuracy:aggregated.min_accuracy"
+      direction: up
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Per the card, "the spread between naive and canonicalizing
+        committee members is itself a difficulty signal". This is a
+        primary K5 signal — fusion.overall_spread should widen.
+    - id: fusion_monotone_drop
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Monotone drop for naive strategies. Best-strategy accuracy
+        (the max across strategies) may hold if a canonicalizing
+        strategy is available, but overall_accuracy averages all
+        strategies and therefore drops.
+
+knob_06:
+  label: Value noise
+  source_card: knobs/knob_06_value_noise.md
+  primary_stage: em
+  signals:
+    - id: sm_flat
+      stage: sm
+      metric: aggregated.macro_f1
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: SM flat.
+    - id: em_monotone_drop
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: true
+      notes: |
+        Monotone drop. Sharp for rule-based comparators, mild for
+        learned/embedding matchers.
+    - id: em_pool_recall_drops
+      stage: em_blocking
+      metric: aggregated.macro_pair_recall
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Lexical/n-gram blockers lose recall sharply; embedding
+        blockers mildly.
+    - id: fusion_monotone_drop
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Monotone drop given survivor floors. Provenance-aware fusers
+        should be rewarded over cell-local.
+
+knob_08:
+  label: Schema naming
+  source_card: knobs/knob_08_schema_naming.md
+  primary_stage: sm
+  signals:
+    - id: sm_monotone_drop
+      stage: sm
+      metric: aggregated.macro_f1
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Primary target. Monotone drop expected.
+    - id: sm_label_collapses
+      stage: sm
+      metric: per_member.label_jw.metrics.f1
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Label-based string-similarity matchers collapse fast on
+        cryptic/anonymized names.
+    - id: sm_spread_is_signal
+      stage: sm
+      metric: "spread:per_member.llm_openai.metrics.f1:per_member.label_jw.metrics.f1"
+      direction: up
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Per the card, "the spread between matcher types IS the K8
+        difficulty signal". Instance-based / embedding / LLM matchers
+        hold while label-based collapse. Spread (llm_openai.f1 -
+        label_jaccard.f1) widens monotonically.
+    - id: sm_instance_steady
+      stage: sm
+      metric: per_member.instance_tf_cosine.metrics.f1
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Instance-based matchers degrade more gracefully than label-based.
+        Note: baseline instance-based F1 for companies is already 0.0
+        (no overlap in sampled values). This signal may be untestable
+        on companies because the baseline is already at the floor.
+    - id: em_flat
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: Downstream stages unaffected by K8.
+    - id: fusion_flat
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: Downstream stages unaffected by K8.
+
+knob_10:
+  label: Source reliability
+  source_card: knobs/knob_10_source_reliability.md
+  primary_stage: fusion
+  signals:
+    - id: sm_flat
+      stage: sm
+      metric: aggregated.macro_f1
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: Upstream stages unaffected by K10.
+    - id: em_flat
+      stage: em_matching
+      metric: aggregated.macro_f1_variant_model_on_regen_test
+      direction: flat
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: Upstream stages unaffected by K10.
+    - id: fusion_monotone_drop
+      stage: fusion
+      metric: aggregated.overall_accuracy
+      direction: down
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Primary target. Cell-local strategies (voting, most_complete,
+        per-attribute trust) lose accuracy as unreliability grows.
+    - id: fusion_spread_widens
+      stage: fusion
+      metric: "spread:aggregated.max_accuracy:aggregated.min_accuracy"
+      direction: up
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        Monotone spread between cell-local strategies and entity-aware
+        /trust-weighted strategies widens easy -> medium -> hard.
+        Canonical K10 signal (see card cross-knob commentary).
+    - id: fusion_voting_drops_faster_than_trust_on_name
+      stage: fusion
+      metric: "spread:per_attribute.name.prefer_higher_trust_only:per_attribute.name.voting_only"
+      direction: up
+      qualitative_only: true
+      target_delta_range: null
+      pool_check: false
+      notes: |
+        For the `name` attribute, prefer_higher_trust strategy should
+        pull ahead of voting at medium/hard. Spread becomes positive
+        and widens.

@@ -1,0 +1,95 @@
+# Knob 05 — Format/Unit Diversity: Music domain config.
+#
+# Refreshed schema (2026-05-04 source-data refresh):
+#   - All three sources share columns: id, name, artist, release-date,
+#     release-country, duration, label, genre, tracks.
+#   - release-date is uniformly ISO (YYYY-MM-DD with -01-01 padding) on
+#     musicbrainz/discogs; lastfm has zero release-date coverage.
+#   - duration is INTEGER seconds across all three sources (musicbrainz
+#     int64, discogs int64 with 0 for missing, lastfm float64). The prior
+#     pass's "MusicBrainz int-ms vs Discogs mm:ss" claim is no longer true
+#     post-refresh — uniform integer seconds at baseline.
+#
+# Music is "below easy" at baseline for both date and duration on the
+# refreshed corpus; every level injects heterogeneity. Music remains the
+# K5 showcase domain because the duration-family operator catalogue
+# (seconds_int / mm_ss / hh_mm_ss / human_xm_ys) is widest here.
+
+domain: music
+
+# Hyphenated column names ('release-date') are accessed via df[col]
+# string lookup so the dispatcher handles them transparently.
+attribute_classes:
+  musicbrainz:
+    release-date: date
+    duration: duration
+  discogs:
+    release-date: date
+    duration: duration
+  lastfm:
+    release-date: date
+    duration: duration
+
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+# Pinned pool sizes: easy=2, medium=3, hard=4.
+format_pools_per_level:
+  easy:
+    date:
+      - iso              # YYYY-MM-DD
+      - precision_year   # YYYY (semantic year-only — matches baseline padding)
+    duration:
+      - seconds_int      # 1055
+      - mm_ss            # 17:35
+  medium:
+    date:
+      - iso
+      - precision_year
+      - eu_dot           # DD.MM.YYYY
+    duration:
+      - seconds_int
+      - mm_ss
+      - hh_mm_ss         # 00:17:35
+  hard:
+    date:
+      - iso
+      - precision_year
+      - eu_dot
+      - us_slash         # MM/DD/YYYY
+    duration:
+      - seconds_int
+      - mm_ss
+      - hh_mm_ss
+      - human_xm_ys      # 17m 35s
+
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+within_source_consistency:
+  easy: source
+  medium: source
+  hard: row
+
+# Duration is reformatting-only (semantic seconds preserved); no currency,
+# no magnitude scaling. The dispatcher's duration branch reads the
+# format_pools_per_level[level].duration list directly and routes to
+# format_duration() for stringification.
+unit_pool_per_level:
+  easy: {}
+  medium: {}
+  hard: {}
+
+normalize_down_threshold: 0.85
+
+source_magnitude_context: {}

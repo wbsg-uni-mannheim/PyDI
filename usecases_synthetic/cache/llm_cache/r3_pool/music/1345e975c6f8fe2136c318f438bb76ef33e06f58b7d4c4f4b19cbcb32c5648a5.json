@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_94484|mbrainz_4253|name=Suck It And See | artist=Candyland | release-date=1991 | release-country=UK | genre=Electronic|Rock | tracks=['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something To Somebody', 'Reternity', 'Rainbow', 'Ivy To Oak', 'Kingdom', 'The Body Is The Book', 'Behold The Motherlode', 'We Will Not Leave']||name=Suck It and See | artist=Candyland | release-date=1991-01-01 | release-country=Netherlands | duration=2646 | tracks=['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something to Somebody', 'Reternity', 'Rainbow', 'Ivy to Oak', 'Kingdom', 'The Body Is the Book', 'Behold the Motherlode', 'We Will Not Leave']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Suck It And See | artist=Candyland | release-date=1991 | release-country=UK | genre=Electronic|Rock | tracks=['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something To Somebody', 'Reternity', 'Rainbow', 'Ivy To Oak', 'Kingdom', 'The Body Is The Book', 'Behold The Motherlode', 'We Will Not Leave']\nRecord B: name=Suck It and See | artist=Candyland | release-date=1991-01-01 | release-country=Netherlands | duration=2646 | tracks=['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something to Somebody', 'Reternity', 'Rainbow', 'Ivy to Oak', 'Kingdom', 'The Body Is the Book', 'Behold the Motherlode', 'We Will Not Leave']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

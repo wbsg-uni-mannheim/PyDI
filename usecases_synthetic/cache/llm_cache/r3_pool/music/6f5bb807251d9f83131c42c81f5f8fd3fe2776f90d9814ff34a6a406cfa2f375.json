@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_142155|mbrainz_1912|name=The Concretes | artist=The Concretes | release-country=UK | genre=Rock | tracks=['Say Something New', \"You Can't Hurry Love\", 'Chico', 'New Friend', 'Diana Ross', 'Warm Night', 'Foreign Country', 'Seems Fine', 'Lovin Kind', 'Lonely As Can Be', \"This One's For You\"]||name=The Concretes | artist=Concretes, The | release-date=2004-06-21 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2405 | tracks=['Say Something New', 'You Canâ€™t Hurry Love', 'Chico', 'New Friend', 'Diana Ross', 'Warm Night', 'Foreign Country', 'Seems Fine', 'Lovinâ€™ Kind', 'Lonely as Can Be', 'This Oneâ€™s for You']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Concretes | artist=The Concretes | release-country=UK | genre=Rock | tracks=['Say Something New', \"You Can't Hurry Love\", 'Chico', 'New Friend', 'Diana Ross', 'Warm Night', 'Foreign Country', 'Seems Fine', 'Lovin Kind', 'Lonely As Can Be', \"This One's For You\"]\nRecord B: name=The Concretes | artist=Concretes, The | release-date=2004-06-21 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2405 | tracks=['Say Something New', 'You Canâ€™t Hurry Love', 'Chico', 'New Friend', 'Diana Ross', 'Warm Night', 'Foreign Country', 'Seems Fine', 'Lovinâ€™ Kind', 'Lonely as Can Be', 'This Oneâ€™s for You']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

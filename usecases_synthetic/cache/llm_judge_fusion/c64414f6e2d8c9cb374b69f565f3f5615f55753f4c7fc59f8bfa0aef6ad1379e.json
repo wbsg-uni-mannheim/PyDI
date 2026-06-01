@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "GBP"
+    },
+    {
+      "source": "products_2",
+      "value": "NZD"
+    },
+    {
+      "source": "products_3",
+      "value": "EUR"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "Candidates conflict with no basis to infer a unique currency, so one source value is selected verbatim.",
+    "value": "GBP"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GBP\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"Candidates conflict with no basis to infer a unique currency, so one source value is selected verbatim.\"}"
+}

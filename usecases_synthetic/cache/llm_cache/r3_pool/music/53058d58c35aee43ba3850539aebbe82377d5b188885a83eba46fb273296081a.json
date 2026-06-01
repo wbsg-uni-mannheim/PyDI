@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_103010|mbrainz_5056|name=Dangerous Curves | artist=Lita Ford | release-date=1991 | release-country=United States of America | duration=2633.0 | genre=Rock | tracks=['Larger Than Life', 'What Do Ya Know About Love', 'Shot Of Poison', 'Bad Love', \"Playin' With Fire\", 'Hellbound Train', 'Black Widow', 'Little Too Early', 'Holy Man', 'Tambourine Dream', 'Little Black Spider']||name=Dangerous Curves | artist=Ford, Lita | release-date=1991-01-01 | release-country=United States of America | duration=2617 | tracks=['Larger Than Life', 'What Do Ya Know About Love', 'Shot of Poison', 'Bad Love', 'Playinâ€™ With Fire', 'Hellbound Train', 'Black Widow', 'Little Too Early', 'Holy Man', 'Tambourine Dream', 'Little Black Spider']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dangerous Curves | artist=Lita Ford | release-date=1991 | release-country=United States of America | duration=2633.0 | genre=Rock | tracks=['Larger Than Life', 'What Do Ya Know About Love', 'Shot Of Poison', 'Bad Love', \"Playin' With Fire\", 'Hellbound Train', 'Black Widow', 'Little Too Early', 'Holy Man', 'Tambourine Dream', 'Little Black Spider']\nRecord B: name=Dangerous Curves | artist=Ford, Lita | release-date=1991-01-01 | release-country=United States of America | duration=2617 | tracks=['Larger Than Life', 'What Do Ya Know About Love', 'Shot of Poison', 'Bad Love', 'Playinâ€™ With Fire', 'Hellbound Train', 'Black Widow', 'Little Too Early', 'Holy Man', 'Tambourine Dream', 'Little Black Spider']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

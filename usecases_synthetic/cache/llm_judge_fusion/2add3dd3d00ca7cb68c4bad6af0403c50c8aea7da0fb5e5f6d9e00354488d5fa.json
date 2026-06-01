@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "14,000.0 GB"
+    },
+    {
+      "source": "products_2",
+      "value": "14000.0 GB"
+    },
+    {
+      "source": "products_3",
+      "value": "1,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Two candidates agree on 14000.0 GB and the other appears to be a conflicting outlier.",
+    "value": 14000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":14000.0,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Two candidates agree on 14000.0 GB and the other appears to be a conflicting outlier.\"}"
+}

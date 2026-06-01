@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0"
+    },
+    {
+      "source": "lastfm",
+      "value": "671.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.58,
+    "operation": "aggregation",
+    "reasoning": "The candidates conflict, and musicbrainz often uses 0 to indicate unknown while lastfm provides a plausible track duration.",
+    "value": 671.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":671.0,\"operation\":\"aggregation\",\"confidence\":0.58,\"reasoning\":\"The candidates conflict, and musicbrainz often uses 0 to indicate unknown while lastfm provides a plausible track duration.\"}"
+}

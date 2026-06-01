@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_472|lastFM_277|name=Beautiful Electronic Music | artist=Benge | release-date=1996-02-01 | release-country=UK | duration=3375.0 | genre=Electronic | tracks=['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']||name=Benge -  Beautiful Electronic Music | artist=Benge | duration=0.0 | tracks=['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beautiful Electronic Music | artist=Benge | release-date=1996-02-01 | release-country=UK | duration=3375.0 | genre=Electronic | tracks=['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']\nRecord B: name=Benge -  Beautiful Electronic Music | artist=Benge | duration=0.0 | tracks=['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

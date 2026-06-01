@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_169350|lastFM_8515|name=The Black Parade | artist=My Chemical Romance | release-date=2006-10-24 | release-country=United States of America | genre=Rock | tracks=['The End', 'Dead!', 'This Is How I Disappear', 'The Sharpest Lives', 'Welcome To The Black Parade', \"I Don't Love You\", 'Houses Of Wolves', 'Cancer', 'Mama', 'Sleep', 'Teenagers', 'Disenchanted', 'Famous Last Words']||name=Welcome To The Black Parade | artist=M. Chemical Romance | duration=818.0 | tracks=['Welcome to the Black Parade', 'Heaven Help Us [B-Side]', 'Welcome To The Black Parade [Live] [B-Side]']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Black Parade | artist=My Chemical Romance | release-date=2006-10-24 | release-country=United States of America | genre=Rock | tracks=['The End', 'Dead!', 'This Is How I Disappear', 'The Sharpest Lives', 'Welcome To The Black Parade', \"I Don't Love You\", 'Houses Of Wolves', 'Cancer', 'Mama', 'Sleep', 'Teenagers', 'Disenchanted', 'Famous Last Words']\nRecord B: name=Welcome To The Black Parade | artist=M. Chemical Romance | duration=818.0 | tracks=['Welcome to the Black Parade', 'Heaven Help Us [B-Side]', 'Welcome To The Black Parade [Live] [B-Side]']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

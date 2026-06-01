@@ -1,0 +1,27 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Partys Over Los Angeles', 'Partys Over Los Angeles (Duke Dumont remix)', 'Partys Over Los Angeles (Jon Convex remix)', 'Partys Over Los Angeles (TWR72 remix)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Partys Over Los Angeles', 'Partys Over Los Angeles (Duke Dumont Remix)', 'Partys Over Los Angeles (Jon Convex Remix)', 'Partys Over Los Angeles (TWR72 Remix)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The track lists match aside from casing/style normalization of remix labels.",
+    "value": [
+      "Partys Over Los Angeles",
+      "Partys Over Los Angeles (Duke Dumont Remix)",
+      "Partys Over Los Angeles (Jon Convex Remix)",
+      "Partys Over Los Angeles (TWR72 Remix)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Partys Over Los Angeles\",\"Partys Over Los Angeles (Duke Dumont Remix)\",\"Partys Over Los Angeles (Jon Convex Remix)\",\"Partys Over Los Angeles (TWR72 Remix)\"],\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The track lists match aside from casing/style normalization of remix labels.\"}"
+}

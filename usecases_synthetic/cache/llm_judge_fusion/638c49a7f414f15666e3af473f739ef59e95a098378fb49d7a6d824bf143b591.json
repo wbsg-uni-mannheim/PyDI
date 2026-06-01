@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3049"
+    },
+    {
+      "source": "discogs",
+      "value": "3038.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "Numeric duration values differ slightly, so a robust aggregate (rounded midpoint) best reconciles the sources.",
+    "value": 3044
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3044,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"Numeric duration values differ slightly, so a robust aggregate (rounded midpoint) best reconciles the sources.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_141135|lastFM_61984|name=Go Slowly All The Way Round The Outside | artist=Blusom | release-date=2004-08-23 | release-country=United States of America | duration=2273.0 | genre=Electronic|Pop | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland?', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']||name=Go Slowly All The Way Round The Outside | artist=Blusom | duration=2267.0 | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Go Slowly All The Way Round The Outside | artist=Blusom | release-date=2004-08-23 | release-country=United States of America | duration=2273.0 | genre=Electronic|Pop | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland?', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']\nRecord B: name=Go Slowly All The Way Round The Outside | artist=Blusom | duration=2267.0 | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

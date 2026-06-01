@@ -1,0 +1,27 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Invincible (extended version)', 'Promises in the Dark (live)', 'Invincible (instrumental)', 'Heartbreaker (live)']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Invincible (Theme From The Legend Of Billie Jean)', 'Promises In The Dark (Live)', 'Invincible (Instrumental)', 'Heartbreaker (Live)']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The candidates list the same four tracks with minor casing and title-variant differences, so I normalized to a single standardized track listing.",
+    "value": [
+      "Invincible (Theme From The Legend Of Billie Jean)",
+      "Promises In The Dark (Live)",
+      "Invincible (Instrumental)",
+      "Heartbreaker (Live)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Invincible (Theme From The Legend Of Billie Jean)\",\"Promises In The Dark (Live)\",\"Invincible (Instrumental)\",\"Heartbreaker (Live)\"],\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The candidates list the same four tracks with minor casing and title-variant differences, so I normalized to a single standardized track listing.\"}"
+}

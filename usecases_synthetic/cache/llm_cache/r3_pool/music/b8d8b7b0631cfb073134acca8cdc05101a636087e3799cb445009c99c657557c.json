@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_60765|mbrainz_23986|name=Beyond the Forest | artist=Valdrin | duration=2857.0 | tracks=['Beyond The Forest', 'Rusalka Succubus', 'Serpent Willow', 'Calling To The Canidae Horde', 'Through The Catacombs', 'Come Forth', 'Darkness As Black As Evil', 'Forgotten Souls']||name=Beyond the Forest | artist=Valdrin | release-date=2014-06-03 | release-country=United States of America | duration=3983 | tracks=['A Drain in the River (intro)', 'Beyond the Forest', 'Rusalka Succubus', 'Serpent Willow', 'Impaled Visions Breed Within the Vines', 'Calling to the Canidae Horde', 'Through the Catacombs', 'Come Forth', 'Darkness as Black as Evil', 'Battles in the Medieval Sky', 'In the Vortex of Time / Relinquish Flesh', 'Forgotten Souls']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond the Forest | artist=Valdrin | duration=2857.0 | tracks=['Beyond The Forest', 'Rusalka Succubus', 'Serpent Willow', 'Calling To The Canidae Horde', 'Through The Catacombs', 'Come Forth', 'Darkness As Black As Evil', 'Forgotten Souls']\nRecord B: name=Beyond the Forest | artist=Valdrin | release-date=2014-06-03 | release-country=United States of America | duration=3983 | tracks=['A Drain in the River (intro)', 'Beyond the Forest', 'Rusalka Succubus', 'Serpent Willow', 'Impaled Visions Breed Within the Vines', 'Calling to the Canidae Horde', 'Through the Catacombs', 'Come Forth', 'Darkness as Black as Evil', 'Battles in the Medieval Sky', 'In the Vortex of Time / Relinquish Flesh', 'Forgotten Souls']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

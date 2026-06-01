@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1529"
+    },
+    {
+      "source": "lastfm",
+      "value": "659.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric durations with a large discrepancy, so I used a robust aggregate (midpoint/median-style compromise) to produce a canonical value.",
+    "value": 1094
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1094,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"The candidates are numeric durations with a large discrepancy, so I used a robust aggregate (midpoint/median-style compromise) to produce a canonical value.\"}"
+}

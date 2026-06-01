@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "718.82"
+    },
+    {
+      "source": "products_3",
+      "value": "8316.0"
+    },
+    {
+      "source": "products_4",
+      "value": "7500.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "aggregation",
+    "reasoning": "Two sources agree on a high-price cluster around 7.5k–8.3k, and 7500.0 is the most representative aggregate.",
+    "value": 7500.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":7500.0,\"operation\":\"aggregation\",\"confidence\":0.94,\"reasoning\":\"Two sources agree on a high-price cluster around 7.5k–8.3k, and 7500.0 is the most representative aggregate.\"}"
+}

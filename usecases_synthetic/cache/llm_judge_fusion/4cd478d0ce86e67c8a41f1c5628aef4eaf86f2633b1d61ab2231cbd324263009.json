@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "8.99"
+    },
+    {
+      "source": "products_2",
+      "value": "171.0"
+    },
+    {
+      "source": "products_3",
+      "value": "145.0"
+    },
+    {
+      "source": "products_4",
+      "value": "179.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.82,
+    "operation": "aggregation",
+    "reasoning": "The 8.99 value is a clear outlier relative to the other three prices, so a robust aggregate best represents the canonical price.",
+    "value": 145.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":145.0,\"operation\":\"aggregation\",\"confidence\":0.82,\"reasoning\":\"The 8.99 value is a clear outlier relative to the other three prices, so a robust aggregate best represents the canonical price.\"}"
+}

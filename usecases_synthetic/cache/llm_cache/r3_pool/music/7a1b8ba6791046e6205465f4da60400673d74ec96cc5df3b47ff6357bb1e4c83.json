@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_78523|mbrainz_7867|name=Love Beyond Reach (Bonus Tracks Version) | artist=Suicidal R. | tracks=[]||name=Love Beyond Reach | artist=Suicidal Romance | release-date=2007-07-16 | release-country=Russian Federation | duration=3449 | tracks=['Love Beyond Reach', 'Not Alone', 'Will It Be (For Us)', 'Call Me', 'Angel of Love', 'White Snow', 'Poisoned Kiss', 'Lonely Tears', 'Prince of the Darkness', 'Star', 'In This Night (Lullaby)', 'Not Alone (Blutengel remix)', 'Star (Lost Area remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Love Beyond Reach (Bonus Tracks Version) | artist=Suicidal R. | tracks=[]\nRecord B: name=Love Beyond Reach | artist=Suicidal Romance | release-date=2007-07-16 | release-country=Russian Federation | duration=3449 | tracks=['Love Beyond Reach', 'Not Alone', 'Will It Be (For Us)', 'Call Me', 'Angel of Love', 'White Snow', 'Poisoned Kiss', 'Lonely Tears', 'Prince of the Darkness', 'Star', 'In This Night (Lullaby)', 'Not Alone (Blutengel remix)', 'Star (Lost Area remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

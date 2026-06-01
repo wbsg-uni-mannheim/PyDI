@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_46941|mbrainz_7048|name=Art Of Life Live | artist=X Japan | release-date=1998-03-18 | release-country=Japan | duration=2048.0 | genre=Rock|Classical | tracks=['Art Of Life Live']||name=ART OF LIFE (orig.) | artist=X JAPAN | release-date=1993-08-25 | release-country=Japan | duration=1740 | tracks=['ART OF LIFE']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Art Of Life Live | artist=X Japan | release-date=1998-03-18 | release-country=Japan | duration=2048.0 | genre=Rock|Classical | tracks=['Art Of Life Live']\nRecord B: name=ART OF LIFE (orig.) | artist=X JAPAN | release-date=1993-08-25 | release-country=Japan | duration=1740 | tracks=['ART OF LIFE']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

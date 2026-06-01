@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_36440|mbrainz_5346|name=Arman MÃƒÂ©liÃƒÂ¨s -  Casino | artist=Arman MÃƒÂ©liÃƒÂ¨s | duration=2246.0 | tracks=['Casino', 'En Nous la Vie', 'Amoureux Solitaires', 'Le Soupir du Monde', 'Belem', 'Papier Carbone', 'Diva', 'Cheval de Troie [Part. 1]']||name=Casino | artist=Di Meola, Al | release-date=1991-08-12 | duration=2310 | tracks=['Egyptian Danza', \"Chasin' the Voodoo\", 'Dark Eye Tango', 'SeÃ±or Mouse', 'Fantasia Suite for Two Guitars: a. Viva la danzarina / b. Guitars of the Exotic Isle / c. Rhapsody Italia / d. Bravoto Fantasia', 'Casino']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Arman MÃƒÂ©liÃƒÂ¨s -  Casino | artist=Arman MÃƒÂ©liÃƒÂ¨s | duration=2246.0 | tracks=['Casino', 'En Nous la Vie', 'Amoureux Solitaires', 'Le Soupir du Monde', 'Belem', 'Papier Carbone', 'Diva', 'Cheval de Troie [Part. 1]']\nRecord B: name=Casino | artist=Di Meola, Al | release-date=1991-08-12 | duration=2310 | tracks=['Egyptian Danza', \"Chasin' the Voodoo\", 'Dark Eye Tango', 'SeÃ±or Mouse', 'Fantasia Suite for Two Guitars: a. Viva la danzarina / b. Guitars of the Exotic Isle / c. Rhapsody Italia / d. Bravoto Fantasia', 'Casino']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

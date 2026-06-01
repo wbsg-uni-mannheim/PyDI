@@ -1,0 +1,30 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "USD"
+    },
+    {
+      "source": "products_2",
+      "value": "ZAR"
+    },
+    {
+      "source": "products_3",
+      "value": "GBP"
+    },
+    {
+      "source": "products_4",
+      "value": "DKK"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.26,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are plausible currencies with no basis to aggregate or normalize, so one candidate is selected as the canonical value.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.26,\"reasoning\":\"All candidates are plausible currencies with no basis to aggregate or normalize, so one candidate is selected as the canonical value.\"}"
+}

@@ -1,0 +1,95 @@
+# Knob 03 — Per-source Attribute Drop Rate — Music
+#
+# Refreshed CSV column names (post 2026-05-04 source migration).
+# Schema-level absent attributes (musicbrainz.{genre,label} and lastfm.
+# {release-country,genre,release-date,label} are 100% missing on the new
+# CSVs) are excluded from `attribute_classes` — they are Knob 9 territory,
+# not Knob 3.
+
+domain: music
+
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+attribute_classes:
+  musicbrainz:
+    name: primary
+    artist: key
+    release-country: key
+    release-date: secondary
+    duration: secondary
+    tracks: secondary
+  discogs:
+    name: primary
+    artist: key
+    release-country: key
+    genre: key
+    release-date: secondary
+    duration: secondary
+    label: secondary
+    tracks: secondary
+  lastfm:
+    name: primary
+    artist: key
+    duration: secondary
+    tracks: secondary
+
+# Canonical attribute names match the fusion gold XML tags (release-country
+# and release-date with hyphens, per K6/K10 sign-offs and the music
+# fusion val/test XML).
+attribute_mapping:
+  musicbrainz:
+    name: name
+    artist: artist
+    release-country: release-country
+    release-date: release-date
+    duration: duration
+  discogs:
+    name: name
+    artist: artist
+    release-country: release-country
+    genre: genre
+    release-date: release-date
+    duration: duration
+    label: label
+  lastfm:
+    name: name
+    artist: artist
+    duration: duration
+
+rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.05
+  medium:
+    primary: 0.0
+    key: 0.10
+    secondary: 0.15
+  hard:
+    primary: 0.03
+    key: 0.25
+    secondary: 0.35
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+compression_factor: 0.7
+stretch_factor: 1.5
+
+single_source_survivor_cap_hard: 0.05
+per_cell_ceiling_delta: 0.10
+
+# Discogs duration is at 43% baseline (already noted in K5/K6 follow-ups
+# pre-loader-coalesce; post-coalesce the 0-sentinel rows count as missing
+# directly). Lastfm duration similar at 53%. Tighten ceilings so stretch
+# does not demand negative headroom.
+per_source_attribute_overrides:
+  discogs:
+    duration: 0.05
+  lastfm:
+    duration: 0.05

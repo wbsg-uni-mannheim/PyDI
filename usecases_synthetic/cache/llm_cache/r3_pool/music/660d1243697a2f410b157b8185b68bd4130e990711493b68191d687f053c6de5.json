@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_8322|mbrainz_15289|name=Homesick | artist=Experimental P. Band | duration=3026.0 | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', 'Everything Is Easy', 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']||name=Homesick | artist=Day to Remember, A | release-date=2009-10-26 | release-country=United States of America | duration=2898 | tracks=['The Downfall of Us All', 'My Life for Hire', 'Iâ€™m Made of Wax, Larry, What Are You Made Of?', 'NJ Legion Iced Tea', 'Mr. Highwayâ€™s Thinking About the End', 'Have Faith in Me', 'Welcome to the Family', 'Homesick', 'Holdinâ€™ It Down for the Underground', 'You Already Know What You Are', 'Another Song About the Weekend', 'If It Means a Lot to You', 'Homesick', 'Another Song About the Weekend']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Homesick | artist=Experimental P. Band | duration=3026.0 | tracks=['Forty Greatest Hits', 'Punk Rock Classic', 'Carnival', 'For Dancers Only', 'Stop', 'Archive', 'Civil Rights', 'Cocaine Cowboy', 'Frozen Head', 'Little Russia', 'Everything Is Easy', 'Give A Little Love', 'Homesick', 'Theme From The Modern Lover']\nRecord B: name=Homesick | artist=Day to Remember, A | release-date=2009-10-26 | release-country=United States of America | duration=2898 | tracks=['The Downfall of Us All', 'My Life for Hire', 'Iâ€™m Made of Wax, Larry, What Are You Made Of?', 'NJ Legion Iced Tea', 'Mr. Highwayâ€™s Thinking About the End', 'Have Faith in Me', 'Welcome to the Family', 'Homesick', 'Holdinâ€™ It Down for the Underground', 'You Already Know What You Are', 'Another Song About the Weekend', 'If It Means a Lot to You', 'Homesick', 'Another Song About the Weekend']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

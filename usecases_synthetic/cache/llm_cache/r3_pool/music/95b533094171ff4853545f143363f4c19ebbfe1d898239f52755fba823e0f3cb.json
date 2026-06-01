@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_61984|mbrainz_31676|name=Go Slowly All The Way Round The Outside | artist=Blusom | duration=2267.0 | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']||name=Outside the Box | artist=Lyre le temps | release-date=2013-11-11 | release-country=France | duration=2265 | tracks=['Welcome', 'The Mission', 'Rob the Banker', 'Going On', 'Beautiful Day', 'Looking Like This', 'Souvenirs', 'New York City', 'Word Up', 'Swing Machine', \"Rock'n Roll\", 'Goodbye']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Go Slowly All The Way Round The Outside | artist=Blusom | duration=2267.0 | tracks=['On Glass', 'X-Photo', 'Fireside Iconoclasm', 'Iceland Or Greenland', 'Off Of Cliffs', 'Versus Techno', 'Kitelike Blue Paper', 'Attack Of The Toothless Luthiers', 'Ancient Medicine And You', 'Rusting']\nRecord B: name=Outside the Box | artist=Lyre le temps | release-date=2013-11-11 | release-country=France | duration=2265 | tracks=['Welcome', 'The Mission', 'Rob the Banker', 'Going On', 'Beautiful Day', 'Looking Like This', 'Souvenirs', 'New York City', 'Word Up', 'Swing Machine', \"Rock'n Roll\", 'Goodbye']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

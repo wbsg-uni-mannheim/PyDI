@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_50227|mbrainz_1731|name=Not A Pretty Girl | artist=Ani DiFranco | release-date=1997 | release-country=UK | duration=3415.0 | genre=Rock|Folk, World, & Country | tracks=['Worthy', 'Tiptoe', 'Cradle And All', 'Shy', 'Sorry I Am', 'Light Of Some Kind', 'Not A Pretty Girl', 'The Million You Never Made', 'Hour Follows Hour', '32 Flavors', 'Asking Too Much', 'This Bouquet', 'Crime For Crime', 'Coming Up']||name=Not a Pretty Girl | artist=DiFranco, Ani | release-date=1995-07-18 | release-country=United States of America | duration=3545 | tracks=['Worthy', 'Tiptoe', 'Cradle and All', 'Shy', 'Sorry I Am', 'Light of Some Kind', 'Not a Pretty Girl', 'The Million You Never Made', 'Hour Follows Hour', '32 Flavors', 'Asking Too Much', 'This Bouquet', 'Crime for Crime', 'Coming Up / Tiptoe (out takes)', 'Tip Toe (outtakes)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Not A Pretty Girl | artist=Ani DiFranco | release-date=1997 | release-country=UK | duration=3415.0 | genre=Rock|Folk, World, & Country | tracks=['Worthy', 'Tiptoe', 'Cradle And All', 'Shy', 'Sorry I Am', 'Light Of Some Kind', 'Not A Pretty Girl', 'The Million You Never Made', 'Hour Follows Hour', '32 Flavors', 'Asking Too Much', 'This Bouquet', 'Crime For Crime', 'Coming Up']\nRecord B: name=Not a Pretty Girl | artist=DiFranco, Ani | release-date=1995-07-18 | release-country=United States of America | duration=3545 | tracks=['Worthy', 'Tiptoe', 'Cradle and All', 'Shy', 'Sorry I Am', 'Light of Some Kind', 'Not a Pretty Girl', 'The Million You Never Made', 'Hour Follows Hour', '32 Flavors', 'Asking Too Much', 'This Bouquet', 'Crime for Crime', 'Coming Up / Tiptoe (out takes)', 'Tip Toe (outtakes)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

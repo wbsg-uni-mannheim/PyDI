@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25011|mbrainz_4624|name=Favourite Worst Nightmare | artist=Arctic Monkeys | release-date=2007 | release-country=Europe | genre=Rock | tracks=['Brianstorm', 'Teddy Picker', 'D Is For Dangerous', 'Balaclava', 'Fluorescent Adolescent', 'Only Ones Who Know', 'Do Me A Favour', 'This House Is A Circus', 'If You Were There, Beware', 'The Bad Thing', 'Old Yellow Bricks', '505']||name=Favourite Worst Nightmare | artist=Arctic Monkeys (and others) | release-date=2007-01-01 | duration=2254 | tracks=['Brianstorm', 'Teddy Picker', 'D Is for Dangerous', 'Balaclava', 'Fluorescent Adolescent', 'Only Ones Who Know', 'Do Me a Favour', 'This House Is a Circus', 'If You Were There, Beware', 'The Bad Thing', 'Old Yellow Bricks', '505']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Favourite Worst Nightmare | artist=Arctic Monkeys | release-date=2007 | release-country=Europe | genre=Rock | tracks=['Brianstorm', 'Teddy Picker', 'D Is For Dangerous', 'Balaclava', 'Fluorescent Adolescent', 'Only Ones Who Know', 'Do Me A Favour', 'This House Is A Circus', 'If You Were There, Beware', 'The Bad Thing', 'Old Yellow Bricks', '505']\nRecord B: name=Favourite Worst Nightmare | artist=Arctic Monkeys (and others) | release-date=2007-01-01 | duration=2254 | tracks=['Brianstorm', 'Teddy Picker', 'D Is for Dangerous', 'Balaclava', 'Fluorescent Adolescent', 'Only Ones Who Know', 'Do Me a Favour', 'This House Is a Circus', 'If You Were There, Beware', 'The Bad Thing', 'Old Yellow Bricks', '505']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

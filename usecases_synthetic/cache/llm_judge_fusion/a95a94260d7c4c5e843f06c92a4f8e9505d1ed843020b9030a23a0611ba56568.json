@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "1 436,22"
+    },
+    {
+      "source": "products_2",
+      "value": "650.0"
+    },
+    {
+      "source": "products_3",
+      "value": "0.23"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "The candidates appear to be conflicting price values, and 650.0 is the most plausible normalized aggregate among them.",
+    "value": 650.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":650.0,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"The candidates appear to be conflicting price values, and 650.0 is the most plausible normalized aggregate among them.\"}"
+}

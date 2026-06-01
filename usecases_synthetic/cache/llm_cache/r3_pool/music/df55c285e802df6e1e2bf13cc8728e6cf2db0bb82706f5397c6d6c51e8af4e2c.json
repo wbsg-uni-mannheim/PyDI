@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_133770|mbrainz_429|name=Erotica | artist=Madonna | release-date=1992 | release-country=Europe | duration=4517.0 | genre=Electronic|Pop | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper And Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief Of Hearts', 'Words', 'Rain', \"Why's It So Hard\", 'In This Life', 'Did You Do It?', 'Secret Garden']||name=Erotica | artist=Madonna | release-date=1992-10-20 | release-country=United States of America | duration=4223 | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper and Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief of Hearts', 'Words', 'Rain', 'Whyâ€™s It So Hard', 'In This Life', 'Secret Garden']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Erotica | artist=Madonna | release-date=1992 | release-country=Europe | duration=4517.0 | genre=Electronic|Pop | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper And Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief Of Hearts', 'Words', 'Rain', \"Why's It So Hard\", 'In This Life', 'Did You Do It?', 'Secret Garden']\nRecord B: name=Erotica | artist=Madonna | release-date=1992-10-20 | release-country=United States of America | duration=4223 | tracks=['Erotica', 'Fever', 'Bye Bye Baby', 'Deeper and Deeper', 'Where Life Begins', 'Bad Girl', 'Waiting', 'Thief of Hearts', 'Words', 'Rain', 'Whyâ€™s It So Hard', 'In This Life', 'Secret Garden']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

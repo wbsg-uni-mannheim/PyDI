@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_61350|lastFM_28743|name=The Black Album | artist=Marilyn Manson | release-date=2006 | release-country=UK | genre=Electronic|Rock | tracks=['Mobscene (The Overnight Mix)', 'Personal Jesus (Rude Photo Motor Remix)', 'This Is The New Shit (Goldfrapp Remix)', 'Tainted Love (Re-Tainted Interpretation)', 'Suicide Is Painless (The Theme From M.A.S.H.)', 'Mind Of A Lunatic (The Geto Boys Reworked)', 'Mobscene (Rammstein Remix)', 'Paranoiac (Para-noir Remixed)', 'Newshitinvective (Obiter Dictum Mix)', 'Mobscenereplet (Mea Culpa Mix)', 'The La La Song (Film Soundtrack Version)', 'The Death Song (With Bible Speech)']||name=*popular* The Black Album | artist=Marilyn Manson | duration=2494.0 | tracks=['mOBSCENE (Overnight Mix)', 'Personal Jesus (Rude Photo Motor Remix)', 'This Is The New Shit (Marilyn Manson vs. Goldfrapp)', 'Tainted Love (Re-Tainted interpretation)', 'Suicide Is Painless', 'mOBSCENE (Sauerkraut remix)', 'New *hit Invective (Obiter Dictum Mix by Bitteren Ende)', 'mOBSCENE Replet (Mea Culpa mix)', 'The La La Song', 'The Death Song (Live in Denver)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Black Album | artist=Marilyn Manson | release-date=2006 | release-country=UK | genre=Electronic|Rock | tracks=['Mobscene (The Overnight Mix)', 'Personal Jesus (Rude Photo Motor Remix)', 'This Is The New Shit (Goldfrapp Remix)', 'Tainted Love (Re-Tainted Interpretation)', 'Suicide Is Painless (The Theme From M.A.S.H.)', 'Mind Of A Lunatic (The Geto Boys Reworked)', 'Mobscene (Rammstein Remix)', 'Paranoiac (Para-noir Remixed)', 'Newshitinvective (Obiter Dictum Mix)', 'Mobscenereplet (Mea Culpa Mix)', 'The La La Song (Film Soundtrack Version)', 'The Death Song (With Bible Speech)']\nRecord B: name=*popular* The Black Album | artist=Marilyn Manson | duration=2494.0 | tracks=['mOBSCENE (Overnight Mix)', 'Personal Jesus (Rude Photo Motor Remix)', 'This Is The New Shit (Marilyn Manson vs. Goldfrapp)', 'Tainted Love (Re-Tainted interpretation)', 'Suicide Is Painless', 'mOBSCENE (Sauerkraut remix)', 'New *hit Invective (Obiter Dictum Mix by Bitteren Ende)', 'mOBSCENE Replet (Mea Culpa mix)', 'The La La Song', 'The Death Song (Live in Denver)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

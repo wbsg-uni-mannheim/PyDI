@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_20472|mbrainz_386|name=The Wave Of The Future | artist=Quadrophonia | release-date=1991 | release-country=Spain | duration=1114.0 | genre=Electronic | tracks=['The Wave Of The Future (Medium Mix)', 'The Wave Of The Future (Large Mix)', 'The Wave Of The Future (X-Tra Large Mix)', 'The Wave Of The Future (Small Mix)']||name=The Wave of the Future | artist=Quadrophonia | release-date=1991-01-01 | release-country=United States of America | duration=1427 | tracks=['Large Mix', 'Ryder Mix', 'Xtra Large Mix', 'Medium Mix', 'Small Mix']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Wave Of The Future | artist=Quadrophonia | release-date=1991 | release-country=Spain | duration=1114.0 | genre=Electronic | tracks=['The Wave Of The Future (Medium Mix)', 'The Wave Of The Future (Large Mix)', 'The Wave Of The Future (X-Tra Large Mix)', 'The Wave Of The Future (Small Mix)']\nRecord B: name=The Wave of the Future | artist=Quadrophonia | release-date=1991-01-01 | release-country=United States of America | duration=1427 | tracks=['Large Mix', 'Ryder Mix', 'Xtra Large Mix', 'Medium Mix', 'Small Mix']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

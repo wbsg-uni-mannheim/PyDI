@@ -1,0 +1,102 @@
+# Knob 03 — Per-source Attribute Drop Rate — Games
+#
+# Refreshed CSV column names (post 2026-05-04 source migration).
+# Games is uniformly dense (≥87% on most attributes) so hard-tier floors
+# are bumped vs companies/music to make stretch produce visible movement.
+
+domain: games
+
+# All sources collapse to the canonical "id" column post-loader-rename
+# (per K1/K5/K6/K10 sign-offs in plan_s1_scale.md).
+id_columns:
+  dbpedia: id
+  metacritic: id
+  sales: id
+
+attribute_classes:
+  dbpedia:
+    title: primary
+    system: key
+    launch_yr: secondary
+    studio: secondary
+    genre: secondary
+    franchise: secondary
+  metacritic:
+    game_title: primary
+    console: key
+    age_rating: key
+    year_published: secondary
+    made_by: secondary
+    genres: secondary
+    press_rating: secondary
+    player_rating: secondary
+  sales:
+    prod_title: primary
+    hw: key
+    age_classification: key
+    launch_dt: secondary
+    studio: secondary
+    dist: secondary
+    genre: secondary
+    press_score: secondary
+    comm_rating: secondary
+    units_sold_mm: secondary
+
+attribute_mapping:
+  dbpedia:
+    title: name
+    system: platform
+    launch_yr: releaseYear
+    studio: developer
+    genre: genres
+    franchise: series
+  metacritic:
+    game_title: name
+    console: platform
+    age_rating: ESRB
+    year_published: releaseYear
+    made_by: developer
+    genres: genres
+    press_rating: criticScore
+    player_rating: userScore
+  sales:
+    prod_title: name
+    hw: platform
+    age_classification: ESRB
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    units_sold_mm: globalSales
+
+rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.05
+  medium:
+    primary: 0.0
+    key: 0.12
+    secondary: 0.18
+  hard:
+    primary: 0.03
+    key: 0.30
+    secondary: 0.40
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+compression_factor: 0.7
+stretch_factor: 1.5
+
+single_source_survivor_cap_hard: 0.05
+per_cell_ceiling_delta: 0.10
+
+# DBpedia franchise already at 47.6% missing — cap stretch headroom.
+per_source_attribute_overrides:
+  dbpedia:
+    franchise: 0.05

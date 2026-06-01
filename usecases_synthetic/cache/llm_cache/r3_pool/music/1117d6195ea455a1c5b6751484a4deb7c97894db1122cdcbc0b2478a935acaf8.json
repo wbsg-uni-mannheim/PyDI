@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_160913|mbrainz_1852|name=Mechanical Animals | artist=Marilyn Manson | release-country=Russia | genre=Electronic|Rock | tracks=['Great Big White World', 'The Dope Show', 'Mechanical Animals', 'Rock Is Dead', 'Disassociative', 'The Speed Of Pain', 'Posthuman', 'I Want To Disappear', \"I Don't Like The Drugs (But The Drugs Like Me)\", 'New Model No. 15', 'User Friendly', 'Fundamentally Loathsome', 'The Last Day On Earth', 'Coma White']||name=Mechanical Animals | artist=Marilyn Manson | release-date=1998-09-14 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3759 | tracks=['Great Big White World', 'The Dope Show', 'Mechanical Animals', 'Rock Is Dead', 'Disassociative', 'The Speed of Pain', 'Posthuman', 'I Want to Disappear', 'I Donâ€™t Like the Drugs (but the Drugs Like Me)', 'New Model No. 15', 'User Friendly', 'Fundamentally Loathsome', 'The Last Day on Earth', 'Coma White']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mechanical Animals | artist=Marilyn Manson | release-country=Russia | genre=Electronic|Rock | tracks=['Great Big White World', 'The Dope Show', 'Mechanical Animals', 'Rock Is Dead', 'Disassociative', 'The Speed Of Pain', 'Posthuman', 'I Want To Disappear', \"I Don't Like The Drugs (But The Drugs Like Me)\", 'New Model No. 15', 'User Friendly', 'Fundamentally Loathsome', 'The Last Day On Earth', 'Coma White']\nRecord B: name=Mechanical Animals | artist=Marilyn Manson | release-date=1998-09-14 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3759 | tracks=['Great Big White World', 'The Dope Show', 'Mechanical Animals', 'Rock Is Dead', 'Disassociative', 'The Speed of Pain', 'Posthuman', 'I Want to Disappear', 'I Donâ€™t Like the Drugs (but the Drugs Like Me)', 'New Model No. 15', 'User Friendly', 'Fundamentally Loathsome', 'The Last Day on Earth', 'Coma White']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

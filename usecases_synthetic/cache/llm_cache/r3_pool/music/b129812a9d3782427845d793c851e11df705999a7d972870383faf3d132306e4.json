@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_25764|mbrainz_284|name=Let The Music Play | artist=Shannon | release-date=1989 | release-country=Germany | duration=440.0 | genre=Electronic | tracks=['Let The Music Play (1989 European Remixed Version)', 'Let The Music Play (Classic Version)']||name=Let the Music Play | artist=Shannon | release-date=1989-01-01 | release-country=Germany | duration=909 | tracks=['Let the Music Play (1989 European remixed version)', 'Let the Music Play (remixed radio shot)', 'Let the Music Play (classic version)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Let The Music Play | artist=Shannon | release-date=1989 | release-country=Germany | duration=440.0 | genre=Electronic | tracks=['Let The Music Play (1989 European Remixed Version)', 'Let The Music Play (Classic Version)']\nRecord B: name=Let the Music Play | artist=Shannon | release-date=1989-01-01 | release-country=Germany | duration=909 | tracks=['Let the Music Play (1989 European remixed version)', 'Let the Music Play (remixed radio shot)', 'Let the Music Play (classic version)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

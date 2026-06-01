@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "35.83"
+    },
+    {
+      "source": "products_2",
+      "value": "28.19"
+    },
+    {
+      "source": "products_3",
+      "value": "17.99"
+    },
+    {
+      "source": "products_4",
+      "value": "28.59"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.84,
+    "operation": "aggregation",
+    "reasoning": "Numeric candidates vary modestly, so a robust aggregate (median/average) best estimates the canonical price.",
+    "value": 28.39
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":28.39,\"operation\":\"aggregation\",\"confidence\":0.84,\"reasoning\":\"Numeric candidates vary modestly, so a robust aggregate (median/average) best estimates the canonical price.\"}"
+}

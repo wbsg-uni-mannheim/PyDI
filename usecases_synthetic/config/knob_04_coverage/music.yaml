@@ -1,0 +1,60 @@
+# Knob 04 — Per-entity Source Coverage Skew — Music
+#
+# Per-domain note: music has high pool agreement (49% agreement=2 per
+# per-domain specifics in plan_s1_scale.md), which compresses K2's
+# headroom; the K4 histogram targets are inherited from companies and
+# S13 will recalibrate.
+
+domain: music
+source_count: 3
+
+# All sources collapse to the canonical "id" column post-loader-rename.
+id_columns:
+  musicbrainz: id
+  discogs: id
+  lastfm: id
+
+primary_columns:
+  musicbrainz: name
+  discogs: name
+  lastfm: name
+
+target_coverage_histogram:
+  easy:
+    1: 0.0
+    2: 0.10
+    3: 0.90
+  medium:
+    1: 0.20
+    2: 0.30
+    3: 0.50
+  hard:
+    1: 0.55
+    2: 0.30
+    3: 0.15
+
+within_source_duplicate_rate:
+  easy: 0.0
+  medium: 0.01
+  hard: 0.02
+
+singleton_cap_hard: 0.60
+
+# R10-E: maximum fraction of any single source's rows K4 may demote, so
+# the conflict-ranking does not decimate one source and silently delete
+# EM-gold edges (not regenerated post-K4). 0.40 = at most 40% of a
+# source's rows.
+per_source_demotion_cap: 0.40
+delta_softening_step: 0.05
+
+# Fabrication mode: paraphrase_only uses K1's deterministic operator pool
+# (abbreviate / eda_random_swap / eda_random_delete) cell-by-cell to
+# fabricate sibling records — no LLM calls. The llm_* fields below are
+# declared for completeness but unused unless fabrication_mode: llm_primary.
+fabrication_mode: paraphrase_only
+
+# Default model gpt-5.4-mini for cost. Ask user before each K4 run
+# whether to bump to gpt-5.4 (invalidates cache).
+llm_prompt_version: v1
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0

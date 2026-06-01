@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_69244|lastFM_32300|name=United | artist=Paddington Distortion Combo | release-date=2011-09-11 | release-country=Germany | genre=Electronic|Pop | tracks=['Elsa Attending An Anti-atom Demo In Munich', 'Violence', 'Traumzeit', 'Bit', 'I Hate Violence, But I Hate You More', 'Godnattvisa', 'Around Me', 'Drömvisa', 'It All Ends Here/My Only Wish']||name=Paddington Distortion Combo -  United | artist=Paddington Distortion Combo | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=United | artist=Paddington Distortion Combo | release-date=2011-09-11 | release-country=Germany | genre=Electronic|Pop | tracks=['Elsa Attending An Anti-atom Demo In Munich', 'Violence', 'Traumzeit', 'Bit', 'I Hate Violence, But I Hate You More', 'Godnattvisa', 'Around Me', 'Drömvisa', 'It All Ends Here/My Only Wish']\nRecord B: name=Paddington Distortion Combo -  United | artist=Paddington Distortion Combo | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

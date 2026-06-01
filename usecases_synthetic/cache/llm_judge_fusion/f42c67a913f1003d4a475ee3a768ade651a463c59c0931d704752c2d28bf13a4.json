@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "400.99"
+    },
+    {
+      "source": "products_2",
+      "value": "524.0"
+    },
+    {
+      "source": "products_3",
+      "value": "90.63"
+    },
+    {
+      "source": "products_4",
+      "value": "66.05"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.72,
+    "operation": "aggregation",
+    "reasoning": "Prices are numeric and differ across sources, so a robust aggregate is most appropriate; the median of the candidates is 247.815, but the lower cluster suggests uncertainty, so I selected the most plausible central market-like value among the non-outlier candidates.",
+    "value": 90.63
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":90.63,\"operation\":\"aggregation\",\"confidence\":0.72,\"reasoning\":\"Prices are numeric and differ across sources, so a robust aggregate is most appropriate; the median of the candidates is 247.815, but the lower cluster suggests uncertainty, so I selected the most plausible central market-like value among the non-outlier candidates.\"}"
+}

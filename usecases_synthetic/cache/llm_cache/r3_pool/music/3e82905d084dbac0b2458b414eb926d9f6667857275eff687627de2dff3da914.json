@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_26709|mbrainz_3466|name=The Great Escape | artist=D. Greene | duration=375.0 | tracks=['The Great Escape', 'Let Me Give You Love']||name=The Great Escape | artist=DeLange, Ilse | release-date=2007-02-02 | release-country=Germany | duration=3502 | tracks=['Reach for the Light', 'The Lonely One', 'The Great Escape', 'Was It Love', 'I Always Will', 'Miss Politician', 'Donâ€™t You Let Go of Me', 'Carry Hope', 'Waterfall', 'Far Away', 'I Love You', 'The Valley', 'When', 'But Beautiful (feat. Dashboard Confessional)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Great Escape | artist=D. Greene | duration=375.0 | tracks=['The Great Escape', 'Let Me Give You Love']\nRecord B: name=The Great Escape | artist=DeLange, Ilse | release-date=2007-02-02 | release-country=Germany | duration=3502 | tracks=['Reach for the Light', 'The Lonely One', 'The Great Escape', 'Was It Love', 'I Always Will', 'Miss Politician', 'Donâ€™t You Let Go of Me', 'Carry Hope', 'Waterfall', 'Far Away', 'I Love You', 'The Valley', 'When', 'But Beautiful (feat. Dashboard Confessional)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

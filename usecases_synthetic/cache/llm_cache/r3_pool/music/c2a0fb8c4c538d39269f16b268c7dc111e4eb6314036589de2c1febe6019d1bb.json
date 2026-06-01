@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_169348|mbrainz_1479|name=Casanova | artist=Ultimate Kaos | release-date=1998 | release-country=Spain | duration=996.0 | genre=Electronic | tracks=['Casanova (Handbag Mix)', 'Casanova (Handbag Mix Edit)', 'Casanova (Club Mix)', 'Casanova (C&J R&B Mix)']||name=Casanova | artist=Ultimate Kaos | release-date=1997-01-01 | release-country=France | duration=923 | tracks=['Casanova (7\" mix)', 'Casanova (C & J - R&B mix)', \"Casanova (7' club mix)\", 'I Like Your Style']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Casanova | artist=Ultimate Kaos | release-date=1998 | release-country=Spain | duration=996.0 | genre=Electronic | tracks=['Casanova (Handbag Mix)', 'Casanova (Handbag Mix Edit)', 'Casanova (Club Mix)', 'Casanova (C&J R&B Mix)']\nRecord B: name=Casanova | artist=Ultimate Kaos | release-date=1997-01-01 | release-country=France | duration=923 | tracks=['Casanova (7\" mix)', 'Casanova (C & J - R&B mix)', \"Casanova (7' club mix)\", 'I Like Your Style']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

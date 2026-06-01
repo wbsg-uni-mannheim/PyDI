@@ -1,0 +1,30 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "GBP"
+    },
+    {
+      "source": "products_2",
+      "value": "INR"
+    },
+    {
+      "source": "products_3",
+      "value": "USD"
+    },
+    {
+      "source": "products_4",
+      "value": "VND"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.28,
+    "operation": "verbatim_pick",
+    "reasoning": "No basis to reconcile conflicting currency codes, so one candidate is selected as the most common global default.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.28,\"reasoning\":\"No basis to reconcile conflicting currency codes, so one candidate is selected as the most common global default.\"}"
+}

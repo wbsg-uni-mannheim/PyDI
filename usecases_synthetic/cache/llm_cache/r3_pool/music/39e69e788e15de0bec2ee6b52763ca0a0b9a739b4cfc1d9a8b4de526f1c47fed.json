@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_105474|mbrainz_9089|name=Live And Dangerous | artist=Thin Lizzy | release-date=1978 | release-country=Spain | genre=Pop|Rock | tracks=['Jailbreak', 'Emerald', 'Southbound', \"Rosalie / Cowgirl's Song\", \"Dancing In The Moonlight (It's Caught Me In Its Spotlight)\", 'Massacre', 'Still In Love With You', 'Johnny The Fox Meets Jimmy The Weed', 'Cowboy Song', 'The Boys Are Back In Town', \"Don't Believe A Word\", 'Warrior', 'Are You Ready', 'Suicide', 'Sha La La', 'Baby Drives Me Crazy', 'The Rocker']||name=Live and Dangerous | artist=Thin Lizzy | release-date=1991-06-03 | duration=4599 | tracks=['Jailbreak', 'Emerald', 'Southbound', 'Rosalie / Cowgirlâ€™s Song', 'Dancing in the Moonlight', 'Massacre', 'Still in Love With You', 'Johnny the Fox Meets Jimmy the Weed', 'Cowboy Song', 'The Boys Are Back in Town', \"Don't Believe a Word\", 'Warriors', 'Are You Ready', 'Suicide', 'Sha La La', 'Baby Drives Me Crazy', 'The Rocker']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Live And Dangerous | artist=Thin Lizzy | release-date=1978 | release-country=Spain | genre=Pop|Rock | tracks=['Jailbreak', 'Emerald', 'Southbound', \"Rosalie / Cowgirl's Song\", \"Dancing In The Moonlight (It's Caught Me In Its Spotlight)\", 'Massacre', 'Still In Love With You', 'Johnny The Fox Meets Jimmy The Weed', 'Cowboy Song', 'The Boys Are Back In Town', \"Don't Believe A Word\", 'Warrior', 'Are You Ready', 'Suicide', 'Sha La La', 'Baby Drives Me Crazy', 'The Rocker']\nRecord B: name=Live and Dangerous | artist=Thin Lizzy | release-date=1991-06-03 | duration=4599 | tracks=['Jailbreak', 'Emerald', 'Southbound', 'Rosalie / Cowgirlâ€™s Song', 'Dancing in the Moonlight', 'Massacre', 'Still in Love With You', 'Johnny the Fox Meets Jimmy the Weed', 'Cowboy Song', 'The Boys Are Back in Town', \"Don't Believe a Word\", 'Warriors', 'Are You Ready', 'Suicide', 'Sha La La', 'Baby Drives Me Crazy', 'The Rocker']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

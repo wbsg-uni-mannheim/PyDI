@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_156183|mbrainz_671|name=Prepare Your Spirit | artist=Eat Static | release-date=2010 | release-country=UK | duration=7021.0 | genre=Electronic | tracks=['Hallucinate', 'Fudge', 'Worm-Lips', 'Instinct', 'Eat Static', 'Destiny', 'Raga', 'The Plot', 'Kinesis', 'Almost Human', 'Om Machine', 'Cyber-Funk', 'The Watcher', 'Higher State', 'Woman Is Life', 'Medicine Wheel', 'The Fourth Dimension', 'Humm II', 'The Element...']||name=Prepare Your Spirit | artist=Eat Static | release-date=2000-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3359 | tracks=['Hallucinate', 'Fudge', 'Worm-Lips', 'Instinct', 'Eat Static', 'Destiny', 'Raga', 'The Plot', 'Kinesis', 'Almost Human', 'Om Machine', 'Cyber-Funk', 'The Watcher', 'Higher State', 'Woman Is Life', 'Medicine Wheel', 'The Fourth Dimension', 'Humm II', 'The Element...']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Prepare Your Spirit | artist=Eat Static | release-date=2010 | release-country=UK | duration=7021.0 | genre=Electronic | tracks=['Hallucinate', 'Fudge', 'Worm-Lips', 'Instinct', 'Eat Static', 'Destiny', 'Raga', 'The Plot', 'Kinesis', 'Almost Human', 'Om Machine', 'Cyber-Funk', 'The Watcher', 'Higher State', 'Woman Is Life', 'Medicine Wheel', 'The Fourth Dimension', 'Humm II', 'The Element...']\nRecord B: name=Prepare Your Spirit | artist=Eat Static | release-date=2000-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3359 | tracks=['Hallucinate', 'Fudge', 'Worm-Lips', 'Instinct', 'Eat Static', 'Destiny', 'Raga', 'The Plot', 'Kinesis', 'Almost Human', 'Om Machine', 'Cyber-Funk', 'The Watcher', 'Higher State', 'Woman Is Life', 'Medicine Wheel', 'The Fourth Dimension', 'Humm II', 'The Element...']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_70483|mbrainz_11250|name=The Best Of The Anti Nowhere League | artist=Anti-Nowhere League | release-date=1996 | release-country=UK | genre=Rock | tracks=['Streets Of London', 'So What', 'I Hate People', 'We Are The League', \"Let's Break The Law\", 'Animal', 'Woman', 'Rocker', 'For You', 'Ballad Of JJ Decay', 'Out On The Wasteland', 'We Will Survive', 'Queen And Country', 'On The Waterfront', 'Let The Country Feed You (Live)', 'Going Down (Live)']||name=The Best of the Anti-Nowhere League | artist=Anti-Nowhere League | release-date=1993-01-01 | release-country=United States of America | duration=3404 | tracks=['Streets of London', 'I Hate People', 'We Are the League', \"Let's Break the Law\", 'Animal', 'Woman', 'Rocker', 'For You', 'Ballard of J.J. Decay', 'Out on the Wasteland', 'We Will Survive', 'Queen and Country', 'On the Waterfront', 'Let the Country Feed You (live)', 'Going Down (live)', 'Snowman (live)', 'So What']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Best Of The Anti Nowhere League | artist=Anti-Nowhere League | release-date=1996 | release-country=UK | genre=Rock | tracks=['Streets Of London', 'So What', 'I Hate People', 'We Are The League', \"Let's Break The Law\", 'Animal', 'Woman', 'Rocker', 'For You', 'Ballad Of JJ Decay', 'Out On The Wasteland', 'We Will Survive', 'Queen And Country', 'On The Waterfront', 'Let The Country Feed You (Live)', 'Going Down (Live)']\nRecord B: name=The Best of the Anti-Nowhere League | artist=Anti-Nowhere League | release-date=1993-01-01 | release-country=United States of America | duration=3404 | tracks=['Streets of London', 'I Hate People', 'We Are the League', \"Let's Break the Law\", 'Animal', 'Woman', 'Rocker', 'For You', 'Ballard of J.J. Decay', 'Out on the Wasteland', 'We Will Survive', 'Queen and Country', 'On the Waterfront', 'Let the Country Feed You (live)', 'Going Down (live)', 'Snowman (live)', 'So What']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

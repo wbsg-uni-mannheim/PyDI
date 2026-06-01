@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2724"
+    },
+    {
+      "source": "discogs",
+      "value": "2733.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "2546.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "Robustly aggregated the conflicting numeric durations using the median.",
+    "value": 2667
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2667,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"Robustly aggregated the conflicting numeric durations using the median.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "TRY"
+    },
+    {
+      "source": "products_2",
+      "value": "EUR"
+    },
+    {
+      "source": "products_4",
+      "value": "RON"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are plausible currency codes with no basis to infer a unique canonical one, so I selected one verbatim.",
+    "value": "TRY"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"TRY\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"All candidates are plausible currency codes with no basis to infer a unique canonical one, so I selected one verbatim.\"}"
+}

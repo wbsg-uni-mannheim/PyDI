@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_85772|lastFM_59735|name=Nimrod. | artist=Green Day | release-date=1997 | release-country=Japan | duration=2941.0 | genre=Rock | tracks=['Nice Guys Finish Last', \"Hitchin' A Ride\", 'The Grouch', 'Redundant', 'Scattered', 'All The Time', 'Worry Rock', 'Platypus (I Hate You)', 'Uptight', 'Last Ride In', 'Jinx', 'Haushinka', 'Walking Alone', 'Reject', 'Take Back', 'King For A Day', 'Good Riddance (Time Of Your Life)', 'Prosthetic Head', 'Desensitized']||name=Nimrod | artist=Green D. | duration=3206.0 | tracks=['Nice Guys Finish Last', \"Hitchin' a Ride\", 'The Grouch', 'Redundant', 'Scattered', 'All the Time', 'Worry Rock', 'Platypus (I Hate You)', 'Uptight', 'Last Ride In', 'Jinx', 'Haushinka', 'Walking Alone', 'Reject', 'Take Back', 'King for a Day', 'Good Riddance (Time of Your Life)', 'Prosthetic Head']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Nimrod. | artist=Green Day | release-date=1997 | release-country=Japan | duration=2941.0 | genre=Rock | tracks=['Nice Guys Finish Last', \"Hitchin' A Ride\", 'The Grouch', 'Redundant', 'Scattered', 'All The Time', 'Worry Rock', 'Platypus (I Hate You)', 'Uptight', 'Last Ride In', 'Jinx', 'Haushinka', 'Walking Alone', 'Reject', 'Take Back', 'King For A Day', 'Good Riddance (Time Of Your Life)', 'Prosthetic Head', 'Desensitized']\nRecord B: name=Nimrod | artist=Green D. | duration=3206.0 | tracks=['Nice Guys Finish Last', \"Hitchin' a Ride\", 'The Grouch', 'Redundant', 'Scattered', 'All the Time', 'Worry Rock', 'Platypus (I Hate You)', 'Uptight', 'Last Ride In', 'Jinx', 'Haushinka', 'Walking Alone', 'Reject', 'Take Back', 'King for a Day', 'Good Riddance (Time of Your Life)', 'Prosthetic Head']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

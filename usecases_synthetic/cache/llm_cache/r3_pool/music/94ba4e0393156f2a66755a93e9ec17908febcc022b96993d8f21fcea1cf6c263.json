@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_72772|mbrainz_3866|name=Don't Stop  Music | artist=TOFUBEATS | duration=2038.0 | tracks=[\"Don't Stop the Music\", 'Ã§Â¥Å¾Ã¦Ë†Â¸Ã£?Â§Ã©â‚¬Â¢Ã£?Ë†Ã£?Å¸Ã£â€šâ€°', 'In Real Life', \"Don't Stop The Music (tofubeats URL mix)\", \"Don't Stop The Music (Instrumental)\", 'Ã§Â¥Å¾Ã¦Ë†Â¸Ã£?Â§Ã©â‚¬Â¢Ã£?Ë†Ã£?Å¸Ã£â€šâ€° (Instrumental)', 'Ã¦Å“?Ã£?Å’Ã¦?Â¥Ã£â€šâ€¹Ã£?Â¾Ã£?Â§Ã§Âµâ€šÃ£â€š?Ã£â€šâ€¹Ã¤Âºâ€¹Ã£?Â®Ã§â€žÂ¡Ã£?â€žÃ£Æ’â‚¬Ã£Æ’Â³Ã£â€šÂ¹Ã£â€šâ€™ (mix for DonÃ¢â‚¬â„¢t Stop The Music)']||name=Don't Stop the Dance / Saturday Night | artist=Qrella, Masha | release-date=2006-09-26 | release-country=Germany | duration=496 | tracks=['Dont Stop the Dance', 'Saturday Night']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Don't Stop  Music | artist=TOFUBEATS | duration=2038.0 | tracks=[\"Don't Stop the Music\", 'Ã§Â¥Å¾Ã¦Ë†Â¸Ã£?Â§Ã©â‚¬Â¢Ã£?Ë†Ã£?Å¸Ã£â€šâ€°', 'In Real Life', \"Don't Stop The Music (tofubeats URL mix)\", \"Don't Stop The Music (Instrumental)\", 'Ã§Â¥Å¾Ã¦Ë†Â¸Ã£?Â§Ã©â‚¬Â¢Ã£?Ë†Ã£?Å¸Ã£â€šâ€° (Instrumental)', 'Ã¦Å“?Ã£?Å’Ã¦?Â¥Ã£â€šâ€¹Ã£?Â¾Ã£?Â§Ã§Âµâ€šÃ£â€š?Ã£â€šâ€¹Ã¤Âºâ€¹Ã£?Â®Ã§â€žÂ¡Ã£?â€žÃ£Æ’â‚¬Ã£Æ’Â³Ã£â€šÂ¹Ã£â€šâ€™ (mix for DonÃ¢â‚¬â„¢t Stop The Music)']\nRecord B: name=Don't Stop the Dance / Saturday Night | artist=Qrella, Masha | release-date=2006-09-26 | release-country=Germany | duration=496 | tracks=['Dont Stop the Dance', 'Saturday Night']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

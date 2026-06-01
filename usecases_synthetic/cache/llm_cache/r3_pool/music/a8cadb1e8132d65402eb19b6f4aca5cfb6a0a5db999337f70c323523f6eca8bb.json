@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_82365|mbrainz_24525|name=Lemonade | artist=Lemonade | duration=1935.0 | tracks=['Big Weekend', 'Unreal', 'Nasifon', 'Real Slime', 'Sunchips', 'Blissout']||name=Pink Lemonade | artist=Closure in Moscow | release-date=2014-08-22 | release-country=Australia | duration=1994 | tracks=['The Fool', 'Pink Lemonade / Tacky Ornamental Slut, Part 1', 'Tacky Ornamental Slut, Part 2 / Neoprene Byzantine', 'Seeds of Gold', 'That Brahmatron Song / Commercial Famine', 'Dinosaur Boss Battle', 'Mauerbauertraurigkeit', 'The Church of the Technochrist', 'Beckon Fire', 'Happy Days', 'ãƒ’ã‚šãƒ³ã‚¯ãƒ¬ãƒ¢ãƒ?ãƒ¼ãƒˆã‚™']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lemonade | artist=Lemonade | duration=1935.0 | tracks=['Big Weekend', 'Unreal', 'Nasifon', 'Real Slime', 'Sunchips', 'Blissout']\nRecord B: name=Pink Lemonade | artist=Closure in Moscow | release-date=2014-08-22 | release-country=Australia | duration=1994 | tracks=['The Fool', 'Pink Lemonade / Tacky Ornamental Slut, Part 1', 'Tacky Ornamental Slut, Part 2 / Neoprene Byzantine', 'Seeds of Gold', 'That Brahmatron Song / Commercial Famine', 'Dinosaur Boss Battle', 'Mauerbauertraurigkeit', 'The Church of the Technochrist', 'Beckon Fire', 'Happy Days', 'ãƒ’ã‚šãƒ³ã‚¯ãƒ¬ãƒ¢ãƒ?ãƒ¼ãƒˆã‚™']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

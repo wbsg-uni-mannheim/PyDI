@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_60157|lastFM_17790|name=Storm Warning | artist=Murray McLauchlan | release-date=1981 | release-country=United States of America | duration=1999.0 | genre=Rock | tracks=[\"Wouldn't Take Another Chance On Love\", 'If The Wind Could Blow My Troubles Away', 'Falling Off A High Wire', 'Desire', 'How Many Times Can A Fridge Break Down', 'Stranger', 'Born Again', 'You Need A New Lover Now', 'Tell Your Mother She Wants You']||name=Warning | artist=Altered St8s O. Consciousness | duration=2044.0 | tracks=['See How it Sounds', \"Do's and Don'ts\", 'Seasons', 'Bang', 'Headbangers Ball', 'Eye of the Storm', 'Last Call', 'Common Thread']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Storm Warning | artist=Murray McLauchlan | release-date=1981 | release-country=United States of America | duration=1999.0 | genre=Rock | tracks=[\"Wouldn't Take Another Chance On Love\", 'If The Wind Could Blow My Troubles Away', 'Falling Off A High Wire', 'Desire', 'How Many Times Can A Fridge Break Down', 'Stranger', 'Born Again', 'You Need A New Lover Now', 'Tell Your Mother She Wants You']\nRecord B: name=Warning | artist=Altered St8s O. Consciousness | duration=2044.0 | tracks=['See How it Sounds', \"Do's and Don'ts\", 'Seasons', 'Bang', 'Headbangers Ball', 'Eye of the Storm', 'Last Call', 'Common Thread']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

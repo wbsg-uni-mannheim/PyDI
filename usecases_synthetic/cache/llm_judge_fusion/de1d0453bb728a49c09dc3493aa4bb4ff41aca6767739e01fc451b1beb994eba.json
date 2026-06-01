@@ -1,0 +1,54 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Stab the Judge', 'Riot Torn City', 'Me and You', 'Give Us a Future', 'Just Another Hero', 'Jerusalem', 'Jackie Was a Junkie', 'Cum on Feel the Noize', \"Breakin' In\", 'This Is the Age', 'Into the Fires', 'Children of the Night', 'Down', 'Shine Again', 'Out of Mind', 'Jerusalem', 'Stab the Judge', 'No Return', 'Jackie Was a Junkie', 'Believe Yourself', 'Search Your Soul', 'Leave Me Alone', 'Give Us a Future', 'Corrupted World', 'Pressure On', 'Enemy', 'Shut Up']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Stab The Judge', 'Riot Torn City', 'Me And You', 'Give Us A Future', 'Just Another Hero', 'Jerusalem', 'Jackie Was A Junkie', 'Cum On Feel The Noize', 'Breakin In', 'This Is The Age', 'Into The Fires', 'Children Of The Night', 'Down', 'Shine Again', 'Out Of Mind', 'Jerusalem (Live)', 'Stab The Judge (Live)', 'No Return (Live)', 'Jackie Was A Junkie (Live)', 'Believe Yourself', 'Search Your Soul', 'Leave Me Alone', 'Give Us A Future (Live)', 'Corrupted World (Live)', 'Pressure On', 'Enemy', 'Shut Up']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Stab the Judge', 'Riot Torn City', 'Me and you', 'Give Us a Future', 'Just Another Hero', 'Jerusalem', 'Jackie Was a Junkie', 'Cum on Feel the Noize', 'Breakin In', 'This Is the Age', 'Into the Fires', 'Children of the Night', 'Down', 'Shine Again', 'Out of Mind', 'Jerusalem (Live)', 'Stab The Judge (Live)', 'No Return (Live)', 'Jackie Was A Junkie (Live)', 'Believe Yourself', 'Search Your Soul', 'Leave Me Alone', 'Give Us A Future (Live)', 'Corrupted World (Live)', 'Pressure On', 'Enemy', 'Shut Up']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "interpolation",
+    "reasoning": "Combined the shared track list and retained the live-version variants where supported by multiple sources, normalizing capitalization.",
+    "value": [
+      "Stab the Judge",
+      "Riot Torn City",
+      "Me and You",
+      "Give Us a Future",
+      "Just Another Hero",
+      "Jerusalem",
+      "Jackie Was a Junkie",
+      "Cum on Feel the Noize",
+      "Breakin In",
+      "This Is the Age",
+      "Into the Fires",
+      "Children of the Night",
+      "Down",
+      "Shine Again",
+      "Out of Mind",
+      "Jerusalem (Live)",
+      "Stab The Judge (Live)",
+      "No Return (Live)",
+      "Jackie Was A Junkie (Live)",
+      "Believe Yourself",
+      "Search Your Soul",
+      "Leave Me Alone",
+      "Give Us A Future (Live)",
+      "Corrupted World (Live)",
+      "Pressure On",
+      "Enemy",
+      "Shut Up"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Stab the Judge\",\"Riot Torn City\",\"Me and You\",\"Give Us a Future\",\"Just Another Hero\",\"Jerusalem\",\"Jackie Was a Junkie\",\"Cum on Feel the Noize\",\"Breakin In\",\"This Is the Age\",\"Into the Fires\",\"Children of the Night\",\"Down\",\"Shine Again\",\"Out of Mind\",\"Jerusalem (Live)\",\"Stab The Judge (Live)\",\"No Return (Live)\",\"Jackie Was A Junkie (Live)\",\"Believe Yourself\",\"Search Your Soul\",\"Leave Me Alone\",\"Give Us A Future (Live)\",\"Corrupted World (Live)\",\"Pressure On\",\"Enemy\",\"Shut Up\"],\"operation\":\"interpolation\",\"confidence\":0.94,\"reasoning\":\"Combined the shared track list and retained the live-version variants where supported by multiple sources, normalizing capitalization.\"}"
+}

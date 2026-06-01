@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_126696|mbrainz_2005|name=Voodoo Lounge | artist=The Rolling Stones | release-date=1994 | release-country=Italy | duration=3447.0 | genre=Rock | tracks=['Love Is Strong', 'You Got Me Rocking', 'Sparks Will Fly', 'The Worst', 'New Faces', 'Moon Is Up', 'Out Of Tears', 'I Go Wild', 'Brand New Car', 'Sweethearts Together', 'Suck On The Jugular', 'Blinded By Rainbows', 'Baby Break It Down', 'Thru And Thru']||name=Voodoo Lounge | artist=Rolling Stones, The | release-date=2009-07-14 | release-country=Argentina | duration=3720 | tracks=['Love Is Strong', 'You Got Me Rocking', 'Sparks Will Fly', 'The Worst', 'New Faces', 'Moon Is Up', 'Out of Tears', 'I Go Wild', 'Brand New Car', 'Sweethearts Together', 'Suck on the Jugular', 'Blinded by Rainbows', 'Baby Break It Down', 'Thru and Thru', 'Mean Disposition']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Voodoo Lounge | artist=The Rolling Stones | release-date=1994 | release-country=Italy | duration=3447.0 | genre=Rock | tracks=['Love Is Strong', 'You Got Me Rocking', 'Sparks Will Fly', 'The Worst', 'New Faces', 'Moon Is Up', 'Out Of Tears', 'I Go Wild', 'Brand New Car', 'Sweethearts Together', 'Suck On The Jugular', 'Blinded By Rainbows', 'Baby Break It Down', 'Thru And Thru']\nRecord B: name=Voodoo Lounge | artist=Rolling Stones, The | release-date=2009-07-14 | release-country=Argentina | duration=3720 | tracks=['Love Is Strong', 'You Got Me Rocking', 'Sparks Will Fly', 'The Worst', 'New Faces', 'Moon Is Up', 'Out of Tears', 'I Go Wild', 'Brand New Car', 'Sweethearts Together', 'Suck on the Jugular', 'Blinded by Rainbows', 'Baby Break It Down', 'Thru and Thru', 'Mean Disposition']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

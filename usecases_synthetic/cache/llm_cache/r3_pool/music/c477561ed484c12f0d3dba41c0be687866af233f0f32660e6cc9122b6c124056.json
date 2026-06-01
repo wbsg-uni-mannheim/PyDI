@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_142937|mbrainz_13319|name=Cowboy Classics | artist=The Sons Of The Pioneers | release-country=United States of America | genre=Folk, World, & Country | tracks=['Cool Water', 'Chant Of The Wanderer', 'Tumbling Tumbleweeds', 'The Everlasting Hills Of Oklahoma', 'The Timber Trail', 'Trees']||name=Cowboy Classics | artist=Sons of the Pioneers | release-date=1949-01-01 | release-country=United States of America | duration=0 | tracks=['Cool Water', 'Chant of the Wonderer', 'Tumbling Tumbleweeds', 'The Everlasting Hills of Oklahoma', 'The Timber Trail', 'Trees']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Cowboy Classics | artist=The Sons Of The Pioneers | release-country=United States of America | genre=Folk, World, & Country | tracks=['Cool Water', 'Chant Of The Wanderer', 'Tumbling Tumbleweeds', 'The Everlasting Hills Of Oklahoma', 'The Timber Trail', 'Trees']\nRecord B: name=Cowboy Classics | artist=Sons of the Pioneers | release-date=1949-01-01 | release-country=United States of America | duration=0 | tracks=['Cool Water', 'Chant of the Wonderer', 'Tumbling Tumbleweeds', 'The Everlasting Hills of Oklahoma', 'The Timber Trail', 'Trees']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_13945|lastFM_4786|name=Can't Let Go | artist=Mariah Carey | release-date=1991 | release-country=Europe | duration=771.0 | genre=Pop | tracks=[\"Can't Let Go (Edit)\", 'To Be Around You', \"Can't Let Go\"]||name=Mariah C. -  Can't Let Go | artist=Mariah C. | duration=507.0 | tracks=[\"Can't Let Go (Edit)\", 'To Be Around You']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Can't Let Go | artist=Mariah Carey | release-date=1991 | release-country=Europe | duration=771.0 | genre=Pop | tracks=[\"Can't Let Go (Edit)\", 'To Be Around You', \"Can't Let Go\"]\nRecord B: name=Mariah C. -  Can't Let Go | artist=Mariah C. | duration=507.0 | tracks=[\"Can't Let Go (Edit)\", 'To Be Around You']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_29720|mbrainz_14511|name=Shelter | artist=The Rolling Stones | tracks=[]||name=Shelter | artist=Driftwood Manor, The | release-date=2011-08 | release-country=Ireland | duration=1148 | tracks=['What Vanishes', 'The Turning Darkness', 'From the Dust', 'There Is a Clearing', 'The Fog Will Rise at Dawn']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shelter | artist=The Rolling Stones | tracks=[]\nRecord B: name=Shelter | artist=Driftwood Manor, The | release-date=2011-08 | release-country=Ireland | duration=1148 | tracks=['What Vanishes', 'The Turning Darkness', 'From the Dust', 'There Is a Clearing', 'The Fog Will Rise at Dawn']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "92.99"
+    },
+    {
+      "source": "products_2",
+      "value": "115.99"
+    },
+    {
+      "source": "products_3",
+      "value": "87.75"
+    },
+    {
+      "source": "products_4",
+      "value": "93.93"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "Aggregated the numeric candidates using the median/robust central tendency to reduce outlier influence.",
+    "value": 93.36
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":93.36,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"Aggregated the numeric candidates using the median/robust central tendency to reduce outlier influence.\"}"
+}

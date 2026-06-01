@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_27371|lastFM_13181|name=Empire Of The Dead | artist=Seirim | release-date=1999 | release-country=Germany | genre=Rock | tracks=['Intro', 'Empire Of The Dead', 'Children Of The Night', 'Cold Light Of The Moon', 'Reincarnation From My Soul', 'Magic Sword', 'Time Of Endless Might', 'Command Of Death', '... Of The Dark One', 'Outro']||name=Seirim -  Empire Of The Dead | artist=Seirim | duration=2547.0 | tracks=['Intro', 'Empire Of The Dead', 'Children Of The Night', 'Cold Light Of The Moon', 'Reincarnation From My Soul', 'Magic Sword', 'Time Of Endless Might', 'Command Of Death', 'Of The Dark One', 'Outro']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Empire Of The Dead | artist=Seirim | release-date=1999 | release-country=Germany | genre=Rock | tracks=['Intro', 'Empire Of The Dead', 'Children Of The Night', 'Cold Light Of The Moon', 'Reincarnation From My Soul', 'Magic Sword', 'Time Of Endless Might', 'Command Of Death', '... Of The Dark One', 'Outro']\nRecord B: name=Seirim -  Empire Of The Dead | artist=Seirim | duration=2547.0 | tracks=['Intro', 'Empire Of The Dead', 'Children Of The Night', 'Cold Light Of The Moon', 'Reincarnation From My Soul', 'Magic Sword', 'Time Of Endless Might', 'Command Of Death', 'Of The Dark One', 'Outro']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

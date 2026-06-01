@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "29.80 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "32.0"
+    },
+    {
+      "source": "products_4",
+      "value": "32.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.87,
+    "operation": "normalization",
+    "reasoning": "Two candidates agree on 32.0, and the unit-labeled value is the clearest canonical form.",
+    "value": "32.0 GB"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"32.0 GB\",\"operation\":\"normalization\",\"confidence\":0.87,\"reasoning\":\"Two candidates agree on 32.0, and the unit-labeled value is the clearest canonical form.\"}"
+}

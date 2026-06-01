@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_10951|mbrainz_7067|name=Surrender | artist=Suicide | duration=476.0 | tracks=['Surrender', 'Rain of Ruin']||name=Surrender | artist=Billy Talent | release-date=2007-06-11 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=478 | tracks=['Surrender (album version)', 'This Suffering']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Surrender | artist=Suicide | duration=476.0 | tracks=['Surrender', 'Rain of Ruin']\nRecord B: name=Surrender | artist=Billy Talent | release-date=2007-06-11 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=478 | tracks=['Surrender (album version)', 'This Suffering']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

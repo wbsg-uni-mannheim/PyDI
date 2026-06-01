@@ -1,0 +1,97 @@
+# Knob 10 — Source Reliability Differentiation: Products domain config.
+#
+# Per-domain notes (placeholder until products baseline is measured in S11):
+# all four sources share the same schema and there is no a-priori winner
+# per attribute. The targets below distribute mass roughly uniformly at
+# easy with a slight bias toward products_1 (anchor source); medium and
+# hard flatten further. S13 will recalibrate after baseline measurement.
+
+domain: products
+
+id_columns:
+  products_1: id
+  products_2: id
+  products_3: id
+  products_4: id
+
+attribute_mapping:
+  products_1: &products_attr_mapping
+    title: title
+    brand: brand
+    description: description
+    price: price
+    product_type: product_type
+    model: model
+    chipset_name: chipset_name
+    vram_gb: vram_gb
+    storage_gb: storage_gb
+    # NEW (R1 columns that were missing):
+    priceCurrency: priceCurrency
+    model_number: model_number
+    title_description: title_description
+    # NEW (5 categorical extensions):
+    bus_type: bus_type
+    interface_type: interface_type
+    memory_type: memory_type
+    storage_connection_type: storage_connection_type
+    form_factor: form_factor
+    # NEW (2 numeric extensions):
+    read_speed_mb_s: read_speed_mb_s
+    write_speed_mb_s: write_speed_mb_s
+  products_2: *products_attr_mapping
+  products_3: *products_attr_mapping
+  products_4: *products_attr_mapping
+
+# Each attribute shares the same per-level distribution (no a-priori
+# winner per attribute on products). Anchor below keeps the per-source
+# weights DRY across the 9 attributes the K10 mask covers.
+_target_distribution: &target_distribution
+  easy:
+    products_1: 0.55
+    products_2: 0.20
+    products_3: 0.15
+    products_4: 0.10
+  medium:
+    products_1: 0.40
+    products_2: 0.25
+    products_3: 0.20
+    products_4: 0.15
+  hard:
+    products_1: 0.25
+    products_2: 0.25
+    products_3: 0.25
+    products_4: 0.25
+
+attribute_targets:
+  title: *target_distribution
+  brand: *target_distribution
+  description: *target_distribution
+  price: *target_distribution
+  product_type: *target_distribution
+  model: *target_distribution
+  chipset_name: *target_distribution
+  vram_gb: *target_distribution
+  storage_gb: *target_distribution
+  # NEW (10 entries):
+  priceCurrency: *target_distribution
+  model_number: *target_distribution
+  title_description: *target_distribution
+  bus_type: *target_distribution
+  interface_type: *target_distribution
+  memory_type: *target_distribution
+  storage_connection_type: *target_distribution
+  form_factor: *target_distribution
+  read_speed_mb_s: *target_distribution
+  write_speed_mb_s: *target_distribution
+
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+concentration_cap: 0.99

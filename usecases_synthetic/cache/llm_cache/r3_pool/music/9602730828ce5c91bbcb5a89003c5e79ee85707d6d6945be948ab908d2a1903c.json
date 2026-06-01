@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_11137|mbrainz_11483|name=nowhere | artist=A Certain Frank | duration=2777.0 | tracks=['lÃ‚Â´argent', 'Oxy', 'Trancelingen', 'now here', 'the earth is round', 'Come To Me', 'nowhere', 'positive', 'himalaya', 'cÃ‚Â´est la vie', 'Wald']||name=Nowhere | artist=Divided Circle, The | release-date=2010-11-29 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1062 | tracks=['Nowhere', 'No Going Back', 'Comfort', \"Summer's End\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=nowhere | artist=A Certain Frank | duration=2777.0 | tracks=['lÃ‚Â´argent', 'Oxy', 'Trancelingen', 'now here', 'the earth is round', 'Come To Me', 'nowhere', 'positive', 'himalaya', 'cÃ‚Â´est la vie', 'Wald']\nRecord B: name=Nowhere | artist=Divided Circle, The | release-date=2010-11-29 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=1062 | tracks=['Nowhere', 'No Going Back', 'Comfort', \"Summer's End\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

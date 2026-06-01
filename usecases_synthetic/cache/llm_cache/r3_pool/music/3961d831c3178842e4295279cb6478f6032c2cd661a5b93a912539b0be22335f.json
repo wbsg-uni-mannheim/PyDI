@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_24154|mbrainz_11264|name=Drum 'N Bass Singles 2003 - 2004 | artist=Counterstrike | duration=5742.0 | tracks=['Africanism', \"Can't Let Go\", 'Candy Flip', 'Doom Prophet', 'Existenz', 'End Of Line', 'Synergy', 'V', 'Monster Munch', 'Misfit', 'Metal Gear', 'Dimension Intrusion', 'Tortured Soul']||name=Drum 'n Bass Singles 2005 - 2006 | artist=Counterstrike | release-date=2009-01-19 | release-country=South Africa | duration=5169 | tracks=['Aeons', 'Never Enough', 'Bodybag', 'Mutilation', 'Ghost', 'Nemesis', 'Merciless', 'Zaire', 'Zulu Warrior', 'Phantasm', 'Gateway', 'White Light', 'Motherfucking Skulls']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Drum 'N Bass Singles 2003 - 2004 | artist=Counterstrike | duration=5742.0 | tracks=['Africanism', \"Can't Let Go\", 'Candy Flip', 'Doom Prophet', 'Existenz', 'End Of Line', 'Synergy', 'V', 'Monster Munch', 'Misfit', 'Metal Gear', 'Dimension Intrusion', 'Tortured Soul']\nRecord B: name=Drum 'n Bass Singles 2005 - 2006 | artist=Counterstrike | release-date=2009-01-19 | release-country=South Africa | duration=5169 | tracks=['Aeons', 'Never Enough', 'Bodybag', 'Mutilation', 'Ghost', 'Nemesis', 'Merciless', 'Zaire', 'Zulu Warrior', 'Phantasm', 'Gateway', 'White Light', 'Motherfucking Skulls']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

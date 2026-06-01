@@ -1,0 +1,137 @@
+# Entity-matching MATCHING committee roster - products domain.
+#
+# Per-domain fork of the canonical companies em_matching_committee.yaml
+# (see plans/plan_s1_scale.md S10, 2026-04-29). Same 4-member roster.
+# Per-domain changes: column_mapping (empty - shared schema), ditto
+# checkpoint path (trained per plan_s1_products.md §P0.10), fields
+# list (uses "title" as primary), and per-pair EM train path. The
+# committee runner injects the actual ``<src1>_2_<src2>_train.csv`` at
+# runtime for each authored pair, so the path below is the default
+# anchor pair (products_1 ↔ products_2) used only as a fallback when
+# the runner cannot resolve a pair-specific file.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). Per-domain
+      checkpoint path — products checkpoint must be retrained against
+      the expanded field set after the data_cleaned_final schema
+      upgrade (plan_revision.md §R1). Fields list matches sc_block
+      text_cols (canonical invariant) and is the same set llm_matcher /
+      comem see, minus price (numeric-only fields flow through
+      magellan's ``numeric_attributes``).
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/products/best
+        fields: [title, brand, description, price, priceCurrency, title_description, product_type, model, model_number, chipset_name, vram_gb, storage_gb, bus_type, interface_type, memory_type, storage_connection_type, form_factor, read_speed_mb_s, write_speed_mb_s]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style zero-shot LLM matcher. Description noise is
+      exactly what an LLM's semantic equivalence judgement absorbs
+      better than lexical comparators. Zero-shot locked: no
+      demonstrations retrieval per the canonical em_matching roster.
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [title, brand, description, price, priceCurrency, title_description, product_type, model, model_number, chipset_name, vram_gb, storage_gb, bus_type, interface_type, memory_type, storage_connection_type, form_factor, read_speed_mb_s, write_speed_mb_s]
+        chat_model_name: openai/gpt-5.4-mini
+        temperature: 0.0
+        max_tokens: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher: auto-generated comparator-vector features +
+      sklearn RandomForest (games-style, see
+      em_matching_committee_games.yaml). ``training_gold_path`` is
+      runner-injected per source pair. ``attributes`` scopes the
+      auto-generator to the in-scope subset so the long-tail sparse
+      columns (read_speed_mb_s, bus_type, color, ...) don't pollute
+      the feature vector; ``numeric_attributes`` flags the numeric
+      fields so the numeric-bank comparators fire instead of string
+      similarity.
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        attributes: [title, brand, description, price, priceCurrency, title_description, product_type, model, model_number, chipset_name, vram_gb, storage_gb, bus_type, interface_type, memory_type, storage_connection_type, form_factor, read_speed_mb_s, write_speed_mb_s]
+        numeric_attributes: [price, vram_gb, storage_gb, read_speed_mb_s, write_speed_mb_s]
+        date_attributes: []
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        # R9 Magellan sweep winner (2026-05-28): mean_f1=0.4736, min_f1=0.4039
+        # across the 3 source pairs (products_1×{2,3,4}). Grid:
+        # n_estimators × max_depth × class_weight = 2×3×2 = 12 cells.
+        # Winner config: n_estimators=100, max_depth=10, class_weight=None.
+        # Notable: class_weight=None edges out class_weight=balanced — the
+        # 81-feature Magellan + RF on the products schema appears to
+        # handle the class imbalance natively without needing the
+        # balanced-weighting heuristic.
+        classifier_params:
+          n_estimators: 100
+          max_depth: 10
+          random_state: 42
+          n_jobs: 1
+          class_weight: null
+        preprocess: normalize_text
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM). Two-stage LLM pipeline.
+      Paper defaults locked.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [title, brand, description, price, priceCurrency, title_description, product_type, model, model_number, chipset_name, vram_gb, storage_gb, bus_type, interface_type, memory_type, storage_connection_type, form_factor, read_speed_mb_s, write_speed_mb_s]
+        stage1_model: openai/gpt-5.4-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+required_axes:
+  matching_type: [learned, llm]
+  missing_value_tolerant: [true]
+
+# Column mapping - keep in sync with em_blocking_committee_products.yaml.
+column_mapping:
+  products_1: {}
+  products_2: {}
+  products_3: {}
+  products_4: {}

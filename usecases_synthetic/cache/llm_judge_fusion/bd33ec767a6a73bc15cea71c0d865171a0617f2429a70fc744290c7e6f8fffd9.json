@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "10,000.0 GB"
+    },
+    {
+      "source": "products_2",
+      "value": "10000.0"
+    },
+    {
+      "source": "products_3",
+      "value": "10000000 MB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The candidates refer to the same storage amount, with MB converted to GB and formatting removed.",
+    "value": 10000.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":10000.0,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The candidates refer to the same storage amount, with MB converted to GB and formatting removed.\"}"
+}

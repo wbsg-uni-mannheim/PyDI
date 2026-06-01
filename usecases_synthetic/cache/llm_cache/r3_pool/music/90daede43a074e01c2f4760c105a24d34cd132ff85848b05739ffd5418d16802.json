@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_26120|mbrainz_1422|name=Of Time | artist=Metus | duration=4046.0 | tracks=['At night', 'When The Wind Blows', 'I dream of my authentic home', 'where... only Thou', 'You are my unique vocation', 'and I wish to reveal to You...', 'let the heart guide Us', 'though all I am is vanity...', 'gdzie... tylko Ty', 'jesteÃ…â€º moim powoÃ…â€šaniem', 'i pragnÃ„â„¢ wyznaÃ„â€¡ Ci', 'niech serce wiedzie Nas', 'poza czas', 'choÃ„â€¡ marnoÃ…â€ºÃ„â€¡ jest we mnie']||name=Time Out of Mind | artist=Troubleman | release-date=2004-05 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3971 | tracks=['Have a Good Time', 'Paz', 'Prelude to the Path', 'The Righteous Path', 'Lonely Girl', 'Change Is What We Need (Progress)', 'Toda Hora', 'Roll On', 'Time.... Out of Mind', 'Without You', 'Strikehard', 'Zap']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Of Time | artist=Metus | duration=4046.0 | tracks=['At night', 'When The Wind Blows', 'I dream of my authentic home', 'where... only Thou', 'You are my unique vocation', 'and I wish to reveal to You...', 'let the heart guide Us', 'though all I am is vanity...', 'gdzie... tylko Ty', 'jesteÃ…â€º moim powoÃ…â€šaniem', 'i pragnÃ„â„¢ wyznaÃ„â€¡ Ci', 'niech serce wiedzie Nas', 'poza czas', 'choÃ„â€¡ marnoÃ…â€ºÃ„â€¡ jest we mnie']\nRecord B: name=Time Out of Mind | artist=Troubleman | release-date=2004-05 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=3971 | tracks=['Have a Good Time', 'Paz', 'Prelude to the Path', 'The Righteous Path', 'Lonely Girl', 'Change Is What We Need (Progress)', 'Toda Hora', 'Roll On', 'Time.... Out of Mind', 'Without You', 'Strikehard', 'Zap']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

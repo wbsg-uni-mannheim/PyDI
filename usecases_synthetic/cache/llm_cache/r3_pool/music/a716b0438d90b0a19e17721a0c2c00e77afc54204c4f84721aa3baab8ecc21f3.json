@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_119315|mbrainz_8867|name=Welcome To The Dance | artist=No Angels | release-date=2009 | release-country=Germany | duration=3013.0 | genre=Electronic|Pop | tracks=['One Life', 'Thunderstorm', 'Rebel', 'Welcome To The Dance', 'Derailed', 'Dance-Aholic', 'Shut Your Mouth', 'Up Against The Wall', 'Young Love', 'Too Old', 'Down Boy', 'Stop', 'Minute By Minute', 'Say Goodbye']||name=Welcome to the Dance | artist=No Angels (and others) | release-date=2009-09-11 | release-country=Germany | duration=3013 | tracks=['One Life', 'Thunderstorm', 'Rebel', 'Welcome to the Dance', 'Derailed', 'Dance-Aholic', 'Shut Your Mouth', 'Up Against the Wall', 'Young Love', 'Too Old', 'Down Boy', 'Stop', 'Minute by Minute', 'Say Goodbye']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Welcome To The Dance | artist=No Angels | release-date=2009 | release-country=Germany | duration=3013.0 | genre=Electronic|Pop | tracks=['One Life', 'Thunderstorm', 'Rebel', 'Welcome To The Dance', 'Derailed', 'Dance-Aholic', 'Shut Your Mouth', 'Up Against The Wall', 'Young Love', 'Too Old', 'Down Boy', 'Stop', 'Minute By Minute', 'Say Goodbye']\nRecord B: name=Welcome to the Dance | artist=No Angels (and others) | release-date=2009-09-11 | release-country=Germany | duration=3013 | tracks=['One Life', 'Thunderstorm', 'Rebel', 'Welcome to the Dance', 'Derailed', 'Dance-Aholic', 'Shut Your Mouth', 'Up Against the Wall', 'Young Love', 'Too Old', 'Down Boy', 'Stop', 'Minute by Minute', 'Say Goodbye']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

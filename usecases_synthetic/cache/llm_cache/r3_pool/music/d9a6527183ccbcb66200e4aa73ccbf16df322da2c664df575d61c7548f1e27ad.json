@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_9093|lastFM_37604|name=Spirits | artist=Ian Boddy | release-date=1984 | release-country=UK | duration=2590.0 | genre=Electronic | tracks=['Pulse', 'Living In A Ritual', 'The Sentinel', 'Spirits']||name=Spirits | artist=Fiction 8. | duration=3568.0 | tracks=['Second Skin', 'Time for Me', 'Pleasure in Pain', 'Feed the Chaos', 'Happy House', 'Lost & Jaded', 'Inside Dave', 'Isolation', 'Mystery Tour', 'Imperfekt', 'Tommyknockers', 'Method of Madness', 'Nothing Undone']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirits | artist=Ian Boddy | release-date=1984 | release-country=UK | duration=2590.0 | genre=Electronic | tracks=['Pulse', 'Living In A Ritual', 'The Sentinel', 'Spirits']\nRecord B: name=Spirits | artist=Fiction 8. | duration=3568.0 | tracks=['Second Skin', 'Time for Me', 'Pleasure in Pain', 'Feed the Chaos', 'Happy House', 'Lost & Jaded', 'Inside Dave', 'Isolation', 'Mystery Tour', 'Imperfekt', 'Tommyknockers', 'Method of Madness', 'Nothing Undone']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_56792|lastFM_26660|name=Beyond Forever | artist=Erik Ekholm | release-date=2010-12-14 | release-country=Sweden | duration=2212.0 | genre=Electronic | tracks=['Existence', 'Pushing Darkness (Radio Mix)', 'Distant Voices (3AM Mix)', 'Memoria Part One (2010 Epic Mix)', 'Beyond Light', 'Memoria Part Two']||name=Forever | artist=E. Ekholm | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond Forever | artist=Erik Ekholm | release-date=2010-12-14 | release-country=Sweden | duration=2212.0 | genre=Electronic | tracks=['Existence', 'Pushing Darkness (Radio Mix)', 'Distant Voices (3AM Mix)', 'Memoria Part One (2010 Epic Mix)', 'Beyond Light', 'Memoria Part Two']\nRecord B: name=Forever | artist=E. Ekholm | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

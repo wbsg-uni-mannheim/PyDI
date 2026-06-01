@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_84199|lastFM_654|name=The Black Album | artist=L.S.G. | release-date=2004-01-01 | release-country=Germany | duration=4330.0 | genre=Electronic | tracks=['The Black Album', 'The Train Of Thought (V 0.9)', 'The Train Of Thought (V 1.1)', 'Go Fishing', 'Cellular', 'The Blaxone', 'Rotation', '88', 'Freakz', 'Hellfire', 'Deep Blue']||name=Black Album | artist=L.S.G. | duration=3212.0 | tracks=['The Train of Thought V 0.9', 'The Train of Thought V 1.1', 'Go Fishing', 'Rotation', '88', 'Hellfire', 'Deep Blue']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Black Album | artist=L.S.G. | release-date=2004-01-01 | release-country=Germany | duration=4330.0 | genre=Electronic | tracks=['The Black Album', 'The Train Of Thought (V 0.9)', 'The Train Of Thought (V 1.1)', 'Go Fishing', 'Cellular', 'The Blaxone', 'Rotation', '88', 'Freakz', 'Hellfire', 'Deep Blue']\nRecord B: name=Black Album | artist=L.S.G. | duration=3212.0 | tracks=['The Train of Thought V 0.9', 'The Train of Thought V 1.1', 'Go Fishing', 'Rotation', '88', 'Hellfire', 'Deep Blue']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

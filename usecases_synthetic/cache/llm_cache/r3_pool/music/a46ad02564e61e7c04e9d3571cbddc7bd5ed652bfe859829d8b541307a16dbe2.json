@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_39421|lastFM_111|name=Shelter EP | artist=Beat Foundation | release-date=1996 | release-country=UK | genre=Electronic | tracks=['Give Me Shelter (Velvet Mix)', 'Give Me Shelter (Rawhide Mix)', 'Rain Or Shine', 'Wedded Blysse', 'Seven Steps']||name=Shelter | artist=B. Foundation | duration=1600.0 | tracks=['Give Me Shelter (Velvet Mix)', 'Give Me Shelter (Rawhide Mix)', 'Rain Or Shine', 'Wedded Blysse', 'Seven Steps']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shelter EP | artist=Beat Foundation | release-date=1996 | release-country=UK | genre=Electronic | tracks=['Give Me Shelter (Velvet Mix)', 'Give Me Shelter (Rawhide Mix)', 'Rain Or Shine', 'Wedded Blysse', 'Seven Steps']\nRecord B: name=Shelter | artist=B. Foundation | duration=1600.0 | tracks=['Give Me Shelter (Velvet Mix)', 'Give Me Shelter (Rawhide Mix)', 'Rain Or Shine', 'Wedded Blysse', 'Seven Steps']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_39084|lastFM_77264|name=Use Your Illusion | artist=Guns N' Roses | release-date=1998 | release-country=United States of America | duration=3830.0 | genre=Rock | tracks=['Live And Let Die', \"Don't Cry (Original)\", \"You Ain't The First\", 'November Rain', 'The Garden', 'Dead Horse', 'Civil War', '14 Years', 'Yesterdays', \"Knockin' On Heaven's Door [Edited]\", 'Estranged', \"Don't Cry (Alt. Lyrics)\"]||name=Use Your Illusion | artist=Guns N. Roses | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Use Your Illusion | artist=Guns N' Roses | release-date=1998 | release-country=United States of America | duration=3830.0 | genre=Rock | tracks=['Live And Let Die', \"Don't Cry (Original)\", \"You Ain't The First\", 'November Rain', 'The Garden', 'Dead Horse', 'Civil War', '14 Years', 'Yesterdays', \"Knockin' On Heaven's Door [Edited]\", 'Estranged', \"Don't Cry (Alt. Lyrics)\"]\nRecord B: name=Use Your Illusion | artist=Guns N. Roses | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

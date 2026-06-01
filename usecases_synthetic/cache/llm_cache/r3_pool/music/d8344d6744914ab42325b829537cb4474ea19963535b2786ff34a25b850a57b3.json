@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_67842|mbrainz_3625|name=Classics | artist=Susan Werner | duration=2126.0 | tracks=['Lonely People', 'Mercy Mercy Me (The Ecology)', 'The Wind', 'Waiting In Vain', 'A Hazy Shade of Winter', 'Turn Turn Turn', 'All In Love Is Fair', \"Maybe I'm Amazed\", \"Don't Let Me Be Misunderstood\", \"I Just Wasn't Made for These Times\"]||name=Classics | artist=Rawls, Lou | release-date=1986-01-01 | release-country=United States of America | duration=2191 | tracks=[\"You'll Never Find Another Love Like Mine\", 'Sit Down and Talk to Me', 'See You When I Get There', 'Let Me Be Good to You', 'Groovy People', 'Lady Love', 'I Go Crazy', 'Natural Man', 'One Life to Live']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Classics | artist=Susan Werner | duration=2126.0 | tracks=['Lonely People', 'Mercy Mercy Me (The Ecology)', 'The Wind', 'Waiting In Vain', 'A Hazy Shade of Winter', 'Turn Turn Turn', 'All In Love Is Fair', \"Maybe I'm Amazed\", \"Don't Let Me Be Misunderstood\", \"I Just Wasn't Made for These Times\"]\nRecord B: name=Classics | artist=Rawls, Lou | release-date=1986-01-01 | release-country=United States of America | duration=2191 | tracks=[\"You'll Never Find Another Love Like Mine\", 'Sit Down and Talk to Me', 'See You When I Get There', 'Let Me Be Good to You', 'Groovy People', 'Lady Love', 'I Go Crazy', 'Natural Man', 'One Life to Live']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_21153|mbrainz_32686|name=classics | artist=B. Dennerlein | duration=2389.0 | tracks=['Blues For Rudi', 'Night And Day', 'Georgia On My Mind', 'Meditation', 'Satin Doll', 'Take the \"A\" Train', 'Yesterday', 'this old fairy tale']||name=Classics | artist=Last, James | release-date=1985-01-01 | release-country=Germany | duration=2518 | tracks=['Intermezzo From Cavalleria Rusticana', 'Scherzo From Symphony No. 2', 'Largo From Double Violin Concerto', 'Last Movement From Trumpet Concerto', 'March to the Scaffold From Symphonie Fantasque', 'Still as the Night', 'Last Movement From Symphony No.39 in E Flat Major', 'Romance for Violin and Orchestra No. 1 in G major, Op. 40', 'In the Hall of the Mountain King From Peer Gynt Suite No.1', 'Symphony No.3 in F Major: 2nd Movement']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=classics | artist=B. Dennerlein | duration=2389.0 | tracks=['Blues For Rudi', 'Night And Day', 'Georgia On My Mind', 'Meditation', 'Satin Doll', 'Take the \"A\" Train', 'Yesterday', 'this old fairy tale']\nRecord B: name=Classics | artist=Last, James | release-date=1985-01-01 | release-country=Germany | duration=2518 | tracks=['Intermezzo From Cavalleria Rusticana', 'Scherzo From Symphony No. 2', 'Largo From Double Violin Concerto', 'Last Movement From Trumpet Concerto', 'March to the Scaffold From Symphonie Fantasque', 'Still as the Night', 'Last Movement From Symphony No.39 in E Flat Major', 'Romance for Violin and Orchestra No. 1 in G major, Op. 40', 'In the Hall of the Mountain King From Peer Gynt Suite No.1', 'Symphony No.3 in F Major: 2nd Movement']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

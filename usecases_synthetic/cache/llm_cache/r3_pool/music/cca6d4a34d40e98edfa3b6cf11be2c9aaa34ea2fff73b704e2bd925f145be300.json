@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_86774|lastFM_39977|name=Continuum Sonore | artist=Maninkari | release-date=2012-07-16 | release-country=France | duration=3258.0 | genre=Electronic|Folk, World, & Country | tracks=['Part 1', 'Part 2', 'Part 3', 'Part 4', 'Part 5', 'Part 6']||name=Continuum | artist=Maninkari | duration=3258.0 | tracks=['Continuum Sonore, Part 1', 'Continuum Sonore, Part 2', 'Continuum Sonore, Part 3', 'Continuum Sonore, Part 4', 'Continuum Sonore, Part 5', 'Continuum Sonore, Part 6']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Continuum Sonore | artist=Maninkari | release-date=2012-07-16 | release-country=France | duration=3258.0 | genre=Electronic|Folk, World, & Country | tracks=['Part 1', 'Part 2', 'Part 3', 'Part 4', 'Part 5', 'Part 6']\nRecord B: name=Continuum | artist=Maninkari | duration=3258.0 | tracks=['Continuum Sonore, Part 1', 'Continuum Sonore, Part 2', 'Continuum Sonore, Part 3', 'Continuum Sonore, Part 4', 'Continuum Sonore, Part 5', 'Continuum Sonore, Part 6']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

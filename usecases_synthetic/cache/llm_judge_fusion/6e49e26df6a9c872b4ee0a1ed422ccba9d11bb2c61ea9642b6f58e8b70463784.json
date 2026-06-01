@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "4441"
+    },
+    {
+      "source": "discogs",
+      "value": "4442.0"
+    },
+    {
+      "source": "lastfm",
+      "value": "4441.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "aggregation",
+    "reasoning": "The candidates differ by 1 second due to source formatting/rounding, so a robust aggregate gives 4441.",
+    "value": 4441
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4441,\"operation\":\"aggregation\",\"confidence\":0.99,\"reasoning\":\"The candidates differ by 1 second due to source formatting/rounding, so a robust aggregate gives 4441.\"}"
+}

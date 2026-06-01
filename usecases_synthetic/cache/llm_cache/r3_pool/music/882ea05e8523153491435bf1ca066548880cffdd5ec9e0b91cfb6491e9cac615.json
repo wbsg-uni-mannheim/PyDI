@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_48988|mbrainz_9990|name=the sunset - the romantic collection | artist=Blackmore's N. | tracks=[]||name=Beyond the Sunset: The Romantic Collection | artist=Blackmore's Night | release-date=2004-01-01 | duration=3304 | tracks=['Once in a Million Years', 'Be Mine Tonight', 'Wish You Were Here', 'Waiting Just for You', 'Durch den Wald zum Bach Haus', 'Ghost of a Rose', 'Spirit of the Sea', 'I Still Remember', 'Castles and Dreams', 'Beyond the Sunset', 'Again Someday', 'Diamonds and Rust', 'Now and Then', 'All Because of You', 'Written in the Stars', 'Morning Star', 'Play Minstrel Play', 'Minstrel Hall', 'Under a Violet Moon']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=the sunset - the romantic collection | artist=Blackmore's N. | tracks=[]\nRecord B: name=Beyond the Sunset: The Romantic Collection | artist=Blackmore's Night | release-date=2004-01-01 | duration=3304 | tracks=['Once in a Million Years', 'Be Mine Tonight', 'Wish You Were Here', 'Waiting Just for You', 'Durch den Wald zum Bach Haus', 'Ghost of a Rose', 'Spirit of the Sea', 'I Still Remember', 'Castles and Dreams', 'Beyond the Sunset', 'Again Someday', 'Diamonds and Rust', 'Now and Then', 'All Because of You', 'Written in the Stars', 'Morning Star', 'Play Minstrel Play', 'Minstrel Hall', 'Under a Violet Moon']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

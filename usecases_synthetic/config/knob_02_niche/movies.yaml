@@ -1,0 +1,150 @@
+# Knob 02 - Entity Niche Density - Movies
+#
+# S6 (movies pool) is upstream-blocked on a movies PLM run; this YAML
+# is structurally complete but Phase C cannot run on movies until the
+# pool lands. Per-level rates carried over from companies.
+
+domain: movies
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+primary_column_per_source:
+  academy_awards: title
+  actors: title
+  golden_globes: title
+
+canonical_schema:
+  - title
+  - director
+  - date
+  - actors
+
+attribute_mapping:
+  academy_awards:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+  actors:
+    title: title
+    date: date
+    actors_actor_name: actors
+  golden_globes:
+    title: title
+    director_name: director
+    date: date
+    actors_actor_name: actors
+
+source_priority:
+  - academy_awards
+  - actors
+  - golden_globes
+
+text_concat_order:
+  - title
+  - director
+  - date
+
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+metric_top_k: 20
+rrf_k0: 60
+c_min: 2
+boost_label_collision: 5.0
+inner_token_threshold: 0.8
+
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Movies attribute-overlap weights — director is the strongest
+# disambiguator (titles share across films), date and actors are
+# secondary partitioning signals.
+attribute_overlap_weights:
+  director: 0.5
+  date: 0.3
+  actors: 0.2
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+    removal_fraction_cap: 0.30
+    interpolation_count: 0
+    placement_split: 0.0
+  medium:
+    target_corner_case_ratio: 0.50
+    removal_fraction_cap: 0.10
+    interpolation_count: 0
+    placement_split: 0.0
+  hard:
+    target_corner_case_ratio: 0.65
+    removal_fraction_cap: 0.05
+    interpolation_count: 12
+    placement_split: 0.6
+
+max_interp_fraction: 0.60
+
+em_test_regeneration:
+  target_size: 200
+  candidate_pool_cap: 2000
+
+llm_prompt_version: v1
+# Migrated 2026-05-22 (plan_revision.md §R2) from claude-opus-4-6 to
+# canonical gpt-5.4-mini per feedback_synth_llm_and_naming. Invalidates
+# the on-disk LLM cache (model_id is part of the key); regenerable on
+# next K2 run.
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# S6 — movies pool must be built before this can be set to two_system.
+pool_quality: deferred
+
+# Hard-negative score-margin gate (S3) — Ditto checkpoint at the
+# expected per-domain path. S11 baseline step trains it.
+hard_negative_gate:
+  enabled: true
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/movies/best
+  plm_fields:
+    - title
+    - director
+    - date
+    - actors
+  plm_threshold_theta: 0.61
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 16
+  plm_margin_delta: 0.08
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      use_llm_adjudicator: false
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      use_llm_adjudicator: true
+    hard:
+      enabled: true
+      plm_margin_delta: 0.10
+      use_llm_adjudicator: true

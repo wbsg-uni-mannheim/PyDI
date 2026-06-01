@@ -1,0 +1,32 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Identity Crisis', 'New Shoes', 'Two Into One', 'Love Is the Cure', 'It Makes Me Wonder', 'Hey Mama', 'Falling in Love', 'I Wish You Would', 'Strange Girl']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Identity Crisis', 'New Shoes', 'Two Into One', 'Love Is The Cure', 'It Makes Me Wonder', 'Hey Mama', 'Falling In Love', 'I Wish You Would', 'Strange Girl']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Both sources list the same track set with minor capitalization differences, so the canonical list is the normalized version.",
+    "value": [
+      "Identity Crisis",
+      "New Shoes",
+      "Two Into One",
+      "Love Is the Cure",
+      "It Makes Me Wonder",
+      "Hey Mama",
+      "Falling in Love",
+      "I Wish You Would",
+      "Strange Girl"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Identity Crisis\",\"New Shoes\",\"Two Into One\",\"Love Is the Cure\",\"It Makes Me Wonder\",\"Hey Mama\",\"Falling in Love\",\"I Wish You Would\",\"Strange Girl\"],\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Both sources list the same track set with minor capitalization differences, so the canonical list is the normalized version.\"}"
+}

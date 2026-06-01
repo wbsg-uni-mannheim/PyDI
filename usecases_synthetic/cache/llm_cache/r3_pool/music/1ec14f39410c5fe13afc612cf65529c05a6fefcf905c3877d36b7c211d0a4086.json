@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_36920|lastFM_17555|name=The Dame Edna Party Experience | artist=Dame Edna Everage | release-date=1988 | release-country=Europe | genre=Pop | tracks=['Bad', 'When Will I Be Famous', 'Layla (Alias Edna)', 'I Should Be So Lucky', 'The Locomotion', \"Bad 'Nice' (Reprise)\", 'Waltzing Matilda (Instrumental Intro)', 'The Twist', 'Venus', 'Like A Virgin', 'Girls Just Want To Have Fun', 'Venus (Reprise)', 'Shout (Part 1)', 'Shout (Part II)', 'I Got You Babe (Who Needs You Babe)', 'I Wanna Dance With Somebody (Who Loves Me)', 'Stop! In The Name Of Love', 'Dancing In The Street', 'I Wanna Dance With Somebody (Who Loves Me) (Reprise)', 'Neighbours', 'Leader Of The Pack', \"It's My Party\"]||name=The Dame Edna Party Experience | artist=D. Edna Everage | duration=1707.0 | tracks=[\"Bad / When Will I Be Famous / Layla (Alias Edna) / I Should Be So Lucky / The Locomotion / Bad 'Nice' (reprise)\", 'Waltzing Matilda (instrumental intro) / The Twist', 'Shout, Part I', 'Shout, Part II', 'I Got You Babe (Who Needs You Babe)', 'Neighbours', \"Leader of the Pack / It's My Party\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Dame Edna Party Experience | artist=Dame Edna Everage | release-date=1988 | release-country=Europe | genre=Pop | tracks=['Bad', 'When Will I Be Famous', 'Layla (Alias Edna)', 'I Should Be So Lucky', 'The Locomotion', \"Bad 'Nice' (Reprise)\", 'Waltzing Matilda (Instrumental Intro)', 'The Twist', 'Venus', 'Like A Virgin', 'Girls Just Want To Have Fun', 'Venus (Reprise)', 'Shout (Part 1)', 'Shout (Part II)', 'I Got You Babe (Who Needs You Babe)', 'I Wanna Dance With Somebody (Who Loves Me)', 'Stop! In The Name Of Love', 'Dancing In The Street', 'I Wanna Dance With Somebody (Who Loves Me) (Reprise)', 'Neighbours', 'Leader Of The Pack', \"It's My Party\"]\nRecord B: name=The Dame Edna Party Experience | artist=D. Edna Everage | duration=1707.0 | tracks=[\"Bad / When Will I Be Famous / Layla (Alias Edna) / I Should Be So Lucky / The Locomotion / Bad 'Nice' (reprise)\", 'Waltzing Matilda (instrumental intro) / The Twist', 'Shout, Part I', 'Shout, Part II', 'I Got You Babe (Who Needs You Babe)', 'Neighbours', \"Leader of the Pack / It's My Party\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_93364|mbrainz_17820|name=Standing Ovation: The Greatest Songs From The Stage | artist=Susan Boyle | release-date=2012-11-19 | release-country=UK | duration=2631.0 | genre=Stage & Screen|Pop | tracks=['Somewhere Over The Rainbow', 'The Winner Takes It All', 'Send In The Clowns', 'The Music Of The Night', 'Bring Him Home', 'Memory', 'As Long As He Needs Me', 'All I Ask Of You', 'Out Here On My Own', \"You'll Never Walk Alone\", 'Encore', 'This Is The Moment']||name=Standing Ovation: The Greatest Songs from the Stage | artist=Boyle, Susan | release-date=2012-11-19 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2617 | tracks=['Somewhere Over the Rainbow', 'The Winner Takes It All', 'Send in the Clowns', 'The Music of the Night', 'Bring Him Home', 'Memory', 'As Long As He Needs Me', 'All I Ask of You', 'Out Here On My Own', 'Youâ€™ll Never Walk Alone', 'This Is the Moment']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Standing Ovation: The Greatest Songs From The Stage | artist=Susan Boyle | release-date=2012-11-19 | release-country=UK | duration=2631.0 | genre=Stage & Screen|Pop | tracks=['Somewhere Over The Rainbow', 'The Winner Takes It All', 'Send In The Clowns', 'The Music Of The Night', 'Bring Him Home', 'Memory', 'As Long As He Needs Me', 'All I Ask Of You', 'Out Here On My Own', \"You'll Never Walk Alone\", 'Encore', 'This Is The Moment']\nRecord B: name=Standing Ovation: The Greatest Songs from the Stage | artist=Boyle, Susan | release-date=2012-11-19 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2617 | tracks=['Somewhere Over the Rainbow', 'The Winner Takes It All', 'Send in the Clowns', 'The Music of the Night', 'Bring Him Home', 'Memory', 'As Long As He Needs Me', 'All I Ask of You', 'Out Here On My Own', 'Youâ€™ll Never Walk Alone', 'This Is the Moment']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

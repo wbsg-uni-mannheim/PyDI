@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_276|lastFM_170|name=Resurrection EP | artist=Mark Verbos | release-date=2001-08-20 | release-country=United States of America | genre=Electronic | tracks=['Untitled', 'Untitled', 'Untitled', 'Untitled']||name=Resurrection EP | artist=Mark Verbos | duration=120.0 | tracks=['[untitled]', '[untitled]', '[untitled]', '[untitled]']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Resurrection EP | artist=Mark Verbos | release-date=2001-08-20 | release-country=United States of America | genre=Electronic | tracks=['Untitled', 'Untitled', 'Untitled', 'Untitled']\nRecord B: name=Resurrection EP | artist=Mark Verbos | duration=120.0 | tracks=['[untitled]', '[untitled]', '[untitled]', '[untitled]']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

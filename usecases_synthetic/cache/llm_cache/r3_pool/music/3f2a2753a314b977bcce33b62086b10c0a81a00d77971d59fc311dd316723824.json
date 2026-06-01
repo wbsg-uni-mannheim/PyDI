@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_157409|mbrainz_22|name=U.F.Orb | artist=The Orb | release-date=1994 | release-country=Japan | duration=4435.0 | genre=Electronic | tracks=['O.O.B.E', 'U.F.Orb', 'Blue Room', 'Towers Of Dub', 'Close Encounters', 'Majestic', 'Sticky End']||name=U.F.Orb | artist=Orb, The | release-date=1992-11-03 | release-country=United States of America | duration=4437 | tracks=['O.O.B.E.', 'U.F.Orb', 'Blue Room', 'Towers of Dub', 'Close Encounters', 'Majestic', 'Sticky End']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=U.F.Orb | artist=The Orb | release-date=1994 | release-country=Japan | duration=4435.0 | genre=Electronic | tracks=['O.O.B.E', 'U.F.Orb', 'Blue Room', 'Towers Of Dub', 'Close Encounters', 'Majestic', 'Sticky End']\nRecord B: name=U.F.Orb | artist=Orb, The | release-date=1992-11-03 | release-country=United States of America | duration=4437 | tracks=['O.O.B.E.', 'U.F.Orb', 'Blue Room', 'Towers of Dub', 'Close Encounters', 'Majestic', 'Sticky End']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

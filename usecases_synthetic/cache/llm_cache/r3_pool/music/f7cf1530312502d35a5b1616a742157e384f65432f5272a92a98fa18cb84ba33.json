@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_158524|lastFM_68652|name=Parade Of Echoes | artist=Maura Kennedy | release-date=2009 | release-country=United States of America | genre=Rock | tracks=['The Thing With Feathers', 'New Way To Live', 'Sun Burns Gold', 'Chains', 'Patience', 'Time Will Steal Your Heart', 'October', 'Just The Rain', 'Some Kind Of Life', 'Dreamless Sleep', 'Make It Last', 'Summer Coulda Lasted Forever', 'Shadows With The Lonely']||name=Maura Kennedy -  Parade of Echoes | artist=Maura Kennedy | duration=1789.0 | tracks=['New Way to Live', 'Sun Burns Gold', 'Chains', 'Patience', 'Time Will Steal Your Heart', 'October', 'Just The Rain', 'Dreamless Sleep']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Parade Of Echoes | artist=Maura Kennedy | release-date=2009 | release-country=United States of America | genre=Rock | tracks=['The Thing With Feathers', 'New Way To Live', 'Sun Burns Gold', 'Chains', 'Patience', 'Time Will Steal Your Heart', 'October', 'Just The Rain', 'Some Kind Of Life', 'Dreamless Sleep', 'Make It Last', 'Summer Coulda Lasted Forever', 'Shadows With The Lonely']\nRecord B: name=Maura Kennedy -  Parade of Echoes | artist=Maura Kennedy | duration=1789.0 | tracks=['New Way to Live', 'Sun Burns Gold', 'Chains', 'Patience', 'Time Will Steal Your Heart', 'October', 'Just The Rain', 'Dreamless Sleep']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

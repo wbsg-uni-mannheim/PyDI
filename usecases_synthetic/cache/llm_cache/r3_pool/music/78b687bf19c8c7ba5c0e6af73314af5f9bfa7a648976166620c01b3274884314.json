@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_54773|mbrainz_21621|name=Matell -  The Music Behind the Voice 4 | artist=Matell | duration=2575.0 | tracks=['I Need Your Love Now (Instrumental)', \"I Said I'm Gonna Go, Oops, Oops Upside Your Head (Instrumental)\", 'I Want a Real Man (Instrumental)', 'I Wish You Peace, Love, and Happiness (Instrumental)', \"I Won't Take You Back (Instrumental)\", 'Lift Your Hand to the Sky (Instrumental)', 'My First Love (Love Theme) [Alternative Instrumental Mix]', 'My First Love (Love Theme) [Instrumental]', 'Never Doubt the Love 2 (Instrumental)']||name=The Music Behind the Voice 4 (release) | artist=Matell | release-date=2014-02-06 | duration=2575 | tracks=['I Need Your Love Now', \"I Said I'm Gonna Go, Oops, Oops Upside Your Head\", 'I Want a Real Man', 'I Wish You Peace, Love, and Happiness', \"I Won't Take You Back\", 'Lift Your Hand to the Sky', 'My First Love (Love Theme) (alternative instrumental mix)', 'My First Love (Love Theme)', 'Never Doubt the Love 2']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Matell -  The Music Behind the Voice 4 | artist=Matell | duration=2575.0 | tracks=['I Need Your Love Now (Instrumental)', \"I Said I'm Gonna Go, Oops, Oops Upside Your Head (Instrumental)\", 'I Want a Real Man (Instrumental)', 'I Wish You Peace, Love, and Happiness (Instrumental)', \"I Won't Take You Back (Instrumental)\", 'Lift Your Hand to the Sky (Instrumental)', 'My First Love (Love Theme) [Alternative Instrumental Mix]', 'My First Love (Love Theme) [Instrumental]', 'Never Doubt the Love 2 (Instrumental)']\nRecord B: name=The Music Behind the Voice 4 (release) | artist=Matell | release-date=2014-02-06 | duration=2575 | tracks=['I Need Your Love Now', \"I Said I'm Gonna Go, Oops, Oops Upside Your Head\", 'I Want a Real Man', 'I Wish You Peace, Love, and Happiness', \"I Won't Take You Back\", 'Lift Your Hand to the Sky', 'My First Love (Love Theme) (alternative instrumental mix)', 'My First Love (Love Theme)', 'Never Doubt the Love 2']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

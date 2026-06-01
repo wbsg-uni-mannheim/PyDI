@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "341.21"
+    },
+    {
+      "source": "products_2",
+      "value": "521.73"
+    },
+    {
+      "source": "products_3",
+      "value": "511.15"
+    },
+    {
+      "source": "products_4",
+      "value": "505.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "Prices are numeric and one value is close to the cluster around 505-522, so a robust aggregate is appropriate.",
+    "value": 505.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\": 505.0,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"Prices are numeric and one value is close to the cluster around 505-522, so a robust aggregate is appropriate.\"}"
+}

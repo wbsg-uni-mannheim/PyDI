@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_45288|mbrainz_9048|name=The Monsterican Dream | artist=Lordi | release-date=2004 | release-country=Europe | duration=2769.0 | genre=Rock | tracks=['Threatical Trailer', 'Bring It On (The Raging Hounds Return)', 'Blood Red Sandman', 'My Heaven Is Your Hell', 'Pet The Destroyer', 'The Children Of The Night', 'Wake The Snake', 'Shotgun Divorce', 'Forsaken Fashion Dolls', 'Haunted Town', 'Fire In The Hole', 'Magistra Nocte', 'Kalmageddon', 'Blood Red Sandman']||name=The Monster Show | artist=Lordi | release-date=2005-02-14 | release-country=Finland | duration=2618 | tracks=['Threatical Trailer', 'Bring It On', 'Blood Red Sandman', 'My Heaven Is Your Hell', 'Would You Love a Monsterman?', 'Devil Is a Loser', 'Icon of Dominance', 'The Children of the Night', 'Shotgun Divorce', 'Forsaken Fashion Dolls', 'Wake the Snake', 'Rock the Hell Outta You', 'Blood Red Sandman', 'Devil Is a Loser', 'Would You Love a Monsterman']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Monsterican Dream | artist=Lordi | release-date=2004 | release-country=Europe | duration=2769.0 | genre=Rock | tracks=['Threatical Trailer', 'Bring It On (The Raging Hounds Return)', 'Blood Red Sandman', 'My Heaven Is Your Hell', 'Pet The Destroyer', 'The Children Of The Night', 'Wake The Snake', 'Shotgun Divorce', 'Forsaken Fashion Dolls', 'Haunted Town', 'Fire In The Hole', 'Magistra Nocte', 'Kalmageddon', 'Blood Red Sandman']\nRecord B: name=The Monster Show | artist=Lordi | release-date=2005-02-14 | release-country=Finland | duration=2618 | tracks=['Threatical Trailer', 'Bring It On', 'Blood Red Sandman', 'My Heaven Is Your Hell', 'Would You Love a Monsterman?', 'Devil Is a Loser', 'Icon of Dominance', 'The Children of the Night', 'Shotgun Divorce', 'Forsaken Fashion Dolls', 'Wake the Snake', 'Rock the Hell Outta You', 'Blood Red Sandman', 'Devil Is a Loser', 'Would You Love a Monsterman']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

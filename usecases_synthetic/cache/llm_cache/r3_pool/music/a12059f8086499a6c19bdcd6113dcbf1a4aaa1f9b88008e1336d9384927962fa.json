@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_104712|mbrainz_2383|name=Best Of The Blues Brothers | artist=The Blues Brothers | release-date=1996-02-23 | release-country=United States of America | duration=2031.0 | genre=Rock | tracks=['Expressway To Your Heart', 'Everybody Needs Somebody To Love', \"I Don't Know\", 'She Caught The Katy', 'Soul Man', 'Rubber Biscuit', \"Goin' Back To Miami\", \"Gimme Some Lovin'\", '\"B\" Movie Box Car Blues', 'Flip, Flop & Fly']||name=Best of the Blues Brothers (orig.) | artist=Blues Brothers | release-date=1981-01-01 | release-country=Germany | duration=2146 | tracks=['Expressway to Your Heart', 'Everybody Needs Somebody to Love', 'I Donâ€™t Know', 'She Caught the Katy', 'Soul Man', 'Rubber Biscuit', 'Going Back to Miami', 'Gimme Some Lovinâ€™', 'â€œBâ€? Movie Box Car Blues', 'Flip, Flop & Fly']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Best Of The Blues Brothers | artist=The Blues Brothers | release-date=1996-02-23 | release-country=United States of America | duration=2031.0 | genre=Rock | tracks=['Expressway To Your Heart', 'Everybody Needs Somebody To Love', \"I Don't Know\", 'She Caught The Katy', 'Soul Man', 'Rubber Biscuit', \"Goin' Back To Miami\", \"Gimme Some Lovin'\", '\"B\" Movie Box Car Blues', 'Flip, Flop & Fly']\nRecord B: name=Best of the Blues Brothers (orig.) | artist=Blues Brothers | release-date=1981-01-01 | release-country=Germany | duration=2146 | tracks=['Expressway to Your Heart', 'Everybody Needs Somebody to Love', 'I Donâ€™t Know', 'She Caught the Katy', 'Soul Man', 'Rubber Biscuit', 'Going Back to Miami', 'Gimme Some Lovinâ€™', 'â€œBâ€? Movie Box Car Blues', 'Flip, Flop & Fly']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

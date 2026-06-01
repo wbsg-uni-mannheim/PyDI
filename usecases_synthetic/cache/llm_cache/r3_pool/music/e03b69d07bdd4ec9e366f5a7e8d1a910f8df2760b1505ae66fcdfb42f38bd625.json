@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_30305|mbrainz_15395|name=God Rest Ye Merry Gentlemen | artist=Kaitlyn Maher | duration=81.0 | tracks=['God Rest Ye Merry Gentlemen']||name=God Rest Ye Merry Gentlemen | artist=August Burns Red | release-date=2011-11-08 | release-country=United States of America | duration=0 | tracks=['God Rest Ye Merry Gentlemen', 'Little Drummer Boy']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=God Rest Ye Merry Gentlemen | artist=Kaitlyn Maher | duration=81.0 | tracks=['God Rest Ye Merry Gentlemen']\nRecord B: name=God Rest Ye Merry Gentlemen | artist=August Burns Red | release-date=2011-11-08 | release-country=United States of America | duration=0 | tracks=['God Rest Ye Merry Gentlemen', 'Little Drummer Boy']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

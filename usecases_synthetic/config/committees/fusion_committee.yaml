@@ -1,0 +1,271 @@
+# Fusion committee roster — companies domain.
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member is
+# a coherent end-to-end fusion approach producing a complete fused
+# DataFrame across all attributes; per-member macro_accuracy is the
+# headline metric. The per-(attribute, strategy) split of the pre-C12
+# layout is retired — see baselines/companies/fusion_committee_selection.json
+# (written on first run) for the val-best PyDI choices each member
+# locks in.
+#
+# This file is the companies-domain config (kept at the legacy
+# ``fusion_committee.yaml`` path; per-domain forks live alongside it as
+# ``fusion_committee_<domain>.yaml``).
+
+seed: 42
+
+fused_id_column: id
+gold_id_column: id
+
+# PyDI's XML loader flattens ``<keypeople><name>X</name></keypeople>`` to
+# the column ``keypeople_name``. The fusion eval + per-attribute strategies
+# reference the canonical ``keypeople`` name; this alias bridges the
+# gold-side column back to the canonical schema.
+gold_column_aliases:
+  keypeople_name: keypeople
+
+# Trust scores follow the K2 source_priority ordering for companies:
+# dbpedia (1) < fullcontact (2) < forbes (3). Forbes is the editorial
+# authority for revenue / assets, fullcontact is structured B2B data,
+# dbpedia is broader-coverage but noisier (auto-generated from
+# Wikipedia infoboxes).
+trust_scores:
+  forbes: 3
+  fullcontact: 2
+  dbpedia: 1
+
+# Column mapping — normalises heterogeneous source column names to the
+# target schema. Must stay in sync with em_blocking_committee.yaml and
+# em_matching_committee.yaml.
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded
+
+# Evaluation functions per attribute (used by DataFusionEvaluator).
+#
+# `keypeople` is multi-truth on the gold side (``<keypeople><name>X</name>
+# <name>Y</name>``) and union/intersection-fused on the strategy side.
+evaluation_functions:
+  name: tokenized_match
+  assets: numeric_tolerance_match
+  revenue: numeric_tolerance_match
+  founded: year_only_match
+  country: tokenized_match
+  city: tokenized_match
+  keypeople: tokenized_match
+
+evaluation_params:
+  assets:
+    tolerance: 0.1
+  revenue:
+    tolerance: 0.1
+  keypeople:
+    # Locked at 0.1 by R5 Fusion sub-D sweep (2026-05-12): keypeople
+    # moves from 0.44 → 0.67 (best_strategy_accuracy) as threshold drops
+    # 1.0 → 0.1. 0.1 is the "intersection of values" literal reading.
+    threshold: 0.1
+
+# Per-attribute semantic type. Drives member dispatch:
+# string/categorical/date attributes route to a TD member's native
+# method; numeric + list attributes route to val-best PyDI for
+# non-native TD members.
+attribute_types:
+  name: string
+  assets: numeric
+  revenue: numeric
+  founded: date
+  country: categorical
+  city: string
+  keypeople: list
+
+# PyDI candidate registry for val-selection sweeps. Used by
+# pydi_per_attribute_optimal (across every attribute) and by the TD
+# members on attributes whose type is not in their native set.
+pydi_candidates:
+  string:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: longest_string
+      function: longest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: shortest_string
+      function: shortest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  categorical:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  date:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: earliest
+      function: earliest
+      module: PyDI.fusion.conflict_resolution.date
+    - name: most_recent
+      function: most_recent
+      module: PyDI.fusion.conflict_resolution.date
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  numeric:
+    - name: median
+      function: median
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: average
+      function: average
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: maximum
+      function: maximum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: minimum
+      function: minimum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: trimmed_mean
+      function: trimmed_mean
+      module: usecases_synthetic.lib.robust_aggregators
+      params:
+        trim: 0.1
+    - name: huber_m_estimator
+      function: huber_m_estimator
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: median_of_means
+      function: median_of_means
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  list:
+    - name: union
+      function: union
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection
+      function: intersection
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection_k_sources
+      function: intersection_k_sources
+      module: PyDI.fusion.conflict_resolution.list
+      params:
+        k: 2
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+# C12 member roster. Each member produces a single fused DataFrame via
+# one DataFusionEngine.run() call. Per-member macro_accuracy is the
+# headline; best-member macro is the user-attainable ceiling per stage.
+members:
+  - name: pydi_per_attribute_optimal
+    params: {}
+
+  - name: llm_only
+    params:
+      llm_callable: openai
+      llm_model: gpt-5.4-mini
+      model_id: gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      cache_dir: usecases_synthetic/cache/llm_judge_fusion
+      prompt_version: v2
+
+  - name: fusionquery_only
+    # Defaults retained. Native on string/categorical/date; val-best
+    # PyDI on numeric (assets, revenue) + list (keypeople).
+    params:
+      max_iters: 5
+      theta: 3.0e-5
+      init_trust: 0.95
+      history_size: 50.0
+      temperature: 0.5
+      threshold: 0.7
+
+  - name: truthfinder_only
+    # R5 Fusion sub-E (companies): country / city legacy strategies used
+    # gamma=0.3. Native on string/categorical/date; val-best PyDI on
+    # numeric + list.
+    params:
+      init_trust: 0.9
+      gamma: 0.3
+      rho: 0.5
+      max_iters: 10
+      early_stop: 1.0e-3
+
+  - name: ltm_only
+    # Defaults — companies keypeople is the only list attribute and
+    # sub-I sweep landed paper-defaults. Native on string/categorical/
+    # date + list (multi-truth); val-best PyDI on numeric only.
+    params:
+      alpha_0: [50.0, 10.0]
+      alpha_1: [10.0, 10.0]
+      beta: [10.0, 10.0]
+      max_iters: 50
+      burnin: 10
+      thin: 2
+
+  - name: casefusion_only
+    # R5 Fusion sub-G sweep on companies.name: alpha=1.1, beta=1.1.
+    # Native on string/categorical/date; val-best PyDI on numeric + list.
+    params:
+      dimension: 10
+      alpha: 1.1
+      beta: 1.1
+      lr: 0.05
+      converge_rate: 1.0e-5
+      max_iters: 50
+
+  - name: accusim_only
+    # R5 Fusion sub-F sweep on companies.name: sim_threshold=0.85 lifted
+    # accusim's accuracy 0.83 → 1.00. Native on every attribute via the
+    # type-aware _accusim_default_sim.
+    params:
+      accuracy_prior: 0.8
+      n_competing_values: 10
+      epsilon: 1.0e-3
+      max_iter: 20
+      sim_threshold: 0.85
+
+  - name: voting_only
+    params: {}
+
+  - name: prefer_higher_trust_only
+    params: {}

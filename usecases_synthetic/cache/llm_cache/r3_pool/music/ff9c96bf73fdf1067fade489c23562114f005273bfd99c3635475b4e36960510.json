@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_49756|mbrainz_31206|name=The X Brothers -  Beyond the Valley of the X | artist=The X Brothers | duration=2758.0 | tracks=['(Wish I Could Fly Like) Superman', 'Money Machine', 'Bar Room Blues', 'Do It All for You', 'Is This for Real?', 'Psycho', 'Hot Rails to Hell', 'Doctor Music', 'Downtown', 'Last Days of May', 'Stairway to the Stars', '2000 Light Years from Home']||name=The Best of the Ames Brothers | artist=Ames Brothers, The | duration=2673 | tracks=['Rag Mop', 'Sentimental Me', 'Undecided', 'Can Anyone Explain', \"Melodie D'Amour (Melody of Love)\", 'It Only Hurts for a Little While', 'You You You', 'A Very Precious Love', 'The Naughty Lady of Shady Lane', 'My Bonnie Lassie', 'The Man With the Banjo', 'Tammy', 'To Each His Own', 'Lida Rose', 'Moonlight Cocktail', 'Moments to Remember']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The X Brothers -  Beyond the Valley of the X | artist=The X Brothers | duration=2758.0 | tracks=['(Wish I Could Fly Like) Superman', 'Money Machine', 'Bar Room Blues', 'Do It All for You', 'Is This for Real?', 'Psycho', 'Hot Rails to Hell', 'Doctor Music', 'Downtown', 'Last Days of May', 'Stairway to the Stars', '2000 Light Years from Home']\nRecord B: name=The Best of the Ames Brothers | artist=Ames Brothers, The | duration=2673 | tracks=['Rag Mop', 'Sentimental Me', 'Undecided', 'Can Anyone Explain', \"Melodie D'Amour (Melody of Love)\", 'It Only Hurts for a Little While', 'You You You', 'A Very Precious Love', 'The Naughty Lady of Shady Lane', 'My Bonnie Lassie', 'The Man With the Banjo', 'Tammy', 'To Each His Own', 'Lida Rose', 'Moonlight Cocktail', 'Moments to Remember']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

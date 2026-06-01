@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_121165|mbrainz_9975|name=Keep The Faith | artist=Toughskins | release-date=2013-11-26 | release-country=United States of America | genre=Rock | tracks=['Too Young To Care', 'Keep The Faith', 'Black And Blue', 'Crack Some Skulls']||name=Keep the Faith | artist=Tuff, Tony feat. | release-date=1987-01-01 | release-country=United States of America | duration=0 | tracks=['Kill Me With It', 'Tell Me What Darling', 'Fling It Up', 'Keep the Faith', 'You Have to Rock', \"Can't Left the Dance\", 'Jealousy a Kill Me', 'Puss Gone', 'More Love', 'Work and Skank']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Keep The Faith | artist=Toughskins | release-date=2013-11-26 | release-country=United States of America | genre=Rock | tracks=['Too Young To Care', 'Keep The Faith', 'Black And Blue', 'Crack Some Skulls']\nRecord B: name=Keep the Faith | artist=Tuff, Tony feat. | release-date=1987-01-01 | release-country=United States of America | duration=0 | tracks=['Kill Me With It', 'Tell Me What Darling', 'Fling It Up', 'Keep the Faith', 'You Have to Rock', \"Can't Left the Dance\", 'Jealousy a Kill Me', 'Puss Gone', 'More Love', 'Work and Skank']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

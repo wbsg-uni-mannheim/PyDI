@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-05-09"
+    },
+    {
+      "source": "discogs",
+      "value": "2011"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "interpolation",
+    "reasoning": "The full date from MusicBrainz is more specific, and Discogs is consistent at the year level.",
+    "value": "2011-05-09"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-05-09\",\"operation\":\"interpolation\",\"confidence\":0.93,\"reasoning\":\"The full date from MusicBrainz is more specific, and Discogs is consistent at the year level.\"}"
+}

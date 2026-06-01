@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "99,999.99"
+    },
+    {
+      "source": "products_2",
+      "value": "360.05"
+    },
+    {
+      "source": "products_3",
+      "value": "8,579.0"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict and 360.05 is the only unambiguous numeric price format without thousands separators, making it the safest canonical choice.",
+    "value": 360.05
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":360.05,\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"The candidates conflict and 360.05 is the only unambiguous numeric price format without thousands separators, making it the safest canonical choice.\"}"
+}

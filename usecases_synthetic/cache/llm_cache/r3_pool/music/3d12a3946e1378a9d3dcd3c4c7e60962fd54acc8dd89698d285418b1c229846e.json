@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_23553|mbrainz_516|name=Blowout Comb | artist=Digable Planets | release-date=1994 | release-country=UK | duration=3699.0 | genre=Hip Hop | tracks=['The May 4th Movement Starring Doodlebug', 'Black Ego', 'Dog It', \"Jettin'\", 'Borough Check', 'Highing Fly', 'Dial 7 (Axioms Of Creamy Spies)', 'The Art Of Easing', \"K.B.'s Alley (Mood Dudes Groove)\", 'Graffiti', 'Blowing Down', '9th Wonder', 'For Corners']||name=Blowout Comb | artist=Digable Planets | release-date=1994-01-01 | release-country=United States of America | duration=3695 | tracks=['The May 4th Movement', 'Black Ego', 'Dog It', 'Jettinâ€™', 'Borough Check', 'Highing Fly', 'Dial 7 (Axioms of Creamy Spies)', 'The Art of Easing', 'K.B.â€™s Alley (Mood Dudes Groove)', 'Graffiti', 'Blowing Down', '9th Wonder (Blackitolism)', 'For Corners']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Blowout Comb | artist=Digable Planets | release-date=1994 | release-country=UK | duration=3699.0 | genre=Hip Hop | tracks=['The May 4th Movement Starring Doodlebug', 'Black Ego', 'Dog It', \"Jettin'\", 'Borough Check', 'Highing Fly', 'Dial 7 (Axioms Of Creamy Spies)', 'The Art Of Easing', \"K.B.'s Alley (Mood Dudes Groove)\", 'Graffiti', 'Blowing Down', '9th Wonder', 'For Corners']\nRecord B: name=Blowout Comb | artist=Digable Planets | release-date=1994-01-01 | release-country=United States of America | duration=3695 | tracks=['The May 4th Movement', 'Black Ego', 'Dog It', 'Jettinâ€™', 'Borough Check', 'Highing Fly', 'Dial 7 (Axioms of Creamy Spies)', 'The Art of Easing', 'K.B.â€™s Alley (Mood Dudes Groove)', 'Graffiti', 'Blowing Down', '9th Wonder (Blackitolism)', 'For Corners']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

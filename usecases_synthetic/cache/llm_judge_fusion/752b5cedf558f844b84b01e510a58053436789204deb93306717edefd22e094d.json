@@ -1,0 +1,30 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "3,171.0"
+    },
+    {
+      "source": "products_2",
+      "value": "37,400.0"
+    },
+    {
+      "source": "products_3",
+      "value": "4,899.0"
+    },
+    {
+      "source": "products_4",
+      "value": "614.95"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.39,
+    "operation": "aggregation",
+    "reasoning": "Candidates are conflicting numeric prices, so a robust aggregate (median of the four values) is the best single estimate.",
+    "value": 4136.475
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4136.475,\"operation\":\"aggregation\",\"confidence\":0.39,\"reasoning\":\"Candidates are conflicting numeric prices, so a robust aggregate (median of the four values) is the best single estimate.\"}"
+}

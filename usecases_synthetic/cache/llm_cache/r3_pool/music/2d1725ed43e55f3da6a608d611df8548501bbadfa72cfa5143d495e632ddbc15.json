@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_150400|lastFM_65524|name=Beyond Fate | artist=Die Pretty | release-date=2012-05-08 | release-country=United States of America | duration=3752.0 | genre=Rock | tracks=['Medicated Nation', 'Voices', 'Let Me Out', 'Two Hearts', 'Girls And Boys', 'Grin And Bear It', '7th Avenue', 'My Own Mind', 'Microphone', 'Will We Make It?', 'Out Of This Mess', 'Hey Girl', 'Stupid Boy', 'Angels', 'Can You Hear Me?', 'Paint It Red', 'Heart Of Stone', 'Soaked In Sin', 'Knife Bullet Noose', 'Goodbye']||name=[explicit] Beyond Fate | artist=Die Pretty | duration=3258.0 | tracks=['Medicated Nation', 'Voices', 'Let Me Out!!', '2 Hearts', 'Girls and Boys', '7th avenue', 'My Own Mind', 'Microphone', 'Will We Make It?', 'Hey Girl', 'Stupid Boy', 'Angels', 'Can You Hear Me?', 'Paint It Red', 'Heart of Stone', 'Soaked In Sun', 'Goodbye']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beyond Fate | artist=Die Pretty | release-date=2012-05-08 | release-country=United States of America | duration=3752.0 | genre=Rock | tracks=['Medicated Nation', 'Voices', 'Let Me Out', 'Two Hearts', 'Girls And Boys', 'Grin And Bear It', '7th Avenue', 'My Own Mind', 'Microphone', 'Will We Make It?', 'Out Of This Mess', 'Hey Girl', 'Stupid Boy', 'Angels', 'Can You Hear Me?', 'Paint It Red', 'Heart Of Stone', 'Soaked In Sin', 'Knife Bullet Noose', 'Goodbye']\nRecord B: name=[explicit] Beyond Fate | artist=Die Pretty | duration=3258.0 | tracks=['Medicated Nation', 'Voices', 'Let Me Out!!', '2 Hearts', 'Girls and Boys', '7th avenue', 'My Own Mind', 'Microphone', 'Will We Make It?', 'Hey Girl', 'Stupid Boy', 'Angels', 'Can You Hear Me?', 'Paint It Red', 'Heart of Stone', 'Soaked In Sun', 'Goodbye']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

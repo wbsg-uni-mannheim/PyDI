@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_95411|lastFM_43596|name=White Elephant EP | artist=Cosmic Replicant | release-date=2012-12-21 | release-country=Canada | duration=1289.0 | genre=Electronic | tracks=['Sense Of Life', 'White Elephant', 'Enter The Void']||name=C. Replicant -  White Elephant EP | artist=C. Replicant | duration=411.0 | tracks=['White Elephant']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=White Elephant EP | artist=Cosmic Replicant | release-date=2012-12-21 | release-country=Canada | duration=1289.0 | genre=Electronic | tracks=['Sense Of Life', 'White Elephant', 'Enter The Void']\nRecord B: name=C. Replicant -  White Elephant EP | artist=C. Replicant | duration=411.0 | tracks=['White Elephant']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

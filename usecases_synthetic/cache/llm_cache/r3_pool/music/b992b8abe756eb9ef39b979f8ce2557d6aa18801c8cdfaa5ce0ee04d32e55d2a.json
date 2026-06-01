@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_28813|mbrainz_1334|name=Ascension | artist=Guild | duration=1042.0 | tracks=['Ascension', 'Atonement']||name=Ascension | artist=Pep Love | release-date=2001-07-24 | release-country=United States of America | duration=4428 | tracks=['The Grime & Grit', 'Living Is Beautiful', 'The Grind', 'The Fight Club', 'U.S.', 'The Onus (What You Are)', 'T.A.M.I.', 'My Energy', 'Ascension', 'Act. Phenom', 'A New Religion', 'Pacific Heights', 'Karma (The Snake Charmer)', \"If You Can't Beat 'em\", 'Different', 'Black People (Melanin Magnetic)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ascension | artist=Guild | duration=1042.0 | tracks=['Ascension', 'Atonement']\nRecord B: name=Ascension | artist=Pep Love | release-date=2001-07-24 | release-country=United States of America | duration=4428 | tracks=['The Grime & Grit', 'Living Is Beautiful', 'The Grind', 'The Fight Club', 'U.S.', 'The Onus (What You Are)', 'T.A.M.I.', 'My Energy', 'Ascension', 'Act. Phenom', 'A New Religion', 'Pacific Heights', 'Karma (The Snake Charmer)', \"If You Can't Beat 'em\", 'Different', 'Black People (Melanin Magnetic)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

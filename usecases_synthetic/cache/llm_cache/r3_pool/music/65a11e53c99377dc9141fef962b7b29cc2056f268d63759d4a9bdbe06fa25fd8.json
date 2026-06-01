@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_40584|lastFM_19240|name=Suffering From Echoes | artist=Nightmare Visions | release-date=1994 | release-country=Norway | duration=2089.0 | genre=Rock | tracks=['My Quiet Grave', 'Suffering From Echoes', 'Self Immolation', 'Twisted And Deranged', 'Les Reves Du Sang', 'How Dark My Love']||name=Nightmare V. -  Suffering from Echoes | artist=Nightmare V. | tracks=[]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Suffering From Echoes | artist=Nightmare Visions | release-date=1994 | release-country=Norway | duration=2089.0 | genre=Rock | tracks=['My Quiet Grave', 'Suffering From Echoes', 'Self Immolation', 'Twisted And Deranged', 'Les Reves Du Sang', 'How Dark My Love']\nRecord B: name=Nightmare V. -  Suffering from Echoes | artist=Nightmare V. | tracks=[]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

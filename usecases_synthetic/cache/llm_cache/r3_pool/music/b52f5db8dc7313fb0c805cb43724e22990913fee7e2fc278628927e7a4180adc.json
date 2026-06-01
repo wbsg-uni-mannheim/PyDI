@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_38696|mbrainz_8759|name=Spirit | artist=Peter Kater | duration=2377.0 | tracks=['Spirit (1993)', 'To Share My Heart', 'Presence', 'Passages', \"Summer's Innocence\", 'Spaces', 'Reflections', 'Spirit (1983)']||name=Spirit of Rumi | artist=Vision II feat. | release-date=1997-01-01 | release-country=United States of America | duration=2384 | tracks=['Seek in Your Heart', \"Don't Go Back to Sleep\", 'The Ocean', 'Eyes Go Blind (Aya)', 'The Breath (The Color of Dying)', 'The Center', 'Lovers / At Night We Fall', 'Nine Layers of Illusion', 'Desert Dusk', \"Don't Go Back to Sleep (reprise)\", 'The Great Mystery']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spirit | artist=Peter Kater | duration=2377.0 | tracks=['Spirit (1993)', 'To Share My Heart', 'Presence', 'Passages', \"Summer's Innocence\", 'Spaces', 'Reflections', 'Spirit (1983)']\nRecord B: name=Spirit of Rumi | artist=Vision II feat. | release-date=1997-01-01 | release-country=United States of America | duration=2384 | tracks=['Seek in Your Heart', \"Don't Go Back to Sleep\", 'The Ocean', 'Eyes Go Blind (Aya)', 'The Breath (The Color of Dying)', 'The Center', 'Lovers / At Night We Fall', 'Nine Layers of Illusion', 'Desert Dusk', \"Don't Go Back to Sleep (reprise)\", 'The Great Mystery']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

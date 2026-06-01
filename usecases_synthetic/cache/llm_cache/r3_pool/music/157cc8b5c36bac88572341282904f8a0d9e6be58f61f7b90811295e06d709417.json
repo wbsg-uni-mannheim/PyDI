@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_27498|mbrainz_5994|name=Broken Bones And Bloody Kisses | artist=Boys Night Out | release-date=2007-05-18 | release-country=United States of America | genre=Rock | tracks=['Where We Breathe', 'The Only Honest Love Song', 'This Broken Killswitch', 'Victor Versus The Victim', 'Sketch Artist Composite', 'A Torrid Love Affair', 'The Anatomy Of The Journey']||name=Broken Bones and Bloody Kisses | artist=Boys Night Out | release-date=2002-08-23 | release-country=United States of America | duration=1243 | tracks=['Where We Breathe', 'The Only Honest Lovesong', 'This Broken Killswitch', 'Victor Versus the Victim', 'Sketch Artist Composite', 'A Torrid Love Affair']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken Bones And Bloody Kisses | artist=Boys Night Out | release-date=2007-05-18 | release-country=United States of America | genre=Rock | tracks=['Where We Breathe', 'The Only Honest Love Song', 'This Broken Killswitch', 'Victor Versus The Victim', 'Sketch Artist Composite', 'A Torrid Love Affair', 'The Anatomy Of The Journey']\nRecord B: name=Broken Bones and Bloody Kisses | artist=Boys Night Out | release-date=2002-08-23 | release-country=United States of America | duration=1243 | tracks=['Where We Breathe', 'The Only Honest Lovesong', 'This Broken Killswitch', 'Victor Versus the Victim', 'Sketch Artist Composite', 'A Torrid Love Affair']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

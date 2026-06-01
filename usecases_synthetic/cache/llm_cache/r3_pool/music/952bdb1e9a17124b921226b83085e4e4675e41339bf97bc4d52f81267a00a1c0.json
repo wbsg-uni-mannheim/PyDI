@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_110126|lastFM_34580|name=Encores | artist=Patsy Cline | release-country=United States of America | duration=1739.0 | genre=Folk, World, & Country | tracks=['That Wonderful Someone', 'I Love You Honey', \"Poor Man's Roses Or Rich Man's Gold\", 'Tody, Tomorrow And Forever', 'A Stranger In My Arms', \"I've Loved And Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Fingerprints', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]||name=Encores | artist=Stan Kenton | duration=1754.0 | tracks=[\"Peg o' My Heart\", \"He's Funny That Way\", 'Capitol Punishment', 'Lover', 'Somnambulish', 'Abstraction', 'Chorale For Brass Piano And Bongo', 'Please Be Kind', 'Ecuador']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Encores | artist=Patsy Cline | release-country=United States of America | duration=1739.0 | genre=Folk, World, & Country | tracks=['That Wonderful Someone', 'I Love You Honey', \"Poor Man's Roses Or Rich Man's Gold\", 'Tody, Tomorrow And Forever', 'A Stranger In My Arms', \"I've Loved And Lost Again\", 'The Heart You Break May Be Your Own', 'Stop, Look & Listen', 'Fingerprints', 'Try Again', \"Don't Ever Leave Me\", \"Then You'll Know\"]\nRecord B: name=Encores | artist=Stan Kenton | duration=1754.0 | tracks=[\"Peg o' My Heart\", \"He's Funny That Way\", 'Capitol Punishment', 'Lover', 'Somnambulish', 'Abstraction', 'Chorale For Brass Piano And Bongo', 'Please Be Kind', 'Ecuador']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

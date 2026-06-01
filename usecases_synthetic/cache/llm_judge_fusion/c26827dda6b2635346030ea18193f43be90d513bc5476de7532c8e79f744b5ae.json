@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "GD Power Development Company"
+    },
+    {
+      "source": "forbes",
+      "value": "GD Power Development"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "The candidates differ only by the presence of the generic word 'Company', so the fuller official-style name is the canonical form.",
+    "value": "GD Power Development Company"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"GD Power Development Company\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"The candidates differ only by the presence of the generic word 'Company', so the fuller official-style name is the canonical form.\"}"
+}

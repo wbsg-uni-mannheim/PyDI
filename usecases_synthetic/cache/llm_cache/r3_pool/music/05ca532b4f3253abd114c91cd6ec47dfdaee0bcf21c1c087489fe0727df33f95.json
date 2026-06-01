@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_78332|mbrainz_16125|name=Singles Collection | artist=Vengaboys | duration=4367.0 | tracks=['Shalala Lala', \"Kiss (When The Sun Don't Shine)\", 'We Like To Party (2000 Mix)', 'Boom Boom Boom', 'Ho Ho Vengaboys!', 'Up & Down', \"We're Going to Ibiza\", '48 hours', 'Parada de Tettas', 'To Brazil', \"Movin' Around\", 'Overwhlem yourself', 'You and Me', 'The Vengabeat', 'Paradise...', 'Superfly Slick Dick', 'All Night Passion', 'Shalala lala (Karaoke Version)']||name=Punk Singles Collection | artist=Destructors | release-date=2006-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4455 | tracks=['AK 47', 'Meaningless Names', 'Police State', 'Dachau', 'Death Squad', 'Religion', 'Soldier Boy', 'Agent Orange', 'Corpse Gas', 'Jailbait', 'Kalesnikov (AKA 47)', 'Sewage Worker', 'Image (live)', 'Wild Thing', 'Forces of Law', 'Neutron Bomb', 'Wild Thing (dirty version)', 'Sex in Chains', 'Understand', 'Bullshit', 'Nerve Gas', 'Trinity', 'Bomb', 'I Wanna Be Your Dog', 'Khmer Rouge Boogie', 'Bodybags', 'Electronic Church', 'Khmer Rouge Boogie']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Singles Collection | artist=Vengaboys | duration=4367.0 | tracks=['Shalala Lala', \"Kiss (When The Sun Don't Shine)\", 'We Like To Party (2000 Mix)', 'Boom Boom Boom', 'Ho Ho Vengaboys!', 'Up & Down', \"We're Going to Ibiza\", '48 hours', 'Parada de Tettas', 'To Brazil', \"Movin' Around\", 'Overwhlem yourself', 'You and Me', 'The Vengabeat', 'Paradise...', 'Superfly Slick Dick', 'All Night Passion', 'Shalala lala (Karaoke Version)']\nRecord B: name=Punk Singles Collection | artist=Destructors | release-date=2006-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=4455 | tracks=['AK 47', 'Meaningless Names', 'Police State', 'Dachau', 'Death Squad', 'Religion', 'Soldier Boy', 'Agent Orange', 'Corpse Gas', 'Jailbait', 'Kalesnikov (AKA 47)', 'Sewage Worker', 'Image (live)', 'Wild Thing', 'Forces of Law', 'Neutron Bomb', 'Wild Thing (dirty version)', 'Sex in Chains', 'Understand', 'Bullshit', 'Nerve Gas', 'Trinity', 'Bomb', 'I Wanna Be Your Dog', 'Khmer Rouge Boogie', 'Bodybags', 'Electronic Church', 'Khmer Rouge Boogie']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

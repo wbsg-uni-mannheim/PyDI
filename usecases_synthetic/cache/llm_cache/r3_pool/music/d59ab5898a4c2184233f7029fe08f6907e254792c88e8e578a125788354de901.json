@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_130460|mbrainz_3874|name=24 Carat Purple | artist=Deep Purple | release-date=1975 | release-country=Italy | genre=Rock | tracks=['Speed King', 'Smoke On The Water', 'Woman From Tokyo', 'Never Before', 'Fireball', 'Child In Time', 'Strange Kind Of Woman', 'Black Night']||name=24 Carat Purple | artist=Deep Purple | release-date=2001-01-01 | duration=3187 | tracks=['Woman From Tokyo', 'Fireball', 'Strange Kind of Woman', 'Never Before', 'Black Night (live)', 'Speed King', 'Smoke on the Water (live)', 'Child in Time (live)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=24 Carat Purple | artist=Deep Purple | release-date=1975 | release-country=Italy | genre=Rock | tracks=['Speed King', 'Smoke On The Water', 'Woman From Tokyo', 'Never Before', 'Fireball', 'Child In Time', 'Strange Kind Of Woman', 'Black Night']\nRecord B: name=24 Carat Purple | artist=Deep Purple | release-date=2001-01-01 | duration=3187 | tracks=['Woman From Tokyo', 'Fireball', 'Strange Kind of Woman', 'Never Before', 'Black Night (live)', 'Speed King', 'Smoke on the Water (live)', 'Child in Time (live)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

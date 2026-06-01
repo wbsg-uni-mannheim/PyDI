@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_164010|lastFM_69458|name=MTV Unplugged In New York | artist=Nirvana | release-date=1994 | release-country=South Africa | duration=3236.0 | genre=Rock | tracks=['About A Girl', 'Come As You Are', \"Jesus Doesn't Want Me For A Sunbeam\", 'The Man Who Sold The World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On A Plain', 'Something In The Way', 'Plateau', 'Oh Me', 'Lake Of Fire', 'All Apologies', 'Where Did You Sleep Last Night']||name=Unplugged | artist=Nirvana | duration=2231.0 | tracks=['Come As You Are (Boom Box Version)', 'Jesus Wants Me for a Sunbeam', 'Dumb (Radio Appearance)', 'Man Who Sold the World', 'Penny Royal Tea', 'Polly (Solo Acoustic Demo)', 'On a Plain', 'Plateau', 'Lake Of Fire', 'All Apologies (Solo Acoustic Demo)', 'Where Did You Sleep Last Night (Solo Acoustic Demo)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MTV Unplugged In New York | artist=Nirvana | release-date=1994 | release-country=South Africa | duration=3236.0 | genre=Rock | tracks=['About A Girl', 'Come As You Are', \"Jesus Doesn't Want Me For A Sunbeam\", 'The Man Who Sold The World', 'Pennyroyal Tea', 'Dumb', 'Polly', 'On A Plain', 'Something In The Way', 'Plateau', 'Oh Me', 'Lake Of Fire', 'All Apologies', 'Where Did You Sleep Last Night']\nRecord B: name=Unplugged | artist=Nirvana | duration=2231.0 | tracks=['Come As You Are (Boom Box Version)', 'Jesus Wants Me for a Sunbeam', 'Dumb (Radio Appearance)', 'Man Who Sold the World', 'Penny Royal Tea', 'Polly (Solo Acoustic Demo)', 'On a Plain', 'Plateau', 'Lake Of Fire', 'All Apologies (Solo Acoustic Demo)', 'Where Did You Sleep Last Night (Solo Acoustic Demo)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

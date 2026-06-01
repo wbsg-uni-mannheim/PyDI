@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_100165|mbrainz_2096|name=Goodbye Jumbo | artist=World Party | release-date=1990 | release-country=Australasia | duration=3202.0 | genre=Rock | tracks=['Is It Too Late?', 'Way Down Now', 'When The Rainbow Comes', 'Put The Message In The Box', \"Ain't Gonna Come Till I'm Ready\", 'And I Fell Back Alone', 'Take It Up', 'God On My Side', 'Show Me To The Top', 'Love Street', 'Sweet Soul Dream', 'Thank You World']||name=Goodbye Jumbo | artist=World Party | release-date=1990-04 | release-country=United States of America | duration=3207 | tracks=['Is It Too Late', 'Way Down Now', 'When the Rainbow Comes', 'Put the Message in the Box', \"Ain't Gonna Come Till I'm Ready\", 'And I Fell Back Alone', 'Take It Up', 'God on My Side', 'Show Me to the Top', 'Love Street', 'Sweet Soul Dream', 'Thank You World']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Goodbye Jumbo | artist=World Party | release-date=1990 | release-country=Australasia | duration=3202.0 | genre=Rock | tracks=['Is It Too Late?', 'Way Down Now', 'When The Rainbow Comes', 'Put The Message In The Box', \"Ain't Gonna Come Till I'm Ready\", 'And I Fell Back Alone', 'Take It Up', 'God On My Side', 'Show Me To The Top', 'Love Street', 'Sweet Soul Dream', 'Thank You World']\nRecord B: name=Goodbye Jumbo | artist=World Party | release-date=1990-04 | release-country=United States of America | duration=3207 | tracks=['Is It Too Late', 'Way Down Now', 'When the Rainbow Comes', 'Put the Message in the Box', \"Ain't Gonna Come Till I'm Ready\", 'And I Fell Back Alone', 'Take It Up', 'God on My Side', 'Show Me to the Top', 'Love Street', 'Sweet Soul Dream', 'Thank You World']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

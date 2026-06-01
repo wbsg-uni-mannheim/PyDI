@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_114096|mbrainz_12216|name=Echoes, Silence, Patience & Grace | artist=Foo Fighters | release-date=2007 | release-country=Brazil | duration=3067.0 | genre=Rock | tracks=['The Pretender', 'Let It Die', 'Erase/Replace', 'Long Road To Ruin', 'Come Alive', 'Stranger Things Have Happened', 'Cheer Up, Boys (Your Make Up Is Running)', \"Summer's End\", 'Ballad Of The Beaconsfield Miners', 'Statues', 'But, Honestly', 'Home']||name=Echoes, Silence, Patience & Grace | artist=Foo Fighters | release-date=2007-09-25 | release-country=United States of America | duration=1622 | tracks=['The Pretender', 'Let It Die', 'Erase/Replace', 'Long Road to Ruin', 'Come Alive', 'Stranger Things Have Happened', 'Cheer Up, Boys (Your Make Up Is Running)', 'Summerâ€™s End', 'Ballad of the Beaconsfield Miners', 'Statues', 'But, Honestly', 'Home']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Echoes, Silence, Patience & Grace | artist=Foo Fighters | release-date=2007 | release-country=Brazil | duration=3067.0 | genre=Rock | tracks=['The Pretender', 'Let It Die', 'Erase/Replace', 'Long Road To Ruin', 'Come Alive', 'Stranger Things Have Happened', 'Cheer Up, Boys (Your Make Up Is Running)', \"Summer's End\", 'Ballad Of The Beaconsfield Miners', 'Statues', 'But, Honestly', 'Home']\nRecord B: name=Echoes, Silence, Patience & Grace | artist=Foo Fighters | release-date=2007-09-25 | release-country=United States of America | duration=1622 | tracks=['The Pretender', 'Let It Die', 'Erase/Replace', 'Long Road to Ruin', 'Come Alive', 'Stranger Things Have Happened', 'Cheer Up, Boys (Your Make Up Is Running)', 'Summerâ€™s End', 'Ballad of the Beaconsfield Miners', 'Statues', 'But, Honestly', 'Home']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

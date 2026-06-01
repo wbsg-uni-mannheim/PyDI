@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_69420|mbrainz_694|name=Breakaway | artist=Hotel Edison Roof Orchestra | duration=2345.0 | tracks=['Three Blind Mice', \"She's a Great, Great Girl\", \"I Ain't Got Nobody\", 'Pardon the Glove', \"Hittin' the Bottle\", 'Lazy Weather', 'Breakaway', \"I'll Be Blue, Just Thinking of You\", 'Jimtown Blues', \"There, Ain't No Land Like Dixieland to Me\", \"What's the Use\"]||name=Breakaway | artist=Mehdi, DJ | release-date=2002-01-01 | release-country=France | duration=1211 | tracks=['Breakaway (DJ Mehdi remix)', 'Breakaway', 'Breakaway (Etienne De Crecy remix)', 'Breakaway (General Electrics Soul mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Breakaway | artist=Hotel Edison Roof Orchestra | duration=2345.0 | tracks=['Three Blind Mice', \"She's a Great, Great Girl\", \"I Ain't Got Nobody\", 'Pardon the Glove', \"Hittin' the Bottle\", 'Lazy Weather', 'Breakaway', \"I'll Be Blue, Just Thinking of You\", 'Jimtown Blues', \"There, Ain't No Land Like Dixieland to Me\", \"What's the Use\"]\nRecord B: name=Breakaway | artist=Mehdi, DJ | release-date=2002-01-01 | release-country=France | duration=1211 | tracks=['Breakaway (DJ Mehdi remix)', 'Breakaway', 'Breakaway (Etienne De Crecy remix)', 'Breakaway (General Electrics Soul mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

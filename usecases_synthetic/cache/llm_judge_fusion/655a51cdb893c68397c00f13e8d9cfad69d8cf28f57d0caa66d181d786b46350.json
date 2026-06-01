@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1984-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "1984"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "interpolation",
+    "reasoning": "The year-only candidate likely refers to the same release year, so the most precise canonical date is the standardized year-start date.",
+    "value": "1984-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1984-01-01\",\"operation\":\"interpolation\",\"confidence\":0.96,\"reasoning\":\"The year-only candidate likely refers to the same release year, so the most precise canonical date is the standardized year-start date.\"}"
+}

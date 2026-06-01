@@ -1,0 +1,1437 @@
+{
+  "domain": "companies",
+  "meta": {
+    "written_at": "2026-05-12T21:17:35.431798+00:00",
+    "with_llm": false,
+    "committee_versions": {
+      "fusion": "fusion_committee.yaml@d569a2b1af6f"
+    },
+    "total_runtime_s": 21.16,
+    "fusion_input_member": ""
+  },
+  "per_stage": {
+    "fusion": {
+      "stage": "fusion",
+      "domain": "companies",
+      "level": "baseline",
+      "runtime_s": 21.151638499999535,
+      "roster": [
+        "name_voting",
+        "name_longest_string",
+        "name_most_complete",
+        "name_prefer_higher_trust",
+        "name_accusim",
+        "name_fusionquery",
+        "name_casefusion",
+        "name_llm_judge",
+        "assets_median",
+        "assets_maximum",
+        "assets_trimmed_mean",
+        "assets_huber_m_estimator",
+        "assets_median_of_means",
+        "assets_prefer_higher_trust",
+        "assets_fusionquery",
+        "revenue_median",
+        "revenue_maximum",
+        "revenue_trimmed_mean",
+        "revenue_huber_m_estimator",
+        "revenue_median_of_means",
+        "revenue_prefer_higher_trust",
+        "revenue_fusionquery",
+        "founded_voting",
+        "founded_earliest",
+        "founded_prefer_higher_trust",
+        "country_voting",
+        "country_favour_forbes",
+        "country_prefer_higher_trust",
+        "country_truthfinder",
+        "country_llm_judge",
+        "city_voting",
+        "city_shortest_string",
+        "city_prefer_higher_trust",
+        "city_truthfinder",
+        "city_llm_judge",
+        "keypeople_union",
+        "keypeople_intersection",
+        "keypeople_intersection_k_sources",
+        "keypeople_voting",
+        "keypeople_prefer_higher_trust",
+        "keypeople_ltm"
+      ],
+      "aggregated": {
+        "overall_accuracy": 0.880952380952381,
+        "overall_mean_accuracy": 0.7204554043839757,
+        "overall_spread": 0.2857142857142857
+      },
+      "per_attribute": {
+        "name": {
+          "best_strategy_accuracy": 1.0,
+          "mean_strategy_accuracy": 0.8680555555555556,
+          "spread": 0.2222222222222222,
+          "voting": 1.0,
+          "longest_string": 0.8333333333333334,
+          "most_complete": 0.8333333333333334,
+          "prefer_higher_trust": 0.8333333333333334,
+          "accusim": 1.0,
+          "fusionquery": 0.7777777777777778,
+          "casefusion": 0.8333333333333334,
+          "llm_judge": 0.8333333333333334
+        },
+        "assets": {
+          "best_strategy_accuracy": 0.9444444444444444,
+          "mean_strategy_accuracy": 0.6825396825396826,
+          "spread": 0.33333333333333326,
+          "median": 0.6111111111111112,
+          "maximum": 0.7222222222222222,
+          "trimmed_mean": 0.6111111111111112,
+          "huber_m_estimator": 0.6111111111111112,
+          "median_of_means": 0.6111111111111112,
+          "prefer_higher_trust": 0.6666666666666666,
+          "fusionquery": 0.9444444444444444
+        },
+        "revenue": {
+          "best_strategy_accuracy": 0.7777777777777778,
+          "mean_strategy_accuracy": 0.5555555555555556,
+          "spread": 0.33333333333333337,
+          "median": 0.4444444444444444,
+          "maximum": 0.7222222222222222,
+          "trimmed_mean": 0.4444444444444444,
+          "huber_m_estimator": 0.4444444444444444,
+          "median_of_means": 0.4444444444444444,
+          "prefer_higher_trust": 0.6111111111111112,
+          "fusionquery": 0.7777777777777778
+        },
+        "founded": {
+          "best_strategy_accuracy": 0.9444444444444444,
+          "mean_strategy_accuracy": 0.9444444444444443,
+          "spread": 0.0,
+          "voting": 0.9444444444444444,
+          "earliest": 0.9444444444444444,
+          "prefer_higher_trust": 0.9444444444444444
+        },
+        "country": {
+          "best_strategy_accuracy": 1.0,
+          "mean_strategy_accuracy": 0.8222222222222222,
+          "spread": 0.38888888888888884,
+          "voting": 0.9444444444444444,
+          "favour_forbes": 0.9444444444444444,
+          "prefer_higher_trust": 0.6111111111111112,
+          "truthfinder": 1.0,
+          "llm_judge": 0.6111111111111112
+        },
+        "city": {
+          "best_strategy_accuracy": 0.8333333333333334,
+          "mean_strategy_accuracy": 0.6888888888888889,
+          "spread": 0.2777777777777778,
+          "voting": 0.5555555555555556,
+          "shortest_string": 0.8333333333333334,
+          "prefer_higher_trust": 0.7222222222222222,
+          "truthfinder": 0.7222222222222222,
+          "llm_judge": 0.6111111111111112
+        },
+        "keypeople": {
+          "best_strategy_accuracy": 0.6666666666666666,
+          "mean_strategy_accuracy": 0.48148148148148145,
+          "spread": 0.4444444444444444,
+          "union": 0.6666666666666666,
+          "intersection": 0.2222222222222222,
+          "intersection_k_sources": 0.2222222222222222,
+          "voting": 0.5555555555555556,
+          "prefer_higher_trust": 0.6666666666666666,
+          "ltm": 0.5555555555555556
+        }
+      },
+      "per_partition": {
+        "primary": {
+          "mean_best_accuracy": 1.0,
+          "mean_spread": 0.2222222222222222,
+          "n_attributes": 1.0
+        },
+        "secondary": {
+          "mean_best_accuracy": 0.8333333333333333,
+          "mean_spread": 0.2777777777777778,
+          "n_attributes": 4.0
+        },
+        "key": {
+          "mean_best_accuracy": 0.9166666666666667,
+          "mean_spread": 0.3333333333333333,
+          "n_attributes": 2.0
+        }
+      },
+      "per_member": {
+        "name_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.41865108299680287,
+          "notes": {
+            "attribute": "name",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.8333333333333334,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4216516660017078,
+          "notes": {
+            "attribute": "name",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.8333333333333334,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.431872207998822,
+          "notes": {
+            "attribute": "name",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "name_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.8333333333333334,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4593527500037453,
+          "notes": {
+            "attribute": "name",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "primary"
+          }
+        },
+        "name_accusim": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5980211670030258,
+          "notes": {
+            "attribute": "name",
+            "strategy": "accusim",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.8034188034188035,
+            "macro_accuracy": 0.7857142857142857,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 94,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.7777777777777778,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.6681477500023902,
+          "notes": {
+            "attribute": "name",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_casefusion": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.8333333333333334,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.680564875001437,
+          "notes": {
+            "attribute": "name",
+            "strategy": "casefusion",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "name_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 0.8333333333333334,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.6819709170013084,
+          "notes": {
+            "attribute": "name",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "primary"
+          }
+        },
+        "assets_median": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.6111111111111112,
+            "assets_count": 18
+          },
+          "runtime_s": 0.44212333299947204,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "median",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_maximum": {
+          "metrics": {
+            "overall_accuracy": 0.8034188034188035,
+            "macro_accuracy": 0.7857142857142857,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 94,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.7222222222222222,
+            "assets_count": 18
+          },
+          "runtime_s": 0.42607674999453593,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "maximum",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_trimmed_mean": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.6111111111111112,
+            "assets_count": 18
+          },
+          "runtime_s": 0.42682062499807216,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "trimmed_mean",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_huber_m_estimator": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.6111111111111112,
+            "assets_count": 18
+          },
+          "runtime_s": 0.42773320799460635,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "huber_m_estimator",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_median_of_means": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.6111111111111112,
+            "assets_count": 18
+          },
+          "runtime_s": 0.43162033399858046,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "median_of_means",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.7948717948717948,
+            "macro_accuracy": 0.7777777777777778,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 93,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.6666666666666666,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4416626250022091,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "assets_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.6867235829995479,
+          "notes": {
+            "attribute": "assets",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_median": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.4444444444444444,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.44150900000386173,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "median",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_maximum": {
+          "metrics": {
+            "overall_accuracy": 0.8290598290598291,
+            "macro_accuracy": 0.8095238095238095,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 97,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7222222222222222,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.438459042001341,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "maximum",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_trimmed_mean": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.4444444444444444,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.58825712500402,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "trimmed_mean",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_huber_m_estimator": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.4444444444444444,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.33199029200477526,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "huber_m_estimator",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_median_of_means": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.4444444444444444,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4600552920019254,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "median_of_means",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7936507936507936,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.6111111111111112,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4613722499998403,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "revenue_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.7470597499996074,
+          "notes": {
+            "attribute": "revenue",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "founded_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.47209550000115996,
+          "notes": {
+            "attribute": "founded",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "founded_earliest": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.48033454200049164,
+          "notes": {
+            "attribute": "founded",
+            "strategy": "earliest",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "founded_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4906352500038338,
+          "notes": {
+            "attribute": "founded",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "country_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4967419169988716,
+          "notes": {
+            "attribute": "country",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "country_favour_forbes": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.3334397500002524,
+          "notes": {
+            "attribute": "country",
+            "strategy": "favour_forbes",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "country_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.6111111111111112,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.4948445830013952,
+          "notes": {
+            "attribute": "country",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "country_truthfinder": {
+          "metrics": {
+            "overall_accuracy": 0.8461538461538461,
+            "macro_accuracy": 0.8253968253968254,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 99,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 1.0,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.840216499993403,
+          "notes": {
+            "attribute": "country",
+            "strategy": "truthfinder",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "country_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.7863247863247863,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 92,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.6111111111111112,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5623842919958406,
+          "notes": {
+            "attribute": "country",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "key"
+          }
+        },
+        "city_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.33971849999943515,
+          "notes": {
+            "attribute": "city",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "city_shortest_string": {
+          "metrics": {
+            "overall_accuracy": 0.8803418803418803,
+            "macro_accuracy": 0.8571428571428573,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 103,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.8333333333333334,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5246593749980093,
+          "notes": {
+            "attribute": "city",
+            "strategy": "shortest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "city_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8632478632478633,
+            "macro_accuracy": 0.8412698412698413,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 101,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.7222222222222222,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5395557919982821,
+          "notes": {
+            "attribute": "city",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "city_truthfinder": {
+          "metrics": {
+            "overall_accuracy": 0.8632478632478633,
+            "macro_accuracy": 0.8412698412698413,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 101,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.7222222222222222,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.694438958002138,
+          "notes": {
+            "attribute": "city",
+            "strategy": "truthfinder",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "city_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.8461538461538461,
+            "macro_accuracy": 0.8253968253968255,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 99,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.6111111111111112,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.58547387499857,
+          "notes": {
+            "attribute": "city",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "key"
+          }
+        },
+        "keypeople_union": {
+          "metrics": {
+            "overall_accuracy": 0.8461538461538461,
+            "macro_accuracy": 0.8333333333333333,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 99,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.6666666666666666,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.3365907499974128,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "union",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "keypeople_intersection": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.2222222222222222,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5636912080008187,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "intersection",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "keypeople_intersection_k_sources": {
+          "metrics": {
+            "overall_accuracy": 0.811965811965812,
+            "macro_accuracy": 0.7698412698412699,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 95,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.2222222222222222,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.6067133340038708,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "intersection_k_sources",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "keypeople_voting": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.3449114999966696,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "keypeople_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.8461538461538461,
+            "macro_accuracy": 0.8333333333333333,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 99,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.6666666666666666,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.5905270420043962,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "keypeople_ltm": {
+          "metrics": {
+            "overall_accuracy": 0.8376068376068376,
+            "macro_accuracy": 0.8174603174603174,
+            "num_evaluated_records": 18,
+            "num_evaluated_attributes": 7,
+            "total_evaluations": 117,
+            "total_correct": 98,
+            "founded_accuracy": 0.9444444444444444,
+            "founded_count": 18,
+            "country_accuracy": 0.9444444444444444,
+            "country_count": 18,
+            "keypeople_accuracy": 0.5555555555555556,
+            "keypeople_count": 9,
+            "city_accuracy": 0.5555555555555556,
+            "city_count": 18,
+            "revenue_accuracy": 0.7777777777777778,
+            "revenue_count": 18,
+            "name_accuracy": 1.0,
+            "name_count": 18,
+            "assets_accuracy": 0.9444444444444444,
+            "assets_count": 18
+          },
+          "runtime_s": 0.7428019170038169,
+          "notes": {
+            "attribute": "keypeople",
+            "strategy": "ltm",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        }
+      },
+      "per_blocker": {}
+    }
+  }
+}

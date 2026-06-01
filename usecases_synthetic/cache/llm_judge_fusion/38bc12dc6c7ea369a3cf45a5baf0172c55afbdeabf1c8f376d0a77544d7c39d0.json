@@ -1,0 +1,26 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Music Is the Weapon of the Future"
+    },
+    {
+      "source": "discogs",
+      "value": "Music Is The Weapon Of The Future"
+    },
+    {
+      "source": "lastfm",
+      "value": "Music is  Weapon of the Future"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "All candidates clearly refer to the same title; I normalized capitalization and obvious spacing errors to the most standard form.",
+    "value": "Music Is the Weapon of the Future"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Music Is the Weapon of the Future\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"All candidates clearly refer to the same title; I normalized capitalization and obvious spacing errors to the most standard form.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "EU R"
+    },
+    {
+      "source": "products_2",
+      "value": "AUD"
+    },
+    {
+      "source": "products_3",
+      "value": "RON"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "EU R is a malformed spacing variant of EUR, the only clearly intended currency code among the candidates.",
+    "value": "EUR"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"EUR\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"EU R is a malformed spacing variant of EUR, the only clearly intended currency code among the candidates.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "7.95"
+    },
+    {
+      "source": "products_3",
+      "value": "7.0"
+    },
+    {
+      "source": "products_4",
+      "value": "6.82"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "aggregation",
+    "reasoning": "The candidate prices cluster around roughly seven dollars, so a robust aggregate is appropriate.",
+    "value": 7.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":7.0,\"operation\":\"aggregation\",\"confidence\":0.78,\"reasoning\":\"The candidate prices cluster around roughly seven dollars, so a robust aggregate is appropriate.\"}"
+}

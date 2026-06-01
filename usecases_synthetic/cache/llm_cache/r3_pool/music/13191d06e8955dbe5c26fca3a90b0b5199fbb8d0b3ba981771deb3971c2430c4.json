@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_24676|mbrainz_11069|name=Dangerous Times | artist=The Name | release-date=1988 | release-country=UK | duration=2615.0 | genre=Rock | tracks=['Dangerous Times', 'Maybe Someday', 'Calm Before The Storm', 'Walk Into The World', 'The Great Depression', 'Jesus And The Devil', 'Southern Girl', 'New Day', 'The Driving Rain', 'Last War Song']||name=Dangerous Times | artist=Name, The | duration=0 | tracks=['Maybe Someday', 'Dangerous Times', 'Jesus and the Devil', 'Walk Into the World', 'Great Depression', 'Southern Girl', 'Calm Before the Storm', 'New Day', 'Last War Song']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dangerous Times | artist=The Name | release-date=1988 | release-country=UK | duration=2615.0 | genre=Rock | tracks=['Dangerous Times', 'Maybe Someday', 'Calm Before The Storm', 'Walk Into The World', 'The Great Depression', 'Jesus And The Devil', 'Southern Girl', 'New Day', 'The Driving Rain', 'Last War Song']\nRecord B: name=Dangerous Times | artist=Name, The | duration=0 | tracks=['Maybe Someday', 'Dangerous Times', 'Jesus and the Devil', 'Walk Into the World', 'Great Depression', 'Southern Girl', 'Calm Before the Storm', 'New Day', 'Last War Song']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

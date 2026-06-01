@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "6.9"
+    },
+    {
+      "source": "products_3",
+      "value": "7.19"
+    },
+    {
+      "source": "products_4",
+      "value": "11.74"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.67,
+    "operation": "aggregation",
+    "reasoning": "7.19 is the most plausible central price among the candidates, with 11.74 appearing as an outlier.",
+    "value": 7.19
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":7.19,\"operation\":\"aggregation\",\"confidence\":0.67,\"reasoning\":\"7.19 is the most plausible central price among the candidates, with 11.74 appearing as an outlier.\"}"
+}

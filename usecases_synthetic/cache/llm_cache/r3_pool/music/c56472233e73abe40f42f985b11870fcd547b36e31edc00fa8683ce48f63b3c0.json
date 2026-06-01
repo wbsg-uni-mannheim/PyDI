@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_139559|mbrainz_4694|name=Téléphone À Téléphone Mon Bijou / Stop Ou Encore | artist=Plastic Bertrand | release-date=1980 | release-country=Spain | duration=451.0 | genre=Electronic|Pop | tracks=['Téléphone À Téléphone Mon Bijou', 'Stop Ou Encore']||name=TÃ©lÃ©phone Ã  tÃ©lÃ©phone mon bijou / Stop ou encore | artist=Plastic Bertrand feat. | release-date=1980-03 | release-country=France | duration=413 | tracks=['TÃ©lÃ©phone Ã\\xa0 tÃ©lÃ©phone mon bijou', 'Stop ou encore']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Téléphone À Téléphone Mon Bijou / Stop Ou Encore | artist=Plastic Bertrand | release-date=1980 | release-country=Spain | duration=451.0 | genre=Electronic|Pop | tracks=['Téléphone À Téléphone Mon Bijou', 'Stop Ou Encore']\nRecord B: name=TÃ©lÃ©phone Ã  tÃ©lÃ©phone mon bijou / Stop ou encore | artist=Plastic Bertrand feat. | release-date=1980-03 | release-country=France | duration=413 | tracks=['TÃ©lÃ©phone Ã\\xa0 tÃ©lÃ©phone mon bijou', 'Stop ou encore']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

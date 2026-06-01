@@ -1,0 +1,27 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Bring It on Down', 'None of the Answers', 'Cut and Dried', 'Beat It Down']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Bring It On Down', 'None Of The Answers', 'Cut And Dried', 'Beat It Down']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates contain the same track list with only capitalization differences, so I normalized to a consistent title case.",
+    "value": [
+      "Bring It on Down",
+      "None of the Answers",
+      "Cut and Dried",
+      "Beat It Down"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Bring It on Down\",\"None of the Answers\",\"Cut and Dried\",\"Beat It Down\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates contain the same track list with only capitalization differences, so I normalized to a consistent title case.\"}"
+}

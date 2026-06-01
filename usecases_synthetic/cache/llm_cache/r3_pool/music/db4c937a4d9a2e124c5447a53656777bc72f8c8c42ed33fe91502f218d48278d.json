@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_32000|lastFM_15260|name=Puzzled EP | artist=Fuellsand | release-date=2004 | release-country=Germany | duration=665.0 | genre=Rock | tracks=['I Did Not Even Notice', 'The Approaching Siren']||name=Puzzled | artist=Fuellsand | duration=663.0 | tracks=[\"i didn't even notice\", 'the approaching siren']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Puzzled EP | artist=Fuellsand | release-date=2004 | release-country=Germany | duration=665.0 | genre=Rock | tracks=['I Did Not Even Notice', 'The Approaching Siren']\nRecord B: name=Puzzled | artist=Fuellsand | duration=663.0 | tracks=[\"i didn't even notice\", 'the approaching siren']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,2267 @@
+{
+  "domain": "products-small",
+  "meta": {
+    "written_at": "2026-05-15T14:34:49.671844+00:00",
+    "with_llm": true,
+    "committee_versions": {
+      "sm": "sm_committee.yaml@cb4a6847ac9e",
+      "norm": "normalization_committee_products.yaml@baa6116ae974",
+      "em_blocking": "em_blocking_committee_products.yaml@cf98a2e9359a",
+      "em_matching": "em_matching_committee_products.yaml@4a4c34ff0cd2",
+      "fusion": "fusion_committee_products.yaml@a060f29a6e87"
+    },
+    "total_runtime_s": 364.22,
+    "fusion_input_member": ""
+  },
+  "per_stage": {
+    "sm": {
+      "stage": "sm",
+      "domain": "products-small",
+      "level": "baseline",
+      "runtime_s": 29.892546834002133,
+      "roster": [
+        "duplicate_majority",
+        "label_jw",
+        "instance_tf_cosine",
+        "embedding_sbert",
+        "llm_openai",
+        "magneto_slm_llm",
+        "coma_hybrid"
+      ],
+      "aggregated": {
+        "macro_f1": 0.8138307213367746,
+        "min_f1": 0.6440677966101694,
+        "max_f1": 1.0,
+        "macro_precision": 0.7149381546481692,
+        "macro_recall": 0.9583333333333333
+      },
+      "per_attribute": {
+        "products_1.id": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_1.title": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_1.brand": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_1.description": {
+          "duplicate_majority": 1.0,
+          "label_jw": 0.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_1.price": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_1.priceCurrency": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.id": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.title": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.brand": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.description": {
+          "duplicate_majority": 1.0,
+          "label_jw": 0.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.price": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_2.priceCurrency": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.id": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.title": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.brand": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.description": {
+          "duplicate_majority": 1.0,
+          "label_jw": 0.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.price": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_3.priceCurrency": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.id": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.title": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.brand": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 0.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.description": {
+          "duplicate_majority": 1.0,
+          "label_jw": 0.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 0.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.price": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 0.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        },
+        "products_4.priceCurrency": {
+          "duplicate_majority": 1.0,
+          "label_jw": 1.0,
+          "instance_tf_cosine": 1.0,
+          "embedding_sbert": 1.0,
+          "llm_openai": 1.0,
+          "magneto_slm_llm": 1.0,
+          "coma_hybrid": 1.0,
+          "any_correct": 1.0
+        }
+      },
+      "per_partition": {
+        "products_1": {
+          "macro_f1": 0.8120648259303722,
+          "n_columns": 6.0
+        },
+        "products_2": {
+          "macro_f1": 0.8268707482993197,
+          "n_columns": 6.0
+        },
+        "products_3": {
+          "macro_f1": 0.8098639455782314,
+          "n_columns": 6.0
+        },
+        "products_4": {
+          "macro_f1": 0.8051020408163266,
+          "n_columns": 6.0
+        }
+      },
+      "per_member": {
+        "duplicate_majority": {
+          "metrics": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 24.0,
+            "fp": 0.0,
+            "fn": 0.0
+          },
+          "runtime_s": 0.6871842910040868,
+          "notes": {
+            "signal_type": "duplicate"
+          }
+        },
+        "label_jw": {
+          "metrics": {
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
+            "tp": 24.0,
+            "fp": 12.0,
+            "fn": 0.0
+          },
+          "runtime_s": 0.003106917007244192,
+          "notes": {
+            "signal_type": "label"
+          }
+        },
+        "instance_tf_cosine": {
+          "metrics": {
+            "precision": 0.5428571428571428,
+            "recall": 0.7916666666666666,
+            "f1": 0.6440677966101694,
+            "tp": 19.0,
+            "fp": 16.0,
+            "fn": 5.0
+          },
+          "runtime_s": 0.07991716700780671,
+          "notes": {
+            "signal_type": "instance"
+          }
+        },
+        "embedding_sbert": {
+          "metrics": {
+            "precision": 0.7096774193548387,
+            "recall": 0.9166666666666666,
+            "f1": 0.7999999999999999,
+            "tp": 22.0,
+            "fp": 9.0,
+            "fn": 2.0
+          },
+          "runtime_s": 3.227190667006653,
+          "notes": {
+            "signal_type": "embedding"
+          }
+        },
+        "llm_openai": {
+          "metrics": {
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571428571428571,
+            "tp": 24.0,
+            "fp": 8.0,
+            "fn": 0.0
+          },
+          "runtime_s": 3.4394241669942858,
+          "notes": {
+            "signal_type": "llm"
+          }
+        },
+        "magneto_slm_llm": {
+          "metrics": {
+            "precision": 0.5853658536585366,
+            "recall": 1.0,
+            "f1": 0.7384615384615384,
+            "tp": 24.0,
+            "fp": 17.0,
+            "fn": 0.0
+          },
+          "runtime_s": 19.32288883300498,
+          "notes": {
+            "signal_type": "llm"
+          }
+        },
+        "coma_hybrid": {
+          "metrics": {
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571428571428571,
+            "tp": 24.0,
+            "fp": 8.0,
+            "fn": 0.0
+          },
+          "runtime_s": 3.1279172919894336,
+          "notes": {
+            "signal_type": "hybrid"
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "norm": {
+      "stage": "norm",
+      "domain": "products-small",
+      "level": "baseline",
+      "runtime_s": 0.790489749997505,
+      "roster": [
+        "text_clean",
+        "number_locale",
+        "llm_canonicalize"
+      ],
+      "aggregated": {
+        "macro_f1": 0.25877085921374304,
+        "min_f1": 0.07039093497177525,
+        "max_f1": 0.3945029575483465,
+        "macro_precision": 0.5110802011477625,
+        "macro_recall": 0.2314068100358423,
+        "best_member_f1": 0.3945029575483465,
+        "best_member_name_f1": 1.0
+      },
+      "per_attribute": {
+        "brand": {
+          "text_clean": 0.469785575048733,
+          "llm_canonicalize": 0.08985879332477535,
+          "any_correct": 1.0,
+          "best_member_f1": 0.469785575048733
+        },
+        "description": {
+          "text_clean": 0.2958977807666443,
+          "any_correct": 1.0,
+          "best_member_f1": 0.2958977807666443
+        },
+        "priceCurrency": {
+          "text_clean": 0.4211994421199442,
+          "llm_canonicalize": 0.07177033492822966,
+          "any_correct": 1.0,
+          "best_member_f1": 0.4211994421199442
+        },
+        "title": {
+          "text_clean": 0.39112903225806456,
+          "llm_canonicalize": 0.049543676662320735,
+          "any_correct": 1.0,
+          "best_member_f1": 0.39112903225806456
+        },
+        "price": {
+          "number_locale": 0.3114186851211073,
+          "any_correct": 1.0,
+          "best_member_f1": 0.3114186851211073
+        }
+      },
+      "per_partition": {
+        "products_1": {
+          "macro_f1": 0.25877085921374304,
+          "n_attributes": 5.0
+        },
+        "products_2": {
+          "macro_f1": 0.25877085921374304,
+          "n_attributes": 5.0
+        },
+        "products_3": {
+          "macro_f1": 0.25877085921374304,
+          "n_attributes": 5.0
+        },
+        "products_4": {
+          "macro_f1": 0.25877085921374304,
+          "n_attributes": 5.0
+        }
+      },
+      "per_member": {
+        "text_clean": {
+          "metrics": {
+            "macro_f1": 0.3945029575483465,
+            "macro_precision": 0.4948792562994555,
+            "macro_recall": 0.35416666666666663,
+            "min_f1": 0.2958977807666443,
+            "max_f1": 0.469785575048733,
+            "n_attributes": 4.0,
+            "n_cells": 2976.0,
+            "f1": 0.3945029575483465,
+            "precision": 0.4948792562994555,
+            "recall": 0.35416666666666663
+          },
+          "runtime_s": 0.6407921250065556,
+          "notes": {
+            "signal_type": "rule_string",
+            "applies_to": [
+              "title",
+              "brand",
+              "description",
+              "priceCurrency"
+            ],
+            "best_member": true
+          }
+        },
+        "number_locale": {
+          "metrics": {
+            "macro_f1": 0.3114186851211073,
+            "macro_precision": 0.3209700427960057,
+            "macro_recall": 0.3024193548387097,
+            "min_f1": 0.3114186851211073,
+            "max_f1": 0.3114186851211073,
+            "n_attributes": 1.0,
+            "n_cells": 744.0,
+            "f1": 0.3114186851211073,
+            "precision": 0.3209700427960057,
+            "recall": 0.3024193548387097
+          },
+          "runtime_s": 0.10913466599595267,
+          "notes": {
+            "signal_type": "rule_numeric",
+            "applies_to": [
+              "price"
+            ]
+          }
+        },
+        "llm_canonicalize": {
+          "metrics": {
+            "macro_f1": 0.07039093497177525,
+            "macro_precision": 0.7173913043478262,
+            "macro_recall": 0.03763440860215054,
+            "min_f1": 0.049543676662320735,
+            "max_f1": 0.08985879332477535,
+            "n_attributes": 3.0,
+            "n_cells": 2232.0,
+            "f1": 0.07039093497177525,
+            "precision": 0.7173913043478262,
+            "recall": 0.03763440860215054
+          },
+          "runtime_s": 0.04011970799183473,
+          "notes": {
+            "signal_type": "llm",
+            "applies_to": [
+              "title",
+              "brand",
+              "priceCurrency"
+            ]
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "em_blocking": {
+      "stage": "em_blocking",
+      "domain": "products-small",
+      "level": "baseline",
+      "runtime_s": 10.78763979098585,
+      "roster": [
+        "token_blocker",
+        "standard_blocker",
+        "embedding_blocker",
+        "sorted_neighbourhood_blocker",
+        "bm25_blocker"
+      ],
+      "aggregated": {
+        "macro_pair_recall": 0.7979102486872407,
+        "min_pair_recall": 0.43632411226221485,
+        "max_pair_recall": 0.9967747469651563,
+        "macro_reduction_ratio": 0.8858462060538024,
+        "best_member_name": "bm25_blocker",
+        "best_member_pair_recall": 0.9773232460738045,
+        "best_member_reduction_ratio": 0.9309782143156969,
+        "recall_floor": 0.97
+      },
+      "per_attribute": {},
+      "per_partition": {
+        "products_1_products_2": {
+          "winner_blocker_pair_recall": 0.9802955665024631,
+          "winner_blocker_reduction_ratio": 0.9384236453201971,
+          "recall_floor_cleared": 1.0
+        },
+        "products_1_products_3": {
+          "winner_blocker_pair_recall": 0.9724409448818898,
+          "winner_blocker_reduction_ratio": 0.9343832020997376,
+          "recall_floor_cleared": 1.0
+        },
+        "products_1_products_4": {
+          "winner_blocker_pair_recall": 0.9792332268370607,
+          "winner_blocker_reduction_ratio": 0.9201277955271565,
+          "recall_floor_cleared": 1.0
+        }
+      },
+      "per_member": {
+        "token_blocker": {
+          "metrics": {
+            "pair_recall": 0.9967747469651563,
+            "reduction_ratio": 0.6411139676579414,
+            "candidate_count": 214765.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 731.0,
+            "missed": 2.3333333333333335,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.1313149159977911,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9987684729064039,
+                "gold_positives": 812.0,
+                "covered": 811.0,
+                "missed": 1.0,
+                "reduction_ratio": 0.6164839598146037,
+                "candidate_count": 252869.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.053220708010485396,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.994750656167979,
+                "gold_positives": 762.0,
+                "covered": 758.0,
+                "missed": 4.0,
+                "reduction_ratio": 0.6459941429735077,
+                "candidate_count": 219039.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.04449575000035111,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9968051118210862,
+                "gold_positives": 626.0,
+                "covered": 624.0,
+                "missed": 2.0,
+                "reduction_ratio": 0.6608638001857128,
+                "candidate_count": 172387.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.0335984579869546,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "standard_blocker": {
+          "metrics": {
+            "pair_recall": 0.6406869041942634,
+            "reduction_ratio": 0.951920612772536,
+            "candidate_count": 28641.333333333332,
+            "gold_positives": 733.3333333333334,
+            "covered": 470.3333333333333,
+            "missed": 263.0,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.018801709986291826,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.6440886699507389,
+                "gold_positives": 812.0,
+                "covered": 523.0,
+                "missed": 289.0,
+                "reduction_ratio": 0.951879443810818,
+                "candidate_count": 31728.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.0071359589928761125,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.6469816272965879,
+                "gold_positives": 762.0,
+                "covered": 493.0,
+                "missed": 269.0,
+                "reduction_ratio": 0.9516601373104224,
+                "candidate_count": 29910.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.006224958997336216,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.6309904153354633,
+                "gold_positives": 626.0,
+                "covered": 395.0,
+                "missed": 231.0,
+                "reduction_ratio": 0.9522222571963675,
+                "candidate_count": 24286.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.005440791996079497,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "embedding_blocker": {
+          "metrics": {
+            "pair_recall": 0.938442233940764,
+            "reduction_ratio": 0.9309782143156969,
+            "candidate_count": 40600.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 687.6666666666666,
+            "missed": 45.666666666666664,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 9.864707250002539,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "embedding",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9310344827586207,
+                "gold_positives": 812.0,
+                "covered": 756.0,
+                "missed": 56.0,
+                "reduction_ratio": 0.9384236453201971,
+                "candidate_count": 40600.0,
+                "full_space": 659344.0,
+                "runtime_s": 4.025227291989722,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.937007874015748,
+                "gold_positives": 762.0,
+                "covered": 714.0,
+                "missed": 48.0,
+                "reduction_ratio": 0.9343832020997376,
+                "candidate_count": 40600.0,
+                "full_space": 618744.0,
+                "runtime_s": 3.1221825420070672,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9472843450479234,
+                "gold_positives": 626.0,
+                "covered": 593.0,
+                "missed": 33.0,
+                "reduction_ratio": 0.9201277955271565,
+                "candidate_count": 40600.0,
+                "full_space": 508312.0,
+                "runtime_s": 2.7172974160057493,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sorted_neighbourhood_blocker": {
+          "metrics": {
+            "pair_recall": 0.43632411226221485,
+            "reduction_ratio": 0.9742400212071409,
+            "candidate_count": 15265.666666666666,
+            "gold_positives": 733.3333333333334,
+            "covered": 320.6666666666667,
+            "missed": 412.6666666666667,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.013559667000663467,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.44704433497536944,
+                "gold_positives": 812.0,
+                "covered": 363.0,
+                "missed": 449.0,
+                "reduction_ratio": 0.9753724914460433,
+                "candidate_count": 16238.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.004713667003670707,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.43700787401574803,
+                "gold_positives": 762.0,
+                "covered": 333.0,
+                "missed": 429.0,
+                "reduction_ratio": 0.9746890474897534,
+                "candidate_count": 15661.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.004549999997834675,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.4249201277955272,
+                "gold_positives": 626.0,
+                "covered": 266.0,
+                "missed": 360.0,
+                "reduction_ratio": 0.9726585246856262,
+                "candidate_count": 13898.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.004295999999158084,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "bm25_blocker": {
+          "metrics": {
+            "pair_recall": 0.9773232460738045,
+            "reduction_ratio": 0.9309782143156969,
+            "candidate_count": 40600.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 716.6666666666666,
+            "missed": 16.666666666666668,
+            "selection_rate": 1.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.2798611259931931,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "sparse",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9802955665024631,
+                "gold_positives": 812.0,
+                "covered": 796.0,
+                "missed": 16.0,
+                "reduction_ratio": 0.9384236453201971,
+                "candidate_count": 40600.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.14367254200624302,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.9724409448818898,
+                "gold_positives": 762.0,
+                "covered": 741.0,
+                "missed": 21.0,
+                "reduction_ratio": 0.9343832020997376,
+                "candidate_count": 40600.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.07106995899812318,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9792332268370607,
+                "gold_positives": 626.0,
+                "covered": 613.0,
+                "missed": 13.0,
+                "reduction_ratio": 0.9201277955271565,
+                "candidate_count": 40600.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.06511862498882692,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        }
+      },
+      "per_blocker": {
+        "token_blocker": {
+          "metrics": {
+            "pair_recall": 0.9967747469651563,
+            "reduction_ratio": 0.6411139676579414,
+            "candidate_count": 214765.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 731.0,
+            "missed": 2.3333333333333335,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.1313149159977911,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9987684729064039,
+                "gold_positives": 812.0,
+                "covered": 811.0,
+                "missed": 1.0,
+                "reduction_ratio": 0.6164839598146037,
+                "candidate_count": 252869.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.053220708010485396,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.994750656167979,
+                "gold_positives": 762.0,
+                "covered": 758.0,
+                "missed": 4.0,
+                "reduction_ratio": 0.6459941429735077,
+                "candidate_count": 219039.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.04449575000035111,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9968051118210862,
+                "gold_positives": 626.0,
+                "covered": 624.0,
+                "missed": 2.0,
+                "reduction_ratio": 0.6608638001857128,
+                "candidate_count": 172387.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.0335984579869546,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "standard_blocker": {
+          "metrics": {
+            "pair_recall": 0.6406869041942634,
+            "reduction_ratio": 0.951920612772536,
+            "candidate_count": 28641.333333333332,
+            "gold_positives": 733.3333333333334,
+            "covered": 470.3333333333333,
+            "missed": 263.0,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.018801709986291826,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.6440886699507389,
+                "gold_positives": 812.0,
+                "covered": 523.0,
+                "missed": 289.0,
+                "reduction_ratio": 0.951879443810818,
+                "candidate_count": 31728.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.0071359589928761125,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.6469816272965879,
+                "gold_positives": 762.0,
+                "covered": 493.0,
+                "missed": 269.0,
+                "reduction_ratio": 0.9516601373104224,
+                "candidate_count": 29910.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.006224958997336216,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.6309904153354633,
+                "gold_positives": 626.0,
+                "covered": 395.0,
+                "missed": 231.0,
+                "reduction_ratio": 0.9522222571963675,
+                "candidate_count": 24286.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.005440791996079497,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "embedding_blocker": {
+          "metrics": {
+            "pair_recall": 0.938442233940764,
+            "reduction_ratio": 0.9309782143156969,
+            "candidate_count": 40600.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 687.6666666666666,
+            "missed": 45.666666666666664,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 9.864707250002539,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "embedding",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9310344827586207,
+                "gold_positives": 812.0,
+                "covered": 756.0,
+                "missed": 56.0,
+                "reduction_ratio": 0.9384236453201971,
+                "candidate_count": 40600.0,
+                "full_space": 659344.0,
+                "runtime_s": 4.025227291989722,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.937007874015748,
+                "gold_positives": 762.0,
+                "covered": 714.0,
+                "missed": 48.0,
+                "reduction_ratio": 0.9343832020997376,
+                "candidate_count": 40600.0,
+                "full_space": 618744.0,
+                "runtime_s": 3.1221825420070672,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9472843450479234,
+                "gold_positives": 626.0,
+                "covered": 593.0,
+                "missed": 33.0,
+                "reduction_ratio": 0.9201277955271565,
+                "candidate_count": 40600.0,
+                "full_space": 508312.0,
+                "runtime_s": 2.7172974160057493,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "sorted_neighbourhood_blocker": {
+          "metrics": {
+            "pair_recall": 0.43632411226221485,
+            "reduction_ratio": 0.9742400212071409,
+            "candidate_count": 15265.666666666666,
+            "gold_positives": 733.3333333333334,
+            "covered": 320.6666666666667,
+            "missed": 412.6666666666667,
+            "selection_rate": 0.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.013559667000663467,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "lexical",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.44704433497536944,
+                "gold_positives": 812.0,
+                "covered": 363.0,
+                "missed": 449.0,
+                "reduction_ratio": 0.9753724914460433,
+                "candidate_count": 16238.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.004713667003670707,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.43700787401574803,
+                "gold_positives": 762.0,
+                "covered": 333.0,
+                "missed": 429.0,
+                "reduction_ratio": 0.9746890474897534,
+                "candidate_count": 15661.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.004549999997834675,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.4249201277955272,
+                "gold_positives": 626.0,
+                "covered": 266.0,
+                "missed": 360.0,
+                "reduction_ratio": 0.9726585246856262,
+                "candidate_count": 13898.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.004295999999158084,
+                "selected": 0.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        },
+        "bm25_blocker": {
+          "metrics": {
+            "pair_recall": 0.9773232460738045,
+            "reduction_ratio": 0.9309782143156969,
+            "candidate_count": 40600.0,
+            "gold_positives": 733.3333333333334,
+            "covered": 716.6666666666666,
+            "missed": 16.666666666666668,
+            "selection_rate": 1.0,
+            "recall_floor_clear_rate": 1.0
+          },
+          "runtime_s": 0.2798611259931931,
+          "notes": {
+            "role": "blocker",
+            "blocking_type": "sparse",
+            "per_pair": {
+              "products_1_products_2": {
+                "pair_recall": 0.9802955665024631,
+                "gold_positives": 812.0,
+                "covered": 796.0,
+                "missed": 16.0,
+                "reduction_ratio": 0.9384236453201971,
+                "candidate_count": 40600.0,
+                "full_space": 659344.0,
+                "runtime_s": 0.14367254200624302,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_3": {
+                "pair_recall": 0.9724409448818898,
+                "gold_positives": 762.0,
+                "covered": 741.0,
+                "missed": 21.0,
+                "reduction_ratio": 0.9343832020997376,
+                "candidate_count": 40600.0,
+                "full_space": 618744.0,
+                "runtime_s": 0.07106995899812318,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              },
+              "products_1_products_4": {
+                "pair_recall": 0.9792332268370607,
+                "gold_positives": 626.0,
+                "covered": 613.0,
+                "missed": 13.0,
+                "reduction_ratio": 0.9201277955271565,
+                "candidate_count": 40600.0,
+                "full_space": 508312.0,
+                "runtime_s": 0.06511862498882692,
+                "selected": 1.0,
+                "recall_floor_cleared": 1.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "em_matching": {
+      "stage": "em_matching",
+      "domain": "products-small",
+      "level": "baseline",
+      "runtime_s": 317.9706961250049,
+      "roster": [
+        "ditto_plm",
+        "llm_matcher",
+        "comem"
+      ],
+      "aggregated": {
+        "macro_f1": 0.6003990248406587,
+        "min_f1": 0.48914913382953396,
+        "max_f1": 0.7018633540372671,
+        "macro_precision": 0.9966832504145936,
+        "macro_recall": 0.4438972763990583,
+        "macro_f1_vs_val": 0.7385312981354062,
+        "macro_f1_vs_test": 0.6003990248406587,
+        "best_member_name": "ditto_plm",
+        "best_member_f1": 0.7018633540372671
+      },
+      "per_attribute": {},
+      "per_partition": {
+        "products_1_products_2": {
+          "macro_f1": 0.698119093494816,
+          "min_f1": 0.5895953757225433,
+          "max_f1": 0.8380952380952381,
+          "n_members": 3.0
+        },
+        "products_1_products_3": {
+          "macro_f1": 0.5487972966964564,
+          "min_f1": 0.435374149659864,
+          "max_f1": 0.7142857142857143,
+          "n_members": 3.0
+        },
+        "products_1_products_4": {
+          "macro_f1": 0.5542806843307035,
+          "min_f1": 0.4424778761061947,
+          "max_f1": 0.7246376811594203,
+          "n_members": 3.0
+        }
+      },
+      "per_member": {
+        "ditto_plm": {
+          "metrics": {
+            "f1": 0.7018633540372671,
+            "precision": 0.990049751243781,
+            "recall": 0.5444664031620553,
+            "f1_vs_val": 0.7385312981354062,
+            "precision_vs_val": 0.9949494949494949,
+            "recall_vs_val": 0.5906243347626433,
+            "pred_scoped_vs_val": 65.0,
+            "f1_vs_test": 0.7018633540372671,
+            "precision_vs_test": 0.990049751243781,
+            "recall_vs_test": 0.5444664031620553,
+            "pred_scoped_vs_test": 59.333333333333336
+          },
+          "runtime_s": 1.0378862090001348,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "learned",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "products_1_products_2": {
+                "f1": 0.6666666666666666,
+                "precision": 1.0,
+                "recall": 0.5,
+                "tp": 61.0,
+                "fp": 0.0,
+                "fn": 61.0,
+                "f1_vs_val": 0.6666666666666666,
+                "precision_vs_val": 1.0,
+                "recall_vs_val": 0.5,
+                "pred_scoped_vs_val": 61.0,
+                "f1_vs_test": 0.6666666666666666,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.5,
+                "pred_scoped_vs_test": 61.0
+              },
+              "products_1_products_3": {
+                "f1": 0.7142857142857143,
+                "precision": 0.9701492537313433,
+                "recall": 0.5652173913043478,
+                "tp": 65.0,
+                "fp": 2.0,
+                "fn": 50.0,
+                "f1_vs_val": 0.7513812154696133,
+                "precision_vs_val": 1.0,
+                "recall_vs_val": 0.6017699115044248,
+                "pred_scoped_vs_val": 68.0,
+                "f1_vs_test": 0.7142857142857143,
+                "precision_vs_test": 0.9701492537313433,
+                "recall_vs_test": 0.5652173913043478,
+                "pred_scoped_vs_test": 67.0
+              },
+              "products_1_products_4": {
+                "f1": 0.7246376811594203,
+                "precision": 1.0,
+                "recall": 0.5681818181818182,
+                "tp": 50.0,
+                "fp": 0.0,
+                "fn": 38.0,
+                "f1_vs_val": 0.7975460122699387,
+                "precision_vs_val": 0.9848484848484849,
+                "recall_vs_val": 0.6701030927835051,
+                "pred_scoped_vs_val": 66.0,
+                "f1_vs_test": 0.7246376811594203,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.5681818181818182,
+                "pred_scoped_vs_test": 50.0
+              }
+            }
+          }
+        },
+        "llm_matcher": {
+          "metrics": {
+            "f1": 0.6101845866551748,
+            "precision": 1.0,
+            "recall": 0.4604305708546621,
+            "f1_vs_val": NaN,
+            "precision_vs_val": NaN,
+            "recall_vs_val": NaN,
+            "pred_scoped_vs_val": 0.0,
+            "f1_vs_test": 0.6101845866551748,
+            "precision_vs_test": 1.0,
+            "recall_vs_test": 0.4604305708546621,
+            "pred_scoped_vs_test": 51.666666666666664
+          },
+          "runtime_s": 316.8652021250018,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "llm",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "products_1_products_2": {
+                "f1": 0.8380952380952381,
+                "precision": 1.0,
+                "recall": 0.7213114754098361,
+                "tp": 88.0,
+                "fp": 0.0,
+                "fn": 34.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.8380952380952381,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.7213114754098361,
+                "pred_scoped_vs_test": 88.0
+              },
+              "products_1_products_3": {
+                "f1": 0.49673202614379086,
+                "precision": 1.0,
+                "recall": 0.33043478260869563,
+                "tp": 38.0,
+                "fp": 0.0,
+                "fn": 77.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.49673202614379086,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.33043478260869563,
+                "pred_scoped_vs_test": 38.0
+              },
+              "products_1_products_4": {
+                "f1": 0.4957264957264957,
+                "precision": 1.0,
+                "recall": 0.32954545454545453,
+                "tp": 29.0,
+                "fp": 0.0,
+                "fn": 59.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.4957264957264957,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.32954545454545453,
+                "pred_scoped_vs_test": 29.0
+              }
+            }
+          }
+        },
+        "comem": {
+          "metrics": {
+            "f1": 0.48914913382953396,
+            "precision": 1.0,
+            "recall": 0.3267948551804575,
+            "f1_vs_val": NaN,
+            "precision_vs_val": NaN,
+            "recall_vs_val": NaN,
+            "pred_scoped_vs_val": 0.0,
+            "f1_vs_test": 0.48914913382953396,
+            "precision_vs_test": 1.0,
+            "recall_vs_test": 0.3267948551804575,
+            "pred_scoped_vs_test": 36.0
+          },
+          "runtime_s": 0.06626516698452178,
+          "notes": {
+            "role": "matcher",
+            "matching_type": "llm",
+            "missing_value_tolerant": true,
+            "per_pair": {
+              "products_1_products_2": {
+                "f1": 0.5895953757225433,
+                "precision": 1.0,
+                "recall": 0.4180327868852459,
+                "tp": 51.0,
+                "fp": 0.0,
+                "fn": 71.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.5895953757225433,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.4180327868852459,
+                "pred_scoped_vs_test": 51.0
+              },
+              "products_1_products_3": {
+                "f1": 0.435374149659864,
+                "precision": 1.0,
+                "recall": 0.2782608695652174,
+                "tp": 32.0,
+                "fp": 0.0,
+                "fn": 83.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.435374149659864,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.2782608695652174,
+                "pred_scoped_vs_test": 32.0
+              },
+              "products_1_products_4": {
+                "f1": 0.4424778761061947,
+                "precision": 1.0,
+                "recall": 0.2840909090909091,
+                "tp": 25.0,
+                "fp": 0.0,
+                "fn": 63.0,
+                "f1_vs_val": NaN,
+                "precision_vs_val": NaN,
+                "recall_vs_val": NaN,
+                "pred_scoped_vs_val": 0.0,
+                "f1_vs_test": 0.4424778761061947,
+                "precision_vs_test": 1.0,
+                "recall_vs_test": 0.2840909090909091,
+                "pred_scoped_vs_test": 25.0
+              }
+            }
+          }
+        }
+      },
+      "per_blocker": {}
+    },
+    "fusion": {
+      "stage": "fusion",
+      "domain": "products-small",
+      "level": "baseline",
+      "runtime_s": 4.351668500006781,
+      "roster": [
+        "title_voting",
+        "title_longest_string",
+        "title_most_complete",
+        "title_prefer_higher_trust",
+        "title_accusim",
+        "title_fusionquery",
+        "title_casefusion",
+        "title_llm_judge",
+        "brand_voting",
+        "brand_most_complete",
+        "brand_prefer_higher_trust",
+        "brand_truthfinder",
+        "brand_llm_judge",
+        "description_voting",
+        "description_longest_string",
+        "description_most_complete",
+        "description_prefer_higher_trust",
+        "description_ltm",
+        "price_median",
+        "price_maximum",
+        "price_trimmed_mean",
+        "price_huber_m_estimator",
+        "price_median_of_means",
+        "price_prefer_higher_trust",
+        "price_fusionquery",
+        "priceCurrency_voting",
+        "priceCurrency_most_complete",
+        "priceCurrency_prefer_higher_trust"
+      ],
+      "aggregated": {
+        "overall_accuracy": 0.776,
+        "overall_mean_accuracy": 0.5106666666666666,
+        "overall_spread": 0.48599999999999993
+      },
+      "per_attribute": {
+        "title": {
+          "best_strategy_accuracy": 0.84,
+          "mean_strategy_accuracy": 0.38,
+          "spread": 0.6799999999999999,
+          "voting": 0.24,
+          "longest_string": 0.84,
+          "most_complete": 0.81,
+          "prefer_higher_trust": 0.24,
+          "accusim": 0.16,
+          "fusionquery": 0.27,
+          "casefusion": 0.24,
+          "llm_judge": 0.24
+        },
+        "brand": {
+          "best_strategy_accuracy": 0.79,
+          "mean_strategy_accuracy": 0.776,
+          "spread": 0.030000000000000027,
+          "voting": 0.77,
+          "most_complete": 0.79,
+          "prefer_higher_trust": 0.76,
+          "truthfinder": 0.79,
+          "llm_judge": 0.77
+        },
+        "description": {
+          "best_strategy_accuracy": 0.7,
+          "mean_strategy_accuracy": 0.44399999999999995,
+          "spread": 0.57,
+          "voting": 0.35,
+          "longest_string": 0.7,
+          "most_complete": 0.69,
+          "prefer_higher_trust": 0.35,
+          "ltm": 0.13
+        },
+        "price": {
+          "best_strategy_accuracy": 0.55,
+          "mean_strategy_accuracy": 0.21,
+          "spread": 0.53,
+          "median": 0.09,
+          "maximum": 0.45,
+          "trimmed_mean": 0.02,
+          "huber_m_estimator": 0.08,
+          "median_of_means": 0.02,
+          "prefer_higher_trust": 0.55,
+          "fusionquery": 0.26
+        },
+        "priceCurrency": {
+          "best_strategy_accuracy": 1.0,
+          "mean_strategy_accuracy": 0.7433333333333333,
+          "spread": 0.62,
+          "voting": 0.85,
+          "most_complete": 0.38,
+          "prefer_higher_trust": 1.0
+        }
+      },
+      "per_partition": {
+        "primary": {
+          "mean_best_accuracy": 0.84,
+          "mean_spread": 0.6799999999999999,
+          "n_attributes": 1.0
+        },
+        "key": {
+          "mean_best_accuracy": 0.79,
+          "mean_spread": 0.030000000000000027,
+          "n_attributes": 1.0
+        },
+        "secondary": {
+          "mean_best_accuracy": 0.75,
+          "mean_spread": 0.5733333333333334,
+          "n_attributes": 3.0
+        }
+      },
+      "per_member": {
+        "title_voting": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.20568933300091885,
+          "notes": {
+            "attribute": "title",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "title_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.674,
+            "macro_accuracy": 0.674,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 337,
+            "title_accuracy": 0.84,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10290675000578631,
+          "notes": {
+            "attribute": "title",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "title_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.668,
+            "macro_accuracy": 0.668,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 334,
+            "title_accuracy": 0.81,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10245091699471232,
+          "notes": {
+            "attribute": "title",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "primary"
+          }
+        },
+        "title_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.18956929100386333,
+          "notes": {
+            "attribute": "title",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "primary"
+          }
+        },
+        "title_accusim": {
+          "metrics": {
+            "overall_accuracy": 0.538,
+            "macro_accuracy": 0.538,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 269,
+            "title_accuracy": 0.16,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.1534138749993872,
+          "notes": {
+            "attribute": "title",
+            "strategy": "accusim",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "title_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.56,
+            "macro_accuracy": 0.56,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 280,
+            "title_accuracy": 0.27,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.23002520800218917,
+          "notes": {
+            "attribute": "title",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "title_casefusion": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.14495333400554955,
+          "notes": {
+            "attribute": "title",
+            "strategy": "casefusion",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "primary"
+          }
+        },
+        "title_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10559012499288656,
+          "notes": {
+            "attribute": "title",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "primary"
+          }
+        },
+        "brand_voting": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.1929916660010349,
+          "notes": {
+            "attribute": "brand",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "brand_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.558,
+            "macro_accuracy": 0.558,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 279,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.79,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10402275000524241,
+          "notes": {
+            "attribute": "brand",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "key"
+          }
+        },
+        "brand_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.552,
+            "macro_accuracy": 0.552,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 276,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.76,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.105891375002102,
+          "notes": {
+            "attribute": "brand",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "key"
+          }
+        },
+        "brand_truthfinder": {
+          "metrics": {
+            "overall_accuracy": 0.558,
+            "macro_accuracy": 0.558,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 279,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.79,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.2473690839979099,
+          "notes": {
+            "attribute": "brand",
+            "strategy": "truthfinder",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "key"
+          }
+        },
+        "brand_llm_judge": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10697945801075548,
+          "notes": {
+            "attribute": "brand",
+            "strategy": "llm_judge",
+            "strategy_type": "llm_adjudicated",
+            "attribute_class": "key"
+          }
+        },
+        "description_voting": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10693820900633,
+          "notes": {
+            "attribute": "description",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "description_longest_string": {
+          "metrics": {
+            "overall_accuracy": 0.624,
+            "macro_accuracy": 0.624,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 312,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.7,
+            "description_count": 100
+          },
+          "runtime_s": 0.1998196249915054,
+          "notes": {
+            "attribute": "description",
+            "strategy": "longest_string",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "description_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.622,
+            "macro_accuracy": 0.622,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 311,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.69,
+            "description_count": 100
+          },
+          "runtime_s": 0.10629683401202783,
+          "notes": {
+            "attribute": "description",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "description_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10360375000163913,
+          "notes": {
+            "attribute": "description",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "description_ltm": {
+          "metrics": {
+            "overall_accuracy": 0.51,
+            "macro_accuracy": 0.51,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 255,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.13,
+            "description_count": 100
+          },
+          "runtime_s": 0.42178608299582265,
+          "notes": {
+            "attribute": "description",
+            "strategy": "ltm",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_median": {
+          "metrics": {
+            "overall_accuracy": 0.46,
+            "macro_accuracy": 0.4600000000000001,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 230,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.09,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10512354200182017,
+          "notes": {
+            "attribute": "price",
+            "strategy": "median",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_maximum": {
+          "metrics": {
+            "overall_accuracy": 0.532,
+            "macro_accuracy": 0.532,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 266,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.45,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.1051665000122739,
+          "notes": {
+            "attribute": "price",
+            "strategy": "maximum",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_trimmed_mean": {
+          "metrics": {
+            "overall_accuracy": 0.446,
+            "macro_accuracy": 0.446,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 223,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.02,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.20480608299840242,
+          "notes": {
+            "attribute": "price",
+            "strategy": "trimmed_mean",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_huber_m_estimator": {
+          "metrics": {
+            "overall_accuracy": 0.458,
+            "macro_accuracy": 0.458,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 229,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.08,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.125108292006189,
+          "notes": {
+            "attribute": "price",
+            "strategy": "huber_m_estimator",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_median_of_means": {
+          "metrics": {
+            "overall_accuracy": 0.446,
+            "macro_accuracy": 0.446,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 223,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.02,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.1081702499941457,
+          "notes": {
+            "attribute": "price",
+            "strategy": "median_of_means",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.552,
+            "macro_accuracy": 0.552,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 276,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.55,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10613295799703337,
+          "notes": {
+            "attribute": "price",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        },
+        "price_fusionquery": {
+          "metrics": {
+            "overall_accuracy": 0.494,
+            "macro_accuracy": 0.49400000000000005,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 247,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.26,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.24797229099203832,
+          "notes": {
+            "attribute": "price",
+            "strategy": "fusionquery",
+            "strategy_type": "truth_discovery",
+            "attribute_class": "secondary"
+          }
+        },
+        "priceCurrency_voting": {
+          "metrics": {
+            "overall_accuracy": 0.554,
+            "macro_accuracy": 0.554,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 277,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.85,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10556775001168717,
+          "notes": {
+            "attribute": "priceCurrency",
+            "strategy": "voting",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "priceCurrency_most_complete": {
+          "metrics": {
+            "overall_accuracy": 0.46,
+            "macro_accuracy": 0.4600000000000001,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 230,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 0.38,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.10582345900184009,
+          "notes": {
+            "attribute": "priceCurrency",
+            "strategy": "most_complete",
+            "strategy_type": "cell_local",
+            "attribute_class": "secondary"
+          }
+        },
+        "priceCurrency_prefer_higher_trust": {
+          "metrics": {
+            "overall_accuracy": 0.584,
+            "macro_accuracy": 0.5840000000000001,
+            "num_evaluated_records": 100,
+            "num_evaluated_attributes": 5,
+            "total_evaluations": 500,
+            "total_correct": 292,
+            "title_accuracy": 0.24,
+            "title_count": 100,
+            "brand_accuracy": 0.77,
+            "brand_count": 100,
+            "price_accuracy": 0.56,
+            "price_count": 100,
+            "priceCurrency_accuracy": 1.0,
+            "priceCurrency_count": 100,
+            "description_accuracy": 0.35,
+            "description_count": 100
+          },
+          "runtime_s": 0.2074041669984581,
+          "notes": {
+            "attribute": "priceCurrency",
+            "strategy": "prefer_higher_trust",
+            "strategy_type": "trust_weighted",
+            "attribute_class": "secondary"
+          }
+        }
+      },
+      "per_blocker": {}
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_111609|lastFM_8830|name=Cryptograms | artist=Deerhunter | release-date=2007-01-29 | release-country=United States of America | duration=2897.0 | genre=Rock | tracks=['Intro', 'Cryptograms', 'White Ink', 'Lake Somerset', 'Providence', 'Octet', 'Red Ink', 'Spring Hall Convert', 'Strange Lights', 'Hazel St.', 'Tape Hiss Orchid', 'Heatherwood']||name=Cryptograms | artist=Deerhunter | duration=1607.0 | tracks=['Intro', 'White Ink', 'Providence', 'Octet', 'Red Ink', 'Hazel St.']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Cryptograms | artist=Deerhunter | release-date=2007-01-29 | release-country=United States of America | duration=2897.0 | genre=Rock | tracks=['Intro', 'Cryptograms', 'White Ink', 'Lake Somerset', 'Providence', 'Octet', 'Red Ink', 'Spring Hall Convert', 'Strange Lights', 'Hazel St.', 'Tape Hiss Orchid', 'Heatherwood']\nRecord B: name=Cryptograms | artist=Deerhunter | duration=1607.0 | tracks=['Intro', 'White Ink', 'Providence', 'Octet', 'Red Ink', 'Hazel St.']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

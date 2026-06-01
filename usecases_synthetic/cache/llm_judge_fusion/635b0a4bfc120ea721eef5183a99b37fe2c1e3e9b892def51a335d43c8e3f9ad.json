@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "CAD"
+    },
+    {
+      "source": "products_2",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.67,
+    "operation": "verbatim_pick",
+    "reasoning": "Both candidates are plausible currency codes with no basis to infer a single canonical one, so I selected one verbatim.",
+    "value": "CAD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"CAD\",\"operation\":\"verbatim_pick\",\"confidence\":0.67,\"reasoning\":\"Both candidates are plausible currency codes with no basis to infer a single canonical one, so I selected one verbatim.\"}"
+}

@@ -1,0 +1,228 @@
+# Schema-matching committee roster — shared across all domains.
+#
+# Axes covered:
+#   - Signal type: label (column-name string sim) / instance (value-
+#     distribution sim) / embedding (SBERT over column name + sample
+#     values) / hybrid (COMA aggregator bank) / llm (GPT-prompted).
+#   - K8 robustness: instance + embedding + hybrid + llm members all
+#     consume column values, so anonymised headers (K8 hard) degrade
+#     signal gracefully rather than collapsing it. The label member
+#     intentionally weakens monotonically with K8 difficulty.
+#
+# Roster finalised in ``plans/plan_committee_finalization.md`` C1
+# (rationale for the included and excluded methods in
+# ``knobs/committee_review/sm_shortlist.md``); R5 SM sign-off
+# (2026-05-08) added ``label_jw`` + ``instance_tf_cosine`` (Pending #3
+# closed) and tuned every member's hyperparameters via the
+# ``_tune_sm_committee.py`` sweep harness — see plan_s1_scale.md
+# §"R5 SM hyperparameter tuning (2026-05-08)" for the per-member
+# sweep tables and final picks.
+#
+# duplicate_majority is kept in the file for reference but disabled by
+# default — it is structurally incompatible with this runner's
+# (source, target_reference) call shape (see roster comment below).
+
+seed: 42
+
+members:
+  - name: duplicate_majority
+    module: PyDI.schemamatching.duplicate_based
+    class: DuplicateBasedSchemaMatcher
+    signal_type: duplicate
+    enabled_by_default: true
+    params:
+      vote_aggregation: majority
+      value_comparison: fuzzy
+      similarity_function: jaro_winkler
+      similarity_threshold: 0.7
+      min_votes: 1
+      ignore_zero_values: true
+    match_kwargs:
+      threshold: 0.05
+    # Re-enabled 2026-05-10 after the SM runner was patched to dispatch
+    # duplicate-typed members per source-pair (Option A in
+    # plan_s1_scale.md §"R5 SM duplicate-matcher fix"). The matcher
+    # consumes label-positive EM correspondences for each
+    # (srcA, srcB) pair, votes on cross-source column equivalences via
+    # value matching, and the runner translates the resulting source-
+    # source predictions to canonical source→target tuples via the SM
+    # gold lookup.
+    #
+    # Hyperparameters tuned 2026-05-10 — best mean F1 across {companies,
+    # games, music} = 0.835 with the params above. Notable findings:
+    #   - fuzzy + jaro_winkler @ 0.7 dominates: levenshtein/jaccard
+    #     trail by 11pp, exact-match by 18pp. Real-world value-overlap
+    #     across duplicates needs char-level fuzziness (capitalisation,
+    #     suffix variation, accented characters).
+    #   - similarity_threshold=0.7 wins over 0.8/0.85/0.9 — the lower
+    #     gate captures more value-overlap; downstream vote aggregation
+    #     handles the noise.
+    #   - min_votes is non-discriminating (1/2/3 tie); locked at 1 to
+    #     admit the most signal.
+    #   - match.threshold=0.05 (most permissive) wins by 0.7pp over 0.1
+    #     and 1.4pp over 0.2 — translation-based scoring caps precision
+    #     near 1.0 anyway, so a low gate maximises recall.
+    #
+    # Note: the gold-lookup translation makes the matcher's *precision*
+    # structurally near 1.0 — *recall* is the meaningful signal
+    # (fraction of in-gold source columns confirmed via at least one
+    # cross-source equivalence).
+
+  - name: label_jw
+    module: PyDI.schemamatching.label_based
+    class: LabelBasedSchemaMatcher
+    signal_type: label
+    enabled_by_default: true
+    params:
+      similarity_function: cosine
+      tokenize: false
+    match_kwargs:
+      threshold: 0.7
+    # Pure column-name string similarity. Added 2026-05-08 (R5 SM
+    # sign-off, Pending #3); hyperparameters tuned the same day via
+    # the sweep harness — best mean F1 across {companies, games,
+    # music} is ``cosine + tokenize=False + threshold=0.7`` at 0.573
+    # (was 0.320 with jaro_winkler + tokenize=True + threshold=0.75).
+    # Member name kept as ``label_jw`` for backwards-compatibility
+    # with historical baseline reports; the underlying similarity is
+    # now n-gram cosine over the raw column names. K8 anonymisation
+    # at hard collapses this signal monotonically.
+
+  - name: instance_tf_cosine
+    module: PyDI.schemamatching.instance_based
+    class: InstanceBasedSchemaMatcher
+    signal_type: instance
+    enabled_by_default: true
+    params:
+      vector_creation_method: binary_occurrence
+      similarity_function: cosine
+      max_sample_size: 1000
+      # min_non_null_ratio: 0.0 disables PyDI's misleading post-sample
+      # ratio gate (it computes len(post-sampled) / len(source_df)
+      # rather than actual non-null fraction, so any positive threshold
+      # filters every column out on large sources — see plan
+      # §"R5 SM hyperparameter tuning"). 0.0 lets the matcher surface
+      # signal on dense columns; sparse columns naturally vector to
+      # near-zero similarity.
+      min_non_null_ratio: 0.0
+    match_kwargs:
+      threshold: 0.1
+    # Pure value-distribution similarity. Added 2026-05-08 (R5 SM
+    # sign-off, Pending #3); hyperparameters tuned the same day —
+    # best balanced config across domains is ``binary_occurrence +
+    # cosine + max_sample=1000 + threshold=0.1`` at 0.650 mean F1
+    # (companies=0.606, games=0.706, music=0.638). Distinct from
+    # ``embedding_sbert``: this is a non-neural baseline orthogonal
+    # to SBERT's semantic signal, useful when SBERT picks up out-of-
+    # domain artefacts (e.g. all-numeric columns where token
+    # semantics are degenerate). Member name kept as
+    # ``instance_tf_cosine`` for backwards-compatibility — the
+    # underlying vector method is binary_occurrence (TF was the
+    # initial pre-tuning default).
+
+  - name: embedding_sbert
+    module: usecases_synthetic.lib.embedding_sm_matcher
+    class: EmbeddingBasedSchemaMatcher
+    signal_type: embedding
+    enabled_by_default: true
+    params:
+      model_name: sentence-transformers/all-MiniLM-L6-v2
+      max_sample_size: 50
+      random_state: 42
+    match_kwargs:
+      threshold: 0.65
+    # SBERT over column name + up to 50 sample values, cosine
+    # similarity. Tuned 2026-05-08 — best mean across domains is
+    # ``MiniLM-L6 + max_sample=50 + threshold=0.65`` at 0.706 (was
+    # max_sample=20 + threshold=0.55, mean 0.693). The stronger
+    # ``all-mpnet-base-v2`` underperforms on this task; MiniLM-L6 is
+    # the right speed/quality tradeoff for the committee cadence.
+
+  - name: llm_openai
+    module: PyDI.schemamatching.llm_based
+    class: LLMBasedSchemaMatcher
+    signal_type: llm
+    enabled_by_default: true
+    params:
+      temperature: 0.0
+      num_rows: 5
+      model_name: gpt-5.4-mini
+    match_kwargs: {}
+    # Tuned 2026-05-08 — F1 plateaus at ``num_rows=5`` (companies
+    # 0.952, games 1.000, music 1.000); 10 and 20 give identical F1
+    # at higher token cost. Dropped from 10 to 5 to halve API cost.
+    # ``gpt-5.4-mini`` per the §"LLM model defaults + per-run
+    # override" policy. Requires a LangChain chat_model — injected by
+    # the runner from the model_name param.
+
+  - name: magneto_slm_llm
+    module: usecases_synthetic.lib.magneto_sm_matcher
+    class: MagnetoSchemaMatcher
+    signal_type: llm
+    enabled_by_default: true
+    params:
+      embedding_model: BAAI/bge-base-en-v1.5
+      encoding_mode: header_values_verbose
+      sampling_mode: priority_sampling
+      sampling_size: 10
+      topk: 20
+      embedding_threshold: 0.1
+      use_llm_rerank: true
+      llm_temperature: 0.0
+      model_name: gpt-5.4-mini
+    match_kwargs:
+      threshold: 0.3
+    # Magneto (VIDA-NYU, VLDB '25): two-phase SLM-retrieval + LLM-rerank
+    # schema matcher. Vendored at
+    # usecases_synthetic/third_party/magneto_matcher/. Enabled by default
+    # 2026-05-10 after the embedding + Magneto joint tuning sweep
+    # (R5 SM tuning extension) — best mean F1 across {companies, games,
+    # music} = 0.957 with the params above. Notable findings:
+    #   - BGE-base wins for Magneto's SLM retrieval (whereas MiniLM-L6
+    #     wins for embedding_sbert) — different optima per member, kept
+    #     them separate for committee diversity.
+    #   - topk=20 helps materially (0.957 vs 0.929 at topk=10).
+    #   - encoding_mode=header_values_verbose beats default by 0.7pp and
+    #     header_only by 3.3pp.
+    #   - use_llm_rerank=true is essential — disabling collapses F1 from
+    #     0.957 to 0.182 (SLM retrieval alone is too noisy).
+    #   - match_threshold is non-discriminating in [0.3, 0.5] — locked
+    #     at 0.3 for headroom.
+    # Cost: O(source_columns) LLM calls per source-pair (~21 per domain
+    # ≈ 63 per SM run × $0.002 = ~$0.13/run). Prompt cache at
+    # usecases_synthetic/cache/magneto_prompts/ makes reruns free.
+
+  - name: coma_hybrid
+    module: usecases_synthetic.lib.coma_sm_matcher
+    class: ComaSchemaMatcher
+    signal_type: hybrid
+    enabled_by_default: true
+    params:
+      max_n: 2
+      use_instances: true
+      use_schema: true
+      delta: 0.1
+      coma_threshold: 0.0
+    match_kwargs:
+      threshold: 0.2
+    # COMA 3.0 CE via Valentine's ComaPy reimplementation. Tuned
+    # 2026-05-08 — best mean across domains is ``max_n=2 +
+    # use_instances=true + use_schema=true + delta=0.1 + threshold=0.2``
+    # at 0.745 (was max_n=1, delta=0.15, threshold=0.3, mean 0.444).
+    # Bumping max_n from 1 to 2 enables the bigram label sub-matcher;
+    # the lower threshold lets through valid medium-confidence matches
+    # the COMA aggregator emits. Adds a distinct hybrid-ensemble
+    # signal — COMA itself runs label + instance + structural
+    # sub-matchers and aggregates their confidence scores; second-order
+    # signal uncorrelated with the single-signal slots.
+
+# Axis coverage enforcement (consumed by test_committee_configs.py).
+# Six axes — duplicate / label / instance / embedding / hybrid / llm —
+# cover record-correspondence, header-string, value-distribution,
+# semantic-embedding, hybrid-ensemble, and prompted-LLM signals. K8
+# anonymisation (column renames at hard) attenuates label / hybrid /
+# embedding header signals while leaving duplicate / instance / LLM
+# (which all read column values) closer to baseline — committee
+# robustness intentional.
+required_axes:
+  signal_type: [duplicate, label, instance, embedding, hybrid]

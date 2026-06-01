@@ -1,0 +1,22 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "AuD"
+    },
+    {
+      "source": "products_2",
+      "value": "GBP"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Standardized the mixed-case currency code to the canonical ISO 4217 form.",
+    "value": "AUD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"AUD\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Standardized the mixed-case currency code to the canonical ISO 4217 form.\"}"
+}

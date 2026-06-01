@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Duc, Catherine"
+    },
+    {
+      "source": "discogs",
+      "value": "Catherine Duc"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The candidates are the same person with name order inverted, and standardizing to given-name surname form yields the canonical artist name.",
+    "value": "Catherine Duc"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Catherine Duc\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The candidates are the same person with name order inverted, and standardizing to given-name surname form yields the canonical artist name.\"}"
+}

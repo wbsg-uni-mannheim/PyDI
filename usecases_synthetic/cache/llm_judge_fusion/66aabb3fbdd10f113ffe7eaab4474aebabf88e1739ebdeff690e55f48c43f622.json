@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "9,313.23 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "10000.0"
+    },
+    {
+      "source": "products_4",
+      "value": "10,000.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "The candidates consistently indicate roughly 10 TB; the GI B value converts to about 10000 GB, so a robust aggregate is 10000 GB.",
+    "value": 10000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":10000,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"The candidates consistently indicate roughly 10 TB; the GI B value converts to about 10000 GB, so a robust aggregate is 10000 GB.\"}"
+}

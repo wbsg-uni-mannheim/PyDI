@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "232.83 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "250.0"
+    },
+    {
+      "source": "products_4",
+      "value": "250.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.88,
+    "operation": "normalization",
+    "reasoning": "250 GB is the common canonical capacity, and 232.83 GiB is the binary equivalent of about 250 GB.",
+    "value": 250.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":250.0,\"operation\":\"normalization\",\"confidence\":0.88,\"reasoning\":\"250 GB is the common canonical capacity, and 232.83 GiB is the binary equivalent of about 250 GB.\"}"
+}

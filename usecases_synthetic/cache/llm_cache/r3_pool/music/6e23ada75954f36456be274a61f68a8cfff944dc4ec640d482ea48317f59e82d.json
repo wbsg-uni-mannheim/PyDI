@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_118392|lastFM_53597|name=The Marshall Mathers LP2 | artist=Eminem | release-date=2013-11-05 | release-country=United States of America | duration=6141.0 | genre=Hip Hop | tracks=['Bad Guy', 'Parking Lot (Skit)', 'Rhyme Or Reason', 'So Much Better', 'Survival', 'Legacy', 'Asshole', 'Berzerk', 'Rap God', 'Brainless', 'Stronger Than I Was', 'The Monster', 'So Far...', 'Love Game', 'Headlights', 'Evil Twin', 'Deluxe Bonus Disc', 'Baby', 'Desperation', 'Groundhog Day', 'Beautiful Pain', 'Wicked Ways']||name=The Marshall Mathers LP 2 | artist=Eminem | duration=4930.0 | tracks=['Bad Guy', 'Parking Lot (Skit)', 'Rhyme or Reason', 'So Much Better', 'Legacy', 'Asshole', 'Berzerk', 'Rap God', 'Brainless', 'Stronger than I Was', 'So Far...', 'Love Game', 'Baby', 'Desperation', 'Groundhog Day', 'Beautiful Pain', 'Wicked Ways']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Marshall Mathers LP2 | artist=Eminem | release-date=2013-11-05 | release-country=United States of America | duration=6141.0 | genre=Hip Hop | tracks=['Bad Guy', 'Parking Lot (Skit)', 'Rhyme Or Reason', 'So Much Better', 'Survival', 'Legacy', 'Asshole', 'Berzerk', 'Rap God', 'Brainless', 'Stronger Than I Was', 'The Monster', 'So Far...', 'Love Game', 'Headlights', 'Evil Twin', 'Deluxe Bonus Disc', 'Baby', 'Desperation', 'Groundhog Day', 'Beautiful Pain', 'Wicked Ways']\nRecord B: name=The Marshall Mathers LP 2 | artist=Eminem | duration=4930.0 | tracks=['Bad Guy', 'Parking Lot (Skit)', 'Rhyme or Reason', 'So Much Better', 'Legacy', 'Asshole', 'Berzerk', 'Rap God', 'Brainless', 'Stronger than I Was', 'So Far...', 'Love Game', 'Baby', 'Desperation', 'Groundhog Day', 'Beautiful Pain', 'Wicked Ways']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

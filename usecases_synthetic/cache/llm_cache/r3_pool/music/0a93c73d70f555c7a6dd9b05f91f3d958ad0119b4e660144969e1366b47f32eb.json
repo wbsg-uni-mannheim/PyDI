@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_87539|mbrainz_3442|name=I'm Always Dancin' To The Music | artist=Benny Golson | release-date=1978 | release-country=Canada | duration=2920.0 | genre=Funk / Soul | tracks=[\"Blue's March (I'm Marchin')\", 'Love Is The Key', \"I'm Always Dancin' To The Music\", 'You', 'Georgia On My Mind', 'High On Sunshine', \"Don't Ask My Neighbors\", \"Happy I'm Happy\"]||name=I'm Always Dancin' to the Music | artist=Golson, Benny | release-date=1978-01-01 | release-country=United States of America | duration=2920 | tracks=[\"Blue's March (I'm Marchin')\", 'Love Is the Key', \"I'm Always Dancin' to the Music\", 'You', 'Georgia on My Mind', 'High on Sunshine', \"Don't Ask My Neighbors\", \"Happy I'm Happy\"]",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=I'm Always Dancin' To The Music | artist=Benny Golson | release-date=1978 | release-country=Canada | duration=2920.0 | genre=Funk / Soul | tracks=[\"Blue's March (I'm Marchin')\", 'Love Is The Key', \"I'm Always Dancin' To The Music\", 'You', 'Georgia On My Mind', 'High On Sunshine', \"Don't Ask My Neighbors\", \"Happy I'm Happy\"]\nRecord B: name=I'm Always Dancin' to the Music | artist=Golson, Benny | release-date=1978-01-01 | release-country=United States of America | duration=2920 | tracks=[\"Blue's March (I'm Marchin')\", 'Love Is the Key', \"I'm Always Dancin' to the Music\", 'You', 'Georgia on My Mind', 'High on Sunshine', \"Don't Ask My Neighbors\", \"Happy I'm Happy\"]\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

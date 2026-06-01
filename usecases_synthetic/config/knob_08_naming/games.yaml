@@ -1,0 +1,190 @@
+# Knob 08 — Schema Naming Divergence: Games
+#
+# Rename tables per source per column at each rung on the
+# descriptive -> abbreviated -> cryptic -> anonymized ladder.
+#
+# Refreshed against the 2026-05-04 CSV sources (post-loader column
+# names). Per-domain note: refreshed metacritic shifted toward
+# descriptive at baseline (`game_title, year_published, made_by,
+# console, age_rating, ...`) — informational, level_assignments
+# carry the difficulty curve.
+#
+# medium-rung tightening: sales drops from `cryptic` -> `abbreviated`
+# (sales is abbreviated at baseline, so medium becomes identity-like
+# for sales; the easy->medium delta now lives mostly in dbpedia +
+# canonical-target rename-up via the SM oracle).
+
+level_assignments:
+  easy:
+    dbpedia: descriptive
+    metacritic: descriptive
+    sales: descriptive
+  medium:
+    dbpedia: abbreviated
+    metacritic: descriptive
+    sales: abbreviated
+  hard:
+    dbpedia: cryptic
+    metacritic: abbreviated
+    sales: anonymized
+
+# Ground-truth schema mapping: source_col -> target_col.
+# Canonical target names follow the K10 sign-off attribute_mapping.
+sm_mapping:
+  dbpedia:
+    id: id
+    title: name
+    launch_yr: releaseYear
+    studio: developer
+    system: platform
+    genre: genres
+    franchise: series
+  metacritic:
+    id: id
+    game_title: name
+    year_published: releaseYear
+    made_by: developer
+    console: platform
+    genres: genres
+    press_rating: criticScore
+    player_rating: userScore
+    age_rating: ESRB
+  sales:
+    id: id
+    prod_title: name
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    hw: platform
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    age_classification: ESRB
+    units_sold_mm: globalSales
+
+rename_table:
+  dbpedia:
+    title:
+      descriptive: name
+      abbreviated: gm_nm
+      cryptic: nm
+      anonymized: Attribute_2
+    launch_yr:
+      descriptive: releaseYear
+      abbreviated: launch_yr
+      cryptic: ly
+      anonymized: Attribute_3
+    studio:
+      descriptive: developer
+      abbreviated: studio
+      cryptic: stu
+      anonymized: Attribute_4
+    system:
+      descriptive: platform
+      abbreviated: system
+      cryptic: sys
+      anonymized: Attribute_5
+    genre:
+      descriptive: genres
+      abbreviated: gnr
+      cryptic: g
+      anonymized: Attribute_6
+    franchise:
+      descriptive: series
+      abbreviated: franchise
+      cryptic: fran
+      anonymized: Attribute_7
+
+  metacritic:
+    game_title:
+      descriptive: name
+      abbreviated: game_title
+      cryptic: gt
+      anonymized: Attribute_2
+    year_published:
+      descriptive: releaseYear
+      abbreviated: year_published
+      cryptic: yp
+      anonymized: Attribute_3
+    made_by:
+      descriptive: developer
+      abbreviated: made_by
+      cryptic: mb
+      anonymized: Attribute_4
+    console:
+      descriptive: platform
+      abbreviated: console
+      cryptic: con
+      anonymized: Attribute_5
+    genres:
+      descriptive: genres
+      abbreviated: gnrs
+      cryptic: gn
+      anonymized: Attribute_6
+    press_rating:
+      descriptive: criticScore
+      abbreviated: press_rating
+      cryptic: pr
+      anonymized: Attribute_7
+    player_rating:
+      descriptive: userScore
+      abbreviated: player_rating
+      cryptic: plr
+      anonymized: Attribute_8
+    age_rating:
+      descriptive: ESRB
+      abbreviated: age_rating
+      cryptic: ar
+      anonymized: Attribute_9
+
+  sales:
+    prod_title:
+      descriptive: name
+      abbreviated: prod_title
+      cryptic: pt
+      anonymized: Attribute_2
+    launch_dt:
+      descriptive: releaseYear
+      abbreviated: launch_dt
+      cryptic: ld
+      anonymized: Attribute_3
+    studio:
+      descriptive: developer
+      abbreviated: studio
+      cryptic: stu
+      anonymized: Attribute_4
+    dist:
+      descriptive: publisher
+      abbreviated: dist
+      cryptic: ds
+      anonymized: Attribute_5
+    hw:
+      descriptive: platform
+      abbreviated: hw
+      cryptic: h
+      anonymized: Attribute_6
+    genre:
+      descriptive: genres
+      abbreviated: genre
+      cryptic: gn
+      anonymized: Attribute_7
+    press_score:
+      descriptive: criticScore
+      abbreviated: press_score
+      cryptic: ps
+      anonymized: Attribute_8
+    comm_rating:
+      descriptive: userScore
+      abbreviated: comm_rating
+      cryptic: cr
+      anonymized: Attribute_9
+    age_classification:
+      descriptive: ESRB
+      abbreviated: age_class
+      cryptic: ac
+      anonymized: Attribute_10
+    units_sold_mm:
+      descriptive: globalSales
+      abbreviated: units_sold_mm
+      cryptic: us
+      anonymized: Attribute_11

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_43760|lastFM_20714|name=Blood Bath Beyond | artist=Kung Fu Vampire | release-date=2003 | release-country=United States of America | duration=3002.0 | genre=Hip Hop | tracks=['Disc 1: Blood Bath Beyond', 'Abra Cadaver', 'Almost Daylight', 'Lanes Change', 'Atmosfear', 'Barely Standing', 'Darkness We Run', 'Cyberasia', 'Arrival', 'Ship Left Field', 'Side 2 Side', 'Cyberasia There', 'Alter Everything', 'Master / Apprentice', 'Heaven Or Hell', 'Love Your Enemy', 'Balm Mint', 'Disc 2: Bonus DVD']||name=Blood  Beyond | artist=Kung F. Vampire | duration=4478.0 | tracks=['Almost Daylight', 'Abracadaver', 'Lanes Change', 'Almost Daylight', 'Lanes Change', 'Barely Standing', 'Atmosfear', 'Darkness Werun', 'Darkness We Run', 'Cyberasia', 'Arrival', 'Arrival', 'Side 2 Side', 'Ship Left Field', 'cyberasia there', 'Side 2 Side', 'After Everything', 'cyberasia there', 'Master/Apprentice', 'alter everything', 'Master/ Apprentice (feat. Eddie Gale)', 'Heaven Or Hell', 'Heaven or Hell (feat. Cougnut)', 'love your enemy', 'balm mint', 'balm mint']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Blood Bath Beyond | artist=Kung Fu Vampire | release-date=2003 | release-country=United States of America | duration=3002.0 | genre=Hip Hop | tracks=['Disc 1: Blood Bath Beyond', 'Abra Cadaver', 'Almost Daylight', 'Lanes Change', 'Atmosfear', 'Barely Standing', 'Darkness We Run', 'Cyberasia', 'Arrival', 'Ship Left Field', 'Side 2 Side', 'Cyberasia There', 'Alter Everything', 'Master / Apprentice', 'Heaven Or Hell', 'Love Your Enemy', 'Balm Mint', 'Disc 2: Bonus DVD']\nRecord B: name=Blood  Beyond | artist=Kung F. Vampire | duration=4478.0 | tracks=['Almost Daylight', 'Abracadaver', 'Lanes Change', 'Almost Daylight', 'Lanes Change', 'Barely Standing', 'Atmosfear', 'Darkness Werun', 'Darkness We Run', 'Cyberasia', 'Arrival', 'Arrival', 'Side 2 Side', 'Ship Left Field', 'cyberasia there', 'Side 2 Side', 'After Everything', 'cyberasia there', 'Master/Apprentice', 'alter everything', 'Master/ Apprentice (feat. Eddie Gale)', 'Heaven Or Hell', 'Heaven or Hell (feat. Cougnut)', 'love your enemy', 'balm mint', 'balm mint']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

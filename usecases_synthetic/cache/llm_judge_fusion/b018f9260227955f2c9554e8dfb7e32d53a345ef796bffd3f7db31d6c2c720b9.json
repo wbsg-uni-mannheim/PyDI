@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "MYR"
+    },
+    {
+      "source": "products_2",
+      "value": "ZAR"
+    },
+    {
+      "source": "products_3",
+      "value": "USD"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "Conflicting currency codes provide no basis for fusion, so one candidate must be chosen verbatim.",
+    "value": "USD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"USD\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"Conflicting currency codes provide no basis for fusion, so one candidate must be chosen verbatim.\"}"
+}

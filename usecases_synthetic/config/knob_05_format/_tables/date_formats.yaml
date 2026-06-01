@@ -1,0 +1,77 @@
+# Static date format table for Knob 05 — Format/Unit Diversity.
+# Immutable once checked in. Each entry maps a format_id to its
+# strftime pattern, a dateutil parser hint, and flags.
+#
+# hard_only: true means this format is only drawn at the hard level.
+# locale_ambiguous_deny: true means this pattern is NEVER emitted
+#   (Knob 7 territory — dates where day <= 12 are ambiguous between
+#   MM/DD and DD/MM).
+
+formats:
+  iso:
+    pattern: "%Y-%m-%d"
+    parser_hint: "ISO"
+    hard_only: false
+    locale_ambiguous_deny: false
+
+  us_slash:
+    pattern: "%m/%d/%Y"
+    parser_hint: "US"
+    hard_only: false
+    locale_ambiguous_deny: false
+
+  eu_dot:
+    pattern: "%d.%m.%Y"
+    parser_hint: "EU_DOT"
+    hard_only: false
+    locale_ambiguous_deny: false
+
+  long_english:
+    pattern: "%B %d, %Y"
+    parser_hint: "LONG_EN"
+    hard_only: false
+    locale_ambiguous_deny: false
+
+  compact:
+    pattern: "%Y%m%d"
+    parser_hint: "COMPACT"
+    hard_only: false
+    locale_ambiguous_deny: false
+
+  # Hard-only formats
+  two_digit_year_us:
+    pattern: "%m/%d/%y"
+    parser_hint: "US_2Y"
+    hard_only: true
+    locale_ambiguous_deny: false
+
+  two_digit_year_dot:
+    pattern: "%d.%m.%y"
+    parser_hint: "EU_DOT_2Y"
+    hard_only: true
+    locale_ambiguous_deny: false
+
+  precision_year_month:
+    pattern: "%Y-%m"
+    parser_hint: "YEAR_MONTH"
+    hard_only: true
+    locale_ambiguous_deny: false
+
+  precision_year:
+    pattern: "%Y"
+    parser_hint: "YEAR_ONLY"
+    hard_only: true
+    locale_ambiguous_deny: false
+
+  # Denied patterns (never emitted — Knob 7 territory)
+  eu_slash:
+    pattern: "%d/%m/%Y"
+    parser_hint: "EU_SLASH"
+    hard_only: false
+    locale_ambiguous_deny: true
+
+  eu_slash_2y:
+    pattern: "%d/%m/%y"
+    parser_hint: "EU_SLASH_2Y"
+    hard_only: true
+    locale_ambiguous_deny: true

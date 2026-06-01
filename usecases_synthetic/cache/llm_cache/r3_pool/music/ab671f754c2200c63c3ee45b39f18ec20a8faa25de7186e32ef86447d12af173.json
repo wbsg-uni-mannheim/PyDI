@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_830|lastFM_9975|name=Chrome | artist=Etnica | release-date=2002-01-30 | release-country=Japan | duration=4148.0 | genre=Electronic | tracks=['Alpha-Beta', 'Solaris', '1056', 'Black Lava', 'Tracktor Activity', 'The Object (Live Mix)', 'Liquid Forms', 'Are We Safe?', 'Blasting!']||name=Chrome | artist=John Debo | duration=4462.0 | tracks=['The Baguio Track (Saeed & Palash Remix)', 'Promises', \"Don't Do It\", 'ShaÃƒÂ¯va', 'Choose Life (Trancesetters Remix)', 'Standing', 'Second Contact', 'Philter', 'Falling Together', '1-800-Ming', 'Deep Progress (Z2 Remix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Chrome | artist=Etnica | release-date=2002-01-30 | release-country=Japan | duration=4148.0 | genre=Electronic | tracks=['Alpha-Beta', 'Solaris', '1056', 'Black Lava', 'Tracktor Activity', 'The Object (Live Mix)', 'Liquid Forms', 'Are We Safe?', 'Blasting!']\nRecord B: name=Chrome | artist=John Debo | duration=4462.0 | tracks=['The Baguio Track (Saeed & Palash Remix)', 'Promises', \"Don't Do It\", 'ShaÃƒÂ¯va', 'Choose Life (Trancesetters Remix)', 'Standing', 'Second Contact', 'Philter', 'Falling Together', '1-800-Ming', 'Deep Progress (Z2 Remix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

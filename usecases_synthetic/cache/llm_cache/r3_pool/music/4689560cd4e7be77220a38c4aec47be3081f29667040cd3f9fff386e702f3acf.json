@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_43072|mbrainz_1724|name=Shelter | artist=Sons Of Korah | duration=2701.0 | tracks=['Psalm 35 (Contend)', 'Psalm 1 (Blessed is the Man)', 'Psalm 37 (I) (Shine Like the Dawn)', 'Psalm 127 (Unless the Lord Builds the House)', 'Psalm 30 (Garments of Joy)', 'Psalm 73 (Whom Have I in Heaven but You)', 'Psalm 123 (I Lift Up My Eyes)', 'Psalm 128 (Olive Plants)', 'Psalm 37 (II) (Be Still Before the Lord)', 'Psalm 51 (A Broken Spirit and a Contrite Heart)']||name=Shelter | artist=Carson, Lori feat. | release-date=1990-01-01 | release-country=United States of America | duration=2755 | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love and Pain', 'Stand on Your Own', 'Pearl in His Pocket', 'Way of the Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shelter | artist=Sons Of Korah | duration=2701.0 | tracks=['Psalm 35 (Contend)', 'Psalm 1 (Blessed is the Man)', 'Psalm 37 (I) (Shine Like the Dawn)', 'Psalm 127 (Unless the Lord Builds the House)', 'Psalm 30 (Garments of Joy)', 'Psalm 73 (Whom Have I in Heaven but You)', 'Psalm 123 (I Lift Up My Eyes)', 'Psalm 128 (Olive Plants)', 'Psalm 37 (II) (Be Still Before the Lord)', 'Psalm 51 (A Broken Spirit and a Contrite Heart)']\nRecord B: name=Shelter | artist=Carson, Lori feat. | release-date=1990-01-01 | release-country=United States of America | duration=2755 | tracks=['Shelter', 'Pretty Girls', 'Every Heartbeat', 'The Last Time', 'Day After', 'Love and Pain', 'Stand on Your Own', 'Pearl in His Pocket', 'Way of the Past', 'Which Way Be Broadway', 'Imagine Love', 'Junk']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_36984|lastFM_80771|name=If You Leave It Alone | artist=The Wave Pictures | release-date=2009 | release-country=UK | genre=Pop|Rock | tracks=['If You Leave It Alone', 'Canary Wharf', 'My Kiss', 'I Thought Of You Again', 'Tiny Craters In The Sand', 'Bumble Bee', 'Come On Daniel', 'Too Many Questions', 'Bye Bye Bubble Belly', 'Softly You, Softly Me', 'Strawberry Cables', 'Nothing Can Change This Love']||name=If  Leave... | artist=Eleanor McEvoy | duration=2602.0 | tracks=['Land in the Water', \"Don't Blame the Tune\", 'God Only Knows', 'Listen to Me', 'Ache in My Heart', 'Heaven Help Us', 'If You Leave', 'Lift the Wings', 'Secret of Living', 'I Wish You the Best', 'True Colors', 'Dust My Broom']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=If You Leave It Alone | artist=The Wave Pictures | release-date=2009 | release-country=UK | genre=Pop|Rock | tracks=['If You Leave It Alone', 'Canary Wharf', 'My Kiss', 'I Thought Of You Again', 'Tiny Craters In The Sand', 'Bumble Bee', 'Come On Daniel', 'Too Many Questions', 'Bye Bye Bubble Belly', 'Softly You, Softly Me', 'Strawberry Cables', 'Nothing Can Change This Love']\nRecord B: name=If  Leave... | artist=Eleanor McEvoy | duration=2602.0 | tracks=['Land in the Water', \"Don't Blame the Tune\", 'God Only Knows', 'Listen to Me', 'Ache in My Heart', 'Heaven Help Us', 'If You Leave', 'Lift the Wings', 'Secret of Living', 'I Wish You the Best', 'True Colors', 'Dust My Broom']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

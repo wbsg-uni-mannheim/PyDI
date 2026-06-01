@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_9112|mbrainz_6737|name=Yoshida Brothers II | artist=Yoshida Brothers | tracks=[]||name=Yoshida Brothers | artist=Yoshida Kyoudai | release-date=2003-08-12 | release-country=United States of America | duration=3063 | tracks=['Tabidachi (Starting on a Journey)', 'Hyakka Ryouran (Blooming)', 'Madrugada', 'Storm', 'Namonaki Oka (A Hill With No Name)', 'Tsugaru Jyongara Bushi (Kenichi version)', 'Labyrinth (Modern Second Movement)', 'Moyuru (Sprouting)', 'Fukaki Umi no Kanata (Beyond the Deep Sea)', 'Tsugaru Jyongara Bushi (Ryoichiro version)', 'Storm (T.M. mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Yoshida Brothers II | artist=Yoshida Brothers | tracks=[]\nRecord B: name=Yoshida Brothers | artist=Yoshida Kyoudai | release-date=2003-08-12 | release-country=United States of America | duration=3063 | tracks=['Tabidachi (Starting on a Journey)', 'Hyakka Ryouran (Blooming)', 'Madrugada', 'Storm', 'Namonaki Oka (A Hill With No Name)', 'Tsugaru Jyongara Bushi (Kenichi version)', 'Labyrinth (Modern Second Movement)', 'Moyuru (Sprouting)', 'Fukaki Umi no Kanata (Beyond the Deep Sea)', 'Tsugaru Jyongara Bushi (Ryoichiro version)', 'Storm (T.M. mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

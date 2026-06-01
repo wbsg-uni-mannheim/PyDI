@@ -1,0 +1,26 @@
+{
+  "attribute": "storage_gb",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "465.66 GiB"
+    },
+    {
+      "source": "products_2",
+      "value": "500.0"
+    },
+    {
+      "source": "products_4",
+      "value": "500.0 GB"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "Two candidates indicate 500 GB and the GiB value is the binary equivalent, so the canonical storage is 500 GB.",
+    "value": 500.0
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":500.0,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"Two candidates indicate 500 GB and the GiB value is the binary equivalent, so the canonical storage is 500 GB.\"}"
+}

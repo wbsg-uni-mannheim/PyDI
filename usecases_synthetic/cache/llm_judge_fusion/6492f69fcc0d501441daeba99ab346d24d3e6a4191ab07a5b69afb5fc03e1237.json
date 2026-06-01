@@ -1,0 +1,26 @@
+{
+  "attribute": "priceCurrency",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "EUR"
+    },
+    {
+      "source": "products_2",
+      "value": "GBP"
+    },
+    {
+      "source": "products_4",
+      "value": "AED"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are plausible currency codes with no basis to reconcile them, so one candidate is selected verbatim.",
+    "value": "EUR"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"EUR\",\"operation\":\"verbatim_pick\",\"confidence\":0.34,\"reasoning\":\"All candidates are plausible currency codes with no basis to reconcile them, so one candidate is selected verbatim.\"}"
+}

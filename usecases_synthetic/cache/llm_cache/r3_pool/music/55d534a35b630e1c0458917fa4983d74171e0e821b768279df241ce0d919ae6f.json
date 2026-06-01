@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_26992|mbrainz_29947|name=The Unplugged Collection | artist=John Denver | duration=3262.0 | tracks=['Perhaps Love', 'Dreamland Express', 'Rocky Mountain High', 'Seasons of the Heart', 'Whispering Jesse', 'Take Me Home, Country Roads', 'For You', 'Windsong', 'Leaving on a Jetplane', \"I'm Sorry\", 'Back Home Again', 'Sunshine on My Shoulders', \"Thank God I'm a Country Boy\", 'Christmas for Cowboys', 'Love Again']||name=The Doobie Brothers Collection | artist=Doobie Brothers, The | release-date=2013-05-27 | release-country=United States of America | duration=3256 | tracks=['One Step Closer', \"Takin' It To The Streets\", 'Jesus Is Just All Right', \"Keep This Train A-Rollin'\", 'Take Me In Your Arms', 'Real Love', 'Minute By Minute', 'Steamer Lane Breakdown', \"Long Train Runnin'\", 'What A Fool Believes', 'I Cheat The Hangman', 'China Grove', 'Listen To The Music']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Unplugged Collection | artist=John Denver | duration=3262.0 | tracks=['Perhaps Love', 'Dreamland Express', 'Rocky Mountain High', 'Seasons of the Heart', 'Whispering Jesse', 'Take Me Home, Country Roads', 'For You', 'Windsong', 'Leaving on a Jetplane', \"I'm Sorry\", 'Back Home Again', 'Sunshine on My Shoulders', \"Thank God I'm a Country Boy\", 'Christmas for Cowboys', 'Love Again']\nRecord B: name=The Doobie Brothers Collection | artist=Doobie Brothers, The | release-date=2013-05-27 | release-country=United States of America | duration=3256 | tracks=['One Step Closer', \"Takin' It To The Streets\", 'Jesus Is Just All Right', \"Keep This Train A-Rollin'\", 'Take Me In Your Arms', 'Real Love', 'Minute By Minute', 'Steamer Lane Breakdown', \"Long Train Runnin'\", 'What A Fool Believes', 'I Cheat The Hangman', 'China Grove', 'Listen To The Music']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

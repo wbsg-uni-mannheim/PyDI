@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_74634|mbrainz_1157|name=Talkie Walkie | artist=Air | release-date=2004 | release-country=Russia | duration=2600.0 | genre=Electronic | tracks=['Venus', 'Cherry Blossom Girl', 'Run', 'Universal Traveler', 'Mike Mills', 'Surfing On A Rocket', 'Another Day', 'Alpha Beta Gaga', 'Biological', 'Alone In Kyoto']||name=Talkie Walkie | artist=Air | release-date=2004-01-27 | release-country=United States of America | duration=2596 | tracks=['Venus', 'Cherry Blossom Girl', 'Run', 'Universal Traveler', 'Mike Mills', 'Surfing on a Rocket', 'Another Day', 'Alpha Beta Gaga', 'Biological', 'Alone in Kyoto']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Talkie Walkie | artist=Air | release-date=2004 | release-country=Russia | duration=2600.0 | genre=Electronic | tracks=['Venus', 'Cherry Blossom Girl', 'Run', 'Universal Traveler', 'Mike Mills', 'Surfing On A Rocket', 'Another Day', 'Alpha Beta Gaga', 'Biological', 'Alone In Kyoto']\nRecord B: name=Talkie Walkie | artist=Air | release-date=2004-01-27 | release-country=United States of America | duration=2596 | tracks=['Venus', 'Cherry Blossom Girl', 'Run', 'Universal Traveler', 'Mike Mills', 'Surfing on a Rocket', 'Another Day', 'Alpha Beta Gaga', 'Biological', 'Alone in Kyoto']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_81630|mbrainz_9360|name=Afterglow | artist=Kendra Shank | duration=2614.0 | tracks=['Almost Blue', \"Tes Yeux Be'Mole\", 'Paris Bossa', \"There's Never Been A Day\", 'Afterglow', 'Devil May Care', \"I have The Feeling I've Been Here Before\", 'Left Alone']||name=Afterglow | artist=Exploding Boy, The | release-date=2009-05-29 | release-country=Sweden | duration=2469 | tracks=['The Right Spot', '40 Days', 'London', 'Heart of Glass', 'See You', 'What You Want To', 'Intervention', 'Desperados', 'Let the Right One In', 'Explodera mig']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Afterglow | artist=Kendra Shank | duration=2614.0 | tracks=['Almost Blue', \"Tes Yeux Be'Mole\", 'Paris Bossa', \"There's Never Been A Day\", 'Afterglow', 'Devil May Care', \"I have The Feeling I've Been Here Before\", 'Left Alone']\nRecord B: name=Afterglow | artist=Exploding Boy, The | release-date=2009-05-29 | release-country=Sweden | duration=2469 | tracks=['The Right Spot', '40 Days', 'London', 'Heart of Glass', 'See You', 'What You Want To', 'Intervention', 'Desperados', 'Let the Right One In', 'Explodera mig']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

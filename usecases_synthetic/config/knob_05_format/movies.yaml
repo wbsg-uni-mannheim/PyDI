@@ -1,0 +1,66 @@
+# Knob 05 — Format/Unit Diversity: Movies domain config.
+#
+# Per-domain baseline:
+#   - Dates uniform: ISO YYYY-MM-DD across all three sources (e.g.
+#     ``2010-01-01``).
+#   - No money attributes.
+#
+# Easy is identity; medium/hard layer additional date formats.
+
+domain: movies
+
+attribute_classes:
+  academy_awards:
+    date: date
+  actors:
+    date: date
+    actors_actor_birthday: date
+  golden_globes:
+    date: date
+
+id_columns:
+  academy_awards: id
+  actors: id
+  golden_globes: id
+
+format_pools_per_level:
+  easy:
+    date:
+      - iso
+      - long_english
+  medium:
+    date:
+      - iso
+      - long_english
+      - us_slash
+  hard:
+    date:
+      - iso
+      - long_english
+      - us_slash
+      - eu_dot
+
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+within_source_consistency:
+  easy: source
+  medium: source
+  hard: row
+
+unit_pool_per_level:
+  easy: {}
+  medium: {}
+  hard: {}
+
+normalize_down_threshold: 0.85
+
+source_magnitude_context: {}

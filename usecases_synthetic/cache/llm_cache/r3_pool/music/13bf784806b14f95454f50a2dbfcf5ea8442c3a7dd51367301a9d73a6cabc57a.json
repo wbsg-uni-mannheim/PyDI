@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_71952|lastFM_33492|name=Luciferian Frequencies | artist=Corpus Christii | release-date=2011 | release-country=UK | genre=Rock | tracks=['The Gate', 'The Owl Resurrection', 'Crystal Gaze Foundation', 'The Styx Reflection', 'Picatrix', 'Deliverer Of Light', 'The Infidels Cross', 'Be Dark Thy Light', 'Paths Of Human Puzzles', 'In The Rivers Of Red']||name=Corpus Christii -  Luciferian Frequencies | artist=Corpus Christii | duration=2010.0 | tracks=['The Gate', 'The Owl Resurrection', 'Crystal Glaze Foundation', 'Deliverer of Light', 'The Infidels Cross', 'Be Dark Thy Light', 'Paths of Human Puzzles', 'In the Rivers of Red']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Luciferian Frequencies | artist=Corpus Christii | release-date=2011 | release-country=UK | genre=Rock | tracks=['The Gate', 'The Owl Resurrection', 'Crystal Gaze Foundation', 'The Styx Reflection', 'Picatrix', 'Deliverer Of Light', 'The Infidels Cross', 'Be Dark Thy Light', 'Paths Of Human Puzzles', 'In The Rivers Of Red']\nRecord B: name=Corpus Christii -  Luciferian Frequencies | artist=Corpus Christii | duration=2010.0 | tracks=['The Gate', 'The Owl Resurrection', 'Crystal Glaze Foundation', 'Deliverer of Light', 'The Infidels Cross', 'Be Dark Thy Light', 'Paths of Human Puzzles', 'In the Rivers of Red']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

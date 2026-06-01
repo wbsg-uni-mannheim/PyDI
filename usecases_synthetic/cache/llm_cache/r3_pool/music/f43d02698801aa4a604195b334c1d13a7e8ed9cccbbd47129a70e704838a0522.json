@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_100|lastFM_54|name=Simple Things | artist=Bougie Soliterre | release-date=2000-01-01 | release-country=UK | genre=Electronic | tracks=['Common Thread (Main Horn Mix)', 'Superficial', 'Got The Bug', 'Something (Main Vocal Mix)', 'Besides You (Main Vocal Mix)', 'Magical Moments (Audio Rogue Mix)', \"Bougez (Bougie's Main Horn Mix)\", 'Miles Away (People People Main Mix)']||name=[explicit] Simple Things | artist=Bougie Soliterre | duration=3190.0 | tracks=['Common Thread (Main Horn Mix)', 'Superficial', 'Got the Bug', 'Something (Main Vocal Mix)', 'Besides You (Main Vocal Mix)', 'Magical Moments (Audio Rogue Mix)', \"Bougez (Bougie's Main Horn Mix)\", 'Miles Away (People People Main Mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Simple Things | artist=Bougie Soliterre | release-date=2000-01-01 | release-country=UK | genre=Electronic | tracks=['Common Thread (Main Horn Mix)', 'Superficial', 'Got The Bug', 'Something (Main Vocal Mix)', 'Besides You (Main Vocal Mix)', 'Magical Moments (Audio Rogue Mix)', \"Bougez (Bougie's Main Horn Mix)\", 'Miles Away (People People Main Mix)']\nRecord B: name=[explicit] Simple Things | artist=Bougie Soliterre | duration=3190.0 | tracks=['Common Thread (Main Horn Mix)', 'Superficial', 'Got the Bug', 'Something (Main Vocal Mix)', 'Besides You (Main Vocal Mix)', 'Magical Moments (Audio Rogue Mix)', \"Bougez (Bougie's Main Horn Mix)\", 'Miles Away (People People Main Mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

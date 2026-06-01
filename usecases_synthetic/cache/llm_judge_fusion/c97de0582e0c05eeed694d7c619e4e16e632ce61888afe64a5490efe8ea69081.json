@@ -1,0 +1,22 @@
+{
+  "attribute": "product_type",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "External HDD"
+    },
+    {
+      "source": "products_2",
+      "value": "hDD"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Canonicalized the inconsistent casing while preserving the more specific product type.",
+    "value": "External HDD"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"External HDD\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Canonicalized the inconsistent casing while preserving the more specific product type.\"}"
+}

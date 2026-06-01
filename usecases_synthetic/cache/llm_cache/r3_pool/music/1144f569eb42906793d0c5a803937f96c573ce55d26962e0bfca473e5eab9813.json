@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_112967|mbrainz_1298|name=Get Rich Or Die Tryin' | artist=50 Cent | release-date=2003 | release-country=Japan | duration=4177.0 | genre=Hip Hop | tracks=['Intro', 'What Up Gangsta', 'Patiently Waiting', 'Many Men (Wish Death)', 'In Da Club', 'High All The Time', 'Heat', \"If I Can't\", 'Blood Hound', 'Back Down', 'P.I.M.P.', 'Like My Style', 'Poor Lil Rich', '21 Questions', \"Don't Push Me\", 'Gotta Make It To Heaven', 'Bonus Cuts', 'Wanksta', 'U Not Like Me', \"Life's On The Line\"]||name=Get Rich or Die Tryin' (orig.) | artist=50 Cent | release-date=2003-02-04 | release-country=United States of America | duration=4170 | tracks=['Intro', 'What Up Gangsta', 'Patiently Waiting', 'Many Men (Wish Death)', 'In da Club', 'High All the Time', 'Heat', 'If I Canâ€™t', 'Blood Hound', 'Back Down', 'P.I.M.P.', 'Like My Style', 'Poor Lilâ€™ Rich', '21 Questions', 'Donâ€™t Push Me', 'Gotta Make It to Heaven', 'Wanksta', 'U Not Like Me', 'Lifeâ€™s on the Line']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Get Rich Or Die Tryin' | artist=50 Cent | release-date=2003 | release-country=Japan | duration=4177.0 | genre=Hip Hop | tracks=['Intro', 'What Up Gangsta', 'Patiently Waiting', 'Many Men (Wish Death)', 'In Da Club', 'High All The Time', 'Heat', \"If I Can't\", 'Blood Hound', 'Back Down', 'P.I.M.P.', 'Like My Style', 'Poor Lil Rich', '21 Questions', \"Don't Push Me\", 'Gotta Make It To Heaven', 'Bonus Cuts', 'Wanksta', 'U Not Like Me', \"Life's On The Line\"]\nRecord B: name=Get Rich or Die Tryin' (orig.) | artist=50 Cent | release-date=2003-02-04 | release-country=United States of America | duration=4170 | tracks=['Intro', 'What Up Gangsta', 'Patiently Waiting', 'Many Men (Wish Death)', 'In da Club', 'High All the Time', 'Heat', 'If I Canâ€™t', 'Blood Hound', 'Back Down', 'P.I.M.P.', 'Like My Style', 'Poor Lilâ€™ Rich', '21 Questions', 'Donâ€™t Push Me', 'Gotta Make It to Heaven', 'Wanksta', 'U Not Like Me', 'Lifeâ€™s on the Line']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

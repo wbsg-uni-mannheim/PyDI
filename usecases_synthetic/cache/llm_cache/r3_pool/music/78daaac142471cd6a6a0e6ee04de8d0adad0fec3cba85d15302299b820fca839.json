@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_24028|mbrainz_179|name=Ya Mama / Song For Shelter | artist=Fatboy Slim | release-date=2001 | release-country=Germany | duration=630.0 | genre=Electronic | tracks=['Ya Mama (Edit)', 'Song For Shelter (Full Single Mix)']||name=Song for Shelter / Ya Mama | artist=Fatboy Slim | release-date=2001-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2020 | tracks=['Song for Shelter (Chemical Brothers mix)', 'Ya Mama', 'Song for Shelter (a cappella)', 'Song for Shelter (original mix)', 'Song for Shelter (20/20 Vision Rollinâ€™ mix)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ya Mama / Song For Shelter | artist=Fatboy Slim | release-date=2001 | release-country=Germany | duration=630.0 | genre=Electronic | tracks=['Ya Mama (Edit)', 'Song For Shelter (Full Single Mix)']\nRecord B: name=Song for Shelter / Ya Mama | artist=Fatboy Slim | release-date=2001-01-01 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=2020 | tracks=['Song for Shelter (Chemical Brothers mix)', 'Ya Mama', 'Song for Shelter (a cappella)', 'Song for Shelter (original mix)', 'Song for Shelter (20/20 Vision Rollinâ€™ mix)']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

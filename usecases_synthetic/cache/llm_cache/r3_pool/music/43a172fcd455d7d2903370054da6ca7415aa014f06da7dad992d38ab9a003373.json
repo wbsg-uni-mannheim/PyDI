@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_37094|mbrainz_3276|name=Heartbreaker | artist=Dionne Warwick | release-date=1982 | release-country=Italy | duration=446.0 | genre=Funk / Soul | tracks=['Heartbreaker', \"I Can't See Anything (But You)\"]||name=Heartbreaker | artist=Warwick, Dionne (and others) | release-date=1982-01-01 | release-country=United States of America | duration=2420 | tracks=['Heartbreaker', 'It Makes No Difference', 'Yours', 'Take the Short Way Home', 'Misunderstood', 'All the Love in the World', \"I Can't See Anything (But You)\", 'Just One More Night', 'You Are My Love', 'Our Day Will Come']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Heartbreaker | artist=Dionne Warwick | release-date=1982 | release-country=Italy | duration=446.0 | genre=Funk / Soul | tracks=['Heartbreaker', \"I Can't See Anything (But You)\"]\nRecord B: name=Heartbreaker | artist=Warwick, Dionne (and others) | release-date=1982-01-01 | release-country=United States of America | duration=2420 | tracks=['Heartbreaker', 'It Makes No Difference', 'Yours', 'Take the Short Way Home', 'Misunderstood', 'All the Love in the World', \"I Can't See Anything (But You)\", 'Just One More Night', 'You Are My Love', 'Our Day Will Come']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

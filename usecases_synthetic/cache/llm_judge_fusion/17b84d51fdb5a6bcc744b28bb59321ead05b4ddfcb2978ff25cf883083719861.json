@@ -1,0 +1,26 @@
+{
+  "attribute": "price",
+  "candidates": [
+    {
+      "source": "products_1",
+      "value": "4.99"
+    },
+    {
+      "source": "products_2",
+      "value": "29.41"
+    },
+    {
+      "source": "products_4",
+      "value": "143.75"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.34,
+    "operation": "aggregation",
+    "reasoning": "The candidates are conflicting numeric prices, so a robust aggregate is the best canonical choice.",
+    "value": 29.41
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":29.41,\"operation\":\"aggregation\",\"confidence\":0.34,\"reasoning\":\"The candidates are conflicting numeric prices, so a robust aggregate is the best canonical choice.\"}"
+}

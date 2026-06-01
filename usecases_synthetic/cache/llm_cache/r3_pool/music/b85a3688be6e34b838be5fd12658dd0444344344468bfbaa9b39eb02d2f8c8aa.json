@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "lastFM_548|mbrainz_312|name=nine lives | artist=The Underwolves | duration=784.0 | tracks=['Nine Lives (Version Wildlife)', 'Nine Lives (Version My LIfe)']||name=Nine Lives | artist=Underwolves, The | release-date=1996-07-15 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Nine Lives (version Wildlife)', 'Nine Lives (version My Life)']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=nine lives | artist=The Underwolves | duration=784.0 | tracks=['Nine Lives (Version Wildlife)', 'Nine Lives (Version My LIfe)']\nRecord B: name=Nine Lives | artist=Underwolves, The | release-date=1996-07-15 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=0 | tracks=['Nine Lives (version Wildlife)', 'Nine Lives (version My Life)']\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::music"
+}

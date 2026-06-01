@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_57928|mbrainz_19832|name=Echoes | artist=Gene Clark | release-date=1966 | release-country=United States of America | duration=390.0 | genre=Rock | tracks=['Echoes', 'Echoes']||name=Echoes | artist=Jones, Rena | release-date=2013-04-01 | release-country=United States of America | duration=2790 | tracks=['Echoes', 'Shadows', 'Wishes', 'Returning to the Source', 'Dusk Till Dawn', 'Mirror Me', 'All That Ever Was', 'Dancing With the Universe', 'Mesmerized', 'Falling Into Place']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Echoes | artist=Gene Clark | release-date=1966 | release-country=United States of America | duration=390.0 | genre=Rock | tracks=['Echoes', 'Echoes']\nRecord B: name=Echoes | artist=Jones, Rena | release-date=2013-04-01 | release-country=United States of America | duration=2790 | tracks=['Echoes', 'Shadows', 'Wishes', 'Returning to the Source', 'Dusk Till Dawn', 'Mirror Me', 'All That Ever Was', 'Dancing With the Universe', 'Mesmerized', 'Falling Into Place']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}

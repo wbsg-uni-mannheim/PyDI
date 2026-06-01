@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "discogs_44049|mbrainz_11785|name=Bring It On | artist=Alistair Griffin | release-date=2003 | release-country=UK | duration=3057.0 | genre=Pop|Rock | tracks=['Bring It On', 'Painkiller', 'Obilivion', 'You & Me (Tonight)', 'Hungry For Love', 'Real World', 'Feeling Alive', 'Something About Her', \"My Lover's Prayer\", 'Jealous Guy', 'In Your Smile', 'Everything I Own', 'Wherever You Will Go', \"A Heart Can't Lie\"]||name=Bring It On / My Lover's Prayer | artist=Griffin, Alistair | release-date=2003-12-22 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=815 | tracks=['Bring It On', \"My Lover's Prayer\", 'Back for Good']",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bring It On | artist=Alistair Griffin | release-date=2003 | release-country=UK | duration=3057.0 | genre=Pop|Rock | tracks=['Bring It On', 'Painkiller', 'Obilivion', 'You & Me (Tonight)', 'Hungry For Love', 'Real World', 'Feeling Alive', 'Something About Her', \"My Lover's Prayer\", 'Jealous Guy', 'In Your Smile', 'Everything I Own', 'Wherever You Will Go', \"A Heart Can't Lie\"]\nRecord B: name=Bring It On / My Lover's Prayer | artist=Griffin, Alistair | release-date=2003-12-22 | release-country=United Kingdom of Great Britain and Northern Ireland | duration=815 | tracks=['Bring It On', \"My Lover's Prayer\", 'Back for Good']\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::music"
+}
