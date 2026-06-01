@@ -1,0 +1,134 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "DBLP Computer Science Papers Downsampled Source-Schema Subset",
+  "description": "Downsampled DBLP bibliographic records used as benchmark input for the papers web-data-integration usecase. The file preserves a DBLP XML-shaped source schema instead of the integrated schema. Rows are ordered like the schema-mapped DBLP subset so existing identity-resolution identifiers remain stable. Records are taken from the local DBLP XML dump.",
+  "url": "https://dblp.org/",
+  "keywords": [
+    "DBLP",
+    "scholarly metadata",
+    "computer science",
+    "papers",
+    "DOI",
+    "bibliographic metadata",
+    "source schema",
+    "schema matching",
+    "identity resolution",
+    "data fusion"
+  ],
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "identifier": "dblp-papers-downsampled-source-schema-2018-2020",
+  "version": "1.1",
+  "datePublished": "2026-05-28",
+  "numberOfItems": 60591,
+  "temporalCoverage": "2018-01-01/2020-12-31",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://dblp.org/",
+    "name": "dblp computer science bibliography"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "dblp computer science bibliography",
+    "url": "https://dblp.org/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/x-ndjson",
+      "contentUrl": "dblp.jsonl"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "_type",
+      "description": "Original DBLP XML publication element name, such as article or inproceedings",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "_attributes",
+      "description": "Attributes from the original DBLP XML element",
+      "unitText": "object"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "_doi_list",
+      "description": "DOIs extracted from DBLP doi, ee, or url fields for benchmark alignment",
+      "unitText": "array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "author",
+      "description": "DBLP author value or list of author values",
+      "unitText": "string/array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "title",
+      "description": "DBLP title value",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "year",
+      "description": "DBLP publication year",
+      "unitText": "year/string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "journal",
+      "description": "DBLP journal field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "booktitle",
+      "description": "DBLP booktitle or conference field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "publisher",
+      "description": "DBLP publisher field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "volume",
+      "description": "DBLP volume field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "number",
+      "description": "DBLP number or issue field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pages",
+      "description": "DBLP page range field where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ee",
+      "description": "DBLP electronic edition link or list of links",
+      "unitText": "URI/string/array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "url",
+      "description": "DBLP URL path",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "crossref",
+      "description": "DBLP crossref key where available",
+      "unitText": "string"
+    }
+  ]
+}

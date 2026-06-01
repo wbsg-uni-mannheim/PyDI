@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "title": "Scholarly Paper",
+  "description": "Target schema for scholarly paper metadata integrated from DBLP, Crossref, and OpenAlex.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Record ID",
+      "description": "Stable source-prefixed record identifier used by entity matching and fusion.",
+      "examples": [
+        "dblp-00000",
+        "crossref-00000",
+        "open_alex-00000"
+      ]
+    },
+    "doi": {
+      "type": "string",
+      "title": "DOI",
+      "description": "Digital Object Identifier normalized without the https://doi.org/ prefix.",
+      "examples": [
+        "10.1145/3316781.3317924",
+        "10.1093/nar/gky1131"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Publication Type",
+      "description": "Publication type reported by the source, such as article, inproceedings, or journal-article.",
+      "examples": [
+        "article",
+        "inproceedings",
+        "journal-article"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "Title of the scholarly work."
+    },
+    "authors": {
+      "type": "array",
+      "title": "Authors",
+      "description": "Ordered list of author display names.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        [
+          "Hsuan Hsiao",
+          "Jason Helge Anderson"
+        ]
+      ]
+    },
+    "publication_year": {
+      "type": "integer",
+      "title": "Publication Year",
+      "description": "Year in which the scholarly work was published.",
+      "minimum": 1800,
+      "maximum": 2100,
+      "examples": [
+        2018,
+        2019,
+        2020
+      ]
+    },
+    "journal": {
+      "type": "string",
+      "title": "Venue",
+      "description": "Journal, conference, proceedings, or source display name."
+    },
+    "publisher": {
+      "type": "string",
+      "title": "Publisher",
+      "description": "Publisher or host organization name."
+    },
+    "keywords": {
+      "type": "string",
+      "title": "Keywords",
+      "description": "Comma-separated keywords, concepts, or subject labels associated with the paper."
+    },
+    "volume": {
+      "type": "string",
+      "title": "Volume",
+      "description": "Publication volume."
+    },
+    "issue": {
+      "type": "string",
+      "title": "Issue",
+      "description": "Publication issue or number."
+    },
+    "first_page": {
+      "type": "string",
+      "title": "First Page",
+      "description": "First page of the publication page range."
+    },
+    "last_page": {
+      "type": "string",
+      "title": "Last Page",
+      "description": "Last page of the publication page range."
+    },
+    "referenced_works_count": {
+      "type": "integer",
+      "title": "Referenced Works Count",
+      "description": "Number of referenced works reported by the source.",
+      "minimum": 0
+    },
+    "cited_by_count": {
+      "type": "integer",
+      "title": "Cited By Count",
+      "description": "Number of citing works reported by the source.",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "id",
+    "doi",
+    "title"
+  ],
+  "additionalProperties": false
+}
