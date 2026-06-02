@@ -34,6 +34,12 @@ from .silver_standard import (
     load_synthetic_silver,
     load_workflow_silver,
 )
+from .schema_consistency import (
+    evaluate_column_schema_consistency,
+    evaluate_schema_consistency,
+    schema_consistency_per_column_frame,
+    write_schema_consistency_report,
+)
 
 __all__ = [
     "SilverStandard",
@@ -42,4 +48,8 @@ __all__ = [
     "compute_e2e_panel",
     "E2EPanel",
     "build_cell_provenance_from_fused",
+    "evaluate_schema_consistency",
+    "evaluate_column_schema_consistency",
+    "schema_consistency_per_column_frame",
+    "write_schema_consistency_report",
 ]

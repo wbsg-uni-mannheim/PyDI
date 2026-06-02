@@ -1,0 +1,146 @@
+{
+  "metric": "consistency",
+  "metadata": {
+    "usecase": "games",
+    "schema_path": "usecases/games/input/schemamatching/target_schema.json",
+    "fusion_output_path": "usecases/games/output/data_fusion/debug_fusion.jsonl",
+    "rows_evaluated": 6972,
+    "fused_table_source": "reconstructed_from_fusion_debug_jsonl",
+    "identifier_columns_excluded": true,
+    "open_taxonomy_policy": "non_exhaustive_membership_is_diagnostic_not_penalizing"
+  },
+  "result": {
+    "consistency_score": 0.999308134877285,
+    "n_evaluated": 54924,
+    "n_consistent": 54886,
+    "n_inconsistent": 38,
+    "per_column": {
+      "id": {
+        "consistency_score": null,
+        "n_evaluated": 0,
+        "n_consistent": 0,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": true,
+        "skipped": true,
+        "skip_reason": "identifier_column"
+      },
+      "name": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6972,
+        "n_consistent": 6972,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "developer": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6972,
+        "n_consistent": 6972,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "genres": {
+        "consistency_score": 0.9945496270797476,
+        "n_evaluated": 6972,
+        "n_consistent": 6934,
+        "n_inconsistent": 38,
+        "failure_counts": {
+          "items.minLength": 34,
+          "maxItems": 4
+        },
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 32778,
+            "n_known_values": 2914,
+            "n_unknown_values": 29864,
+            "known_value_rate": 0.08890109219598512
+          }
+        }
+      },
+      "publisher": {
+        "consistency_score": 1.0,
+        "n_evaluated": 2943,
+        "n_consistent": 2943,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "platform": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6972,
+        "n_consistent": 6972,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 6972,
+            "n_known_values": 2380,
+            "n_unknown_values": 4592,
+            "known_value_rate": 0.3413654618473896
+          }
+        }
+      },
+      "criticScore": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6969,
+        "n_consistent": 6969,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "userScore": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6640,
+        "n_consistent": 6640,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "ESRB": {
+        "consistency_score": 1.0,
+        "n_evaluated": 6701,
+        "n_consistent": 6701,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "taxonomy": {
+            "exhaustive": true,
+            "membership_enforced": true,
+            "n_values_checked": 6701,
+            "n_known_values": 6701,
+            "n_unknown_values": 0,
+            "known_value_rate": 1.0
+          }
+        }
+      },
+      "series": {
+        "consistency_score": 1.0,
+        "n_evaluated": 3783,
+        "n_consistent": 3783,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      }
+    },
+    "columns_missing_from_dataframe": [
+      "releaseYear"
+    ],
+    "extra_columns_ignored": [
+      "_fusion_group_id",
+      "_id",
+      "metacritic_id",
+      "name_longest_token",
+      "globalSales"
+    ],
+    "n_empty_columns_excluded": 0
+  }
+}

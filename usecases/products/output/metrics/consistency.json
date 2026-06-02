@@ -1,0 +1,283 @@
+{
+  "metric": "consistency",
+  "metadata": {
+    "usecase": "products",
+    "schema_path": "usecases/products/input/schemamatching/target_schema.json",
+    "fusion_output_path": "usecases/products/output/data_fusion/hardware_fusion_debug.jsonl",
+    "rows_evaluated": 768,
+    "fused_table_source": "reconstructed_from_fusion_debug_jsonl",
+    "identifier_columns_excluded": true,
+    "open_taxonomy_policy": "non_exhaustive_membership_is_diagnostic_not_penalizing"
+  },
+  "result": {
+    "consistency_score": 0.9990888760043072,
+    "n_evaluated": 12073,
+    "n_consistent": 12062,
+    "n_inconsistent": 11,
+    "per_column": {
+      "id": {
+        "consistency_score": null,
+        "n_evaluated": 0,
+        "n_consistent": 0,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": true,
+        "skipped": true,
+        "skip_reason": "identifier_column"
+      },
+      "brand": {
+        "consistency_score": 1.0,
+        "n_evaluated": 767,
+        "n_consistent": 767,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "title": {
+        "consistency_score": 1.0,
+        "n_evaluated": 768,
+        "n_consistent": 768,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "description": {
+        "consistency_score": 1.0,
+        "n_evaluated": 767,
+        "n_consistent": 767,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "price": {
+        "consistency_score": 1.0,
+        "n_evaluated": 768,
+        "n_consistent": 768,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "priceCurrency": {
+        "consistency_score": 0.9895833333333334,
+        "n_evaluated": 768,
+        "n_consistent": 760,
+        "n_inconsistent": 8,
+        "failure_counts": {
+          "currency_code": 7,
+          "pattern": 7
+        },
+        "excluded_from_dataset_score": false
+      },
+      "url": {
+        "consistency_score": 1.0,
+        "n_evaluated": 768,
+        "n_consistent": 768,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "title_description": {
+        "consistency_score": 1.0,
+        "n_evaluated": 768,
+        "n_consistent": 768,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "model": {
+        "consistency_score": 1.0,
+        "n_evaluated": 750,
+        "n_consistent": 750,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "model_number": {
+        "consistency_score": 0.9950576606260296,
+        "n_evaluated": 607,
+        "n_consistent": 604,
+        "n_inconsistent": 3,
+        "failure_counts": {
+          "pattern": 3
+        },
+        "excluded_from_dataset_score": false
+      },
+      "product_type": {
+        "consistency_score": 1.0,
+        "n_evaluated": 768,
+        "n_consistent": 768,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "chipset_name": {
+        "consistency_score": 1.0,
+        "n_evaluated": 219,
+        "n_consistent": 219,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "vram_gb": {
+        "consistency_score": 1.0,
+        "n_evaluated": 219,
+        "n_consistent": 219,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "storage_gb": {
+        "consistency_score": 1.0,
+        "n_evaluated": 549,
+        "n_consistent": 549,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "read_speed_mb_s": {
+        "consistency_score": 1.0,
+        "n_evaluated": 274,
+        "n_consistent": 274,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "write_speed_mb_s": {
+        "consistency_score": 1.0,
+        "n_evaluated": 217,
+        "n_consistent": 217,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "bus_type": {
+        "consistency_score": 1.0,
+        "n_evaluated": 728,
+        "n_consistent": 728,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "open_taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 728,
+            "n_expected_family_matches": 728,
+            "n_outside_expected_families": 0,
+            "expected_family_match_rate": 1.0
+          }
+        }
+      },
+      "interface_type": {
+        "consistency_score": 1.0,
+        "n_evaluated": 503,
+        "n_consistent": 503,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "open_taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 503,
+            "n_expected_family_matches": 494,
+            "n_outside_expected_families": 9,
+            "expected_family_match_rate": 0.9821073558648111
+          }
+        }
+      },
+      "width_mm": {
+        "consistency_score": 1.0,
+        "n_evaluated": 116,
+        "n_consistent": 116,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "length_mm": {
+        "consistency_score": 1.0,
+        "n_evaluated": 116,
+        "n_consistent": 116,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "height_mm": {
+        "consistency_score": 1.0,
+        "n_evaluated": 137,
+        "n_consistent": 137,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "weight_g": {
+        "consistency_score": 1.0,
+        "n_evaluated": 80,
+        "n_consistent": 80,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "storage_connection_type": {
+        "consistency_score": 1.0,
+        "n_evaluated": 478,
+        "n_consistent": 478,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "memory_type": {
+        "consistency_score": 1.0,
+        "n_evaluated": 247,
+        "n_consistent": 247,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "open_taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 247,
+            "n_expected_family_matches": 244,
+            "n_outside_expected_families": 3,
+            "expected_family_match_rate": 0.9878542510121457
+          }
+        }
+      },
+      "color": {
+        "consistency_score": 1.0,
+        "n_evaluated": 214,
+        "n_consistent": 214,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "form_factor": {
+        "consistency_score": 1.0,
+        "n_evaluated": 477,
+        "n_consistent": 477,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "open_taxonomy": {
+            "exhaustive": false,
+            "membership_enforced": false,
+            "n_values_checked": 477,
+            "n_expected_family_matches": 470,
+            "n_outside_expected_families": 7,
+            "expected_family_match_rate": 0.9853249475890985
+          }
+        }
+      }
+    },
+    "columns_missing_from_dataframe": [],
+    "extra_columns_ignored": [
+      "_fusion_group_id",
+      "_id",
+      "cluster_id",
+      "p1_id"
+    ],
+    "n_empty_columns_excluded": 0
+  }
+}

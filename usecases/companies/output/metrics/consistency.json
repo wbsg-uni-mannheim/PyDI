@@ -1,0 +1,136 @@
+{
+  "metric": "consistency",
+  "metadata": {
+    "usecase": "companies",
+    "schema_path": "usecases/companies/input/schemamatching/target_schema.json",
+    "fusion_output_path": "usecases/companies/output/data_fusion/debug_fusion.jsonl",
+    "rows_evaluated": 1737,
+    "fused_table_source": "reconstructed_from_fusion_debug_jsonl",
+    "identifier_columns_excluded": true,
+    "open_taxonomy_policy": "non_exhaustive_membership_is_diagnostic_not_penalizing"
+  },
+  "result": {
+    "consistency_score": 0.8677822881285726,
+    "n_evaluated": 12071,
+    "n_consistent": 10475,
+    "n_inconsistent": 1596,
+    "per_column": {
+      "id": {
+        "consistency_score": null,
+        "n_evaluated": 0,
+        "n_consistent": 0,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": true,
+        "skipped": true,
+        "skip_reason": "identifier_column"
+      },
+      "name": {
+        "consistency_score": 1.0,
+        "n_evaluated": 1737,
+        "n_consistent": 1737,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "founded": {
+        "consistency_score": 0.99625,
+        "n_evaluated": 1600,
+        "n_consistent": 1594,
+        "n_inconsistent": 6,
+        "failure_counts": {
+          "date_range": 6
+        },
+        "excluded_from_dataset_score": false
+      },
+      "country": {
+        "consistency_score": 0.9347951529140219,
+        "n_evaluated": 1733,
+        "n_consistent": 1620,
+        "n_inconsistent": 113,
+        "failure_counts": {
+          "taxonomy": 113
+        },
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "taxonomy": {
+            "exhaustive": true,
+            "membership_enforced": true,
+            "n_values_checked": 1733,
+            "n_known_values": 1620,
+            "n_unknown_values": 113,
+            "known_value_rate": 0.9347951529140219
+          }
+        }
+      },
+      "city": {
+        "consistency_score": 1.0,
+        "n_evaluated": 1604,
+        "n_consistent": 1604,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      },
+      "industry": {
+        "consistency_score": 0.148664343786295,
+        "n_evaluated": 1722,
+        "n_consistent": 256,
+        "n_inconsistent": 1466,
+        "failure_counts": {
+          "taxonomy": 1466
+        },
+        "excluded_from_dataset_score": false,
+        "diagnostics": {
+          "taxonomy": {
+            "exhaustive": true,
+            "membership_enforced": true,
+            "n_values_checked": 1722,
+            "n_known_values": 256,
+            "n_unknown_values": 1466,
+            "known_value_rate": 0.148664343786295
+          }
+        }
+      },
+      "assets": {
+        "consistency_score": 0.9965457685664939,
+        "n_evaluated": 1737,
+        "n_consistent": 1731,
+        "n_inconsistent": 6,
+        "failure_counts": {
+          "maximum": 6
+        },
+        "excluded_from_dataset_score": false
+      },
+      "revenue": {
+        "consistency_score": 0.9971214738054116,
+        "n_evaluated": 1737,
+        "n_consistent": 1732,
+        "n_inconsistent": 5,
+        "failure_counts": {
+          "maximum": 5
+        },
+        "excluded_from_dataset_score": false
+      },
+      "founders": {
+        "consistency_score": 1.0,
+        "n_evaluated": 201,
+        "n_consistent": 201,
+        "n_inconsistent": 0,
+        "failure_counts": {},
+        "excluded_from_dataset_score": false
+      }
+    },
+    "columns_missing_from_dataframe": [
+      "website"
+    ],
+    "extra_columns_ignored": [
+      "_fusion_group_id",
+      "_id",
+      "forbes_id",
+      "match_city",
+      "match_country",
+      "url"
+    ],
+    "n_empty_columns_excluded": 0
+  }
+}
