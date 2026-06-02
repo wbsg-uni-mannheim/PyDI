@@ -1,0 +1,213 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "WDC Products Hardware Listings Downsampled Source-Schema Variant 2 (camelCase)",
+  "description": "Downsampled subset of the WDC Products benchmark used as benchmark input for the products web-data-integration usecase. Records are hardware product listings (GPUs, SSDs, HDDs and USB sticks) collected from e-commerce sources. Structured attribute values - such as chipset, memory size, storage capacity, read and write speeds, and physical dimensions - were extracted from the raw product titles and descriptions and then normalized. The file keeps a source-shaped schema, and the cluster_id column carries the gold-standard grouping of records that refer to the same real-world product for identity resolution and data fusion.",
+  "url": "https://webdatacommons.org/largescaleproductcorpus/wdc-products/",
+  "keywords": [
+    "WDC Products",
+    "Web Data Commons",
+    "product matching",
+    "e-commerce",
+    "computer hardware",
+    "GPU",
+    "SSD",
+    "HDD",
+    "USB stick",
+    "value extraction",
+    "schema matching",
+    "identity resolution",
+    "data fusion"
+  ],
+  "license": "https://webdatacommons.org/largescaleproductcorpus/wdc-products/",
+  "identifier": "wdc-products-hardware-downsampled-source-schema-variant-2",
+  "version": "1.0",
+  "datePublished": "2026-05-29",
+  "numberOfItems": 812,
+  "isPartOf": {
+    "@type": "Dataset",
+    "name": "WDC Products Benchmark",
+    "url": "https://webdatacommons.org/largescaleproductcorpus/wdc-products/"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "Web Data Commons",
+    "url": "https://webdatacommons.org/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Web Data Commons",
+    "url": "https://webdatacommons.org/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "dataset_2.json"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "id",
+      "description": "Source record identifier",
+      "unitText": "identifier"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "brandName",
+      "description": "Manufacturer or brand name",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "name",
+      "description": "Product name or listing title",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "descriptionText",
+      "description": "Free-text product description",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "priceAmount",
+      "description": "Listed price amount",
+      "unitText": "number"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "currency",
+      "description": "ISO currency code of the listed price",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cluster_id",
+      "description": "Gold-standard cluster identifier grouping records that refer to the same real-world product",
+      "unitText": "identifier"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "productUrl",
+      "description": "Source URL of the product listing",
+      "unitText": "URL"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "titleAndDescription",
+      "description": "Concatenated product name and description used as combined match text",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "modelName",
+      "description": "Model name",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mpn",
+      "description": "Manufacturer part number",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "productCategory",
+      "description": "Product category (GPU, SSD, HDD or USB_STICK)",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chipset",
+      "description": "GPU chipset name",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vramGb",
+      "description": "Video memory size in gigabytes",
+      "unitText": "GB"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "capacityGb",
+      "description": "Storage capacity in gigabytes",
+      "unitText": "GB"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "readSpeedMbps",
+      "description": "Sequential read speed in megabytes per second",
+      "unitText": "MB/s"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "writeSpeedMbps",
+      "description": "Sequential write speed in megabytes per second",
+      "unitText": "MB/s"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "busType",
+      "description": "Bus standard",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "interfaceType",
+      "description": "Interface type",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "widthMm",
+      "description": "Width in millimeters",
+      "unitText": "mm"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "depthMm",
+      "description": "Length or depth in millimeters",
+      "unitText": "mm"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "heightMm",
+      "description": "Height in millimeters",
+      "unitText": "mm"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "weightG",
+      "description": "Weight in grams",
+      "unitText": "g"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "connectionType",
+      "description": "Connector or connection type",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "memoryType",
+      "description": "Memory technology, such as GDDR6X",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "color",
+      "description": "Product colour",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "formFactor",
+      "description": "Physical form factor",
+      "unitText": "string"
+    }
+  ]
+}

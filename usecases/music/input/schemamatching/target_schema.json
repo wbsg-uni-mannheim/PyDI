@@ -8,6 +8,8 @@
       "type": "string",
       "title": "Release ID",
       "description": "Unique release identifier",
+      "minLength": 1,
+      "maxLength": 64,
       "examples": [
         "discogs_3",
         "lastfm_123",
@@ -18,6 +20,8 @@
       "type": "string",
       "title": "Release Name",
       "description": "Title of the release (album, single, or EP name)",
+      "minLength": 1,
+      "maxLength": 512,
       "examples": [
         "Unreasonable Behaviour",
         "The Sign's Alive"
@@ -27,6 +31,8 @@
       "type": "string",
       "title": "Artist",
       "description": "Name of the artist or band",
+      "minLength": 1,
+      "maxLength": 3000,
       "examples": [
         "Laurent Garnier",
         "John B"
@@ -41,22 +47,37 @@
       "examples": [
         "2000-06-01",
         "1996-01-01"
-      ]
+      ],
+      "x-pydi-consistency": {
+        "rule": "date_range",
+        "description": "Release date range is based on the music input coverage.",
+        "minimumDate": "1900-01-01",
+        "maximumDate": "2016-12-31"
+      }
     },
     "release-country": {
       "type": "string",
       "title": "Release Country",
       "description": "Country where the release was published",
+      "minLength": 2,
+      "maxLength": 80,
       "examples": [
         "UK",
         "United States of America",
         "France"
-      ]
+      ],
+      "x-pydi-consistency": {
+        "rule": "country_or_release_market",
+        "exhaustive": false,
+        "description": "Accepts recognized countries as well as release-market labels such as Europe, UK & US, or USA & Canada."
+      }
     },
     "label": {
       "type": "string",
       "title": "Record Label",
       "description": "Record label that published the release",
+      "minLength": 1,
+      "maxLength": 300,
       "examples": [
         "F Communications",
         "Peacefrog Records"
@@ -68,6 +89,7 @@
       "description": "Primary genre of the music",
       "x-pydi-taxonomy": "input/schemamatching/Music_Genres_Taxonomy.csv",
       "x-pydi-taxonomy-column": "Genre Name",
+      "x-pydi-taxonomy-exhaustive": true,
       "examples": [
         "Electronic",
         "House",
@@ -78,8 +100,12 @@
       "type": "array",
       "title": "Tracks",
       "description": "List of track names on the release",
+      "minItems": 1,
+      "maxItems": 500,
       "items": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
       },
       "examples": [
         [
@@ -97,12 +123,18 @@
       "type": "integer",
       "title": "Duration",
       "description": "Total duration of the release in seconds",
+      "minimum": 1,
+      "maximum": 86400,
+      "x-pydi-target-unit": "s",
       "examples": [
         1671,
         903,
         637
       ],
-      "x-pydi-target-unit": "s"
+      "x-pydi-consistency": {
+        "rule": "zero_as_missing",
+        "description": "Source duration values of 0 should be treated as missing before consistency evaluation."
+      }
     }
   },
   "required": [

@@ -1,0 +1,128 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Crossref Computer Science Papers Downsampled Source-Schema Subset",
+  "description": "Downsampled Crossref metadata records used as benchmark input for the papers web-data-integration usecase. The file preserves a Crossref-shaped source schema instead of the integrated schema. Rows are ordered like the schema-mapped Crossref subset so existing identity-resolution identifiers remain stable. Records are taken from the local Crossref source snapshots where available; missing DOI rows are represented in the same Crossref-shaped schema from the downsampled values.",
+  "url": "https://www.crossref.org/",
+  "keywords": [
+    "Crossref",
+    "scholarly metadata",
+    "computer science",
+    "papers",
+    "DOI",
+    "bibliographic metadata",
+    "source schema",
+    "schema matching",
+    "identity resolution",
+    "data fusion"
+  ],
+  "license": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-metadata-license-information/",
+  "identifier": "crossref-papers-downsampled-source-schema-2018-2020",
+  "version": "1.1",
+  "datePublished": "2026-05-28",
+  "numberOfItems": 60749,
+  "temporalCoverage": "2018-01-01/2020-12-31",
+  "creator": {
+    "@type": "Organization",
+    "url": "https://www.crossref.org/",
+    "name": "Crossref"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Crossref",
+    "url": "https://www.crossref.org/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/x-ndjson",
+      "contentUrl": "crossref.jsonl"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "DOI",
+      "description": "Crossref DOI value",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "type",
+      "description": "Crossref publication type",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "title",
+      "description": "Crossref title list",
+      "unitText": "array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "author",
+      "description": "Crossref author objects with given and family names where available",
+      "unitText": "array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "published",
+      "description": "Crossref publication date object",
+      "unitText": "object"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "container-title",
+      "description": "Crossref container or venue title list",
+      "unitText": "array"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "publisher",
+      "description": "Publisher name reported by Crossref",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "abstract",
+      "description": "Crossref abstract text where available",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "volume",
+      "description": "Crossref volume",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "issue",
+      "description": "Crossref issue",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "page",
+      "description": "Crossref page range",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "reference-count",
+      "description": "Number of references reported by Crossref",
+      "unitText": "count"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "is-referenced-by-count",
+      "description": "Number of citing works reported by Crossref",
+      "unitText": "count"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "subject",
+      "description": "Crossref subject labels",
+      "unitText": "array"
+    }
+  ]
+}
