@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Hypnotize the Moon\n  artist: Walker, Clay\n  release-date: 17.10.1995\n  release-country: <missing>\n  duration: 35:48\n  label: <missing>\n  genre: <missing>\n  tracks: ['Who Needs You Baby', \"I Won't Have the Heart\", 'Let Me Take That Heartache (Off Your Hands)', 'Hypnotize the Moon', 'Hand Me Down Heart', 'Only on Days That End in \"Y\"', 'Where Were You', 'Loving You Comes Naturally to Me', 'Bury the Shovel', \"A Cowboy's Toughest Ride\", 'Love Me Like You Love Me']\nRecord B:\n  name: Hypnotize  Moon\n  artist: Clay Walker\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:38:42\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "Yes"
+}

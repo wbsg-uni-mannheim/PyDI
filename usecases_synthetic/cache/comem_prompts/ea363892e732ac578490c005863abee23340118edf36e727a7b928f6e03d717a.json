@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Headtrip to Nowhere\n  artist: JAR.\n  release-date: 20.02.2001\n  release-country: United States of America\n  duration: 46:22\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cavalry', 'Radical', 'Blind World', 'Pull', 'Evelyn', 'Haul', 'Demon Away', 'Crackballs', 'Weapon', 'This Is Bliss', 'When Are You? (Gonna Die)', 'Company']\nRecord B:\n  name: Headtrip To Nowhere\n  artist: Flybanger\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:42:07\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cavalry', 'Radical', 'Pull', 'Evelyn', 'Haul', 'Demon Away', 'Crackballs', 'Weapon', 'This is Bliss', 'When Are You? (Gonna Die)', 'Company']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Unplugged\n  artist: Wirtz\n  release-date: 21.02.2014\n  release-country: Germany\n  duration: 53:29\n  label: <missing>\n  genre: <missing>\n  tracks: ['Meinen Namen', 'Gebrannte Kinder', 'Geschichten ohne Sieger', 'Scherben', 'Ne Weile her', 'Sag es', 'Meilenweit', 'Hier', 'Der Feind in meinem Kopf', 'Heute weiss ich', 'Keine Angst', 'Nada Brahma', 'Frei', 'Mon Amour']\nRecord B:\n  name: Unplugged\n  artist: Larry Carlton|Robben Ford\n  release-date: <missing>\n  release-country: United States of America\n  duration: <missing>\n  label: 335 Records\n  genre: Blues|Jazz\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

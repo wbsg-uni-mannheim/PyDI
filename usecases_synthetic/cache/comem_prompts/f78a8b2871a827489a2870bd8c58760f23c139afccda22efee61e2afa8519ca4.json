@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Motel California\n  artist: Ugly Kid Joe\n  release-date: 1996-01-01\n  release-country: Japan\n  duration: 2795\n  label: <missing>\n  genre: <missing>\n  tracks: [\"It's a Lie\", 'Dialogue', 'Sandwich', 'Rage Against the Answering Machine', 'Would You Like to Be There', 'Little Red Man', 'Bicycle Wheels', 'Father', 'Undertow', 'Shine', 'Strange', '12 Cents', 'Sandwich (Vulgar Remix) (Bonus Track)', 'Bicycle Wheels (Remix) (Bonus Track)']\nRecord B:\n  name: Motel California\n  artist: Ugly Kid Joe\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1462.0\n  label: <missing>\n  genre: <missing>\n  tracks: [\"It's a Lie\", 'Dialogue', 'Rage Against the Answering Machine', 'Would You Like to Be There', 'Bicycle Wheels', 'Undertow', 'Shine', '12 Cents']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

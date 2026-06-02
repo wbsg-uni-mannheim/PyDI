@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Butterfly King\n  artist: Kristus Kut\n  release-date: 01.01.2011\n  release-country: United States of America\n  duration: 75:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cocoon', 'The Inbetween Sleep', 'Belly Trapped', 'Flowers of Love', 'The Transformation of Love: Honey for the Queen', 'The Transformation of Love: Victory of the White Snake', 'Vagina Libertatis']\nRecord B:\n  name: Butterfly King\n  artist: Kristus Kut\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1:08:13\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cocoon', 'Belly Trapped', 'The Transformation of Love: Honey for the Queen', 'The Transformation of Love: Victory of the White Snake', 'Vagina Libertatis']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "USA & Canada"
+    },
+    {
+      "source": "discogs",
+      "value": "United States of America"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "Both candidates refer to the same country/region, and the Discogs value is the canonical country name.",
+    "value": "United States of America"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United States of America\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"Both candidates refer to the same country/region, and the Discogs value is the canonical country name.\"}"
+}

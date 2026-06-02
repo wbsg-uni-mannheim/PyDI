@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2624"
+    },
+    {
+      "source": "lastfm",
+      "value": "45:51"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "aggregation",
+    "reasoning": "Converted 45:51 to 2751 seconds and averaged with 2624 seconds to get a robust numeric duration.",
+    "value": 2743
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2743,\"operation\":\"aggregation\",\"confidence\":0.92,\"reasoning\":\"Converted 45:51 to 2751 seconds and averaged with 2624 seconds to get a robust numeric duration.\"}"
+}

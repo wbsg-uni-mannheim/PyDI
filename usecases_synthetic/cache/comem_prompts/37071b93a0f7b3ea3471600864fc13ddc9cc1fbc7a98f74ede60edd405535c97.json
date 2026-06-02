@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Purple Indigo Blue\n  artist: Pansies,\n  release-date: 10/17/1994\n  release-country: Finland\n  duration: 0:46:50\n  label: <missing>\n  genre: <missing>\n  tracks: ['Fruit', 'Septemberhead', 'Sister Shine', 'Merry Go Round', 'Bettysong', 'Sick Inside', 'Rock', 'Turquoise', 'Caught Heer Blooming', 'Addicted', 'Act', 'Uncomfortable', 'Kittens', 'Preference']\nRecord B:\n  name: Purple Rain\n  artist: Prince And The Revolution\n  release-date: <missing>\n  release-country: Australasia\n  duration: <missing>\n  label: Records Bros. Warner\n  genre: Electronic|Funk / Soul|Rock\n  tracks: [\"Let's Go Crazy\", 'Take Me With U', 'The Beautiful Ones', 'Computer Blue', 'Darling Nikki', 'When Doves Cry', 'I Would Die For U', \"Baby I'm A Star\", 'Purple Rain']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

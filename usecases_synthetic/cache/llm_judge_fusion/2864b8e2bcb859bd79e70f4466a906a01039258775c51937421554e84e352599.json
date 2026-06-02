@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "30.04.2012"
+    },
+    {
+      "source": "discogs",
+      "value": "2012-03-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Converted the MusicBrainz date from DD.MM.YYYY to ISO format.",
+    "value": "2012-04-30"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2012-04-30\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Converted the MusicBrainz date from DD.MM.YYYY to ISO format.\"}"
+}

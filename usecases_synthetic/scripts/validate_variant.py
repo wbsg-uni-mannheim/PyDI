@@ -1023,8 +1023,10 @@ def validate_variant(
         sm_result = _run_sm(bundle, with_llm=with_llm)
         measured_per_stage["sm"] = sm_result.as_dict()
         logger.info(
-            "SM done: macro_f1=%.4f (%.1fs)",
+            "SM done: macro_f1=%.4f best=%s (f1=%.4f) (%.1fs)",
             sm_result.aggregated.get("macro_f1", 0.0),
+            sm_result.aggregated.get("best_member_name", "?"),
+            sm_result.aggregated.get("best_member_f1", 0.0),
             sm_result.runtime_s,
         )
 

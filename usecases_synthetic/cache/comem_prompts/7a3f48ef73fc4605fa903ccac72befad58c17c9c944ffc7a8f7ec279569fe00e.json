@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Chrome Tape\n  artist: <missing>\n  release-date: 2004-09-20\n  release-country: United Britain of Great Kingdom and Northern Ireland\n  duration: 2578\n  label: <missing>\n  genre: <missing>\n  tracks: ['We Are the Public', \"I'm About to do Something (That I'm Gonna Regret)\", 'Blame', 'Eat Drink Sleep Think', \"You're All Talk\", 'Hold Your Tongue', 'God Only Knows', 'The Beat', \"That's What You Say When You Want Me to Kill You\", \"We Don't Need to Show You How To\", 'Anti Me', 'Flow Chart']\nRecord B:\n  name: Motormark -  Chrome Tape\n  artist: Motormark\n  release-date: <missing>\n  release-country: <missing>\n  duration: 34m 46s\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

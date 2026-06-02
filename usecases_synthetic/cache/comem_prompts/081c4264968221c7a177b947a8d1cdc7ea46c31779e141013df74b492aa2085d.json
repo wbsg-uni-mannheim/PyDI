@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: MTV Unplugged\n  artist: Carey, Mariah\n  release-date: 1992-01-01\n  release-country: Canada\n  duration: 1724\n  label: <missing>\n  genre: <missing>\n  tracks: ['Emotions', \"If It's Over\", 'Someday', 'Vision of Love', 'Make It Happen', \"I'll Be There\", \"Can't Let Go\"]\nRecord B:\n  name: MTV Unplugged EP\n  artist: Mariah Carey\n  release-date: <missing>\n  release-country: Japan\n  duration: 1724.0\n  label: Sony Records\n  genre: Pop|Hip Hop\n  tracks: ['Emotions', \"If It's Over\", 'Someday', 'Vision Of Love', 'Make It Happen', \"I'll Be There\", \"Can't Let Go\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

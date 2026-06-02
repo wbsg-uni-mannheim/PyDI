@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0:03:58"
+    },
+    {
+      "source": "discogs",
+      "value": "478"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs provides the same duration in seconds, which normalizes to the MusicBrainz timestamp format.",
+    "value": "0:03:58"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:03:58\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs provides the same duration in seconds, which normalizes to the MusicBrainz timestamp format.\"}"
+}

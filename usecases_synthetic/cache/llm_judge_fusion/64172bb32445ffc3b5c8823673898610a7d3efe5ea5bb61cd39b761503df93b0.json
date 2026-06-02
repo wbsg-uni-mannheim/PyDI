@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "747"
+    },
+    {
+      "source": "lastfm",
+      "value": "12:27"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "12:27 corresponds to 747 seconds, so the numeric duration is canonical.",
+    "value": 747
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":747,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"12:27 corresponds to 747 seconds, so the numeric duration is canonical.\"}"
+}

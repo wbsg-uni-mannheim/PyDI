@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: No Elephants\n  artist: Germano, Lisa\n  release-date: 2013-02-12\n  release-country: United States of America\n  duration: 2106\n  label: <missing>\n  genre: <missing>\n  tracks: ['Ruminants', 'No Elephants', 'Apathy and the Devil', 'Back to Earth', 'Haunted', 'A Feast', 'Up in the Air', 'Dance of the Bees', 'Diamonds', '... And So On', 'Last Straws for Sale', 'Strange Bird']\nRecord B:\n  name: Elephants\n  artist: Gadji Celi\n  release-date: <missing>\n  release-country: <missing>\n  duration: 4471.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Victoire Des Elephants', 'Maroc 88', 'Elephants Story', 'Rassemblement Mimos', 'Destination Alger', 'Egypt 86', \"Et Dieu crÃƒÂ©a l'A.S.E.C.\", 'Rassemblement Mimos (Remix)', 'Tactique Ivoirienne', 'Alger 90', 'SÃƒÂ©nÃƒÂ©gal 92']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

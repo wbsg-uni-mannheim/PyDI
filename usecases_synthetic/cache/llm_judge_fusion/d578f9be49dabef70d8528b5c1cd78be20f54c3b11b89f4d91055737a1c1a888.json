@@ -1,0 +1,26 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Singles '67-'78"
+    },
+    {
+      "source": "discogs",
+      "value": "The Singles '67 - '78"
+    },
+    {
+      "source": "lastfm",
+      "value": "The Singles â€™67-â€™78"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates differ only by spacing and encoding artifacts, so I normalized to the clean canonical title.",
+    "value": "The Singles '67-'78"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Singles '67-'78\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates differ only by spacing and encoding artifacts, so I normalized to the clean canonical title.\"}"
+}

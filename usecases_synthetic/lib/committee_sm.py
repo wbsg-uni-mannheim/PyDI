@@ -720,7 +720,7 @@ def _first_em_correspondences(
 def _compute_aggregated(
     f1_values: list[float],
     per_member: dict[str, MemberResult],
-) -> dict[str, float]:
+) -> dict[str, float | str]:
     """Compute aggregated committee metrics.
 
     Parameters
@@ -732,9 +732,10 @@ def _compute_aggregated(
 
     Returns
     -------
-    dict[str, float]
+    dict[str, float | str]
         Aggregated metric dict with ``macro_f1``, ``min_f1``,
-        ``max_f1``, ``macro_precision``, ``macro_recall``.
+        ``max_f1``, ``macro_precision``, ``macro_recall``,
+        ``best_member_name``, ``best_member_f1``.
     """
     n = len(f1_values)
     if n == 0:
@@ -744,10 +745,22 @@ def _compute_aggregated(
             "max_f1": 0.0,
             "macro_precision": 0.0,
             "macro_recall": 0.0,
+            "best_member_name": "",
+            "best_member_f1": 0.0,
         }
 
     precision_values = [m.metrics.get("precision", 0.0) for m in per_member.values()]
     recall_values = [m.metrics.get("recall", 0.0) for m in per_member.values()]
+
+    # Promote the single best member (highest f1) so SM reports a best
+    # member alongside the committee macro, consistent with the norm /
+    # em_blocking / em_matching stages (committee-reporting convention).
+    # per_member already carries the full breakdown.
+    best_member_name, best_member_f1 = max(
+        ((name, m.metrics.get("f1", 0.0)) for name, m in per_member.items()),
+        key=lambda kv: kv[1],
+        default=("", 0.0),
+    )
 
     return {
         "macro_f1": sum(f1_values) / n,
@@ -755,6 +768,8 @@ def _compute_aggregated(
         "max_f1": max(f1_values),
         "macro_precision": sum(precision_values) / n,
         "macro_recall": sum(recall_values) / n,
+        "best_member_name": best_member_name,
+        "best_member_f1": best_member_f1,
     }
 
 

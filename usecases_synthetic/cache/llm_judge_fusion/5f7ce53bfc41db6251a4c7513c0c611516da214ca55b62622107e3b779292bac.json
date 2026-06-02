@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "14:37"
+    },
+    {
+      "source": "discogs",
+      "value": "878"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:14:25"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "The candidates appear to refer to the same duration in different formats, and 14:37 is the normalized mm:ss form matching the nearby 878-second and 0:14:25 values approximately.",
+    "value": "14:37"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"14:37\",\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"The candidates appear to refer to the same duration in different formats, and 14:37 is the normalized mm:ss form matching the nearby 878-second and 0:14:25 values approximately.\"}"
+}

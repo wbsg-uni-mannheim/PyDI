@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Electronica Gainsbourg M2\n  artist: Gainsbourg, Serge\n  release-date: 2001-01-01\n  release-country: France\n  duration: 1466\n  label: <missing>\n  genre: <missing>\n  tracks: ['Marabout (Bob Sinclar remix)', 'No Comment', 'Sea, Sex & Sun (Sexy remix)', \"LÃ\\xa0-bas c'est naturel (Faze Action remix)\"]\nRecord B:\n  name: *popular* Electronica Gainsbourg M2\n  artist: Serge Gainsbourg\n  release-date: <missing>\n  release-country: <missing>\n  duration: 16:41\n  label: <missing>\n  genre: <missing>\n  tracks: ['Marabout', 'No Comment', 'Sea, Sex & Sun (Sexy Remix)', \"LÃƒÂ\\xa0 Bas C'Est Naturel\"]\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "Yes"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Unplugged\n  artist: Animal DjaZ\n  release-date: 2005-11-01\n  release-country: Russian Federation\n  duration: 2856\n  label: <missing>\n  genre: <missing>\n  tracks: ['ÐŸÐ¾Ð»Ð¸Ñ?Ñ‚Ð¸Ð»ÐµÐ½', 'Ð?Ð½Ð³ÐµÐ»', 'ÐŸÑ€Ð¾ Ñ?Ñ‚Ð¾', 'Ð¢Ð°ÐºÑ?Ð¾Ñ„Ð¾Ð½Ñ‹', 'ÐœÐ¾Ð¶ÐµÑˆÑŒ Ð»ÐµÑ‚ÐµÑ‚ÑŒ', 'Ð\\xa0ÐµÐºÐ²Ð¸ÐµÐ¼ 2005', 'ÐšÐ°Ðº Ð»ÑŽÐ´Ð¸', 'ÐŸÐ¾Ð·Ð´Ð½Ð¾', 'Ð?Ð° ÐºÑƒÑ…Ð½Ðµ', 'Ð”Ð²Ð¾Ðµ', 'Ð’ÐµÑ?Ð½Ð°', 'ÐœÐ¾Ñ?ÐºÐ²Ð°', 'Ð¡Ñ‚ÐµÑ€ÐµÐ¾Ð»ÑŽÐ±Ð¾Ð²ÑŒ (live)']\nRecord B:\n  name: Unplugged\n  artist: Pearl Jam\n  release-date: 1993\n  release-country: Germany\n  duration: 3703.0\n  label: Rarities Special\n  genre: Rock\n  tracks: ['Alive', 'Jeremy', 'Porch', 'Why Go', 'Master Of War', 'State Of Love And Trust', 'Wash', 'Once', 'Evenflow', 'Dirty Frank', 'Black', 'Why Go', 'Oceans', 'Deep']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

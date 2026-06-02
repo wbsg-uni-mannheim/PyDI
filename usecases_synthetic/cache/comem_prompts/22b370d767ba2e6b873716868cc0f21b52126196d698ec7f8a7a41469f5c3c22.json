@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: 4 Visions\n  artist: Eskaton\n  release-date: 01.01.1981\n  release-country: United States of America\n  duration: 51:22\n  label: <missing>\n  genre: <missing>\n  tracks: ['Eskaton', 'Attente', 'Ã‰coute', 'PitiÃ©', 'Le Cri']\nRecord B:\n  name: Visions From The Inside\n  artist: A Spell Inside\n  release-date: 01.01.1995\n  release-country: Germany\n  duration: 2912\n  label: Phoenix\n  genre: Electronic\n  tracks: ['Intro', 'Boundary', 'Below Zero', 'Days Of The Grace', 'Metamorphosis', 'Call Of The Slaves', 'Sinnbild', 'Rosen', 'Tell Me', 'The Victim', 'Compromises', 'White Cold']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

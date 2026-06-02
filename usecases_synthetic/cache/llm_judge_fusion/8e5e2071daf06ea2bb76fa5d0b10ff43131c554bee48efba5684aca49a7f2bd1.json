@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2486"
+    },
+    {
+      "source": "discogs",
+      "value": "41:26"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:41:34"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates agree on a duration of about 41 minutes, and 41:26 is the normalized mm:ss form matching the numeric seconds value.",
+    "value": "41:26"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"41:26\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates agree on a duration of about 41 minutes, and 41:26 is the normalized mm:ss form matching the numeric seconds value.\"}"
+}

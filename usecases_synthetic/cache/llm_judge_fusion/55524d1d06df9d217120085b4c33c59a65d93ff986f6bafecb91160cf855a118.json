@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3098"
+    },
+    {
+      "source": "discogs",
+      "value": "51:40"
+    },
+    {
+      "source": "lastfm",
+      "value": "31:20"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "verbatim_pick",
+    "reasoning": "MusicBrainz provides the duration in a precise numeric form matching the closest candidate interpretation.",
+    "value": 3098
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3098,\"operation\":\"verbatim_pick\",\"confidence\":0.92,\"reasoning\":\"MusicBrainz provides the duration in a precise numeric form matching the closest candidate interpretation.\"}"
+}

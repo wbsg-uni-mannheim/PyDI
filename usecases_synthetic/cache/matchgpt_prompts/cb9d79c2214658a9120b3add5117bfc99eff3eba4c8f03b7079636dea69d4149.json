@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Endless Summer\n  artist: Filterheadz (and others)\n  release-date: 2006-03-24\n  release-country: Netherlands\n  duration: 889\n  label: <missing>\n  genre: <missing>\n  tracks: ['Endless Summer (Original Mix)', 'Endless Summer (Max Graham Remix)']\nRecord B:\n  name: The Endless\n  artist: T. Sandals\n  release-date: <missing>\n  release-country: <missing>\n  duration: 39:55\n  label: <missing>\n  genre: <missing>\n  tracks: ['Theme From the Endless Summer', \"Driftin'\", 'Scrambler', 'Wild As The Sea', 'Outer Wave', 'Decoy', 'TR-6', 'Jet Black', 'Out Front', '6-Pak', 'Route 1', 'Lonely Road', 'The Endless Summer Composite']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

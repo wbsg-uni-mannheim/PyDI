@@ -1,0 +1,26 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Polyrhythmica Electronica"
+    },
+    {
+      "source": "discogs",
+      "value": "Polyrhythmic Electronica"
+    },
+    {
+      "source": "lastfm",
+      "value": "polyrhythmic electronica"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "Sources differ only by capitalization and a minor adjective form, with the lowercase lastfm and discogs values aligning on the canonical wording.",
+    "value": "Polyrhythmic Electronica"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Polyrhythmic Electronica\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"Sources differ only by capitalization and a minor adjective form, with the lowercase lastfm and discogs values aligning on the canonical wording.\"}"
+}

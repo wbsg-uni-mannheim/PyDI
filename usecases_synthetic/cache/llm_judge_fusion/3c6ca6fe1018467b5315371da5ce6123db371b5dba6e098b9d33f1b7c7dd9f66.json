@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "25:29"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:10:59"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Both candidates denote durations, and the second is already in standard h:mm:ss form while the first appears to be mm:ss.",
+    "value": "0:10:59"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:10:59\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Both candidates denote durations, and the second is already in standard h:mm:ss form while the first appears to be mm:ss.\"}"
+}

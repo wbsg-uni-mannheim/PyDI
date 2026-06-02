@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Aerosmith Band"
+    },
+    {
+      "source": "discogs",
+      "value": "Aerosmith"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs provides the standard canonical artist name and 'Aerosmith Band' is a noncanonical variant.",
+    "value": "Aerosmith"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Aerosmith\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs provides the standard canonical artist name and 'Aerosmith Band' is a noncanonical variant.\"}"
+}

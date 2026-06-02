@@ -1,6 +1,6 @@
 # Baseline report - music
 
-_Generated at 2026-05-16T07:47:07.629201+00:00_
+_Generated at 2026-06-01T21:18:50.564781+00:00_
 
 ## Stage: sm
 
@@ -44,23 +44,86 @@ _Generated at 2026-05-16T07:47:07.629201+00:00_
 | musicbrainz.release-date | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 | 1.0000 |
 | musicbrainz.tracks | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 
+## Stage: norm
+
+### NORM - aggregated
+| metric | value |
+|---|---|
+| best_member_f1 | 0.6983 |
+| best_member_name_f1 | 1.0000 |
+| macro_f1 | 0.6577 |
+| macro_precision | 0.8130 |
+| macro_recall | 0.5905 |
+| max_f1 | 0.6983 |
+| min_f1 | 0.6226 |
+
+### NORM - per attribute
+| attribute | any_correct | best_member_f1 | llm_only | passthrough | rule_per_attribute_optimal |
+|---|---|---|---|---|---|
+| artist | 1.0000 | 0.9114 | 0.9114 | 0.8932 | 0.8932 |
+| duration | 1.0000 | 0.6743 | 0.6682 | 0.6743 | 0.6743 |
+| genre | 1.0000 | 0.5375 | 0.5159 | 0.5375 | 0.2963 |
+| label | 1.0000 | 0.5407 | 0.5132 | 0.5407 | 0.5407 |
+| name | 1.0000 | 0.9487 | 0.9465 | 0.9487 | 0.9487 |
+| release-country | 1.0000 | 0.5286 | 0.1143 | 0.5286 | 0.5286 |
+| release-date | 1.0000 | 0.7648 | 0.6888 | 0.7648 | 0.6841 |
+
+## Stage: em_blocking
+
+### EM_BLOCKING - aggregated
+| metric | value |
+|---|---|
+| best_member_name | embedding_blocker |
+| best_member_pair_recall | 0.9970 |
+| best_member_reduction_ratio | 0.9964 |
+| macro_pair_recall | 0.9505 |
+| macro_pair_recall_baseline_model_on_baseline_test | 0.0000 |
+| macro_pair_recall_baseline_model_on_regen_test | 0.0000 |
+| macro_pair_recall_variant_model_on_baseline_test | 0.0000 |
+| macro_pair_recall_variant_model_on_regen_test | 0.0000 |
+| macro_reduction_ratio | 0.9789 |
+| max_pair_recall | 1.0000 |
+| min_pair_recall | 0.8498 |
+| recall_floor | 0.9700 |
+
+## Stage: em_matching
+
+### EM_MATCHING - aggregated
+| metric | value |
+|---|---|
+| best_member_f1 | 0.9903 |
+| best_member_name | ditto_plm |
+| macro_f1 | 0.8325 |
+| macro_f1_baseline_model_on_baseline_test | 0.8325 |
+| macro_f1_baseline_model_on_regen_test | 0.8325 |
+| macro_f1_baseline_test | 0.8325 |
+| macro_f1_regen_test | 0.8325 |
+| macro_f1_variant_model_on_baseline_test | 0.8325 |
+| macro_f1_variant_model_on_regen_test | 0.8325 |
+| macro_precision | 0.9921 |
+| macro_recall | 0.7541 |
+| max_f1 | 0.9903 |
+| min_f1 | 0.6914 |
+
 ## Stage: fusion
 
 ### FUSION - aggregated
 | metric | value |
 |---|---|
-| overall_accuracy | 0.8594 |
-| overall_mean_accuracy | 0.8065 |
-| overall_spread | 0.1135 |
+| best_member_macro_accuracy | 0.8929 |
+| macro_accuracy | 0.8706 |
+| max_accuracy | 0.8929 |
+| min_accuracy | 0.8129 |
+| overall_accuracy | 0.8929 |
 
 ### FUSION - per attribute
-| attribute | accusim | best_strategy_accuracy | casefusion | earliest | fusionquery | huber_m_estimator | intersection | intersection_k_sources | llm_judge | longest_string | ltm | maximum | mean_strategy_accuracy | median | median_of_means | most_complete | prefer_higher_trust | spread | trimmed_mean | truthfinder | union | voting |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| artist |  | 0.9300 |  |  |  |  |  |  | 0.9000 | 0.8400 |  |  | 0.9040 |  |  |  | 0.9300 | 0.0900 |  | 0.9200 |  | 0.9300 |
-| duration |  | 0.4200 |  |  | 0.3400 | 0.1600 |  |  |  |  |  | 0.4200 | 0.2571 | 0.2700 | 0.1600 |  | 0.2900 | 0.2600 | 0.1600 |  |  |  |
-| genre | 0.8701 | 0.8831 |  |  |  |  |  |  |  |  |  |  | 0.8734 |  |  | 0.8571 | 0.8831 | 0.0260 |  |  |  | 0.8831 |
-| label |  | 0.8817 |  |  |  |  |  |  |  | 0.8817 | 0.8495 |  | 0.8629 |  |  |  | 0.8602 | 0.0323 |  |  |  | 0.8602 |
-| name | 0.9000 | 0.9000 | 0.8800 |  | 0.7600 |  |  |  | 0.8200 | 0.7300 |  |  | 0.8237 |  |  | 0.7300 | 0.8800 | 0.1700 |  |  |  | 0.8900 |
-| release-country |  | 0.9700 |  |  |  |  |  |  | 0.9500 |  |  |  | 0.9340 |  |  | 0.9300 | 0.9700 | 0.0900 |  | 0.9400 |  | 0.8800 |
-| release-date |  | 0.9200 |  | 0.8900 |  |  |  |  |  |  |  |  | 0.9067 |  |  |  | 0.9100 | 0.0300 |  |  |  | 0.9200 |
-| tracks |  | 0.9700 |  |  |  |  | 0.7600 | 0.9000 |  |  | 0.8700 |  | 0.8900 |  |  |  | 0.9200 | 0.2100 |  |  | 0.9700 | 0.9200 |
+| attribute | accusim_only | best_member_accuracy | casefusion_only | fusionquery_only | llm_only | ltm_only | mean_member_accuracy | prefer_higher_trust_only | pydi_per_attribute_optimal | truthfinder_only | voting_only |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| artist | 0.9400 | 0.9700 | 0.9200 | 0.7400 | 0.9700 | 0.8600 | 0.8978 | 0.9200 | 0.9100 | 0.9100 | 0.9100 |
+| duration | 0.6700 | 0.6700 | 0.6200 | 0.6200 | 0.5700 | 0.6200 | 0.6211 | 0.6200 | 0.6200 | 0.6200 | 0.6300 |
+| genre | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 | 0.9091 |
+| label | 0.8925 | 0.9140 | 0.8925 | 0.8925 | 0.9140 | 0.8925 | 0.9020 | 0.9140 | 0.9140 | 0.8925 | 0.9140 |
+| name | 0.9200 | 0.9300 | 0.9200 | 0.8000 | 0.9200 | 0.9200 | 0.9100 | 0.9200 | 0.9300 | 0.9300 | 0.9300 |
+| release-country | 0.9100 | 0.9600 | 0.6400 | 0.8700 | 0.3200 | 0.8800 | 0.8156 | 0.9600 | 0.9100 | 0.9400 | 0.9100 |
+| release-date | 0.9500 | 0.9500 | 0.9400 | 0.9500 | 0.9500 | 0.9100 | 0.9433 | 0.9400 | 0.9500 | 0.9500 | 0.9500 |
+| tracks | 0.9500 | 0.9800 | 0.9800 | 0.9800 | 0.9500 | 0.9500 | 0.9656 | 0.9600 | 0.9800 | 0.9800 | 0.9600 |

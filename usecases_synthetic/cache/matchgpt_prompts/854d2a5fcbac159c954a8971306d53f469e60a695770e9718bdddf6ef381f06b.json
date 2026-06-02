@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Double Trouble\n  artist: Rush, Otis\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2209\n  label: <missing>\n  genre: <missing>\n  tracks: ['All Your Love (I Miss Loving)', 'Three Times a Fool', \"She's a Good' Un\", 'It Takes Time', 'Double Trouble', 'My Love Will Never Die', \"My Baby Is a Good' Un\", 'Checking on My Baby', 'Jump Sister Bessie', \"I Can't Quit You Baby\", 'Groaning the Blues', 'Love That Woman', 'Violent Love']\nRecord B:\n  name: Double Trouble\n  artist: London Jazz Composers Orchestra|Barry Guy\n  release-date: 1990-01-01\n  release-country: Switzerland\n  duration: 46:30\n  label: Intakt Records\n  genre: Jazz\n  tracks: ['Double Trouble']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

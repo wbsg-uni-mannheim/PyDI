@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide which candidates describe the same real-world entity as the query.\n\nRules:\n- Compare the query against each candidate attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a comma-separated list of candidate numbers that match the query (e.g. '1,3'), or exactly 'None' if no candidate matches. Do not include any other text.\n\nQuery Entity:\n  name: Tragedy\n  artist: Hanoi Rocks\n  release-date: 01.01.1981\n  release-country: Japan\n  duration: 0:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Tragedy', \"Don't Never Leave Me\"]\n\nCandidates:\n1:\n  name: Tragedy\n  artist: Bee Gees\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n2:\n  name: Album: Tragedy - Tragedy\n  artist: Brick Layer Cake\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nWhich candidate(s) refer to the same entity as the query? Respond with a comma-separated list of candidate numbers (e.g. '1,3') or exactly 'None'.",
+  "prompt_version": "comem-v1",
+  "response": "None",
+  "stage": "select"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0:00"
+    },
+    {
+      "source": "lastfm",
+      "value": "1:10:06"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz value appears to be a placeholder/invalid zero duration, so I selected the plausible duration from Last.fm.",
+    "value": "1:10:06"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1:10:06\",\"operation\":\"verbatim_pick\",\"confidence\":0.94,\"reasoning\":\"The MusicBrainz value appears to be a placeholder/invalid zero duration, so I selected the plausible duration from Last.fm.\"}"
+}

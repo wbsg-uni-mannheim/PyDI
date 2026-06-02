@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: White Blood Cells Bonus Tracks\n  artist: White Stripes, The\n  release-date: 01.01.2002\n  release-country: United States of America\n  duration: 12:06\n  label: <missing>\n  genre: <missing>\n  tracks: ['Jolene', 'Hand Springs', 'Hotel Yorba (live)', 'Lovesick (live)']\nRecord B:\n  name: Tracks From A Broken Dream\n  artist: Hanoi Rocks (band)\n  release-date: 01.01.1990\n  release-country: UK\n  duration: <missing>\n  label: <missing>\n  genre: Rock\n  tracks: ['Boulevard Of Broken Dreams', 'Rebel On The Run', 'Oil And Gasoline', 'Shakes', 'Malibu Beach Nightmare', 'Problem Child', \"I Can't Get It\", 'Do The Duck', 'Two Steps From The Move', 'Magic Carpet Ride', 'I Love You', \"Don't You Ever Leave Me\", 'Underwater World', 'Willing To Cross The Ocean', \"It's Too Late\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

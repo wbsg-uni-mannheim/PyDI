@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "43:44"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:45:51"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "Both candidates express the same duration format variants, and 45:51 is the standardized hour-minute-second form.",
+    "value": "0:45:51"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:45:51\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"Both candidates express the same duration format variants, and 45:51 is the standardized hour-minute-second form.\"}"
+}

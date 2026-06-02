@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Stairs and Elevators\n  artist: Heartless Bastards\n  release-date: 2005-02-22\n  release-country: United States of America\n  duration: 2579\n  label: <missing>\n  genre: <missing>\n  tracks: ['Gray', 'Onions', 'New Resolution', 'My Maker', \"Runnin'\", 'Autonomy', 'Pass and Fail', 'The Will Song', 'Swamp Song', 'Done Got Old', 'Piano Song', 'Lazy']\nRecord B:\n  name: Elevators (Me & You)\n  artist: OutKast\n  release-date: 1996\n  release-country: United States of America\n  duration: 1559.0\n  label: LaFace Records\n  genre: Hip Hop\n  tracks: ['Elevators (Me & You) (Crazy \"C\" Trunk Rattlin\\' Edit)', 'Elevators (Me & You) (ONP 86 Edit)', 'Elevators (Me & You) (Album Edit)', 'Elevators (Me & You) (Crazy \"C\" Trunk Rattlin\\' Instrumental)', 'Elevators (Me & You) (ONP 86 Instrumental)', 'Elevators (Me & You) (Clean Acappella)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

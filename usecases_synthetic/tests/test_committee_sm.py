@@ -23,7 +23,6 @@ from usecases_synthetic.lib.committee_sm import (
 )
 from usecases_synthetic.lib.variant_loader import VariantBundle
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -428,9 +427,17 @@ class TestSMCommitteeRunner:
         assert "min_f1" in result.aggregated
         assert "max_f1" in result.aggregated
 
-    def test_run_renamed_headers_label_degrades(
-        self, tmp_path: Path
-    ) -> None:
+        # Best member promoted to aggregated (consistent with the norm /
+        # em_blocking / em_matching stages — committee-reporting convention).
+        assert "best_member_name" in result.aggregated
+        assert "best_member_f1" in result.aggregated
+        member_f1s = {n: m.metrics["f1"] for n, m in result.per_member.items()}
+        best_name = max(member_f1s, key=lambda n: member_f1s[n])
+        assert result.aggregated["best_member_name"] == best_name
+        assert result.aggregated["best_member_f1"] == member_f1s[best_name]
+        assert result.aggregated["best_member_f1"] == result.aggregated["max_f1"]
+
+    def test_run_renamed_headers_label_degrades(self, tmp_path: Path) -> None:
         """K8 signal direction: label-based F1 drops on anonymised headers."""
         roster_path = _write_fixture_roster(tmp_path)
         runner = SMCommitteeRunner(roster_path)
@@ -465,9 +472,7 @@ class TestSMCommitteeRunner:
         # Gold has 8 entries (4 per source × 2 sources).
         assert len(result.per_attribute) == 8
         for attr_key, attr_vals in result.per_attribute.items():
-            assert "any_correct" in attr_vals, (
-                f"Missing 'any_correct' for {attr_key}"
-            )
+            assert "any_correct" in attr_vals, f"Missing 'any_correct' for {attr_key}"
 
     def test_per_partition_populated(self, tmp_path: Path) -> None:
         """per_partition should have one entry per source."""

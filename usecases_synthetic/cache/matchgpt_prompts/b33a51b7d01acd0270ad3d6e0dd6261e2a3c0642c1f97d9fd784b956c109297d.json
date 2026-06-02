@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Promise\n  artist: Girls Aloud\n  release-date: 2008-10-20\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 492\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Promise (radio edit)', 'Girl Overboard (live at the O2 Arena)']\nRecord B:\n  name: The Promise\n  artist: Deborah Cox\n  release-date: 2008-11-11\n  release-country: <missing>\n  duration: 39:48\n  label: Deco Recording Group\n  genre: Funk / Soul\n  tracks: ['Love Is Not Made In Words', 'You Know Where My Heart Is', 'Did You Ever Love Me', 'Saying Goodbye', 'Beautiful U R', 'The Promise', 'All Over Me', \"All Hearts Aren't Shaped The Same\", 'Down 4 U', 'Where Do We Go 2']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

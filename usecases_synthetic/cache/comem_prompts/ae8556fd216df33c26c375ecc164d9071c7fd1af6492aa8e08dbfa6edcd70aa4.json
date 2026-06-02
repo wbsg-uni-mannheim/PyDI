@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Voodoo Caravan (album)\n  artist: Quill, The\n  release-date: 2002-02\n  release-country: Germany\n  duration: 56:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Voodoo Caravan', 'Sell No Soul', 'Shapes of Afterlife', 'Until Earth Is Bitter Gone', '(Wade Across) The Mighty River', 'Save Me', 'Hole in My Head', 'Overlord', 'Travel Without Moving', 'Drifting', 'Virgo']\nRecord B:\n  name: Caravan Voodoo\n  artist: The Quill\n  release-date: 01.01.2002\n  release-country: Germany\n  duration: 3361\n  label: Steamhammer\n  genre: Rock\n  tracks: ['Voodoo Caravan', 'Sell No Soul', 'Shapes Of Afterlife', 'Until Earth Is Bitter Gone', '(Wade Across) The Mighty River', 'Save Me', 'Hole In My Head', 'Overload', 'Travel Without Moving', 'Drifting', 'Virgo']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

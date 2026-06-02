@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2543"
+    },
+    {
+      "source": "discogs",
+      "value": "42:24"
+    },
+    {
+      "source": "lastfm",
+      "value": "49:53"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "MusicBrainz provides duration in seconds; 2543 seconds equals 42:23, consistent with the discogs track length.",
+    "value": 2543
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2543,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"MusicBrainz provides duration in seconds; 2543 seconds equals 42:23, consistent with the discogs track length.\"}"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Funeral Procession\n  artist: Funeral Procession\n  release-date: 2006-03-31\n  release-country: Germany\n  duration: 2583\n  label: <missing>\n  genre: <missing>\n  tracks: ['Heavenlie Aeons Grimlie Torne Apart', 'When Moonshine Is the Only Light', 'Beholde the Stars Fall From the Heavens', 'Bloode of the Elder (Building the Anti-Kosmos)', 'Doom', 'The Death Empire on Burial Ground, Part I', 'The Death Empire on Burial Ground, Part II', 'Millennium of Revenge/Jerusalem in Ashes']\nRecord B:\n  name: Funeral Procession\n  artist: Consummatum Est\n  release-date: <missing>\n  release-country: Italy\n  duration: 51:23\n  label: Not On Label (Consummatum Est Self-released)\n  genre: Rock\n  tracks: ['Funeral Procession', 'Ashes To Ashes, Dust To Dust', 'Winter Sacrament']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

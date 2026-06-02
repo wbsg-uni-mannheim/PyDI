@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Steal Your Soul and Dare Your Spirit to Move\n  artist: Soledad Brothers\n  release-date: 2002-03-19\n  release-country: United States of America\n  duration: 2675\n  label: <missing>\n  genre: <missing>\n  tracks: ['Prince Among Thieves', 'Prodical Stones Blues', \"This Guitar Says I'm Sorry\", 'Break â€™Em On Down (Good Friday the 13th: Part I)', 'Nationâ€™s Bell', 'Hammer Me Down', 'Michigan Line (Good Friday the 13th: Part II)', '.32 Blues', 'Ray of Love', 'Skidmore Blues', 'Miracle Birth', 'Thereâ€™s No Sunshine When Sheâ€™s Gone', 'Good Friday the 13th: Part III']\nRecord B:\n  name: Spirit\n  artist: R. Benson\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Broken English\n  artist: Kale, Karsh\n  release-date: 2006-03-21\n  release-country: United States of America\n  duration: 3868\n  label: <missing>\n  genre: <missing>\n  tracks: ['Manifest', 'Dancing at Sunset', 'Beautiful', 'New Born Star', 'Free Fall', 'Drive', 'Innocence and Power', 'Hole in the Sky', 'Some Things Are O.K.', 'Louder Than Bombs', 'City Lights', 'Rise Up']\nRecord B:\n  name: Broken English\n  artist: Marianne Faithfull\n  release-date: 1979-01-01\n  release-country: France\n  duration: <missing>\n  label: Island Records\n  genre: Rock\n  tracks: ['Broken English', \"What's The Hurry\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "33:34"
+    },
+    {
+      "source": "discogs",
+      "value": "1992"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz value matches a plausible track/album duration, while the Discogs candidate is likely a release year and not the duration.",
+    "value": "33:34"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"33:34\",\"operation\":\"verbatim_pick\",\"confidence\":0.95,\"reasoning\":\"The MusicBrainz value matches a plausible track/album duration, while the Discogs candidate is likely a release year and not the duration.\"}"
+}

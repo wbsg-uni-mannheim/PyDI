@@ -1,0 +1,29 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Nashville', 'Home', 'Pre-Med (Just in Case)', 'Space/Time', 'Big Steer', 'Dreamland']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Nashville', 'Home', 'Pre-Med (Just In Case)', 'Space/Time', 'Big Steer', 'Dreamland']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The track lists match except for capitalization, so I normalized to a single canonical spelling.",
+    "value": [
+      "Nashville",
+      "Home",
+      "Pre-Med (Just in Case)",
+      "Space/Time",
+      "Big Steer",
+      "Dreamland"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Nashville\",\"Home\",\"Pre-Med (Just in Case)\",\"Space/Time\",\"Big Steer\",\"Dreamland\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The track lists match except for capitalization, so I normalized to a single canonical spelling.\"}"
+}

@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Glee: The Music Presents The Warblers\n  artist: Glee Cast\n  release-date: 2011-05-09\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 2504\n  label: <missing>\n  genre: <missing>\n  tracks: ['Teenage Dream', 'Hey, Soul Sister', 'Bills, Bills, Bills', 'Silly Love Songs', 'When I Get You Alone', 'Animal', 'Misery', 'Blackbird', 'Candles', 'Raise Your Glass', 'Somewhere Only We Know', 'What Kind of Fool?', \"Do Ya Think I'm Sexy?\"]\nRecord B:\n  name: Glee The Music Presents The Warblers\n  artist: Glee Cast\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "Yes"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "989"
+    },
+    {
+      "source": "lastfm",
+      "value": "13:08"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "MusicBrainz duration is typically in milliseconds, and 13:08 equals 788,000 ms, while 989 is the only numeric candidate but likely incomplete/ambiguous; choose the more standard normalized duration format from the time string?",
+    "value": 989
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":989,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"MusicBrainz duration is typically in milliseconds, and 13:08 equals 788,000 ms, while 989 is the only numeric candidate but likely incomplete/ambiguous; choose the more standard normalized duration format from the time string?\"}"
+}

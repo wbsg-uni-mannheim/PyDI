@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Let's Get Out Of This Country"
+    },
+    {
+      "source": "discogs",
+      "value": "Letâ€™s Get Out of This Country"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Discogs value is mojibake of the same title, normalized to the proper apostrophe and casing.",
+    "value": "Let's Get Out Of This Country"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Let's Get Out Of This Country\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Discogs value is mojibake of the same title, normalized to the proper apostrophe and casing.\"}"
+}

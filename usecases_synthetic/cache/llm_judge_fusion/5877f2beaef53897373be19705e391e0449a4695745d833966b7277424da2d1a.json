@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "69:34"
+    },
+    {
+      "source": "discogs",
+      "value": "4174"
+    },
+    {
+      "source": "lastfm",
+      "value": "1:09:26"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "interpolation",
+    "reasoning": "The candidates indicate the same total duration, and 69:34 normalizes to 1:09:34 while 4174 seconds is effectively 69:34.",
+    "value": "1:09:34"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1:09:34\",\"operation\":\"interpolation\",\"confidence\":0.96,\"reasoning\":\"The candidates indicate the same total duration, and 69:34 normalizes to 1:09:34 while 4174 seconds is effectively 69:34.\"}"
+}

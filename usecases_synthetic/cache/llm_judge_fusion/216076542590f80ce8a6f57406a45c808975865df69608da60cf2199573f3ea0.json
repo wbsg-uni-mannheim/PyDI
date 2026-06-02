@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "01.01.2007"
+    },
+    {
+      "source": "discogs",
+      "value": "27.08.2007"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "Converted the Discogs-style date to ISO format; it is more specific than the alternate candidate.",
+    "value": "2007-08-27"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2007-08-27\",\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"Converted the Discogs-style date to ISO format; it is more specific than the alternate candidate.\"}"
+}

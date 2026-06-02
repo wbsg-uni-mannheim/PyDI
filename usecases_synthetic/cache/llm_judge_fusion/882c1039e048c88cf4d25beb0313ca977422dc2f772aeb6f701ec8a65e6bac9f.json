@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Things That Trouble My Mind"
+    },
+    {
+      "source": "lastfm",
+      "value": "The Things That Trouble My Mind (album)"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Removed the medium disambiguator '(album)' to return the canonical title.",
+    "value": "The Things That Trouble My Mind"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Things That Trouble My Mind\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Removed the medium disambiguator '(album)' to return the canonical title.\"}"
+}

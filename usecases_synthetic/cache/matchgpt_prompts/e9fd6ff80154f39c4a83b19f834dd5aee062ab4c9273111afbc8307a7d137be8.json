@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Funeral Mixtape\n  artist: Pack A.D., The\n  release-date: 2008-10-12\n  release-country: United States of America\n  duration: 2653\n  label: <missing>\n  genre: <missing>\n  tracks: ['Blackout', \"Don't Have to Like You\", 'Making Gestures', 'Shiny Things', 'Oh Be Joyful', 'Underground', 'June', 'Dannemora Blues', 'Build', 'Wolves and Werewolves', 'Worried']\nRecord B:\n  name: Funeral Crawl\n  artist: Creeping\n  release-date: 2007\n  release-country: New Zealand\n  duration: 2691.0\n  label: Asphyxiate Recordings\n  genre: Rock\n  tracks: ['The Reckoning', 'Creeping On The Moors', 'Ten Horns', 'Invert All', 'A Moment Of Misery', 'Funeral Crawl', 'Dirge', 'The Abyss... The Swamp']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

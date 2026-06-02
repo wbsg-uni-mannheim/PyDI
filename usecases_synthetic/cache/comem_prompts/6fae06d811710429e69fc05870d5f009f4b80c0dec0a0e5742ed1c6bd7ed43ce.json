@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Wenn die Sehnsucht nicht wÃ¤r'\n  artist: Cook, Captain und seine singenden Saxophone\n  release-date: 1999-08-01\n  release-country: Germany\n  duration: 2572\n  label: <missing>\n  genre: <missing>\n  tracks: ['MÃ¤dchen von Tahiti', 'Sierra Madre', 'Kufsteinlied', 'Denn am Abend in Venedig', 'Santa Lucia', \"Ich mÃ¶chte noch einmal am Blue Mountain steh'n\", 'Wenn die Sehnsucht nicht wÃ¤r', 'La Paloma', 'Gitarren klingen leise durch die Nacht', 'My Happiness', 'Wo die Nordseewellen', 'Auf Samoa (Aba Heidschi)', 'Santo Domingo', 'Ein weiÃŸes Schiff']\nRecord B:\n  name: Wenn Die Sehnsucht Es Will\n  artist: Sina Lenz\n  release-date: 2003\n  release-country: Germany\n  duration: 680.0\n  label: Da Music\n  genre: Pop\n  tracks: ['Wenn Die Sehnsucht Es Will (Radio Version)', 'Wenn Die Sehnsucht Es Will (Maxi Version)', 'Wenn Die Sehnsucht Es Will (Karaoke Version)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

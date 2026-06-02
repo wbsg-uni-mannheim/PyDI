@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2009-03-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2O09-03"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "interpolation",
+    "reasoning": "Discogs provides month/year with a mistaken O character, and MusicBrainz supplies the precise matching date.",
+    "value": "2009-03-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2009-03-01\",\"operation\":\"interpolation\",\"confidence\":0.96,\"reasoning\":\"Discogs provides month/year with a mistaken O character, and MusicBrainz supplies the precise matching date.\"}"
+}

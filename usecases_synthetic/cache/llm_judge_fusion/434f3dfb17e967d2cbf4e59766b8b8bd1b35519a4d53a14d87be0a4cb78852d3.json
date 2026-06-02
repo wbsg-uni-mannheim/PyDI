@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "372"
+    },
+    {
+      "source": "discogs",
+      "value": "6:08"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs duration 6:08 converts to 372 seconds, matching MusicBrainz.",
+    "value": 372
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":372,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs duration 6:08 converts to 372 seconds, matching MusicBrainz.\"}"
+}

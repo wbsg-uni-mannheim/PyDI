@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "46:38"
+    },
+    {
+      "source": "discogs",
+      "value": "2798"
+    },
+    {
+      "source": "lastfm",
+      "value": "44:26"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.41,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict and two are plausible track/album durations in mm:ss, so I selected the most likely canonical formatted duration verbatim.",
+    "value": "46:38"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"46:38\",\"operation\":\"verbatim_pick\",\"confidence\":0.41,\"reasoning\":\"The candidates conflict and two are plausible track/album durations in mm:ss, so I selected the most likely canonical formatted duration verbatim.\"}"
+}

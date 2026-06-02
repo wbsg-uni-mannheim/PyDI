@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Confessions Remixed\n  artist: Madonna\n  release-date: 2006-05-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 44:43\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Hung Up (SDP's extended vocal)\", \"Hung Up (SDP's extended dub)\", 'Sorry (Man With Guitar mix)', 'Get Together (Jacques Lu Cont mix)', 'I Love New York (Thin White Duke mix)', 'Let It Will Be (Paper Faces mix)']\nRecord B:\n  name: [explicit] Confessions A Dance Floor / Like A Virgin\n  artist: Madonna\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Running Out of Time\n  artist: Weinert, Susan\n  release-date: 2004-01-01\n  release-country: <missing>\n  duration: 3158\n  label: <missing>\n  genre: <missing>\n  tracks: ['See Eleven', 'Change', 'When the Water Bows', 'Running Out of Time', 'Darkness', 'What a Night', 'They Only Come Out at Night', 'Sooner', 'Weather', 'Just Do It']\nRecord B:\n  name: Running Out of Time\n  artist: Susan Weinert\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2945.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['See Eleven', 'Change', 'Running Out Of Time', 'Darkness', 'What A Night', 'They Only Come Out At Night', 'Sooner', 'Weather', 'Just Do It']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

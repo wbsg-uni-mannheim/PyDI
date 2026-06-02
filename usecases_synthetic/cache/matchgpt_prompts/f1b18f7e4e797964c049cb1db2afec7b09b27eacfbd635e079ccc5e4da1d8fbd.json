@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Path of Liberation From and Death\n  artist: Njiqahdda\n  release-date: 04/01/2011\n  release-country: United States of America\n  duration: 76:36\n  label: <missing>\n  genre: <missing>\n  tracks: ['To Return From the Flame', 'Transcendental Knowledge Upon the Battlefield', 'Attaining the Confidential Supreme Absolute', 'Universal Form Replaced With Despondent Chaos', 'The Opulent Throne', 'Sky and Earth Remembered Only as Blood: Visions / Remembrance / Heads Smashed by Teeth']\nRecord B:\n  name: Black Liberation\n  artist: L. Incorporated\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

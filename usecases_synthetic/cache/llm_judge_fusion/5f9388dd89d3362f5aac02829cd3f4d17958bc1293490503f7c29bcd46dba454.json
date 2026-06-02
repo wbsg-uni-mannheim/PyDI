@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3275"
+    },
+    {
+      "source": "discogs",
+      "value": "54:34"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Discogs duration 54:34 converts to 3274 seconds, and MusicBrainz lists 3275 seconds, so 3275 is the canonical normalized duration.",
+    "value": 3275
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3275,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Discogs duration 54:34 converts to 3274 seconds, and MusicBrainz lists 3275 seconds, so 3275 is the canonical normalized duration.\"}"
+}

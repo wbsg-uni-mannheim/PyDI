@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "33:40"
+    },
+    {
+      "source": "discogs",
+      "value": "2020"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz value is a valid track/album duration, while the Discogs value appears to be a release year.",
+    "value": "33:40"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"33:40\",\"operation\":\"verbatim_pick\",\"confidence\":0.97,\"reasoning\":\"The MusicBrainz value is a valid track/album duration, while the Discogs value appears to be a release year.\"}"
+}

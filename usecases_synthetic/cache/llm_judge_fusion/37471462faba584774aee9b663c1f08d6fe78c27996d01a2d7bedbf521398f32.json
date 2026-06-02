@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3467"
+    },
+    {
+      "source": "discogs",
+      "value": "57:43"
+    },
+    {
+      "source": "lastfm",
+      "value": "57:44"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "aggregation",
+    "reasoning": "The candidates agree on a track length of about 57:43-57:44, and 3467 seconds is the consistent canonical numeric duration.",
+    "value": 3467
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3467,\"operation\":\"aggregation\",\"confidence\":0.98,\"reasoning\":\"The candidates agree on a track length of about 57:43-57:44, and 3467 seconds is the consistent canonical numeric duration.\"}"
+}

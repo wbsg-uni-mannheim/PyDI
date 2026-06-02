@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "23.09.2003"
+    },
+    {
+      "source": "discogs",
+      "value": "01.01.2003"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Converted the date to ISO format from the most specific candidate, while the other candidate appears to be a placeholder.",
+    "value": "2003-09-23"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2003-09-23\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Converted the date to ISO format from the most specific candidate, while the other candidate appears to be a placeholder.\"}"
+}

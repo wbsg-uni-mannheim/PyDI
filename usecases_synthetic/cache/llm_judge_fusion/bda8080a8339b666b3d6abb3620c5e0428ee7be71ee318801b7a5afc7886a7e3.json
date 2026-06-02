@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2005-05-23"
+    },
+    {
+      "source": "discogs",
+      "value": "20 05-05-23"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The second candidate is a malformed version of the same date, which normalizes to 2005-05-23.",
+    "value": "2005-05-23"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2005-05-23\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The second candidate is a malformed version of the same date, which normalizes to 2005-05-23.\"}"
+}

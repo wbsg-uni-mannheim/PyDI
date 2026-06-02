@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: TZ Goes Beyond 10!\n  artist: Outlander feat.\n  release-date: 1992-01-01\n  release-country: Belgium\n  duration: 24:04\n  label: <missing>\n  genre: <missing>\n  tracks: ['Psycho Tribe', 'Sonic Assault', 'To You', 'Prime Instinct']\nRecord B:\n  name: Beyond the Waves\n  artist: Torrent (2)\n  release-date: 1988-01-01\n  release-country: Belgium\n  duration: <missing>\n  label: Not On Label\n  genre: Rock\n  tracks: ['Intro', 'ondamned to Live', 'Lost in the Army', 'Innocent Offender', 'Fortunes of Life']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

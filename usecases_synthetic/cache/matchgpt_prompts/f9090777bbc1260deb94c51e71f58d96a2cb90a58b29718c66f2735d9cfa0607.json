@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Optimal Contrast\n  artist: Impact Pulse\n  release-date: 01.01.2008\n  release-country: Hungary\n  duration: 48:59\n  label: <missing>\n  genre: <missing>\n  tracks: ['I Want You', 'Golden Zombie', '... Till We Die', 'I See Your Love (feat. Serena GruÃŸ)', 'Mad Hunt', 'Impact Nation', 'Silvervoice', 'New Delight (feat. Der Feind)', 'The Blinds Prayer', 'The Flame of Passion']\nRecord B:\n  name: Contrast Part 2 of 4\n  artist: NAPT\n  release-date: 2007-03-05\n  release-country: UK\n  duration: <missing>\n  label: Sub Frequency Funk\n  genre: Electronic\n  tracks: ['Get Back', 'Feelin Right', 'Get Back Dub']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

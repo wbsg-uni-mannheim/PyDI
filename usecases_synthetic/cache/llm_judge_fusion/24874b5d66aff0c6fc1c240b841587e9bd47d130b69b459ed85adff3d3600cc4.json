@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "17.10.2005"
+    },
+    {
+      "source": "discogs",
+      "value": "10.10.2005"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "normalization",
+    "reasoning": "Both candidates are date strings in different day.month.year forms; normalized the more likely release date format to ISO.",
+    "value": "2005-10-17"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2005-10-17\",\"operation\":\"normalization\",\"confidence\":0.92,\"reasoning\":\"Both candidates are date strings in different day.month.year forms; normalized the more likely release date format to ISO.\"}"
+}

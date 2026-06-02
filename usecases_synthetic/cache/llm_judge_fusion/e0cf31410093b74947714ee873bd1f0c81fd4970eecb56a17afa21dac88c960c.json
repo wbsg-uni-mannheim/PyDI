@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "35:16"
+    },
+    {
+      "source": "lastfm",
+      "value": "3:33:27"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "verbatim_pick",
+    "reasoning": "35:16 is a plausible track/album duration, while 3:33:27 is implausibly long for this attribute and likely a mismatch.",
+    "value": "35:16"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"35:16\",\"operation\":\"verbatim_pick\",\"confidence\":0.97,\"reasoning\":\"35:16 is a plausible track/album duration, while 3:33:27 is implausibly long for this attribute and likely a mismatch.\"}"
+}

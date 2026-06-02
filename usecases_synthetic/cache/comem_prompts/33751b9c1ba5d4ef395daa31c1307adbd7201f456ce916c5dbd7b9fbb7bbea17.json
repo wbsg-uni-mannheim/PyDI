@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Settle Down\n  artist: Over the Wall\n  release-date: 2011-05-05\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Settle Down', 'History of British Welfarism 1945-1984']\nRecord B:\n  name: Settle\n  artist: J. Nunes\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2348.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Stay Awake', 'Odd', 'Lullaby', 'Lookout For Yourself', \"Nothing's That Great\", 'He Is Mad', 'Fair Weather', 'Comatose', 'Pizza', 'I Will Go Anywhere With You', \"I Wasn't Worried\", 'Balloons', 'First Impressions', 'Into The Sunshine', 'Waiting']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Music For Men\n  artist: Stay Ali\n  release-date: 2009-01-01\n  release-country: Sweden\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Is There A Boy (Intro)', 'Publikum', 'Discoliner', 'In The RW', 'Please Come Back', 'Hunber In Lasburia', 'Harvest V. 2', \"Agatha's Greeting (Intermission)\", 'Hoofpicker', 'Boogie Infection', 'Jaganscalli', 'Better Doctor Than Funny', 'Bingheiser', \"Roby's Awakening\", 'Mankind Prelude (Outro)']\nRecord B:\n  name: Get Into The Music\n  artist: DJ's Rule\n  release-date: 1996-01-01\n  release-country: Sweden\n  duration: <missing>\n  label: SweMix Records|WEA\n  genre: Electronic\n  tracks: ['Get Into The Music (Goodfellos UK Radio Edit)', 'Get Into The Music (Hybrid Mix Edit)', 'Get Into The Music (Goodfellos Mix Edit)', \"Get Into The Music (JJ's Bare Necessities Mix)\", 'Get Into The Music (Goodfellos Mix)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

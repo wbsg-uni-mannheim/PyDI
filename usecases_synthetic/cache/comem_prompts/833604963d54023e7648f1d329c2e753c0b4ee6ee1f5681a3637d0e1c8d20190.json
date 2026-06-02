@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Supernatural\n  artist: Santana\n  release-date: 01/01/1999\n  release-country: United States of America\n  duration: 4499\n  label: <missing>\n  genre: <missing>\n  tracks: ['(Da Le) Yaleo', 'Love of My Life', 'Put Your Lights On', 'Africa Bamba', 'Smooth', 'Do You Like the Way', 'Maria Maria', 'Migra', 'CorazÃ³n espinado', 'Wishing It Was', 'El farol', 'Primavera', 'The Calling / Day of Celebration']\nRecord B:\n  name: Supernatural\n  artist: Li-Polymer\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

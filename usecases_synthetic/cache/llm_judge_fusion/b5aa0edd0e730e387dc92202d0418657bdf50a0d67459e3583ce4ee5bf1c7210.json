@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Chemical Brothers, The (and others)"
+    },
+    {
+      "source": "lastfm",
+      "value": "T. Chemical Brothers"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Both candidates clearly refer to the artist The Chemical Brothers, with extra qualifiers/ordering artifacts removed.",
+    "value": "The Chemical Brothers"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Chemical Brothers\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Both candidates clearly refer to the artist The Chemical Brothers, with extra qualifiers/ordering artifacts removed.\"}"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "discogs",
+      "value": "1h 35m 6s"
+    },
+    {
+      "source": "lastfm",
+      "value": "85:57"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "interpolation",
+    "reasoning": "Converted 85:57 to 1h 25m 57s and selected the precise canonical duration over the alternate source.",
+    "value": "1h 25m 57s"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1h 25m 57s\",\"operation\":\"interpolation\",\"confidence\":0.99,\"reasoning\":\"Converted 85:57 to 1h 25m 57s and selected the precise canonical duration over the alternate source.\"}"
+}

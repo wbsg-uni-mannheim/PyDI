@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: California Man\n  artist: Move, The\n  release-date: 1999-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 2696\n  label: <missing>\n  genre: <missing>\n  tracks: ['California Man', 'Ella James', 'No Time', 'Tonight', 'Down on the Bay', 'The Minister', 'Do Ya', 'The Words of Aaron', 'Until Your Mamaâ€™s Gone', 'Chinatown', 'Message From the Country']\nRecord B:\n  name: California Man\n  artist: The Move\n  release-date: 1999-01-01\n  release-country: Europe\n  duration: 44:49\n  label: Harvest|EMI\n  genre: Rock\n  tracks: ['California Man', 'Ella James', 'No Time', 'Tonight', 'Down On The Bay', 'The Minister', 'Do Ya', 'The Words Of Aaron', \"Until Your Moma's Gone\", 'Chinatown', 'Message From The Country']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

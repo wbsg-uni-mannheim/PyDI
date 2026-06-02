@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "199"
+    },
+    {
+      "source": "discogs",
+      "value": "3:19"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "3:19 converts to 199 seconds, matching the numeric candidate.",
+    "value": 199
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":199,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"3:19 converts to 199 seconds, matching the numeric candidate.\"}"
+}

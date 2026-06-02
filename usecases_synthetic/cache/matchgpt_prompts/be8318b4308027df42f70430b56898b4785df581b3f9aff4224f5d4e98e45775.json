@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Everything's Up Coming Rosie\n  artist: Clooney, Rosemary\n  release-date: <missing>\n  release-country: United States of America\n  duration: 36:49\n  label: <missing>\n  genre: <missing>\n  tracks: ['I Cried for You', 'More Than You Know', 'How Am I to Know', \"I Can't Get Started\", 'A Foggy Day', \"I've Got a Crush on You\", 'Hey There', 'As Time Goes By', 'All of Me', 'Do You Know What It Means to Miss New Orleans']\nRecord B:\n  name: Everything's Electric / Lady Casanova\n  artist: Dazz\n  release-date: 01.01.1980\n  release-country: Germany\n  duration: <missing>\n  label: Polydor\n  genre: Pop|Rock\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

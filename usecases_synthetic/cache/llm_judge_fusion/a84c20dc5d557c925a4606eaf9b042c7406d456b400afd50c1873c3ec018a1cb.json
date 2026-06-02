@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1606"
+    },
+    {
+      "source": "discogs",
+      "value": "23:14"
+    },
+    {
+      "source": "lastfm",
+      "value": "27:00"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "The candidates represent the same duration in different formats, and 1606 seconds matches 23:14 exactly while 27:00 appears inconsistent.",
+    "value": 1606
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1606,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"The candidates represent the same duration in different formats, and 1606 seconds matches 23:14 exactly while 27:00 appears inconsistent.\"}"
+}

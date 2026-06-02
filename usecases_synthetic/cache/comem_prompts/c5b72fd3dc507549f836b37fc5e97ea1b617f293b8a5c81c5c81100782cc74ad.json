@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Fallen Leaf Pages\n  artist: Radar Bros.\n  release-date: 22.03.2005\n  release-country: UK\n  duration: 45:23\n  label: <missing>\n  genre: <missing>\n  tracks: ['Faces of the Damned', 'To Remember', 'Papillon', 'Government Land', \"We're Not Sleeping\", 'Dark Road Window', 'Like an Ant Floating in Milk', 'Is That Blood', 'The River Shade', 'Show Yourself', 'Sometime, Awhile Ago', 'The Fish', 'Breathing Again']\nRecord B:\n  name: Fallen In Combat\n  artist: Ultra Sur\n  release-date: 01.01.2005\n  release-country: <missing>\n  duration: <missing>\n  label: Producciones Victoria\n  genre: Rock\n  tracks: ['Intro', 'Encada Combate', 'Skinheads NS', 'Caido En Combate', 'Juan Manuel De Rosas (Live)', 'Rapado (Live)', 'La Tele-Sion (Live)', 'Rapados (Bonus)', 'Juan Manuel De Rosas', 'Nacional Socialista']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

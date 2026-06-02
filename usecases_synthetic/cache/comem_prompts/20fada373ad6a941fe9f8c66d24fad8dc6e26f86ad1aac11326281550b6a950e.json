@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Moment Of Truth\n  artist: Mighty Diamonds, The\n  release-date: 1992-01-01\n  release-country: <missing>\n  duration: 2306\n  label: <missing>\n  genre: <missing>\n  tracks: ['Natural Thing', 'Absent From the Heart', 'No Pay Day Love', 'Ku Deh', 'Come Tomorrow', 'Dem Under Fire', 'Bookworm', 'Lost Without Your Magic', 'I Wanna Dance With You', 'What a Crazy Life']\nRecord B:\n  name: Stand Up To Your Judgement\n  artist: The Mighty Diamonds\n  release-date: 1978\n  release-country: Jamaica\n  duration: <missing>\n  label: Channel One\n  genre: <missing>\n  tracks: ['Jah Will Work It Out', 'Just Another Man', 'Payaka', 'Cho Me Brethren', 'Stand Up To Your Judgement', 'I Want To Know', 'Fools Rush In', 'Back Whey', 'Stoned Out Of My Mind', 'Country Living']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

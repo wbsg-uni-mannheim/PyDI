@@ -1,0 +1,30 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "United States of America"
+    },
+    {
+      "source": "discogs",
+      "value": "UK"
+    },
+    {
+      "source": "discogs",
+      "value": "Poland"
+    },
+    {
+      "source": "discogs",
+      "value": "USA"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Normalized the country name from abbreviated variants and selected the canonical U.S. form.",
+    "value": "United States of America"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United States of America\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Normalized the country name from abbreviated variants and selected the canonical U.S. form.\"}"
+}

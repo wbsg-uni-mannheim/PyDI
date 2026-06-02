@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Can We Change The Future Remixes\n  artist: Code of Practice\n  release-date: 01.01.1995\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 7:38\n  label: <missing>\n  genre: <missing>\n  tracks: ['Can We Change the Future (Sounds of Life remix)', 'Can We Change the Future (Klute remix)']\nRecord B:\n  name: By The Way - (The Remixes)\n  artist: Jenna Drey\n  release-date: 01.01.2006\n  release-country: USA\n  duration: 2370\n  label: Audio One\n  genre: Electronic|Pop\n  tracks: ['By The Way (Al B Rich Radio Mix)', 'By The Way (K. Churko Radio Mix)', 'By The Way (Euro Al B Rich Radio Mix))', 'By The Way (Al B Rich Club Mix)', 'By The Way (K. Churko Club Mix)', 'By The Way (DJ Escape & Johnny Vicious Club Mix)', 'By The Way (DJ Escape & Johnny Vicious Dub Mix)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

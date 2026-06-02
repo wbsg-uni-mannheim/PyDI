@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: In Colour\n  artist: John Steel Singers, The\n  release-date: 2008-11-08\n  release-country: Australia\n  duration: 1077\n  label: <missing>\n  genre: <missing>\n  tracks: ['Rainbow Kraut', 'Luxembourg', 'Mother', 'Harlequin Maid']\nRecord B:\n  name: Colour\n  artist: T. John Steel Singers\n  release-date: <missing>\n  release-country: <missing>\n  duration: 17:04\n  label: <missing>\n  genre: <missing>\n  tracks: ['Rainbow Kraut', 'Luxembourg', 'Mother', 'Harlequin Maid']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

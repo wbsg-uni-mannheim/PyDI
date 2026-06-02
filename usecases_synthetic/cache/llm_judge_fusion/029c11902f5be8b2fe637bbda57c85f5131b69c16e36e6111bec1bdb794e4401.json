@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Sweet"
+    },
+    {
+      "source": "discogs",
+      "value": "Sweet"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The candidate \"Sweet\" is a shortened form of the same artist name, which canonically appears as \"The Sweet\".",
+    "value": "The Sweet"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Sweet\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The candidate \\\"Sweet\\\" is a shortened form of the same artist name, which canonically appears as \\\"The Sweet\\\".\"}"
+}

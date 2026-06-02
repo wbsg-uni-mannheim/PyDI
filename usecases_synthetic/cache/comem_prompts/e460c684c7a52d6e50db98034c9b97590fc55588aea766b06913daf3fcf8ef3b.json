@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Singles Going Straight\n  artist: Youth\n  release-date: <missing>\n  release-country: <missing>\n  duration: 3146\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Album: Singles Going Straight\n  artist: Crucial Y.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 35m 9s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Those Who Curse', 'Crucial Youth', 'X-mas For The Skins', 'Santa Claus Is Coming', \"I'm Straight\", 'Scarred For Life', 'American Band', 'Smut Peddler', 'Caffeine', 'Power', 'Just Say No', 'Mosh Of The Pressheads (Live)', \"Can't Shut My Mouth\", 'Shave Clean', 'Posi- Machine', 'Be Kind, Rewind', 'Four Rules', 'Positive Dental Outlook', 'Me & Mr. T']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

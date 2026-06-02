@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-01-01"
+    },
+    {
+      "source": "discogs",
+      "value": "2011-04 -08"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Corrected the malformed date format in the second candidate to a standard ISO date.",
+    "value": "2011-04-08"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-04-08\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Corrected the malformed date format in the second candidate to a standard ISO date.\"}"
+}

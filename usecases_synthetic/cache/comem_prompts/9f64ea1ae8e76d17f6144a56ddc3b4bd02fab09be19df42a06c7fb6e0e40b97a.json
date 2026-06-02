@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Graham Smith Is the Coolest Person Alive\n  artist: Kleenex Girl Wonder\n  release-date: 1998-01-20\n  release-country: United States of America\n  duration: 3126\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Kids World - The Coolest Hits & Dance Tracks\n  artist: Various\n  release-date: 1999-01-01\n  release-country: Netherlands\n  duration: <missing>\n  label: Arcade\n  genre: Electronic|Pop|Rock\n  tracks: ['Poco Loco', 'Tarzan & Jane', 'Boom, Boom, Boom, Boom!', 'E-Mail To Berlin', 'The Launch', 'Got 2 Get U Back', 'Renaissance', \"Cleopatra's Theme\", 'Colour The World', 'Blindelings', 'Flying', 'How Will I Know (Who You Are)', 'Never Nooit Meer', '10 Kleine Tuinkabouters', 'Get In Line', 'Calcutta', 'Heartbeat', 'I Want You To Want Me', 'All I Have To Give', 'Big Big World']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2543"
+    },
+    {
+      "source": "discogs",
+      "value": "0:42:24"
+    },
+    {
+      "source": "lastfm",
+      "value": "49:53"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "aggregation",
+    "reasoning": "Two candidates are in time format and one is a likely duration in seconds; 2543 seconds matches 42:23, closest to the formatted track/album durations.",
+    "value": 2543
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2543,\"operation\":\"aggregation\",\"confidence\":0.97,\"reasoning\":\"Two candidates are in time format and one is a likely duration in seconds; 2543 seconds matches 42:23, closest to the formatted track/album durations.\"}"
+}

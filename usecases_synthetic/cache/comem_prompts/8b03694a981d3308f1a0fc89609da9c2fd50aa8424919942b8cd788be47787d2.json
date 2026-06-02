@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Black Tie Elevator\n  artist: Cliks, The\n  release-date: 2013-04-23\n  release-country: Canada\n  duration: 3002\n  label: <missing>\n  genre: <missing>\n  tracks: ['Savanna', 'Stop Drinking My Wine', 'Dark Passenger', 'Sleeping Alone', 'Still', '1000 Violins', '4 Letter Words', 'Cerise', \"No Good Do'Er\", 'She Was the One', 'Gone', 'Walking in a Graveyard']\nRecord B:\n  name: Black  Elevator\n  artist: The Cliks\n  release-date: <missing>\n  release-country: <missing>\n  duration: 50:08\n  label: <missing>\n  genre: <missing>\n  tracks: ['Savanna', 'Stop Drinking My Wine', 'Dark Passenger', 'Sleeping Alone', 'Still', '1000 Violins', '4 Letter Words', 'Cerise', \"No Good Do'Er\", 'She Was The One', 'Gone', 'Walking In A Graveyard']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

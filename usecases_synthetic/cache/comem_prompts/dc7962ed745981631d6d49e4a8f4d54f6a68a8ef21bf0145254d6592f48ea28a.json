@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Eight Electronic Pieces\n  artist: Dockstader, Tod\n  release-date: 2003-01-01\n  release-country: United States of America\n  duration: 2199\n  label: <missing>\n  genre: <missing>\n  tracks: ['Piece #1', 'Piece #2', 'Piece #3', 'Piece #4', 'Piece #5', 'Piece #6', 'Piece #7', 'Piece #8']\nRecord B:\n  name: Eight Electronic Pieces\n  artist: Tod Dockstader\n  release-date: 2003\n  release-country: United States of America\n  duration: 2200.0\n  label: Locust Music\n  genre: Electronic\n  tracks: ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

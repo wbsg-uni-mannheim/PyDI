@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2875"
+    },
+    {
+      "source": "discogs",
+      "value": "95:06"
+    },
+    {
+      "source": "lastfm",
+      "value": "85:57"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "aggregation",
+    "reasoning": "Converted the duration candidates to seconds and used the consistent MusicBrainz value as the canonical total length.",
+    "value": 5537
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":5537,\"operation\":\"aggregation\",\"confidence\":0.99,\"reasoning\":\"Converted the duration candidates to seconds and used the consistent MusicBrainz value as the canonical total length.\"}"
+}

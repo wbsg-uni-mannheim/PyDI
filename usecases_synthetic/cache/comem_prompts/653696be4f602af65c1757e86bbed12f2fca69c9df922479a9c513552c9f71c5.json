@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Your Mercury\n  artist: Teeth of the Sea\n  release-date: 2010-11-22\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 2801\n  label: <missing>\n  genre: <missing>\n  tracks: ['Transfinite', 'The Ambassador', 'Cemetery Magus', 'Youâ€™re Mercury', 'Midas Rex', 'A.C.R.O.N.Y.M.', 'Mothlike', 'Red Soil', 'Horses With Hands', 'Hovis Coil']\nRecord B:\n  name: Your Mercury\n  artist: Teeth Of The Sea\n  release-date: 2010-11-22\n  release-country: UK\n  duration: <missing>\n  label: Rocket Recordings\n  genre: Electronic|Rock\n  tracks: ['Transfinite', 'The Ambassador', 'Cemetery Magus', 'You’re Mercury', 'Midas Rex', 'A.C.R.O.N.Y.M.', 'Mothlike', 'Red Soil', 'Horses With Hands', 'Hovis Coil']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

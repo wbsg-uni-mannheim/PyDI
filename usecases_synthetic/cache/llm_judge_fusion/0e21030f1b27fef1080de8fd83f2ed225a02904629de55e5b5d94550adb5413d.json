@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Schulz Purple"
+    },
+    {
+      "source": "discogs",
+      "value": "Schulz"
+    },
+    {
+      "source": "lastfm",
+      "value": "P. Schulz"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.82,
+    "operation": "normalization",
+    "reasoning": "The candidates are variants of the same artist name, and 'Schulz' is the common canonical form.",
+    "value": "Schulz"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Schulz\",\"operation\":\"normalization\",\"confidence\":0.82,\"reasoning\":\"The candidates are variants of the same artist name, and 'Schulz' is the common canonical form.\"}"
+}

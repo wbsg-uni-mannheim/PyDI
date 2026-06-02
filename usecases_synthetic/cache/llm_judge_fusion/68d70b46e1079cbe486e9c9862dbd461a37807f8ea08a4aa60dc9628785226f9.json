@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "4441"
+    },
+    {
+      "source": "discogs",
+      "value": "74:02"
+    },
+    {
+      "source": "lastfm",
+      "value": "74:01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "aggregation",
+    "reasoning": "The candidates agree on approximately 74 minutes, and 4441 seconds is the consistent normalized duration closest to the provided times.",
+    "value": 4441
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4441,\"operation\":\"aggregation\",\"confidence\":0.96,\"reasoning\":\"The candidates agree on approximately 74 minutes, and 4441 seconds is the consistent normalized duration closest to the provided times.\"}"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1513"
+    },
+    {
+      "source": "lastfm",
+      "value": "21:01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.88,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz value is already a precise numeric duration and is likely in seconds, matching the Last.fm track-length format.",
+    "value": 1513
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":1513,\"operation\":\"verbatim_pick\",\"confidence\":0.88,\"reasoning\":\"The MusicBrainz value is already a precise numeric duration and is likely in seconds, matching the Last.fm track-length format.\"}"
+}

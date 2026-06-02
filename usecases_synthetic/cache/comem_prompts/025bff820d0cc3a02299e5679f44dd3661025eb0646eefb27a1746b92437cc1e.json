@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Milk Milk Lemonade\n  artist: Mr. T Experience, The\n  release-date: 1992\n  release-country: USA\n  duration: 41:49\n  label: <missing>\n  genre: <missing>\n  tracks: ['Book of Revelation', 'What Do You Want?', 'Ready Set Go', 'Two-Minute Itch', \"There's Something Wrong With Me\", 'Master of the Situation', 'Untitled Song', 'What Difference Does It Make', 'Last Time I Listened to You', 'Love American Style', 'Christine Bactine', \"I Love You, but You're Standing on My Foot\", 'Makeup', 'See It Now', 'Secret Track']\nRecord B:\n  name: Lemonade\n  artist: B. Set\n  release-date: <missing>\n  release-country: <missing>\n  duration: 47m 23s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Hollow', 'Ramona', 'Lemonade', 'I Owe Something', 'Wendy Ann', 'Ophelia', 'Nothing Like Janine', 'Argument', 'All Is Forgiven', 'Not Fit to Care', 'My Night On the Floor', 'Nothing']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "United States of"
+    },
+    {
+      "source": "discogs",
+      "value": "Germany"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.82,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz value appears to be the intended release country despite being truncated, and there is no evidence to synthesize a different canonical country.",
+    "value": "United States of"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United States of\",\"operation\":\"verbatim_pick\",\"confidence\":0.82,\"reasoning\":\"The MusicBrainz value appears to be the intended release country despite being truncated, and there is no evidence to synthesize a different canonical country.\"}"
+}

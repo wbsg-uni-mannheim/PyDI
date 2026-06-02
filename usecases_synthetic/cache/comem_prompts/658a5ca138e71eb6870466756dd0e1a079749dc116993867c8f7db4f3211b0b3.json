@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Motor City Resurrection\n  artist: 69 Eyes, The (and others)\n  release-date: 2005-12-01\n  release-country: Japan\n  duration: 45:53\n  label: <missing>\n  genre: <missing>\n  tracks: ['Discipline', 'Deuce', 'Mrs. Sleazy', 'Hot Butterfly', 'Sugarman', 'Stop Bitching!', 'Barbarella', 'Gimme Some Skin', 'Juicy Lucy', 'The Hills Have Eyes', 'Too Itching for Action', 'No Hesitation', 'Alive!', 'Gimme Some Head']\nRecord B:\n  name: Resurrection\n  artist: <missing>\n  release-date: 21.06.2000\n  release-country: Japan\n  duration: <missing>\n  label: Avalon\n  genre: Rock|Folk, World, & Country\n  tracks: ['Phoenix Rising', 'Ship Of Salvation', 'Souldance', 'Seven Seas', 'Passion', 'Blinded Eyes', 'Synphonia Millennialis', 'Part 1 Nascentia', 'Part 2 Resurrectio', 'Part 3 Renascentia', '-', 'Samuraj', 'Holy Land', 'Spellbound', 'Seven Seas (Radio Edition)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

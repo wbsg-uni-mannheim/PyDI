@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "21:47"
+    },
+    {
+      "source": "discogs",
+      "value": "1310"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates likely represent the same duration in different formats, and 1310 seconds equals 21:50, so the MusicBrainz time format is the best canonical form despite a minor discrepancy.",
+    "value": "21:47"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"21:47\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates likely represent the same duration in different formats, and 1310 seconds equals 21:50, so the MusicBrainz time format is the best canonical form despite a minor discrepancy.\"}"
+}

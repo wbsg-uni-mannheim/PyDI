@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Storm of Resurrection\n  artist: Pukelization\n  release-date: 200709-07\n  release-country: <missing>\n  duration: 36:23\n  label: <missing>\n  genre: <missing>\n  tracks: ['Civilization Decay', 'Unseen Wall', 'Floating on the Hand', 'Extract the Enemy Inside', 'Behind the Bush', 'Spearheaded', 'Internal Grind', 'Putridity', 'Chomo Langma', 'Hatred Towers', 'Storm of Resurrection', 'Bury Bones and Construct']\nRecord B:\n  name: Resurrection\n  artist: <missing>\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

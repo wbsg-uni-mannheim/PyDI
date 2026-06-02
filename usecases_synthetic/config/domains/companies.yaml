@@ -29,10 +29,27 @@ source_pairs:
   - [forbes, dbpedia]
   - [forbes, fullcontact]
 
+# Fusion gold: the user-authored expanded sets (100/100 records, 2026-05-29),
+# NOT the legacy validation_set.xml/test_set.xml (25/18, the small gold).
+# Without this override domain_config defaults to the plain names = stale
+# small gold (R10-N blocker). Mirrors music.yaml / games.yaml.
+fusion_files:
+  validation: validation_set_final.xml
+  test: test_set_final.xml
+
+# Target_schema scope = 8 data attrs (R10-N 2026-06-02). `industry` added
+# (was missing); fusion gold widened to carry it (industry <- forbes
+# business_segment; dbpedia.sector is matching-only). `website` DROPPED from
+# the target_schema scope 2026-06-02: forbes.url == forbes_url (= the id) in
+# all 2000 rows and no other source has a website, so it is a degenerate
+# (id-equal) attr that would inflate fusion accuracy. `keypeople` = the
+# target_schema attr formerly named `founders` (renamed 2026-06-02: source +
+# gold agree on keypeople).
 attribute_classes:
   name: primary
   country: key
   city: key
+  industry: secondary
   assets: secondary
   revenue: secondary
   founded: secondary

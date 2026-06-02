@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Too Sick to Pray (Don't Call the Doctor)\n  artist: Alabama 3\n  release-date: 2000-10-09\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 10:50\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Too Sick to Pray (Don't Call the Doctor) (radio edit)\", 'If I Should Die Tonight', 'Shake a Tailfeather']\nRecord B:\n  name: Too Sick To Pray {Dont Call The Doctor}\n  artist: Alabama 3\n  release-date: 2000-10-02\n  release-country: UK\n  duration: 650\n  label: Elemental Records\n  genre: Electronic\n  tracks: ['Too Sick To Pray {Dont Call The Doctor} (Radio Edit)', 'If I Should Die Tonight', 'Shake A Tailfeather']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

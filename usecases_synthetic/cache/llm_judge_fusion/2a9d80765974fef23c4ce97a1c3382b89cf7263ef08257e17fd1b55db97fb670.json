@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "877"
+    },
+    {
+      "source": "discogs",
+      "value": "14:38"
+    },
+    {
+      "source": "lastfm",
+      "value": "14:25"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "The candidates likely represent the same track length in seconds and mm:ss; 14:37.5 rounds to 877 seconds, making it the best canonical duration.",
+    "value": 877
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":877,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"The candidates likely represent the same track length in seconds and mm:ss; 14:37.5 rounds to 877 seconds, making it the best canonical duration.\"}"
+}

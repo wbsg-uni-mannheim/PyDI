@@ -1,0 +1,44 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Teenage Dream', 'Hey, Soul Sister', 'Bills, Bills, Bills', 'Silly Love Songs', 'When I Get You Alone', 'Animal', 'Misery', 'Blackbird', 'Candles', 'Raise Your Glass', 'Somewhere Only We Know', 'What Kind of Fool?', \"Do Ya Think I'm Sexy?\"]"
+    },
+    {
+      "source": "discogs",
+      "value": "['Teenage Dream', 'Hey, Soul Sister', 'Bills, Bills, Bills', 'Silly Love Songs', 'When I Get You Alone', 'Animal', 'Misery', 'Blackbird', 'Candles', 'Raise Your Glass', 'Somewhere Only We Know', 'What Kind Of Fool', \"Do Ya Think I'm Sexy?\"]"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Teenage Dream', 'Hey, Soul Sister (Glee Cast Version)', 'Bills, Bills, Bills', 'Silly Love Songs', 'When I Get You Alone', 'Animal (Glee Cast Version)', 'Misery', 'Blackbird', 'Candles (Glee Cast Version)', 'Raise Your Glass', 'Somewhere Only We Know', 'What Kind of Fool', \"Do Ya Think I'm Sexy?\"]"
+    },
+    {
+      "source": "lastfm",
+      "value": "[]"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Most sources agree on the same track list, with minor punctuation/casing and version-label normalization needed.",
+    "value": [
+      "Teenage Dream",
+      "Hey, Soul Sister",
+      "Bills, Bills, Bills",
+      "Silly Love Songs",
+      "When I Get You Alone",
+      "Animal",
+      "Misery",
+      "Blackbird",
+      "Candles",
+      "Raise Your Glass",
+      "Somewhere Only We Know",
+      "What Kind of Fool?",
+      "Do Ya Think I'm Sexy?"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Teenage Dream\",\"Hey, Soul Sister\",\"Bills, Bills, Bills\",\"Silly Love Songs\",\"When I Get You Alone\",\"Animal\",\"Misery\",\"Blackbird\",\"Candles\",\"Raise Your Glass\",\"Somewhere Only We Know\",\"What Kind of Fool?\",\"Do Ya Think I'm Sexy?\"],\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Most sources agree on the same track list, with minor punctuation/casing and version-label normalization needed.\"}"
+}

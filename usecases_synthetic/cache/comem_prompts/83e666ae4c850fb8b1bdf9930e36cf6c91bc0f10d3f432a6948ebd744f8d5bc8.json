@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Congratulations\n  artist: BZN\n  release-date: 1991-01-01\n  release-country: Netherlands\n  duration: 2690\n  label: <missing>\n  genre: <missing>\n  tracks: ['A Summernight With You', \"I'll Miss You Tonight\", 'Hot Nights', 'Angelique', \"You're the Only One\", 'Mumbo Jumbo', 'Chante Pour Moi', \"Let's Live It Up\", 'Ooh Na Na My Baby', 'Poor Old Joe', 'Key to My Heart', 'It Happened 25 Years Ago (Extra long version)', 'Time for Rock & Roll']\nRecord B:\n  name: Congratulations\n  artist: Amy Hart\n  release-date: 2011-01-01\n  release-country: United States of America\n  duration: <missing>\n  label: Painted Rock Records\n  genre: Blues|Pop|Rock\n  tracks: ['Congratulations', 'Get Ready', 'Put Me Back', 'Even Country Gets The Blues', 'Get The Girls Dancing', 'When Love Comes To Call', 'Rich Ass Daddy', 'Be That Way', 'Ribcage', \"I've Got A Friend\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

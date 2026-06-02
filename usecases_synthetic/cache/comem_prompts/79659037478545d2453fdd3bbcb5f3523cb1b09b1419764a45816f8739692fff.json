@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Unbroken Spirit\n  artist: Lascowiec\n  release-date: 2012-05\n  release-country: Poland\n  duration: 34:08\n  label: <missing>\n  genre: <missing>\n  tracks: ['Hidden by Night', 'Ashes of Memory', 'Blind Force of Creation', 'Unbroken Spirit', 'Waves of Emptiness', 'Renaissance and Betrayal', 'Song of the Raven', 'Will to Resist', 'Vanaheim']\nRecord B:\n  name: Unbroken Spirit\n  artist: Lascowiec\n  release-date: 01.01.2012\n  release-country: Republic of Poland\n  duration: 2048\n  label: Werewolf Promotion\n  genre: Rock\n  tracks: ['Hidden By Night', 'Ashes Of Memory', 'Blind Force Of Creation', 'Unbroken Spirit', 'Waves Of Emptiness', 'Renaissance And Betrayal', 'Song Of The Raven', 'Will To Resist', 'Vanaheim']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

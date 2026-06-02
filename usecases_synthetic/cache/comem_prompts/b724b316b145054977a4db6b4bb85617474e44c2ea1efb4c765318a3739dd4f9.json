@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Far Beyond, Before the Time\n  artist: Kerovnian\n  release-date: 01.01.1999\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 44:13\n  label: <missing>\n  genre: <missing>\n  tracks: ['Those Beneath the Moaning Castle', 'Far Beyond, Before the Time', 'The Godless Keep', 'From the Lands Where the Winds Die', 'As They Dug Their Way Out Into Machinery of Death', 'Before the Obliveon']\nRecord B:\n  name: Beyond Time\n  artist: <missing>\n  release-date: 29.01.2001\n  release-country: Australia\n  duration: <missing>\n  label: Addiction Records\n  genre: Electronic\n  tracks: ['Beyond Time (Short Cut)', 'Beyond Time (Club Mix)', \"Beyond Time (Jam & Spoon's Happy People in the Morning Mix)\", 'Beyond Time (The Thrillseekers Remix)', 'Beyond Time (Darude vs. JS 16 Remix)', 'Beyond Time (Blank & Jones Laidback Mix)']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

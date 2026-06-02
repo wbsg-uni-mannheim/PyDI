@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Trouble Walkinâ€™\n  artist: Frehley, Ace\n  release-date: 1989-10-13\n  release-country: United States of America\n  duration: 2677\n  label: <missing>\n  genre: <missing>\n  tracks: ['Shot Full of Rock', 'Do Ya', 'Five Card Stud', 'Hide Your Heart', 'Lost in Limbo', 'Trouble Walkinâ€™', '2 Young 2 Die', 'Back to School', 'Remember Me', 'Fractured â…¢']\nRecord B:\n  name: The Trouble Soup\n  artist: Erik Sumo Band|Kiss Erzsi\n  release-date: 2009-01-01\n  release-country: Hungary\n  duration: 44:41\n  label: Megadó Kiadó\n  genre: Electronic|Rock\n  tracks: ['Loose Parts', 'Secon', 'Show Me The Light', 'Dream Machine', 'Licence Plate Rock', 'Little Worm From Hungary', 'You Never Been My Friend', 'Your Flame', 'The Trouble Soup', 'Disco In My Head', 'Good And Relieved', 'Erzsi Robs A Casino', 'Sleep Well Octopus']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

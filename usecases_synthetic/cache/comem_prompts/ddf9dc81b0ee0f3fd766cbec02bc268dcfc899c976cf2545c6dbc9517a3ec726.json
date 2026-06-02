@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Da Resurrection\n  artist: Al Kapone\n  release-date: 21.10.1995\n  release-country: United States of America\n  duration: 39m 24s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Da Resurrection', 'Once a Thug', 'No Remorse', 'Premeditated', 'Still Locin Up', 'Rollin Deep', 'Cold Hearted Killa', 'Sinistaz', 'Da Death Penalty', 'Vampin With No Remorse']\nRecord B:\n  name: Resurrection\n  artist: Common\n  release-date: 1994\n  release-country: Canada\n  duration: <missing>\n  label: Relativity\n  genre: Rap\n  tracks: ['Resurrection', 'I Used To Love H.E.R.', 'Watermelon', 'Book Of Life', 'In My Own World (Check The Method)', 'Another Wasted Nite With...', \"Nuthin' To Do\", 'Communism', 'WMOE', 'Thisisme', 'Orange Pineapple Juice', 'Chapter 13 (Rich Man Vs. Poor Man)', 'Maintaining', 'Sun Shit I Wrote', \"Pop's Rap\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

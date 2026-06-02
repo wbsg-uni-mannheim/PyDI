@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Chronicles\n  artist: Screaming Banshee\n  release-date: 01/01/2010\n  release-country: <missing>\n  duration: 1540\n  label: <missing>\n  genre: <missing>\n  tracks: ['My Scream', 'Guardians of the Tower', 'The Cursed', 'The Wisdom of Mithrandir', 'One Day of Swords']\nRecord B:\n  name: The Chronicles II\n  artist: Chrome (8)|Damon Edge\n  release-date: 1988-01-01\n  release-country: Germany\n  duration: <missing>\n  label: Dossier\n  genre: <missing>\n  tracks: ['The Chronicles Of The Beacons', 'The Chronicles Of  Gehenna', 'The Chronicles Of  Canaan']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

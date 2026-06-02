@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2396"
+    },
+    {
+      "source": "discogs",
+      "value": "40:03"
+    },
+    {
+      "source": "lastfm",
+      "value": "27:49"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.84,
+    "operation": "aggregation",
+    "reasoning": "MusicBrainz provides seconds and matches Discogs' 40:03 exactly, while Last.fm is inconsistent.",
+    "value": 2396
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2396,\"operation\":\"aggregation\",\"confidence\":0.84,\"reasoning\":\"MusicBrainz provides seconds and matches Discogs' 40:03 exactly, while Last.fm is inconsistent.\"}"
+}

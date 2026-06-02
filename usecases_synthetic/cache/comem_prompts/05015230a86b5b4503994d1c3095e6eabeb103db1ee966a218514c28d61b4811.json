@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Disco Damnation\n  artist: Wicked\n  release-date: 1996-12-09\n  release-country: Netherlands\n  duration: 1255\n  label: <missing>\n  genre: <missing>\n  tracks: ['Disco Damnation (remix)', 'Disco Damnation (original)', 'Work It']\nRecord B:\n  name: Damnation\n  artist: Aims\n  release-date: 2014-03-25\n  release-country: United States of America\n  duration: 2721.0\n  label: Not On Label\n  genre: Hip Hop\n  tracks: ['Hunger Game', 'Set It Off', 'Building Bridges', 'Cold Nights', 'Still Smokin', 'Eyes Red', 'Get That', 'What That West Like', 'The Last Exit', \"Hand'em Over\", \"Die'n Satisfied\", \"Takin' Over\", 'Bite The Bullet']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

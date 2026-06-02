@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "47:17"
+    },
+    {
+      "source": "discogs",
+      "value": "2821"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs value 2821 is the same duration in seconds, which normalizes to 47:01? Wait—47:17 is the only directly formatted duration, but 2821 seconds equals 47:01, so the candidates conflict and the formatted time is likely the canonical track length label.",
+    "value": "47:17"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"47:17\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs value 2821 is the same duration in seconds, which normalizes to 47:01? Wait—47:17 is the only directly formatted duration, but 2821 seconds equals 47:01, so the candidates conflict and the formatted time is likely the canonical track length label.\"}"
+}

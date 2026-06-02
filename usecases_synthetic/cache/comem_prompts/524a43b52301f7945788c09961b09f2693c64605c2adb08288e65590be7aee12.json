@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Purple Shoes\n  artist: Malia\n  release-date: 05.05.2003\n  release-country: <missing>\n  duration: 12:24\n  label: <missing>\n  genre: <missing>\n  tracks: ['Purple Shoes (Videoclip-remix)', 'Purple Shoes', 'Lifting You High (remixed by GÃ©nÃ©ral Antranick)']\nRecord B:\n  name: Purple Sofa\n  artist: Iguane Xtet\n  release-date: 01.01.2014\n  release-country: France\n  duration: <missing>\n  label: Bananier Bleu\n  genre: Jazz\n  tracks: ['Retrouvailles', 'You don’t Understand', 'Péyi Mwen', 'Mr. J.', 'Purple Sofa', 'Pomoskii', 'Lendépandans', 'Lespwa', 'Light is Coming Your Way', 'Namoyaade', 'Heart Beats in Beirut', 'After David', 'Saturday Night with Bliinch']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

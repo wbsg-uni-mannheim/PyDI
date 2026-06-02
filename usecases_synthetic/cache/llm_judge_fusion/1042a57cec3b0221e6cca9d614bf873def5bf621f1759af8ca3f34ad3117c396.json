@@ -1,0 +1,26 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Cruz, Taio"
+    },
+    {
+      "source": "lastfm",
+      "value": "Weezer"
+    },
+    {
+      "source": "lastfm",
+      "value": "Taio Cruz feat. Kylie Minogue"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The candidates indicate the artist is Taio Cruz, with one source using inverted name order.",
+    "value": "Cruz, Taio"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Cruz, Taio\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The candidates indicate the artist is Taio Cruz, with one source using inverted name order.\"}"
+}

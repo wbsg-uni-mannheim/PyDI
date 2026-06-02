@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Belle and the Butterfly\n  artist: Charlatans, The\n  release-date: 2001-01-01\n  release-country: United States of America\n  duration: 770\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Belle and the Butterfly', 'My Beautiful Friend (Jagz Kooner remix)', 'Impossible (AIM remix)']\nRecord B:\n  name: Beyond The Butterfly...\n  artist: The Beautified Project\n  release-date: 2010-01-01\n  release-country: Armenia\n  duration: <missing>\n  label: Sperm Bank (2)\n  genre: Pop|Rock\n  tracks: ['Butterfly', 'All Alone', \"But I Can't\", 'Some Promised Hope', \"It's A Little Late\", 'To Us Together', 'Bleak', 'Why Kill It']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

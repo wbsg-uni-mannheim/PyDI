@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Colors of Jazz\n  artist: Blazo\n  release-date: 18.06.2011\n  release-country: Poland\n  duration: 0:53:26\n  label: <missing>\n  genre: <missing>\n  tracks: ['Natural Green', 'Essential Violet', 'Fragile Gold', 'Sky Blue', 'Distant Graphite', 'Fresh Orange', 'Misty Sapphire', 'Smoky Grey', 'Illusive Azure', 'Brisk Yellow', 'Clever Red', 'Double Silver', 'Mellow Brown', 'Transient Sepia', 'Reflecting Purple', 'Through The Jazz', 'Pure White (outro)', 'Dock Ellis (remix)']\nRecord B:\n  name: Colors Of Light\n  artist: Helios Creed\n  release-date: 209i\n  release-country: Germany\n  duration: 2754\n  label: Dossier\n  genre: Rock\n  tracks: ['Muddy', 'Mace', 'Deliverance', 'Friend Of Mine', 'Paradise', 'Red Dawn', 'Age Of Love', \"Lady Godiva's Gone\", 'Erectornet', 'Angel Of Joy', 'Space Drifter', 'Rest', 'Zion']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

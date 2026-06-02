@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2010-09-20"
+    },
+    {
+      "source": "discogs",
+      "value": "2010-01-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "verbatim_pick",
+    "reasoning": "MusicBrainz gives a specific release date, while Discogs appears to provide a placeholder year-based date.",
+    "value": "2010-09-20"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2010-09-20\",\"operation\":\"verbatim_pick\",\"confidence\":0.74,\"reasoning\":\"MusicBrainz gives a specific release date, while Discogs appears to provide a placeholder year-based date.\"}"
+}

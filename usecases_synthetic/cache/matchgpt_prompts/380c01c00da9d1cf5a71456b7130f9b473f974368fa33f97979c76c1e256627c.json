@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Blackout\n  artist: Soundmonsters\n  release-date: 2006-07-10\n  release-country: Germany\n  duration: 1566\n  label: <missing>\n  genre: <missing>\n  tracks: ['Blackout (Black in Black Out remix)', 'Blackout (Fuzzy remix)', 'Blackout (Digitalex Knocked Out remix)', 'Blackout (Tiasz Come Back remix)', 'Blackout (original)']\nRecord B:\n  name: Blackout\n  artist: Reen (3)\n  release-date: 2012-12-14\n  release-country: Germany\n  duration: 634.0\n  label: Feed My Beat Records\n  genre: Electronic\n  tracks: ['Blackout', 'Blackout (Don Esteban Remix)']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

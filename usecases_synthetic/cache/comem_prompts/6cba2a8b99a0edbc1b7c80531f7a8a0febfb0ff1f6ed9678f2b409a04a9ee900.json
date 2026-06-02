@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Ask the Ages\n  artist: Sharrock, Sonny\n  release-date: 1991-08-06\n  release-country: United States of America\n  duration: 2671\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Ask The Ages\n  artist: Sonny Sharrock\n  release-date: 1991-01-01\n  release-country: United States of America\n  duration: 45:18\n  label: Axiom\n  genre: Jazz\n  tracks: ['Promises Kept', 'Who Does She Hope To Be?', 'Little Rock', 'As We Used To Sing', 'Many Mansions', 'Once Upon A Time']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Mercury\n  artist: Laika Dog\n  release-date: 2007-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 2109\n  label: <missing>\n  genre: <missing>\n  tracks: ['Getaway', 'Best Learning Curve', 'Forever and a Day', 'Monkey Song', 'By the Time I Got Back Home', 'All the Things That Matter', 'David Frost', 'No Bother', 'Hard to Explain', 'Just Lately']\nRecord B:\n  name: Mercury\n  artist: The Prayer Chain\n  release-date: 1995-01-01\n  release-country: United States of America\n  duration: 56:53\n  label: Rode Dog Records|Reunion Records\n  genre: Rock\n  tracks: ['Humb', 'Waterdogs', 'Grylliade', 'Creole', 'Sky High', 'Mercury', 'Shiver', 'Manta Rae', 'Bendy Line', 'Sun Stoned']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

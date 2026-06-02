@@ -73,6 +73,11 @@ evaluation_functions:
   country: tokenized_match
   city: tokenized_match
   keypeople: tokenized_match
+  # R10-N (2026-06-02): industry added to reach the 8-attr target_schema
+  # scope (was 7). industry <- forbes.business_segment (GICS-categorical) ->
+  # tokenized_match, consistent with country/city. (website dropped — it is
+  # degenerate: forbes.url == the cluster id in all rows, no real source.)
+  industry: tokenized_match
 
 evaluation_params:
   assets:
@@ -97,6 +102,7 @@ attribute_types:
   country: categorical
   city: string
   keypeople: list
+  industry: categorical
 
 # PyDI candidate registry for val-selection sweeps. Used by
 # pydi_per_attribute_optimal (across every attribute) and by the TD

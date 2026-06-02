@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Good Life\n  artist: Martinez, Josh\n  release-date: 2002-01-01\n  release-country: Canada\n  duration: 1058\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: The Good Life\n  artist: John Love\n  release-date: 2002-01-01\n  release-country: United States of America\n  duration: 27:33\n  label: New West Records\n  genre: Folk, World, & Country\n  tracks: [\"When A Woman's In Love\", \"East Of Leavin'\", \"What I'd Say\", 'The Good Life', \"Leavin' Ain't As Easy\", 'I Feel A Goodbye Coming On', 'What I Could Have Been', \"She Won't Need You Anymore\"]\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

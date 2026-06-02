@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Sutherland Brothers Band"
+    },
+    {
+      "source": "discogs",
+      "value": "The Sutherland Brothers Band (release)"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Removed the Discogs release qualifier to match the canonical entity name.",
+    "value": "The Sutherland Brothers Band"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Sutherland Brothers Band\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Removed the Discogs release qualifier to match the canonical entity name.\"}"
+}

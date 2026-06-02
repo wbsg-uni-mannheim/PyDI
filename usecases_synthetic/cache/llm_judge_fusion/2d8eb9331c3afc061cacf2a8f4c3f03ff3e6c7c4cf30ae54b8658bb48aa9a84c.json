@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2003-09-23"
+    },
+    {
+      "source": "discogs",
+      "value": "2003-01-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.62,
+    "operation": "verbatim_pick",
+    "reasoning": "MusicBrainz provides a specific full date while Discogs gives a placeholder start-of-year date.",
+    "value": "2003-09-23"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2003-09-23\",\"operation\":\"verbatim_pick\",\"confidence\":0.62,\"reasoning\":\"MusicBrainz provides a specific full date while Discogs gives a placeholder start-of-year date.\"}"
+}

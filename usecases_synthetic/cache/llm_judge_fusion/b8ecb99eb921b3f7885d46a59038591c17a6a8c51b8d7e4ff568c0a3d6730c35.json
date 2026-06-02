@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "discogs",
+      "value": "The Madness Of  Love"
+    },
+    {
+      "source": "lastfm",
+      "value": "The Madness Of Our Love"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The lastfm candidate appears to be the correctly normalized title; the discogs version likely has a missing word.",
+    "value": "The Madness Of Our Love"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Madness Of Our Love\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The lastfm candidate appears to be the correctly normalized title; the discogs version likely has a missing word.\"}"
+}

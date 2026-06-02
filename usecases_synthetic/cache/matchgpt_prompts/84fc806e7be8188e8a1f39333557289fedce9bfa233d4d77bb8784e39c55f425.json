@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Emusic Singles Collection (release)\n  artist: Wynn, Steve\n  release-date: 01/01/2001\n  release-country: Germany\n  duration: 46m 6s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Strange New World', 'Last House on the Right', 'The Last One Standing', 'Milky White', 'Melinda', 'The Way I Feel Right Now', 'The Devilâ€™s Not That Kind', 'Merryâ€?Goâ€?Round', 'Iâ€™ve Got to Do Things My Way', 'Shake and Bake', 'Down at the Hiâ€?Deâ€?Ho', 'At the End of the Day']\nRecord B:\n  name: Singles Collection\n  artist: Prodigy\n  release-date: 1997-01-01\n  release-country: Germany\n  duration: 4318\n  label: Blow Up (2)\n  genre: Elect ronic\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

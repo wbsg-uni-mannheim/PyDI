@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: It's Only the Future\n  artist: Repp, Corrina\n  release-date: 2004-01-01\n  release-country: United States of America\n  duration: 2240\n  label: <missing>\n  genre: <missing>\n  tracks: ['Lost at Sea', \"It's Only the Future\", 'You Almost Made It Out, But You Turned Around', \"No One's Telling\", 'Have + to Hold', 'Finally', 'Replaced', \"Here's Someone Else\", 'S.S. 5,000', \"I'll Be Seeing You\"]\nRecord B:\n  name: Duty Now For The Future\n  artist: Devo\n  release-date: 1979-01-01\n  release-country: Australia\n  duration: 38:33\n  label: Warner Bros. Records\n  genre: Electronic\n  tracks: ['Devo Corporate Anthem', 'Clockout', 'Timing X', 'Wiggly World', 'Blockhead', 'Strange Pursuits', 'S.I.B. (Swelling Itching Brain)', 'Triumph Of The Will', 'The Day My Baby Gave Me Surprize', 'Pink Pussycat', 'Secret Agent Man', 'Smart Patrol/Mr. DNA', 'Red Eye']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

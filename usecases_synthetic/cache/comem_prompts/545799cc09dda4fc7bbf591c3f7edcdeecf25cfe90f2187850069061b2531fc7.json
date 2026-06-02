@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Contraband\n  artist: Golden Earring\n  release-date: 1991-01-08\n  release-country: Netherlands\n  duration: 2288\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Contraband\n  artist: Contraband (8)\n  release-date: 1979-01-01\n  release-country: Australia\n  duration: <missing>\n  label: <missing>\n  genre: Rock\n  tracks: ['Lead Me To The Slaughter', 'C-61', \"Rainin' Again\", 'Twisted', 'Shot Down In Flames', \"Gimme Some Lovin'\", 'Only A Fool', 'Jodie On The Break', \"Sittin' Pretty\", 'I Want La-Huv']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

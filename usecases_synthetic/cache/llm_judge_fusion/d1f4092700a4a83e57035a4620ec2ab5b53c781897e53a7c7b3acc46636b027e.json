@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2002"
+    },
+    {
+      "source": "discogs",
+      "value": "09.09.2002"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "interpolation",
+    "reasoning": "Discogs provides the full date and MusicBrainz confirms the year.",
+    "value": "2002-09-09"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2002-09-09\",\"operation\":\"interpolation\",\"confidence\":0.98,\"reasoning\":\"Discogs provides the full date and MusicBrainz confirms the year.\"}"
+}

@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "41:26"
+    },
+    {
+      "source": "discogs",
+      "value": "2486"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:41:34"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "41:26 and 0:41:34 both indicate the same duration up to rounding, and 2486 seconds converts to 41:26.",
+    "value": "41:26"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"41:26\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"41:26 and 0:41:34 both indicate the same duration up to rounding, and 2486 seconds converts to 41:26.\"}"
+}

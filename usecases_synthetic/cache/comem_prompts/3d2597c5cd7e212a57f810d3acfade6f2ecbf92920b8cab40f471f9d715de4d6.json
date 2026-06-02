@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Invincible\n  artist: Muse\n  release-date: 26.02.2007\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 591\n  label: <missing>\n  genre: <missing>\n  tracks: ['Invincible (album version)', 'Knights of Cydonia (Simian Mobile Disco remix)']\nRecord B:\n  name: Beyond The Pinch\n  artist: Neuropolitique\n  release-date: 01/01/1997\n  release-country: United Kingdom\n  duration: <missing>\n  label: New Electronica\n  genre: Electronic\n  tracks: ['Politique Theme', 'Re-Scan', 'Seek Him Yourself (In The Other Place)', '60 Second Stereo Party', 'The Importance Of Selling Pins', 'Fish Market', 'Naughty Sisters In Rio', 'Freaky Face Required', 'Turnaround Touch The Ground', 'Nervous']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

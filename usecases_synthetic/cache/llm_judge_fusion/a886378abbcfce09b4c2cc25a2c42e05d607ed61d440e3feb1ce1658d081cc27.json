@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "01.01.1990"
+    },
+    {
+      "source": "discogs",
+      "value": "29.01.1990"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "Both sources indicate a January 1990 release, and discogs provides the more specific full date.",
+    "value": "1990-01-29"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1990-01-29\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"Both sources indicate a January 1990 release, and discogs provides the more specific full date.\"}"
+}

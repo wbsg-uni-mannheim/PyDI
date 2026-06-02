@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Indian"
+    },
+    {
+      "source": "discogs",
+      "value": "Neon Indian"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs provides the specific artist name and MusicBrainz appears to be a truncated/ambiguous form.",
+    "value": "Neon Indian"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Neon Indian\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs provides the specific artist name and MusicBrainz appears to be a truncated/ambiguous form.\"}"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Torches\n  artist: Foster the People\n  release-date: 2011-12-16\n  release-country: Australia\n  duration: 2307\n  label: <missing>\n  genre: <missing>\n  tracks: ['Helena Beat', 'Pumped Up Kicks', 'Call It What You Want', 'Donâ€™t Stop (Color on the Walls)', 'Waste', 'I Would Do Anything for You', 'Houdini', 'Life on the Nickel', 'Miss You', 'Warrant', 'Broken Jaw', 'Love', 'Chin Music for the Unsuspecting Hero', 'Pumped Up Kicks (The Knocks Speeding Bullet remix)', 'Houdini (RAC remix)', 'Helena Beat (Lenno extended remix)', 'Call It What You Want (Treasure Fingers Pre-Party remix radio edit)']\nRecord B:\n  name: Torches (2013 Sydney Mardi Gras Anthem) [Remixes]\n  artist: Zoe Badwi\n  release-date: 2013-03-22\n  release-country: Canada\n  duration: <missing>\n  label: Neon Records Pty Limited\n  genre: Electronic\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

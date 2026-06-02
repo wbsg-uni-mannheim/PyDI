@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Voodoo Nature\n  artist: Jetstream Lovers\n  release-date: 2007-02-12\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Vietnam (Radio)', 'All That She Wants', 'Vietnam', 'Mexican Standoff', 'If I Was Hit by a Meteor', \"Louise, I'm Listening\", 'Monkeypuzzle', 'Journey to Storyville (Electric)']\nRecord B:\n  name: Voodoo\n  artist: Spiral Beach\n  release-date: 2008\n  release-country: UK\n  duration: 504.0\n  label: EMI|Stimulus\n  genre: Rock\n  tracks: ['Voodoo', 'Day OK', 'Philosophy Is My Cat']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

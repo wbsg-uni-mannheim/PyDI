@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Classics (orig.)\n  artist: Brightman, Sarah\n  release-date: 2001-11-28\n  release-country: Japan\n  duration: 3807\n  label: <missing>\n  genre: <missing>\n  tracks: ['Ave Maria', \"Lascia ch'io pianga\", 'Winter Light', 'Anytime, Anywhere', 'Alhambra', 'La Wally', 'Dans la nuit', 'Serenade / How Fair This Place', 'O mio babbino caro', 'La Luna', 'Pie Jesu', 'Figlio perduto', 'Nessun dorma', 'Bailero', 'Time to Say Goodbye', 'Regnava nel silenzio (live)']\nRecord B:\n  name: Classics\n  artist: F. Papetti\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

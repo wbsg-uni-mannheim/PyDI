@@ -1,0 +1,34 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Love Is a Good Foundation', 'Say a Prayer', 'A Little Bit of Heaven', 'For the Rest of Our Lives', 'Sing in the Sunshine', 'Where Are You Going to My Love', 'For Old Times Sake', 'Living in the Land of Love', 'Too Many Heartaches', 'Love One Another', 'United We Stand']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Love Is A Good Foundation', 'Say A Prayer', 'A Little Bit Of Heaven', 'For The Rest Of Our Lives', 'Sing In The Sunshine', 'Where Are You Going To My Love', 'For Old Times Sake', 'Living In The Land Of Love', 'Too Many Heartaches', 'Love One Another', 'United We Stand']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Both sources list the same track set with only capitalization differences, so I normalized to consistent title case.",
+    "value": [
+      "Love Is a Good Foundation",
+      "Say a Prayer",
+      "A Little Bit of Heaven",
+      "For the Rest of Our Lives",
+      "Sing in the Sunshine",
+      "Where Are You Going to My Love",
+      "For Old Times Sake",
+      "Living in the Land of Love",
+      "Too Many Heartaches",
+      "Love One Another",
+      "United We Stand"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Love Is a Good Foundation\",\"Say a Prayer\",\"A Little Bit of Heaven\",\"For the Rest of Our Lives\",\"Sing in the Sunshine\",\"Where Are You Going to My Love\",\"For Old Times Sake\",\"Living in the Land of Love\",\"Too Many Heartaches\",\"Love One Another\",\"United We Stand\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Both sources list the same track set with only capitalization differences, so I normalized to consistent title case.\"}"
+}

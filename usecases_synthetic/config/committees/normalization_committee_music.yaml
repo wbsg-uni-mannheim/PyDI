@@ -90,7 +90,11 @@ llm_normalizer:
   class: LLMCanonicalizer
   params:
     model_name: gpt-5.4-mini
-    num_examples: 5
+    # num_examples=0 (zero-shot) is the R9 norm re-sweep winner
+    # (2026-06-01, macro_f1 0.603 vs 0.432@5 / 0.317@3 / 0.521@10, n=2288).
+    # Few-shot examples hurt this canonicalization task; zero-shot wins by
+    # +0.17 over the prior 5. (Sweep fixed: max_tokens 64->2048, prompt v2.)
+    num_examples: 0
     temperature: 0.0
     max_tokens: 2048
     prompt_version: v2

@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Golden Silvers"
+    },
+    {
+      "source": "discogs",
+      "value": "Silvers"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "MusicBrainz and Discogs values refer to the same artist, with 'Golden Silvers' as the canonical full name.",
+    "value": "Golden Silvers"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Golden Silvers\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"MusicBrainz and Discogs values refer to the same artist, with 'Golden Silvers' as the canonical full name.\"}"
+}

@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Earth Crisis\n  artist: Steel\n  release-date: 2005-06-07\n  release-country: United States of America\n  duration: 65:02\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Steppin' Out\", 'Tightrope', 'Throne of Gold', 'Roller Skates', 'Earth Crisis', 'Bodyguard', 'Grab Education', 'Wild Goose Chase', \"Steppin' Out (dub version)\", \"Steppin' Out (extended version)\", 'Roller Skates (remix version)', 'Roller Skates (dub version)']\nRecord B:\n  name: Crisis\n  artist: Menace (7)\n  release-date: <missing>\n  release-country: Germany\n  duration: <missing>\n  label: Knock Out\n  genre: Rock\n  tracks: ['Suburban Queen', 'London', 'C&A', 'Rocks And Dust', 'Follow The Leader', 'Society Still Insane', 'One Way Street', 'Fingers', 'Mid-Life Crisis', 'Punk Rocker', 'Monuments', 'Action Time And Vision', '35 Bus']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

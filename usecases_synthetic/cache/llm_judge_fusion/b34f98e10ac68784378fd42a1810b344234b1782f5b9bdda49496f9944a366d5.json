@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Perfume 6enius"
+    },
+    {
+      "source": "discogs",
+      "value": "Perfume Genius"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs matches the standard spelling and MusicBrainz appears to contain a typo.",
+    "value": "Perfume Genius"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Perfume Genius\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs matches the standard spelling and MusicBrainz appears to contain a typo.\"}"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0:25:29"
+    },
+    {
+      "source": "lastfm",
+      "value": "10:59"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "verbatim_pick",
+    "reasoning": "The MusicBrainz timestamp is a complete duration format and is more plausible than the much shorter conflicting candidate.",
+    "value": "0:25:29"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:25:29\",\"operation\":\"verbatim_pick\",\"confidence\":0.94,\"reasoning\":\"The MusicBrainz timestamp is a complete duration format and is more plausible than the much shorter conflicting candidate.\"}"
+}

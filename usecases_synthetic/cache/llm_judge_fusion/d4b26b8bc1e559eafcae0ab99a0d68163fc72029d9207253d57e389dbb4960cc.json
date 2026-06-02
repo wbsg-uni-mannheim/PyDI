@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2013-02-01"
+    },
+    {
+      "source": "discogs",
+      "value": "02/01/2013"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "Both candidates indicate the same date, with Discogs in MM/DD/YYYY normalized to ISO format.",
+    "value": "2013-02-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2013-02-01\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"Both candidates indicate the same date, with Discogs in MM/DD/YYYY normalized to ISO format.\"}"
+}

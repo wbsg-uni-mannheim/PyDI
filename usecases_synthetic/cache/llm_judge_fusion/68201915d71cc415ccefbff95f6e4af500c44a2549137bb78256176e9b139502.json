@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Luncb, Lydia"
+    },
+    {
+      "source": "discogs",
+      "value": "Lydia Lunch"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Discogs provides the correctly normalized artist name; MusicBrainz appears to have the name reversed/garbled.",
+    "value": "Lydia Lunch"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Lydia Lunch\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Discogs provides the correctly normalized artist name; MusicBrainz appears to have the name reversed/garbled.\"}"
+}

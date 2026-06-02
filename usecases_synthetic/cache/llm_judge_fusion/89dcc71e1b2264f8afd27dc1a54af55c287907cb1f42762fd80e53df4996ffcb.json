@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "4637"
+    },
+    {
+      "source": "lastfm",
+      "value": "60:52"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "interpolation",
+    "reasoning": "Converted the mm:ss candidate 60:52 to total seconds, matching the numeric duration format.",
+    "value": 3637
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3637,\"operation\":\"interpolation\",\"confidence\":0.98,\"reasoning\":\"Converted the mm:ss candidate 60:52 to total seconds, matching the numeric duration format.\"}"
+}

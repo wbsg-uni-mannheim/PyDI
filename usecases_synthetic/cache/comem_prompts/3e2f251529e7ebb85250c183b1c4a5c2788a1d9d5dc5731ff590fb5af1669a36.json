@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Traveller\n  artist: Lord Weird Slough Feg, The\n  release-date: 2003-01-01\n  release-country: Europe\n  duration: 2650\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Spinward Marches', 'High Passage/Low Passage', 'Asteroid Belts', \"Professor's Theme\", 'Vargr Moon', 'Vargr Theme/Confrontation (Genetic Prophesy)', \"Baltech's Lament\", 'Gene-ocide', 'Curse of Humaniti', 'The Final Gambit', 'The Spinward Marches (return)', 'Addendum Galactus']\nRecord B:\n  name: Time Traveller\n  artist: Chris Norman\n  release-date: 2011-02-07\n  release-country: Denmark\n  duration: 46:14\n  label: Black Pelican\n  genre: Rock\n  tracks: ['Get It On', 'Country Girl', 'Back For Good', 'Be My Baby', 'Chasing Cars', 'Morning Dew', 'Sweet Caroline', 'Homeward Bound', 'Moonlight Shadow', \"I Can't Dance\", '19th Nervous Breakdown', 'Wake Me Up When September Ends']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

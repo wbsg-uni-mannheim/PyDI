@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2031"
+    },
+    {
+      "source": "discogs",
+      "value": "0:00"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:08:54"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The candidates indicate a track duration, and 0:08:54 is the plausible normalized time format while 0:00 appears invalid and 2031 likely represents milliseconds.",
+    "value": "0:08:54"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:08:54\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The candidates indicate a track duration, and 0:08:54 is the plausible normalized time format while 0:00 appears invalid and 2031 likely represents milliseconds.\"}"
+}

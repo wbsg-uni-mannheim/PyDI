@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "39:54"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:31:50"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "Both candidates are durations in different formats, and 39:54 is the consistent canonical mm:ss form for the same length.",
+    "value": "39:54"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"39:54\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"Both candidates are durations in different formats, and 39:54 is the consistent canonical mm:ss form for the same length.\"}"
+}

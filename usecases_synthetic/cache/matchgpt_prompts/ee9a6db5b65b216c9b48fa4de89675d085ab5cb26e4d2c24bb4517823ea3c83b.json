@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Where Distant Spirits Remain\n  artist: Falloch\n  release-date: 26.09.2011\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 50:57\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Distant Early Warning\n  artist: Icebreaker (9)\n  release-date: 01.01.1999\n  release-country: United America of States\n  duration: <missing>\n  label: Aesthetics\n  genre: Electronic\n  tracks: ['Melody For NATO', 'Co-Prosperity Sphere', 'The Arctic Night', 'Reconnaissance Flight', 'Distant Early Warning System', 'Supply Lines / The Track North', 'Listening Station', 'Untitled']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

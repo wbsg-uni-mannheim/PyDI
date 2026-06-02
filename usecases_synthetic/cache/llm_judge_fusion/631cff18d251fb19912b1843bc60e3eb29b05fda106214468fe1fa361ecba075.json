@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2550"
+    },
+    {
+      "source": "discogs",
+      "value": "42:27"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The values appear to represent the same track length, with 42:27 normalized to 2550 seconds.",
+    "value": 2550
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2550,\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The values appear to represent the same track length, with 42:27 normalized to 2550 seconds.\"}"
+}

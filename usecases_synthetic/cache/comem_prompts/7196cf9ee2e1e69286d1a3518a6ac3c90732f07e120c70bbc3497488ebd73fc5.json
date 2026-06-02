@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Make Believe (Let's Pretend)\n  artist: Thompson Twins\n  release-date: 1981-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 604\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Make Believe (Let's Pretend) (extended version)\", 'Lama Sabach Tani']\nRecord B:\n  name: Believe\n  artist: A. Cortiz\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2900.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Magic Touch', 'Spoonful Of Air', 'On the Move', 'Funkalicious', 'Afterworld', 'Glamourgirl', 'Fingerprints', 'Nightfish', 'Sensurreal Experience', 'Phusion', 'Supreme State Of Mind']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,27 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['The Drums (One Night in Versailles mix)', 'The Drums (Make Another Wish mix)', 'The Drums (Magan & Magan remix)', \"The Drums (Kut 'n' Paste remix)\"]"
+    },
+    {
+      "source": "lastfm",
+      "value": "['the drums (one night in versailles mix)', 'The Drums (Make Another Wish Mix)', 'The Drums (Magan & Magan remix)', \"The Drums (Kut 'n' Paste remix)\"]"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The candidate lists are the same tracks with minor casing/spelling variations, so I normalized to a single canonical track list.",
+    "value": [
+      "The Drums (One Night in Versailles mix)",
+      "The Drums (Make Another Wish mix)",
+      "The Drums (Magan & Magan remix)",
+      "The Drums (Kut 'n' Paste remix)"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"The Drums (One Night in Versailles mix)\",\"The Drums (Make Another Wish mix)\",\"The Drums (Magan & Magan remix)\",\"The Drums (Kut 'n' Paste remix)\"],\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The candidate lists are the same tracks with minor casing/spelling variations, so I normalized to a single canonical track list.\"}"
+}

@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Cascade / Lifeforms\n  artist: Future Sound of London, The\n  release-date: <missing>\n  release-country: Russian Federation\n  duration: 4423\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cascade, Part 1', 'Cascade, Part 2', 'Cascade, Part 3', 'Cascade, Part 4', 'Cascade, Part 5', 'Shortform', 'Lifeforms (Path 1)', 'Lifeforms (Path 2)', 'Lifeforms (Path 3)', 'Lifeforms (Path 4)', 'Lifeforms (Path 5)', 'Lifeforms (Path 6)', 'Lifeforms (Path 7)']\nRecord B:\n  name: Kill All Lifeforms EP\n  artist: Exium\n  release-date: 2006-10-01\n  release-country: Germany\n  duration: 1265.0\n  label: Equator\n  genre: Electronic\n  tracks: ['Kill All Lifeforms', 'Gong', 'Protonix', 'Ljubav']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

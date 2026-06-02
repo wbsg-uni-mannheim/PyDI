@@ -1,0 +1,22 @@
+{
+  "attribute": "label",
+  "candidates": [
+    {
+      "source": "discogs",
+      "value": "Critical"
+    },
+    {
+      "source": "discogs",
+      "value": "Critical Recordings"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The longer candidate is the full canonical label name, while \"Critical\" is an abbreviated form.",
+    "value": "Critical Recordings"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Critical Recordings\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The longer candidate is the full canonical label name, while \\\"Critical\\\" is an abbreviated form.\"}"
+}

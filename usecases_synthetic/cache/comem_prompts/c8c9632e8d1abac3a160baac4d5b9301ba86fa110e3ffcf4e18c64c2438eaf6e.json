@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Resurrection of the Bayou Maharajah\n  artist: Booker, James\n  release-date: 22.07.1993\n  release-country: United States of America\n  duration: 71:56\n  label: <missing>\n  genre: <missing>\n  tracks: ['Slow Down / Bony Maronie / Knock on Wood / Grapevine / Classified', 'Tico Tico / Papa Was a Rascal', 'Lawdy Miss Clawdy / Ballad at the Maple Leaf', 'Minute Waltz', 'All by Myself', 'Save Your Love for Me', 'Junco Partner', 'St. James Infirmary', 'Gitanarias', 'Life / Wine Spo-Dee-O-Dee / It Should Have Been Me', \"Pop's Dilemma/irene Goodnight\"]\nRecord B:\n  name: Resurrection\n  artist: Road Ratt\n  release-date: 01.01.1992\n  release-country: Sweden\n  duration: 674\n  label: Reel Records\n  genre: Rock\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

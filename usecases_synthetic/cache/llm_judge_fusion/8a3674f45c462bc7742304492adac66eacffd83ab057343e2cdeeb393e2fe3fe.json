@@ -1,0 +1,35 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "discogs",
+      "value": "['Pyramid', 'Malibu Melts', 'Minds Of Men... Hearts Of Space', 'Spaceships Over Topanga', 'Zodiac FM', 'Waterfall Sunset', 'Sphere', 'Never Sea Land', 'Phase Horizon', 'Ether Dream', 'Mother Father Sister Brother', 'Goodnight Earth']"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Malibu Melts', 'Minds Of Men... Hearts Of Space', 'Spaceships Over Topanga', 'Zodiac FM', 'Waterfall Sunset', 'Never Sea Land', 'Phase Horizon', 'Ether Dream', 'Mother Father Sister Brother', 'Goodnight Earth']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "union",
+    "reasoning": "Merged both track lists, preserving all unique tracks from both sources.",
+    "value": [
+      "Pyramid",
+      "Malibu Melts",
+      "Minds Of Men... Hearts Of Space",
+      "Spaceships Over Topanga",
+      "Zodiac FM",
+      "Waterfall Sunset",
+      "Sphere",
+      "Never Sea Land",
+      "Phase Horizon",
+      "Ether Dream",
+      "Mother Father Sister Brother",
+      "Goodnight Earth"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Pyramid\",\"Malibu Melts\",\"Minds Of Men... Hearts Of Space\",\"Spaceships Over Topanga\",\"Zodiac FM\",\"Waterfall Sunset\",\"Sphere\",\"Never Sea Land\",\"Phase Horizon\",\"Ether Dream\",\"Mother Father Sister Brother\",\"Goodnight Earth\"],\"operation\":\"union\",\"confidence\":0.98,\"reasoning\":\"Merged both track lists, preserving all unique tracks from both sources.\"}"
+}

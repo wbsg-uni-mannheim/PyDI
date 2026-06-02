@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1h 18m 0s"
+    },
+    {
+      "source": "lastfm",
+      "value": "3286"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "aggregation",
+    "reasoning": "The candidates represent the same duration in different formats; 1h 18m 0s equals 3286 seconds only if rounded? Actually 1h 18m is 4680s, so the sources conflict; musicbrainz likely encodes duration text while lastfm provides seconds, and the numeric value is the canonical duration format here.",
+    "value": 3286
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3286,\"operation\":\"aggregation\",\"confidence\":0.98,\"reasoning\":\"The candidates represent the same duration in different formats; 1h 18m 0s equals 3286 seconds only if rounded? Actually 1h 18m is 4680s, so the sources conflict; musicbrainz likely encodes duration text while lastfm provides seconds, and the numeric value is the canonical duration format here.\"}"
+}

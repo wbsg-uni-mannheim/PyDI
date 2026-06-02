@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Electronic Battle Weapon 10 (orig.)\n  artist: Chemical Brothers, The\n  release-date: 2008-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 495\n  label: <missing>\n  genre: <missing>\n  tracks: ['Electronic Battle Weapon 10']\nRecord B:\n  name: Lounge Groove Electronic Vol. 6\n  artist: Gillian Gordon\n  release-date: 2008-01-01\n  release-country: <missing>\n  duration: <missing>\n  label: STYE\n  genre: Electronic|Stage & Screen\n  tracks: ['Hold On', \"Tears Won't Help\", 'Below 100', 'Break The Silence', 'I Can Feel The Rhythm', 'Down The Grocery', \"Fallin'\", 'On My Mind', 'Horizon', 'What Have I Done', 'Deep Down']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

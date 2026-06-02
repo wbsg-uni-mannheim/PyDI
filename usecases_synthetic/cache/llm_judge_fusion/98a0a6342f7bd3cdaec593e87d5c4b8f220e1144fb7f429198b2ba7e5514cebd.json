@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "20.10.1997"
+    },
+    {
+      "source": "discogs",
+      "value": "01.01.1999"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Converted the MusicBrainz date from DD.MM.YYYY to ISO format.",
+    "value": "1997-10-20"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1997-10-20\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Converted the MusicBrainz date from DD.MM.YYYY to ISO format.\"}"
+}

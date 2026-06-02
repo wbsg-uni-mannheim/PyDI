@@ -36,29 +36,45 @@ primary_column_per_source:
 #   industry  dbpedia  --   forbes  98%  fullcontact  --
 #   sector    dbpedia  68%  forbes  --   fullcontact  --
 #   founded   dbpedia 100%  forbes  --   fullcontact  55%
+# R10-N (2026-06-02): widened to the 8-attr target_schema scope (was a
+# narrow 6 that dropped assets/revenue/keypeople and carried a phantom
+# `sector`). Mirrors the committee column_mapping (fusion_committee.yaml):
+# industry<-forbes.business_segment, keypeople<-dbpedia.keypeople_name +
+# fullcontact.Attribute_5, assets/revenue from both dbpedia + forbes.
+# dbpedia.`sector` is matching-only (kept in the committee column_mapping,
+# NOT a scored canonical attr) so it is intentionally absent here. `website`
+# dropped 2026-06-02 (degenerate: forbes.url == id in all rows, no real
+# source).
 canonical_schema:
   - name
   - country
   - city
   - industry
-  - sector
+  - assets
+  - revenue
   - founded
+  - keypeople
 
 attribute_mapping:
   dbpedia:
     org_name: name
     nation: country
     headquarters: city
-    sector: sector
     established: founded
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
   forbes:
     company: name
     region: country
     business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
   fullcontact:
     Attribute_2: name
     Attribute_3: country
     Attribute_4: city
+    Attribute_5: keypeople
     Attribute_6: founded
 
 # Deterministic source fallback order used when building the canonical

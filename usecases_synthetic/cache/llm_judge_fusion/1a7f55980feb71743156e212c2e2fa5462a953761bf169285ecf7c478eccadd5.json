@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-05-09"
+    },
+    {
+      "source": "discogs",
+      "value": "01.01.2011"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "normalization",
+    "reasoning": "Discogs date appears to be a day-month-year formatted version of 2011-01-01, but MusicBrainz gives a specific ISO date; no evidence supports a different normalized date than the ISO candidate.",
+    "value": "2011-05-09"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-05-09\",\"operation\":\"normalization\",\"confidence\":0.92,\"reasoning\":\"Discogs date appears to be a day-month-year formatted version of 2011-01-01, but MusicBrainz gives a specific ISO date; no evidence supports a different normalized date than the ISO candidate.\"}"
+}

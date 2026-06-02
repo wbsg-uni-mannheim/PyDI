@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Seahaw"
+    },
+    {
+      "source": "discogs",
+      "value": "Seahawks"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Discogs matches the likely canonical artist name and MusicBrainz appears to be a truncation or variant.",
+    "value": "Seahawks"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Seahawks\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Discogs matches the likely canonical artist name and MusicBrainz appears to be a truncation or variant.\"}"
+}

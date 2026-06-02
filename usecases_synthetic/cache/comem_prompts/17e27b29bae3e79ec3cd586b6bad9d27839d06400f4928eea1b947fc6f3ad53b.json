@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Happiness Saves Lives\n  artist: Kira and the Kindred Spirits\n  release-date: 2002-06-17\n  release-country: <missing>\n  duration: 2726\n  label: <missing>\n  genre: <missing>\n  tracks: ['Save Me', 'I Believe', 'Lead You On', 'Unimpressed', 'Kings Kitchen', 'Losing You', 'Down Under', 'Giving In', 'Story of a Girl', 'Lethargic', 'Unimpressed']\nRecord B:\n  name: Happiness Is Toy Shaped\n  artist: The Shermans\n  release-date: 2001\n  release-country: United States of America\n  duration: <missing>\n  label: Shelflife Records\n  genre: Rock\n  tracks: ['Boy With The Bright Eyes', 'Lousy Judge Of Character', 'Adulthood For Beginners', 'The Umbrella Song', 'Falling Out Of Love', 'Sad Kind Of Life', 'July In London', 'About You', 'Cindy Sherman', 'Explode', 'Deja Vu On Repeat', 'Catch Me', 'What Life´s About', 'The Last One']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

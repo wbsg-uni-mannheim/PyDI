@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Up All Night\n  artist: Waifs, The\n  release-date: 01/01/2003\n  release-country: United States of America\n  duration: 47:33\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Band Of Brothers\n  artist: Nelson Willie\n  release-date: 2014-06-16\n  release-country: United States of America\n  duration: 2839\n  label: Legacy\n  genre: World, & Country\n  tracks: ['Bring It On', 'Guitar In The Corner', 'The Wall', 'Whenever You Come Around', 'Wives And Girlfriends', 'I Thought I Left You', 'Send Me A Picture', 'Used To Her', 'The Git Go', 'Band Of Brothers', 'Hard To Be An Outlaw', 'Crazy Like Me', 'The Songwriters', \"I've Got A Lot Of Traveling To Do\"]\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

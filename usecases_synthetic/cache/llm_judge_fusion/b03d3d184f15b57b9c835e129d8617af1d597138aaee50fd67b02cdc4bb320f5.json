@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2724"
+    },
+    {
+      "source": "discogs",
+      "value": "45:33"
+    },
+    {
+      "source": "lastfm",
+      "value": "42:26"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "aggregation",
+    "reasoning": "MusicBrainz provides a precise track length in seconds, and the other candidates are inconsistent or likely album-length formats.",
+    "value": 2724
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2724,\"operation\":\"aggregation\",\"confidence\":0.93,\"reasoning\":\"MusicBrainz provides a precise track length in seconds, and the other candidates are inconsistent or likely album-length formats.\"}"
+}

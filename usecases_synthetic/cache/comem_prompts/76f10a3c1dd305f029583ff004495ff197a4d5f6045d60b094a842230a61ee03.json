@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: I Belong to You\n  artist: Kravitz, Lenny\n  release-date: 1998-09-22\n  release-country: <missing>\n  duration: 1704\n  label: <missing>\n  genre: <missing>\n  tracks: ['I Belong to You', 'If You Canâ€™t Say No (Flunky in the Attic mix)', 'If You Canâ€™t Say No (Just Say No mix)', 'If You Canâ€™t Say No (BT Twilo dub)', 'If You Canâ€™t Say No (Dallas Austin mix)']\nRecord B:\n  name: I Belong To You\n  artist: Lenny Kravitz\n  release-date: 1998\n  release-country: Europe\n  duration: 1700.0\n  label: Virgin\n  genre: Rock\n  tracks: ['I Belong To You', \"If You Can't Say No (Flunky In The Attic Mix)\", \"If You Can't Say No (Just Say No Mix)\", \"If You Can't Say No (BT Twilo Dub)\", \"If You Can't Say No (Dallas Austin Mix)\"]\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

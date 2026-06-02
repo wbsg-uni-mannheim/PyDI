@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Hail Damnation\n  artist: Svartsekt\n  release-date: 2013-06-08\n  release-country: <missing>\n  duration: 1611\n  label: <missing>\n  genre: <missing>\n  tracks: ['I', 'II', 'III', 'IV', 'V']\nRecord B:\n  name: Rise Of The Damnation Army (United World Rebellion: Chapter 2)\n  artist: Skid Row\n  release-date: 2014\n  release-country: Europe\n  duration: 1715.0\n  label: UDR Records\n  genre: Rock\n  tracks: ['We Are The Damned', 'Give It The Gun', 'Catch Your Fall', 'Damnation Army', 'Zero Day', 'Bonus Tracks:', 'Sheer Heart Attack', 'Rats In The Cellar']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

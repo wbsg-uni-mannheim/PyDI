@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Puff Purple\n  artist: Purple, Puff\n  release-date: <missing>\n  release-country: Italy\n  duration: 2194\n  label: <missing>\n  genre: <missing>\n  tracks: ['I Puffi sanno', 'Una spada per Lady Oscar', \"What's My Destiny Dragon Ball\", 'Heidi', \"Lupin, l'incorreggibile Lupin\", 'Vola mio mini pony', \"Gotta Catch 'Em All! Pokemon\", 'Piccoli problemi di cuore', 'Occhi di gatto', '199X', 'Ken il guerriero']\nRecord B:\n  name: 24 Carat Purple\n  artist: Deep Purple\n  release-date: 1975-01-01\n  release-country: Italy\n  duration: <missing>\n  label: Purple Records\n  genre: Rock\n  tracks: ['Speed King', 'Smoke On The Water', 'Woman From Tokyo', 'Never Before', 'Fireball', 'Child In Time', 'Strange Kind Of Woman', 'Black Night']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: El fantasma de Canterville\n  artist: Gieco, LeÃ³n\n  release-date: 1976-01-01\n  release-country: Argentina\n  duration: 2513\n  label: <missing>\n  genre: <missing>\n  tracks: ['Los chacareros de dragones', 'El loco y las golondrinas', 'En la cintura de los pÃ¡jaros', 'BenjamÃ\\xadn, el pastor', 'AdiÃ³s hombre viejo', 'Todos los caballos blancos', 'Desde tu corazÃ³n', 'PermÃ\\xadteme vida', 'CanciÃ³n del silencio', 'SeÃ±ora de los llanos', 'El fantasma de Canterville', 'A la luz del dÃ\\xada']\nRecord B:\n  name: Fantasma De Canterville\n  artist: LeÃƒÂ³n G.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0.0\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "Yes"
+}

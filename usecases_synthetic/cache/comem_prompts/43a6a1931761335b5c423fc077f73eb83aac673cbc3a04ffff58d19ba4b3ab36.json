@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Fool\n  artist: Fool, The\n  release-date: 01.01.1968\n  release-country: <missing>\n  duration: 0:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Fly', 'Voice On the Wind', 'Rainbow Man', 'Cry for Me', 'No One Will Ever Know', 'Reincarnation', 'Hello Little Sister', 'Keep On Pushinâ€™', 'Inside Your Mind', 'Lay It Down']\nRecord B:\n  name: The Fool\n  artist: Captain Chaos\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:22:15\n  label: <missing>\n  genre: <missing>\n  tracks: [\"I'm Sorry Friends\", 'Sharp Darts', 'the simpsons', 'i need a lullaby', 'i will rip their jaws apart', 'i ate eight', 'here lies a fool for love', 'chelsea hotel', 'That Cat Poster That Says \"Hang In There\"', 'finals', 'the book of love']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

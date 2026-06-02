@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Sex Beyond the Grave\n  artist: Must Missa\n  release-date: 01.01.2001\n  release-country: Federal Republic of Germany\n  duration: 1416\n  label: <missing>\n  genre: <missing>\n  tracks: ['Noiad', 'MÃ¶Ã¶da tumedaid radu', 'Varjuta', 'Karda mu palet', 'Hauatagu(ne)seks']\nRecord B:\n  name: D. Apokalyptischen Reiter -  The Greatest Of The Best\n  artist: D. Apokalyptischen Reiter\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1:13:36\n  label: <missing>\n  genre: <missing>\n  tracks: ['Die Boten', 'Adrenalin', 'Es Wird Schlimmer', 'Der Seemann', 'We Will Never Die', 'Die Sonne scheint', 'Du Kleiner Wicht', 'Nach Der Ebbe', 'Wir reiten', 'Unter Der Asche', 'Friede sei mit Dir', 'Revolution', 'Das Paradies', 'Der Weg', 'Komm', 'Erhelle Meine Seele', 'The Fire', 'Riders On The Storm', 'Reitermania', 'Metal Will Never Die']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

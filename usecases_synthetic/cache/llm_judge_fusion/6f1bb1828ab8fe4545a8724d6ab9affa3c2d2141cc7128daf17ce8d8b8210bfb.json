@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Vibrators"
+    },
+    {
+      "source": "discogs",
+      "value": "Vibrators, The"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "Both candidates refer to the same artist name in different ordering formats, so I normalized to the standard form.",
+    "value": "The Vibrators"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"The Vibrators\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"Both candidates refer to the same artist name in different ordering formats, so I normalized to the standard form.\"}"
+}

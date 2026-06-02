@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Blood Brothers\n  artist: Rose Tattoo\n  release-date: 2007-02-16\n  release-country: Germany\n  duration: 2453\n  label: <missing>\n  genre: <missing>\n  tracks: ['Black-Eyed Bruiser', 'Slipping Away', 'Once in a Lifetime', '1854', 'City Blues', 'Sweet Meat', 'Man About Town', 'Creeper', 'Standover Man', 'Nothing to Lose', 'Lubricated']\nRecord B:\n  name: Brothers\n  artist: Rose Tattoo\n  release-date: <missing>\n  release-country: <missing>\n  duration: 41:48\n  label: <missing>\n  genre: <missing>\n  tracks: ['Black Eyed Bruiser', 'Slipping Away', 'Once In A Lifetime', '1854', 'City Blues', 'Sweet Meat', 'Man About Town', 'Creeper', 'Standover Man', 'Nothing To Lose', 'Lubricated']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

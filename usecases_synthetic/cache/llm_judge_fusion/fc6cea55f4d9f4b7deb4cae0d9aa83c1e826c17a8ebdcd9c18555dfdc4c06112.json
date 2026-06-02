@@ -1,0 +1,39 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Nazis 1994', 'Happiness', 'Revelations', 'Touch the Sky', 'Foreign Sand', 'Freedom Train', \"'You Had to Be There'\", 'The Key', 'Everybody Hurts Sometime', 'Loneliness...', 'Dear Mr Murdoch', 'Old Friends']"
+    },
+    {
+      "source": "lastfm",
+      "value": "[]"
+    },
+    {
+      "source": "lastfm",
+      "value": "['Nazis 1994', 'Happiness', 'Revelations', 'Touch the Sky', 'Freedom Train', \"'you had to be there'\", 'The Key', 'everybody hurts sometime', 'Loneliness...', 'Dear Mr. Murdoch', 'Old Friends']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "interpolation",
+    "reasoning": "The sources collectively indicate the same track list, so I merged them and normalized minor casing/punctuation differences.",
+    "value": [
+      "Nazis 1994",
+      "Happiness",
+      "Revelations",
+      "Touch the Sky",
+      "Foreign Sand",
+      "Freedom Train",
+      "You Had to Be There",
+      "The Key",
+      "Everybody Hurts Sometime",
+      "Loneliness...",
+      "Dear Mr Murdoch",
+      "Old Friends"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Nazis 1994\",\"Happiness\",\"Revelations\",\"Touch the Sky\",\"Foreign Sand\",\"Freedom Train\",\"You Had to Be There\",\"The Key\",\"Everybody Hurts Sometime\",\"Loneliness...\",\"Dear Mr Murdoch\",\"Old Friends\"],\"operation\":\"interpolation\",\"confidence\":0.95,\"reasoning\":\"The sources collectively indicate the same track list, so I merged them and normalized minor casing/punctuation differences.\"}"
+}

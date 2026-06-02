@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0"
+    },
+    {
+      "source": "lastfm",
+      "value": "3:41"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.88,
+    "operation": "verbatim_pick",
+    "reasoning": "The zero-duration value is likely a placeholder or missing-data artifact, while 3:41 is a plausible track length.",
+    "value": "3:41"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"3:41\",\"operation\":\"verbatim_pick\",\"confidence\":0.88,\"reasoning\":\"The zero-duration value is likely a placeholder or missing-data artifact, while 3:41 is a plausible track length.\"}"
+}

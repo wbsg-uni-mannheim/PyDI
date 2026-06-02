@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Sheeps Nightmares\n  artist: Antislash\n  release-date: 2007-03-19\n  release-country: France\n  duration: 1427\n  label: <missing>\n  genre: <missing>\n  tracks: ['La Fureur De Vaincre', 'Butterwings', 'Troma', 'Solo Porto']\nRecord B:\n  name: Nightmares\n  artist: Antislash\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1446.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['La Fureur de Vaincre', 'Butterwings', 'Troma', 'Soloporto']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

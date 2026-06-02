@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Best of Spooky Tooth\n  artist: Spooky Tooth\n  release-date: 1995-01-03\n  release-country: Germany\n  duration: 56:38\n  label: <missing>\n  genre: <missing>\n  tracks: ['Tobacco Road', 'Better by You, Better Than Me', \"It's All About a Rounabout\", \"Waitin' for the Wind\", 'Last Puff', 'Evil Woman', 'That Was Only Yesterday', 'I Am the Walrus', 'Self Seeking Man', 'All Sewn Up', 'Times Have Changed', 'As Long as the World Keeps Turning', 'The Weight']\nRecord B:\n  name: Spooky\n  artist: Rennie Pilgrem\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

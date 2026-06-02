@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Shades of Purple\n  artist: M2M (and others)\n  release-date: 2000-03-07\n  release-country: United States of America\n  duration: 51m 8s\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Don't Say You Love Me\", 'The Day You Went Away', 'Girl in Your Dreams', 'Mirror Mirror', 'Pretty Boy', 'Give a Little Love', 'Everything You Do', \"Don't Mess With My Love\", 'Dear Diary', 'Do You Know What You Want', 'Smiling Face', 'Our Song', 'Why']\nRecord B:\n  name: Shades Of Deep Purple\n  artist: Deep Purple Band\n  release-date: 1991-01-01\n  release-country: Japan\n  duration: <missing>\n  label: Warner Bros. Records\n  genre: Rock\n  tracks: ['And The Address', 'Hush', 'One More Rainy Day', 'Happiness', \"I'm So Glad\", 'Mandrake Root', 'Help', 'Love Help Me', 'Hey Joe']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

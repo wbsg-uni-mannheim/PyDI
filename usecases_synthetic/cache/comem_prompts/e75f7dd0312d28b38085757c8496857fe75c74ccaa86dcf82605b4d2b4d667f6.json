@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Milk Crisis\n  artist: Go! Team, The (and others)\n  release-date: 2008-06-11\n  release-country: <missing>\n  duration: 166\n  label: <missing>\n  genre: <missing>\n  tracks: ['Milk Crisis']\nRecord B:\n  name: The Great Crisis\n  artist: C/A/T\n  release-date: 2008-01-01\n  release-country: United States of America\n  duration: 45:07\n  label: Crunch Pod\n  genre: Electronic\n  tracks: ['Evidence 294', 'Evidence 699', 'Encounter X4I', 'Encounter X32', 'Escape  Wooded Area #6432', 'Escape  City Area #589191', 'Battle Data  51X_67245', 'Battle Data  51X_942', 'End Of Recording', 'Theme From The Great Crisis']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "No",
+  "stage": "match"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "3649"
+    },
+    {
+      "source": "discogs",
+      "value": "183:12"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "verbatim_pick",
+    "reasoning": "MusicBrainz provides a clean numeric duration value, while the Discogs entry appears malformed or ambiguous.",
+    "value": 3649
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":3649,\"operation\":\"verbatim_pick\",\"confidence\":0.99,\"reasoning\":\"MusicBrainz provides a clean numeric duration value, while the Discogs entry appears malformed or ambiguous.\"}"
+}

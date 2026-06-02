@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: My Epitaph\n  artist: Reed, Ola Belle\n  release-date: 1976-01-01\n  release-country: United States of America\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Interview / High on a Mountain', \"Interview / I've Endured\", 'Interview / Sing Me a Song', 'Interview / My Epitaph', 'Interview / Springtime of Life', 'Interview / Fortunes']\nRecord B:\n  name: Epitaph\n  artist: Στίγμα\n  release-date: 1993\n  release-country: Greece\n  duration: <missing>\n  label: Not On Label (Στίγμα Self-released)\n  genre: Rock\n  tracks: ['The Wept God (Intro)', 'Epitaph', \"Some Lines Shouldn't Been Crossed\", 'The Dawn Of... The Undying... Lamentation', 'Outro']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

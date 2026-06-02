@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2394"
+    },
+    {
+      "source": "lastfm",
+      "value": "31:50"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "31:50 converts to 2390 seconds, so the MusicBrainz numeric duration is the most canonical exact value among near-equivalent representations.",
+    "value": 2394
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2394,\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"31:50 converts to 2390 seconds, so the MusicBrainz numeric duration is the most canonical exact value among near-equivalent representations.\"}"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "70:20"
+    },
+    {
+      "source": "discogs",
+      "value": "4223"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "interpolation",
+    "reasoning": "The candidates appear to represent the same duration in mm:ss and seconds, and 4223 seconds equals 70:23.",
+    "value": "70:23"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"70:23\",\"operation\":\"interpolation\",\"confidence\":0.93,\"reasoning\":\"The candidates appear to represent the same duration in mm:ss and seconds, and 4223 seconds equals 70:23.\"}"
+}

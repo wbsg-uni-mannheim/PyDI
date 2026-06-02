@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "14:28"
+    },
+    {
+      "source": "discogs",
+      "value": "868"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:00"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.89,
+    "operation": "normalization",
+    "reasoning": "MusicBrainz provides a standard mm:ss track duration, while the other candidates appear to be seconds or an invalid placeholder.",
+    "value": "14:28"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"14:28\",\"operation\":\"normalization\",\"confidence\":0.89,\"reasoning\":\"MusicBrainz provides a standard mm:ss track duration, while the other candidates appear to be seconds or an invalid placeholder.\"}"
+}

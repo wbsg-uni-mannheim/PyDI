@@ -1,0 +1,7 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Awake at Dawn\n  artist: dDub\n  release-date: 2006-01-01\n  release-country: New Zealand\n  duration: 3557\n  label: <missing>\n  genre: <missing>\n  tracks: ['I See a Sign', 'Comfort', 'The Flow', 'No Smoke', 'Join the Two', 'Juju Mama', 'Magic', 'Give Up Your Love', 'Yesternight', 'Feet Firm', 'Give It Some']\nRecord B:\n  name: Awake At Dawn\n  artist: dDub\n  release-date: 2006-01-01\n  release-country: New Zealand\n  duration: 3557\n  label: Vunderchick Records\n  genre: Reggae\n  tracks: ['I See A Sign', 'Comfort', 'The Flow', 'No Smoke', 'Join The Two', 'JuJu Mama', 'Magic', 'Give Up Your Love', 'Yesternight', 'Feet Firm', 'Give It Some']\n\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "comem-v1",
+  "response": "Yes",
+  "stage": "match"
+}

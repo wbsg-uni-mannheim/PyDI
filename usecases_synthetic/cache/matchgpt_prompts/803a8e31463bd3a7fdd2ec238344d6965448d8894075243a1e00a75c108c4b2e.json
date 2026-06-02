@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Outside\n  artist: Omar\n  release-date: 01.01.1994\n  release-country: Germany\n  duration: 20:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Outside (Opaz radio edit)', \"Saturday (Frankie Foncett's Gangster club Ride)\", \"Saturday (Frankie Foncett's club, Part 1)\", 'Saturday (The Absolute remix)']\nRecord B:\n  name: Outside World 2009\n  artist: Sunbeam\n  release-date: 27.03.2009\n  release-country: Germany\n  duration: 1567\n  label: Records Kontor\n  genre: Electronic\n  tracks: ['Outside World 2009 (Club Edit)', 'Outside World 2009 (Megastylez Edit)', 'Outside World 2009 (Club Mix)', 'Outside World 2009 (Sans Souci Remix)', 'Outside World 2009 (Megastylez Remix)']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

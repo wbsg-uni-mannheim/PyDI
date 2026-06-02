@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0:38:12"
+    },
+    {
+      "source": "discogs",
+      "value": "2240"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "interpolation",
+    "reasoning": "2240 seconds converts exactly to 37:20, while the MusicBrainz value appears to be a malformed/ambiguous duration format, so I normalized to the precise duration implied by the numeric candidate.",
+    "value": "0:37:20"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:37:20\",\"operation\":\"interpolation\",\"confidence\":0.86,\"reasoning\":\"2240 seconds converts exactly to 37:20, while the MusicBrainz value appears to be a malformed/ambiguous duration format, so I normalized to the precise duration implied by the numeric candidate.\"}"
+}

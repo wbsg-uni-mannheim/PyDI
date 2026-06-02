@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2116"
+    },
+    {
+      "source": "lastfm",
+      "value": "213:27"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "verbatim_pick",
+    "reasoning": "MusicBrainz provides a plausible numeric duration while the other candidate is malformed/inconsistent, so I select it verbatim.",
+    "value": 2116
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":2116,\"operation\":\"verbatim_pick\",\"confidence\":0.86,\"reasoning\":\"MusicBrainz provides a plausible numeric duration while the other candidate is malformed/inconsistent, so I select it verbatim.\"}"
+}

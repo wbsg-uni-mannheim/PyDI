@@ -1,0 +1,32 @@
+{
+  "attribute": "tracks",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "['Ceremony Viewed Through Iron Slit', 'Sunless', 'Haunted Gate', 'Phantoms Keeping Watch', 'Sleeping Powder', 'Spirits Shimmered Amoung the Live People', 'Written by Snakes', 'Snapshots of a Ghost', 'Aether Talk']"
+    },
+    {
+      "source": "discogs",
+      "value": "['Ceremony Viewed Through Iron Slit', 'Sunless', 'Haunted Gate', 'Phantoms Keeping Watch', 'Sleeping Power', 'Spirits Shimmered Among The Live People', 'Written By Snakes', 'Snapshots Of A Ghost', 'Aether Talk']"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The candidates represent the same track list with minor spelling and capitalization differences, so I normalized to the most consistent corrected forms.",
+    "value": [
+      "Ceremony Viewed Through Iron Slit",
+      "Sunless",
+      "Haunted Gate",
+      "Phantoms Keeping Watch",
+      "Sleeping Powder",
+      "Spirits Shimmered Among the Live People",
+      "Written by Snakes",
+      "Snapshots of a Ghost",
+      "Aether Talk"
+    ]
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":[\"Ceremony Viewed Through Iron Slit\",\"Sunless\",\"Haunted Gate\",\"Phantoms Keeping Watch\",\"Sleeping Powder\",\"Spirits Shimmered Among the Live People\",\"Written by Snakes\",\"Snapshots of a Ghost\",\"Aether Talk\"],\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The candidates represent the same track list with minor spelling and capitalization differences, so I normalized to the most consistent corrected forms.\"}"
+}

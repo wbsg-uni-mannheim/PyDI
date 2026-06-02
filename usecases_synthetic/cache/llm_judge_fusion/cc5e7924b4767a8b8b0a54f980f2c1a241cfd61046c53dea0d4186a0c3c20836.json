@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "77:17"
+    },
+    {
+      "source": "lastfm",
+      "value": "1:00:52"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "interpolation",
+    "reasoning": "The candidates likely use mm:ss and h:mm:ss formats; 77:17 and 1:17:17 are equivalent duration notations, while 1:00:52 is inconsistent.",
+    "value": "1:17:17"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1:17:17\",\"operation\":\"interpolation\",\"confidence\":0.96,\"reasoning\":\"The candidates likely use mm:ss and h:mm:ss formats; 77:17 and 1:17:17 are equivalent duration notations, while 1:00:52 is inconsistent.\"}"
+}

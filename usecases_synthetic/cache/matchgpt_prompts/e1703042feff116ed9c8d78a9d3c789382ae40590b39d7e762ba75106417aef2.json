@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Moment of Truth\n  artist: Nunn, Terri\n  release-date: <missing>\n  release-country: United States of America\n  duration: 53:49\n  label: <missing>\n  genre: <missing>\n  tracks: ['Confession Time', 'Desire Me', 'Once Upon a Time', 'Moment of Truth', 'Let Me Be the One', '89 Lines', \"Who's Gonna Take You Home Tonight\", 'Go Ask the Lonely', 'Too Far to Fall', 'Fly by Night', 'Diane']\nRecord B:\n  name: The Moment Of Truth - The 2nd\n  artist: The Real Milli Vanilli\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

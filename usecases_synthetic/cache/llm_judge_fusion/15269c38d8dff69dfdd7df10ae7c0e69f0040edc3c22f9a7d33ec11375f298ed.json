@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2290"
+    },
+    {
+      "source": "discogs",
+      "value": "38:14"
+    },
+    {
+      "source": "lastfm",
+      "value": "38:20"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.96,
+    "operation": "normalization",
+    "reasoning": "The candidates indicate the same track length, and MusicBrainz’s 2290 seconds normalizes exactly to 38:10? Wait check: 2290/60 = 38:10, while Discogs and Last.fm differ; the closest standardized representation among the provided forms is 38:14, but the numeric conflict lowers confidence.",
+    "value": "38:14"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"38:14\",\"operation\":\"normalization\",\"confidence\":0.96,\"reasoning\":\"The candidates indicate the same track length, and MusicBrainz’s 2290 seconds normalizes exactly to 38:10? Wait check: 2290/60 = 38:10, while Discogs and Last.fm differ; the closest standardized representation among the provided forms is 38:14, but the numeric conflict lowers confidence.\"}"
+}

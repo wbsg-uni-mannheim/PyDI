@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "1996-09-02"
+    },
+    {
+      "source": "discogs",
+      "value": "01.01.1996"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.89,
+    "operation": "interpolation",
+    "reasoning": "The sources disagree on date format and one gives only a day-month-year placeholder-like value; MusicBrainz provides a precise ISO date that is the most plausible canonical release date.",
+    "value": "1996-09-02"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1996-09-02\",\"operation\":\"interpolation\",\"confidence\":0.89,\"reasoning\":\"The sources disagree on date format and one gives only a day-month-year placeholder-like value; MusicBrainz provides a precise ISO date that is the most plausible canonical release date.\"}"
+}

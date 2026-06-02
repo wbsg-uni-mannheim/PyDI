@@ -1,0 +1,26 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2486"
+    },
+    {
+      "source": "discogs",
+      "value": "41:26"
+    },
+    {
+      "source": "lastfm",
+      "value": "41:34"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "normalization",
+    "reasoning": "Converted the MusicBrainz milliseconds candidate to mm:ss and selected the consistent canonical duration closest to the structured source.",
+    "value": "41:26"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"41:26\",\"operation\":\"normalization\",\"confidence\":0.94,\"reasoning\":\"Converted the MusicBrainz milliseconds candidate to mm:ss and selected the consistent canonical duration closest to the structured source.\"}"
+}

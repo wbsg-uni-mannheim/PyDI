@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "0:00"
+    },
+    {
+      "source": "lastfm",
+      "value": "0:06:00"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "normalization",
+    "reasoning": "The MusicBrainz value appears to be a zero-padding/formatting variant of the same 6-minute duration.",
+    "value": "0:06:00"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"0:06:00\",\"operation\":\"normalization\",\"confidence\":0.92,\"reasoning\":\"The MusicBrainz value appears to be a zero-padding/formatting variant of the same 6-minute duration.\"}"
+}

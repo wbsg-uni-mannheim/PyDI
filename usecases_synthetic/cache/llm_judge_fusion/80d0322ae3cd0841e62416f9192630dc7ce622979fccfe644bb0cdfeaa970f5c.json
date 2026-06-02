@@ -1,0 +1,22 @@
+{
+  "attribute": "release-date",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "2011-01-21"
+    },
+    {
+      "source": "discogs",
+      "value": "2011-01-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates differ only in day; Discogs provides a month-precision-style placeholder date commonly used for unknown exact day.",
+    "value": "2011-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"2011-01-01\",\"operation\":\"verbatim_pick\",\"confidence\":0.74,\"reasoning\":\"The candidates differ only in day; Discogs provides a month-precision-style placeholder date commonly used for unknown exact day.\"}"
+}

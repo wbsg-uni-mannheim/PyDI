@@ -1,0 +1,6 @@
+{
+  "model_id": "openai/gpt-5.4-mini",
+  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: A Broken Truce\n  artist: Violent Silence\n  release-date: 2013-01-01\n  release-country: Sweden\n  duration: 2833\n  label: <missing>\n  genre: <missing>\n  tracks: ['Prism Path', 'Rim of Clouds', 'The Kingdom Below', 'A Broken Truce']\nRecord B:\n  name: A World Of Broken Images\n  artist: Malaise\n  release-date: 1999-09-01\n  release-country: Sweden\n  duration: 3039\n  label: Memento Materia\n  genre: Electronic\n  tracks: [\"Maybe I'm Dead\", 'Bitter Waters', 'Separation', 'Hey Hey', 'Until The End Of Time', 'Hey You', 'Another Image', 'Another Day', 'If I Die', 'Last Regret', 'Lying Idle']\nDo the two records refer to the same entity? Answer:",
+  "prompt_version": "matchgpt-v1",
+  "response": "No"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "artist",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "The Sutherland Brothers Band"
+    },
+    {
+      "source": "discogs",
+      "value": "Sutherland Brothers"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "normalization",
+    "reasoning": "The candidates refer to the same artist group, and the shorter form is the canonical name used by one source.",
+    "value": "Sutherland Brothers"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Sutherland Brothers\",\"operation\":\"normalization\",\"confidence\":0.92,\"reasoning\":\"The candidates refer to the same artist group, and the shorter form is the canonical name used by one source.\"}"
+}

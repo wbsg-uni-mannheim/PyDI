@@ -1,0 +1,22 @@
+{
+  "attribute": "release-country",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "Germany"
+    },
+    {
+      "source": "discogs",
+      "value": "United of America"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "\"United of America\" is not a standard country name and likely reflects noise, while Germany is a valid canonical country value.",
+    "value": "Germany"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Germany\",\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"\\\"United of America\\\" is not a standard country name and likely reflects noise, while Germany is a valid canonical country value.\"}"
+}

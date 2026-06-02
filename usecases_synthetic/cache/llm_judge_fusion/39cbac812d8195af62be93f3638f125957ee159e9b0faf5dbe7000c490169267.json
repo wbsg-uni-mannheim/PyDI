@@ -1,0 +1,22 @@
+{
+  "attribute": "duration",
+  "candidates": [
+    {
+      "source": "musicbrainz",
+      "value": "11:37"
+    },
+    {
+      "source": "discogs",
+      "value": "701"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.99,
+    "operation": "normalization",
+    "reasoning": "MusicBrainz duration in mm:ss format and Discogs value 701 seconds both denote the same duration, canonicalized to mm:ss.",
+    "value": "11:37"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"11:37\",\"operation\":\"normalization\",\"confidence\":0.99,\"reasoning\":\"MusicBrainz duration in mm:ss format and Discogs value 701 seconds both denote the same duration, canonicalized to mm:ss.\"}"
+}
