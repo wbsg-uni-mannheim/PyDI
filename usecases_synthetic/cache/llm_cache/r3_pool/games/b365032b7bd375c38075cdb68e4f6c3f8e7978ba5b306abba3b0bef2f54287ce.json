@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_10801|sales_5977|name=Beaterator | platform=PlayStation Portable | genres=Music video game | developer=Rockstar Leeds | releaseYear=2009-01-01||name=Beaterator | platform=Playstation Portable | genres=Misc | developer=Rockstar Leeds | publisher=Take-Two Interactive | releaseYear=2009-01-01 | criticScore=80 | userScore=7.8 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Beaterator | platform=PlayStation Portable | genres=Music video game | developer=Rockstar Leeds | releaseYear=2009-01-01\nRecord B: name=Beaterator | platform=Playstation Portable | genres=Misc | developer=Rockstar Leeds | publisher=Take-Two Interactive | releaseYear=2009-01-01 | criticScore=80 | userScore=7.8 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

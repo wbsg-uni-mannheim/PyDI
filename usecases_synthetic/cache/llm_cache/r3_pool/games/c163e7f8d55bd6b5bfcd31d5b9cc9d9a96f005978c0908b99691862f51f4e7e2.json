@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_26432|metacritic_5316|name=Dungeons (video game) | platform=Microsoft Windows | genres=Strategy video game | developer=Realmforge Studios | releaseYear=2011-01-01||name=Dungeons of Dredmor | platform=PC | genres=Role-Playing,General,General,Roguelike | developer=Gaslamp Games | releaseYear=2011-01-01 | criticScore=79.0 | userScore=7.6",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dungeons (video game) | platform=Microsoft Windows | genres=Strategy video game | developer=Realmforge Studios | releaseYear=2011-01-01\nRecord B: name=Dungeons of Dredmor | platform=PC | genres=Role-Playing,General,General,Roguelike | developer=Gaslamp Games | releaseYear=2011-01-01 | criticScore=79.0 | userScore=7.6\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_8454|metacritic_4503|name=Lego The Lord of the Rings (video game) | platform=Xbox 360 | genres=Action-adventure game | developer=TT Fusion | releaseYear=2012-01-01||name=LEGO The Lord of the Rings | platform=Xbox 360 | genres=Miscellaneous,Action Adventure,Adventure,General,Fantasy,General,Compilation,Linear | developer=TT Games | releaseYear=2012-01-01 | criticScore=80.0 | userScore=8.2 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lego The Lord of the Rings (video game) | platform=Xbox 360 | genres=Action-adventure game | developer=TT Fusion | releaseYear=2012-01-01\nRecord B: name=LEGO The Lord of the Rings | platform=Xbox 360 | genres=Miscellaneous,Action Adventure,Adventure,General,Fantasy,General,Compilation,Linear | developer=TT Games | releaseYear=2012-01-01 | criticScore=80.0 | userScore=8.2 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

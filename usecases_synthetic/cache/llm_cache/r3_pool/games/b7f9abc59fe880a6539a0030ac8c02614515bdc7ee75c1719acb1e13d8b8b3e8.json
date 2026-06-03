@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19544|sales_770|name=Mario Party 10 | platform=Wii U | genres=Party video game | developer=NDcube | releaseYear=2015-01-01||name=Mario Party 10 | platform=WiiU | genres=Misc | developer=Nintendo, Nd Cube | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=66 | userScore=6.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mario Party 10 | platform=Wii U | genres=Party video game | developer=NDcube | releaseYear=2015-01-01\nRecord B: name=Mario Party 10 | platform=WiiU | genres=Misc | developer=Nintendo, Nd Cube | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=66 | userScore=6.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

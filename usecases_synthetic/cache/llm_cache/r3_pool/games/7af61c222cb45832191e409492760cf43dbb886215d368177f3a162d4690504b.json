@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_8225|sales_2033|name=Stuntman: Ignition | platform=Xbox 360 | genres=Driving,Racing,Mission-based,Arcade,Mission-based,Automobile | developer=Paradigm Entertainment | releaseYear=2007-01-01 | criticScore=75.0 | userScore=7.2 | ESRB=T||name=Stuntman: Ignition | platform=Xbox 360 | genres=Racing | developer=Paradigm Entertainment | publisher=THQ | releaseYear=2007-01-01 | criticScore=75 | userScore=7.3 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stuntman: Ignition | platform=Xbox 360 | genres=Driving,Racing,Mission-based,Arcade,Mission-based,Automobile | developer=Paradigm Entertainment | releaseYear=2007-01-01 | criticScore=75.0 | userScore=7.2 | ESRB=T\nRecord B: name=Stuntman: Ignition | platform=Xbox 360 | genres=Racing | developer=Paradigm Entertainment | publisher=THQ | releaseYear=2007-01-01 | criticScore=75 | userScore=7.3 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

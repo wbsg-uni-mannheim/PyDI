@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_19397|sales_5339|name=Crouching Tiger, Hidden Dragon | platform=PS2 | genres=Action,Beat-'Em-Up | developer=Light Weight | releaseYear=2003-01-01 | criticScore=48.0 | userScore=4.8 | ESRB=T||name=Crouching Tiger, Hidden Dragon | platform=PS2 | genres=Action | developer=Light Weight | publisher=Ubisoft | releaseYear=2003-01-01 | criticScore=48 | userScore=3.7 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crouching Tiger, Hidden Dragon | platform=PS2 | genres=Action,Beat-'Em-Up | developer=Light Weight | releaseYear=2003-01-01 | criticScore=48.0 | userScore=4.8 | ESRB=T\nRecord B: name=Crouching Tiger, Hidden Dragon | platform=PS2 | genres=Action | developer=Light Weight | publisher=Ubisoft | releaseYear=2003-01-01 | criticScore=48 | userScore=3.7 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_15404|sales_2122|name=Major League Baseball 2K9 | platform=Xbox 360 | genres=Sports,Traditional,Team,Baseball,Sim,Sim | developer=2K Sports | releaseYear=2009-01-01 | criticScore=64.0 | userScore=5.3 | ESRB=E||name=Major League Baseball 2K9 | platform=Xbox 360 | genres=Sports | developer=2K Sports | publisher=Spike | releaseYear=2009-01-01 | criticScore=64 | userScore=5.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Major League Baseball 2K9 | platform=Xbox 360 | genres=Sports,Traditional,Team,Baseball,Sim,Sim | developer=2K Sports | releaseYear=2009-01-01 | criticScore=64.0 | userScore=5.3 | ESRB=E\nRecord B: name=Major League Baseball 2K9 | platform=Xbox 360 | genres=Sports | developer=2K Sports | publisher=Spike | releaseYear=2009-01-01 | criticScore=64 | userScore=5.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

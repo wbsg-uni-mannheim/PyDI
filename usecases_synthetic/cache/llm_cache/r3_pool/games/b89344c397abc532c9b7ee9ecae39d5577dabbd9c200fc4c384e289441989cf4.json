@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42056|sales_6893|name=Around the World in 80 Days (video game) | platform=Mobile phone | genres=Action-adventure game | developer=Saffire (company) | releaseYear=2004-01-01||name=Around the World in 80 Days | platform=Game Boy Advance | genres=Action | developer=Saffire | publisher=Hip Interactive | releaseYear=2004-01-01 | criticScore=40 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Around the World in 80 Days (video game) | platform=Mobile phone | genres=Action-adventure game | developer=Saffire (company) | releaseYear=2004-01-01\nRecord B: name=Around the World in 80 Days | platform=Game Boy Advance | genres=Action | developer=Saffire | publisher=Hip Interactive | releaseYear=2004-01-01 | criticScore=40 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

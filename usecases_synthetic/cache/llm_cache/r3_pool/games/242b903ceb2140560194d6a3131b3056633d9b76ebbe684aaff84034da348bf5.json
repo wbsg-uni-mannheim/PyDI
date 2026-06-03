@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_4536|metacritic_12424|name=Avadon 3: The Warborn | platform=Microsoft Windows | genres=Role-playing video game | developer=Spiderweb Software | releaseYear=2016-01-01||name=Battleborn | platform=PC | genres=Sci-Fi,Action,Shooter,First-Person,Tactical,Arcade | developer=Gearbox Software | releaseYear=2016-01-01 | criticScore=69.0 | userScore=7.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Avadon 3: The Warborn | platform=Microsoft Windows | genres=Role-playing video game | developer=Spiderweb Software | releaseYear=2016-01-01\nRecord B: name=Battleborn | platform=PC | genres=Sci-Fi,Action,Shooter,First-Person,Tactical,Arcade | developer=Gearbox Software | releaseYear=2016-01-01 | criticScore=69.0 | userScore=7.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

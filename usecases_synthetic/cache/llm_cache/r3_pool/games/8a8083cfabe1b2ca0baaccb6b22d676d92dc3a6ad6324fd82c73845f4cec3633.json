@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7773|metacritic_8194|name=Disney Infinity (video game) | platform=PS3 | genres=Toys-to-life | developer=Avalanche Software | releaseYear=2014-01-01||name=Disney Infinity | platform=PS3 | genres=Action Adventure,Fantasy,General,Fantasy | developer=Avalanche Software | releaseYear=2013-01-01 | criticScore=75.0 | userScore=6.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Disney Infinity (video game) | platform=PS3 | genres=Toys-to-life | developer=Avalanche Software | releaseYear=2014-01-01\nRecord B: name=Disney Infinity | platform=PS3 | genres=Action Adventure,Fantasy,General,Fantasy | developer=Avalanche Software | releaseYear=2013-01-01 | criticScore=75.0 | userScore=6.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

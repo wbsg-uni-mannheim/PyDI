@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_20275|sales_5456|name=DreamWorks Megamind: Ultimate Showdown | platform=Xbox 360 | genres=Action,Adventure,General,General,General,Platformer,3D | developer=THQ Australia,THQ Studio Australia | releaseYear=2010-01-01 | criticScore=33.0 | userScore=5.0 | ESRB=E10+||name=Megamind: Ultimate Showdown | platform=Xbox 360 | genres=Action | developer=THQ Australia | publisher=THQ | releaseYear=2010-01-01 | criticScore=33 | userScore=4.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DreamWorks Megamind: Ultimate Showdown | platform=Xbox 360 | genres=Action,Adventure,General,General,General,Platformer,3D | developer=THQ Australia,THQ Studio Australia | releaseYear=2010-01-01 | criticScore=33.0 | userScore=5.0 | ESRB=E10+\nRecord B: name=Megamind: Ultimate Showdown | platform=Xbox 360 | genres=Action | developer=THQ Australia | publisher=THQ | releaseYear=2010-01-01 | criticScore=33 | userScore=4.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

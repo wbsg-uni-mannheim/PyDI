@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_27210|metacritic_5979|name=Observer (video game) | platform=Microsoft Windows | genres=Psychological horror game | developer=Bloober Team | releaseYear=2020-01-01||name=Observer | platform=PC | genres=Adventure,3D,First-Person | developer=Bloober Team | releaseYear=2017-01-01 | criticScore=78.0 | userScore=7.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Observer (video game) | platform=Microsoft Windows | genres=Psychological horror game | developer=Bloober Team | releaseYear=2020-01-01\nRecord B: name=Observer | platform=PC | genres=Adventure,3D,First-Person | developer=Bloober Team | releaseYear=2017-01-01 | criticScore=78.0 | userScore=7.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

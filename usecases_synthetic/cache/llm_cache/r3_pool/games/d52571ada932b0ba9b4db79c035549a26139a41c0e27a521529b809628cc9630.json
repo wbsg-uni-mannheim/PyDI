@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46805|metacritic_1941|name=Serious Sam: The Second Encounter | platform=Windows | genres=First-person shooter | developer=Croteam | releaseYear=2017-01-01||name=Serious Sam: The Second Encounter | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Arcade | developer=Croteam | releaseYear=2002-01-01 | criticScore=85.0 | userScore=8.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Serious Sam: The Second Encounter | platform=Windows | genres=First-person shooter | developer=Croteam | releaseYear=2017-01-01\nRecord B: name=Serious Sam: The Second Encounter | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Arcade | developer=Croteam | releaseYear=2002-01-01 | criticScore=85.0 | userScore=8.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

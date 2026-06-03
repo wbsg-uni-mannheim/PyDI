@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_22515|sales_4903|name=Robots (2005 video game) | platform=GameCube | genres=Platform game | developer=Griptonite Games | releaseYear=2005-01-01||name=Robots | platform=GameCube | genres=Action | developer=Eurocom Entertainment Software | publisher=Vivendi Games | releaseYear=2005-01-01 | criticScore=56 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Robots (2005 video game) | platform=GameCube | genres=Platform game | developer=Griptonite Games | releaseYear=2005-01-01\nRecord B: name=Robots | platform=GameCube | genres=Action | developer=Eurocom Entertainment Software | publisher=Vivendi Games | releaseYear=2005-01-01 | criticScore=56 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

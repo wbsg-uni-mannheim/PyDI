@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_51938|sales_2563|name=Boogie (video game) | platform=Wii | genres=Music video game | developer=EA Montreal | releaseYear=2007-01-01||name=Boogie | platform=Wii | genres=Misc | developer=EA Montreal | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=57 | userScore=5.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Boogie (video game) | platform=Wii | genres=Music video game | developer=EA Montreal | releaseYear=2007-01-01\nRecord B: name=Boogie | platform=Wii | genres=Misc | developer=EA Montreal | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=57 | userScore=5.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_32982|metacritic_17275|name=Geon: Emotions | platform=Xbox 360 | genres=Arcade game | developer=Strawdog Studios | releaseYear=2009-01-01||name=GEON: emotions | platform=Xbox 360 | genres=Action,Miscellaneous,Puzzle,General,Puzzle,Puzzle,Matching,Matching | developer=Eidos Interactive,Strawdog Studios | releaseYear=2007-01-01 | criticScore=59.0 | userScore=8.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Geon: Emotions | platform=Xbox 360 | genres=Arcade game | developer=Strawdog Studios | releaseYear=2009-01-01\nRecord B: name=GEON: emotions | platform=Xbox 360 | genres=Action,Miscellaneous,Puzzle,General,Puzzle,Puzzle,Matching,Matching | developer=Eidos Interactive,Strawdog Studios | releaseYear=2007-01-01 | criticScore=59.0 | userScore=8.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

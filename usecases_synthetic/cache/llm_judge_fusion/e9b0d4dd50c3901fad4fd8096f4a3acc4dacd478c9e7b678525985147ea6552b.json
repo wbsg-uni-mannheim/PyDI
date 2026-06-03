@@ -1,0 +1,22 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "17593000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "25600000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.84,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric revenue estimates from different sources, so a robust aggregate (midpoint) is the best single canonical value.",
+    "value": 21600000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":21600000000,\"operation\":\"aggregation\",\"confidence\":0.84,\"reasoning\":\"The candidates are numeric revenue estimates from different sources, so a robust aggregate (midpoint) is the best single canonical value.\"}"
+}

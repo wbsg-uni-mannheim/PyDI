@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_26572|metacritic_18526|name=Carmageddon | platform=Microsoft Windows | genres=Vehicular combat game | developer=Stainless Games | releaseYear=1997-01-01||name=Carmageddon: Reincarnation | platform=PC | genres=Driving,Car Combat,Car Combat,Simulation,Vehicle,Combat | developer=Stainless Games | releaseYear=2015-01-01 | criticScore=54.0 | userScore=4.4",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Carmageddon | platform=Microsoft Windows | genres=Vehicular combat game | developer=Stainless Games | releaseYear=1997-01-01\nRecord B: name=Carmageddon: Reincarnation | platform=PC | genres=Driving,Car Combat,Car Combat,Simulation,Vehicle,Combat | developer=Stainless Games | releaseYear=2015-01-01 | criticScore=54.0 | userScore=4.4\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

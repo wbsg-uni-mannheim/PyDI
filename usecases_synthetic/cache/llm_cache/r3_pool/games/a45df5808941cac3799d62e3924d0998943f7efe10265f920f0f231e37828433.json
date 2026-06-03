@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46600|metacritic_2421|name=Shift 2: Unleashed | platform=Microsoft Windows | genres=Racing game | developer=Straight Right | releaseYear=2011-01-01||name=Shift 2: Unleashed | platform=PC | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=Slightly Mad Studios | releaseYear=2011-01-01 | criticScore=84.0 | userScore=6.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shift 2: Unleashed | platform=Microsoft Windows | genres=Racing game | developer=Straight Right | releaseYear=2011-01-01\nRecord B: name=Shift 2: Unleashed | platform=PC | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=Slightly Mad Studios | releaseYear=2011-01-01 | criticScore=84.0 | userScore=6.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

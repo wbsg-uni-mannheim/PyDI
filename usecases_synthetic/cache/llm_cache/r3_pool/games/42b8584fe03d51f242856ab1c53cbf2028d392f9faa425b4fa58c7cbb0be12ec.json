@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_4783|sales_503|name=Pro Evolution Soccer 2012 | platform=PS3 | genres=Sports,Traditional,Team,Football,Soccer,Sim,Sim | developer=Konami | releaseYear=2011-01-01 | criticScore=80.0 | userScore=6.8 | ESRB=E||name=Pro Evolution Soccer 2012 | platform=PS3 | genres=Action | developer=Konami | publisher=Konami Digital Entertainment | releaseYear=2011-01-01 | criticScore=80 | userScore=6.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pro Evolution Soccer 2012 | platform=PS3 | genres=Sports,Traditional,Team,Football,Soccer,Sim,Sim | developer=Konami | releaseYear=2011-01-01 | criticScore=80.0 | userScore=6.8 | ESRB=E\nRecord B: name=Pro Evolution Soccer 2012 | platform=PS3 | genres=Action | developer=Konami | publisher=Konami Digital Entertainment | releaseYear=2011-01-01 | criticScore=80 | userScore=6.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

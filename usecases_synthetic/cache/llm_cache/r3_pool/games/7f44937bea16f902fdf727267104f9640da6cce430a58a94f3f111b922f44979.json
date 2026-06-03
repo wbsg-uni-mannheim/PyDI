@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_13361|sales_2193|name=Top Spin 3 | platform=Wii | genres=Sports,Traditional,Individual,Tennis,Tennis | developer=Pam Development | releaseYear=2008-01-01 | criticScore=68.0 | userScore=5.9 | ESRB=E||name=Top Spin 3 | platform=Wii | genres=Action | developer=Pam Development | publisher=Take-Two Interactive | releaseYear=2008-01-01 | criticScore=68 | userScore=5.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Top Spin 3 | platform=Wii | genres=Sports,Traditional,Individual,Tennis,Tennis | developer=Pam Development | releaseYear=2008-01-01 | criticScore=68.0 | userScore=5.9 | ESRB=E\nRecord B: name=Top Spin 3 | platform=Wii | genres=Action | developer=Pam Development | publisher=Take-Two Interactive | releaseYear=2008-01-01 | criticScore=68 | userScore=5.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

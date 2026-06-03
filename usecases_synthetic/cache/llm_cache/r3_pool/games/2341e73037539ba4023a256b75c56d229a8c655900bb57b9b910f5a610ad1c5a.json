@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16794|metacritic_12700|name=Chaos League | platform=Microsoft Windows | genres=Sports game | developer=Cyanide (Studio) | releaseYear=2004-01-01||name=Chaos League: Sudden Death | platform=PC | genres=Strategy,Real-Time,Fantasy,General | developer=Cyanide | releaseYear=2005-01-01 | criticScore=69.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Chaos League | platform=Microsoft Windows | genres=Sports game | developer=Cyanide (Studio) | releaseYear=2004-01-01\nRecord B: name=Chaos League: Sudden Death | platform=PC | genres=Strategy,Real-Time,Fantasy,General | developer=Cyanide | releaseYear=2005-01-01 | criticScore=69.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

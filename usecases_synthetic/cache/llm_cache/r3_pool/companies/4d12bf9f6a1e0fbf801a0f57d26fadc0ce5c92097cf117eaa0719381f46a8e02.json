@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Superior_Air_Parts|http://www.forbes.com/companies/genuine-parts/|name=Superior Air Parts | country=United States | city=Coppell, Texas | industry=Aerospace | founded=1967-01-01||name=Genuine Parts | country=United States of America | industry=Specialty Stores",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Superior Air Parts | country=United States | city=Coppell, Texas | industry=Aerospace | founded=1967-01-01\nRecord B: name=Genuine Parts | country=United States of America | industry=Specialty Stores\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

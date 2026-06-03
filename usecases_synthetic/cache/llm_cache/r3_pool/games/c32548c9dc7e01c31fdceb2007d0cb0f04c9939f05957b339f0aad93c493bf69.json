@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_4803|sales_1274|name=Virtua Tennis 3 | platform=PS3 | genres=Sports,Traditional,Individual,Tennis,Tennis | developer=Sega AM3 | releaseYear=2007-01-01 | criticScore=80.0 | userScore=7.9 | ESRB=E||name=Virtua Tennis 3 | platform=PS3 | genres=Sports | developer=Sega AM3 | publisher=Sega | releaseYear=2007-01-01 | criticScore=80 | userScore=7.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Virtua Tennis 3 | platform=PS3 | genres=Sports,Traditional,Individual,Tennis,Tennis | developer=Sega AM3 | releaseYear=2007-01-01 | criticScore=80.0 | userScore=7.9 | ESRB=E\nRecord B: name=Virtua Tennis 3 | platform=PS3 | genres=Sports | developer=Sega AM3 | publisher=Sega | releaseYear=2007-01-01 | criticScore=80 | userScore=7.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_41737|sales_3501|name=Blade II (video game) | platform=PS2 | genres=Action game | developer=Mucky Foot Productions | releaseYear=2002-01-01||name=Blade II | platform=PS2 | genres=Action | developer=Mucky Foot Productions | publisher=Activision | releaseYear=2002-01-01 | criticScore=49 | userScore=6.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Blade II (video game) | platform=PS2 | genres=Action game | developer=Mucky Foot Productions | releaseYear=2002-01-01\nRecord B: name=Blade II | platform=PS2 | genres=Action | developer=Mucky Foot Productions | publisher=Activision | releaseYear=2002-01-01 | criticScore=49 | userScore=6.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

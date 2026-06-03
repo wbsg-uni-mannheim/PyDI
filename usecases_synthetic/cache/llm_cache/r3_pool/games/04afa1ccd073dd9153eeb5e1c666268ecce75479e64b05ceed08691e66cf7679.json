@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_28637|sales_6845|name=The Bureau: XCOM Declassified | platform=Microsoft Windows | genres=Tactical shooter | developer=2K Marin | releaseYear=2013-01-01||name=The Bureau: XCOM Declassified | platform=PC | genres=Shooter | developer=2K Marin | publisher=Take-Two Interactive | releaseYear=2013-01-01 | criticScore=66 | userScore=6.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Bureau: XCOM Declassified | platform=Microsoft Windows | genres=Tactical shooter | developer=2K Marin | releaseYear=2013-01-01\nRecord B: name=The Bureau: XCOM Declassified | platform=PC | genres=Shooter | developer=2K Marin | publisher=Take-Two Interactive | releaseYear=2013-01-01 | criticScore=66 | userScore=6.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

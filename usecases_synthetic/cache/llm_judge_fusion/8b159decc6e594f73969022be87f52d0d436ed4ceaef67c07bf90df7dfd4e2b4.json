@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Bella Vista, New South Wales"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Liverpool"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "normalization",
+    "reasoning": "Liverpool is the canonical city name; the other candidate is a broader region-style place name.",
+    "value": "Liverpool"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Liverpool\",\"operation\":\"normalization\",\"confidence\":0.78,\"reasoning\":\"Liverpool is the canonical city name; the other candidate is a broader region-style place name.\"}"
+}

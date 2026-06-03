@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_50972|metacritic_14068|name=Malicious (video game) | platform=PS3 | genres=Action game | developer=Alvion | releaseYear=2010-01-01||name=Malicious | platform=PS3 | genres=Action,General,General | developer=Alvion | releaseYear=2012-01-01 | criticScore=67.0 | userScore=5.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Malicious (video game) | platform=PS3 | genres=Action game | developer=Alvion | releaseYear=2010-01-01\nRecord B: name=Malicious | platform=PS3 | genres=Action,General,General | developer=Alvion | releaseYear=2012-01-01 | criticScore=67.0 | userScore=5.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

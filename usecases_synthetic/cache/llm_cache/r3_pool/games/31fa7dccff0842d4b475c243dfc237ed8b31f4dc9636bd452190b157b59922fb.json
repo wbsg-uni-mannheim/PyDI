@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_12392|sales_5689|name=Lost in Blue | platform=DS | genres=Action Adventure,Adventure,3D,Survival,Modern,Third-Person,Modern | developer=Konami Computer Entertainment Hawaii | releaseYear=2005-01-01 | criticScore=69.0 | userScore=7.6 | ESRB=E10+||name=Lost in Blue | platform=DS | genres=Adventure | developer=Konami Computer Entertainment Hawaii | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=69 | userScore=7.8 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lost in Blue | platform=DS | genres=Action Adventure,Adventure,3D,Survival,Modern,Third-Person,Modern | developer=Konami Computer Entertainment Hawaii | releaseYear=2005-01-01 | criticScore=69.0 | userScore=7.6 | ESRB=E10+\nRecord B: name=Lost in Blue | platform=DS | genres=Adventure | developer=Konami Computer Entertainment Hawaii | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=69 | userScore=7.8 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

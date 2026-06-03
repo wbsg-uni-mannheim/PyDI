@@ -1,0 +1,26 @@
+{
+  "attribute": "country",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "United States"
+    },
+    {
+      "source": "forbes",
+      "value": "United Kingdom of Great Britain and Northern Ireland"
+    },
+    {
+      "source": "fullcontact",
+      "value": "United Kingdom"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "Two sources indicate the UK, and the longer official name normalizes to the standard country name.",
+    "value": "United Kingdom"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United Kingdom\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"Two sources indicate the UK, and the longer official name normalizes to the standard country name.\"}"
+}

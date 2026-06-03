@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_20969|sales_5686|name=Avatar: The Last Airbender (video game) | platform=PlayStation Portable | genres=Action-adventure game | developer=THQ Studio Australia | releaseYear=2006-01-01||name=Avatar: The Last Airbender | platform=Playstation Portable | genres=Adventure | developer=TOSE | publisher=THQ | releaseYear=2006-01-01 | criticScore=57 | userScore=6.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Avatar: The Last Airbender (video game) | platform=PlayStation Portable | genres=Action-adventure game | developer=THQ Studio Australia | releaseYear=2006-01-01\nRecord B: name=Avatar: The Last Airbender | platform=Playstation Portable | genres=Adventure | developer=TOSE | publisher=THQ | releaseYear=2006-01-01 | criticScore=57 | userScore=6.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

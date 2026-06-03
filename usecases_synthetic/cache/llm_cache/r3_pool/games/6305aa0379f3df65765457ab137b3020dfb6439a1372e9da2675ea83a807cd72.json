@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_17553|sales_3180|name=Shaun Palmer's Pro Snowboarder | platform=Game Boy Advance | genres=Sports,Alternative,Snowboarding | developer=Natsume | releaseYear=2001-01-01 | criticScore=58.0 | ESRB=E||name=Shaun Palmer's Pro Snowboarder | platform=Game Boy Advance | genres=Sports | developer=Natsume | publisher=Activision | releaseYear=2001-01-01 | criticScore=58 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shaun Palmer's Pro Snowboarder | platform=Game Boy Advance | genres=Sports,Alternative,Snowboarding | developer=Natsume | releaseYear=2001-01-01 | criticScore=58.0 | ESRB=E\nRecord B: name=Shaun Palmer's Pro Snowboarder | platform=Game Boy Advance | genres=Sports | developer=Natsume | publisher=Activision | releaseYear=2001-01-01 | criticScore=58 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

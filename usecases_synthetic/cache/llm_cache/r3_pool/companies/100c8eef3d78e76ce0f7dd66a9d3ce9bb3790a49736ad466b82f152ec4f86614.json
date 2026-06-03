@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_662|http://dbpedia.org/resource/Sharp_HealthCare|name=Sharp HealthCare | country=United States | city=San Diego | founded=1991-01-01||name=Sharp HealthCare | country=United States | city=San Diego | founded=1955-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sharp HealthCare | country=United States | city=San Diego | founded=1991-01-01\nRecord B: name=Sharp HealthCare | country=United States | city=San Diego | founded=1955-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

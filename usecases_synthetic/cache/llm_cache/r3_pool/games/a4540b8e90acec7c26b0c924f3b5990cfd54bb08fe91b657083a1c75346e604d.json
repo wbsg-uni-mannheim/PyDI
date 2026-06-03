@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24076|sales_6450|name=Pitfall: The Lost Expedition | platform=Xbox | genres=Action game | developer=Beenox | releaseYear=2006-01-01||name=Pitfall: The Lost Expedition | platform=Xbox | genres=Platform | developer=Edge of Reality | publisher=Activision | releaseYear=2004-01-01 | criticScore=73 | userScore=7.8 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pitfall: The Lost Expedition | platform=Xbox | genres=Action game | developer=Beenox | releaseYear=2006-01-01\nRecord B: name=Pitfall: The Lost Expedition | platform=Xbox | genres=Platform | developer=Edge of Reality | publisher=Activision | releaseYear=2004-01-01 | criticScore=73 | userScore=7.8 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

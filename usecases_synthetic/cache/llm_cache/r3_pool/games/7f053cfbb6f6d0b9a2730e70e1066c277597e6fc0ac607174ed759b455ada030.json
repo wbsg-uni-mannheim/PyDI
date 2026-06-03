@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_63143|metacritic_7036|name=Exit (video game) | platform=PlayStation Portable | genres=Action game | developer=Taito Corporation | releaseYear=2008-01-01||name=Exit | platform=Playstation Portable | genres=Miscellaneous,Puzzle,Puzzle,General,Puzzle,General | developer=Taito Corporation | releaseYear=2006-01-01 | criticScore=77.0 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Exit (video game) | platform=PlayStation Portable | genres=Action game | developer=Taito Corporation | releaseYear=2008-01-01\nRecord B: name=Exit | platform=Playstation Portable | genres=Miscellaneous,Puzzle,Puzzle,General,Puzzle,General | developer=Taito Corporation | releaseYear=2006-01-01 | criticScore=77.0 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

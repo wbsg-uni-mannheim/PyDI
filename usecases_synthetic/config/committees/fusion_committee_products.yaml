@@ -11,14 +11,14 @@
 # Per-domain fork rather than a single canonical file because
 # attribute_types + pydi_candidates depend on the schema.
 #
-# NOTE: the existing fusion gold
-# (usecases/products/input/fusion/{validation,test}_set.xml) currently
-# only carries the original 5 attribute columns (title / brand /
-# description / price / priceCurrency). The data_cleaned_final
-# additions (model / product_type / chipset_name / vram_gb /
-# storage_gb) are declared here so the next gold refresh requires no
-# committee config change. They are dead config until the gold XML is
-# refreshed.
+# Scope: the fusion committee scores exactly the attributes present in
+# the GIVEN fusion val/test gold (validation_set.xml / test_set.xml,
+# 100 records each) = 19 attrs. The gold is fixed/given and is NOT
+# regenerated; attributes absent from it are simply NOT fusion-scored.
+# The 5 sparse dims (color, width_mm, length_mm, height_mm, weight_g)
+# ARE in the 24-attr norm (schema_constraints) + K-knob scope, but are
+# NOT in this gold, so they are deliberately absent here — same
+# principle as companies (industry stays mapped but unscored).
 
 seed: 42
 
@@ -39,13 +39,120 @@ trust_scores:
   products_3: 2
   products_4: 1
 
-# Column mapping - empty per source (shared schema). Keep in sync with
-# em_blocking / em_matching products yamls.
+# Column mapping - per-source native->canonical. Sources now carry
+# source-native column vocabularies (2026-06-02 schema-heterogeneity
+# adoption); derived from sm_mapping_gold.csv. MUST stay identical across
+# em_blocking / em_matching / fusion products yamls (the committee runner
+# enforces blocking==matching). id excluded (loader-renamed to 'id').
 column_mapping:
-  products_1: {}
-  products_2: {}
-  products_3: {}
-  products_4: {}
+  products_1:
+    manufacturer: brand
+    product_name: title
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    cluster_id: cluster_id
+    product_url: url
+    name_and_description: title_description
+    model_name: model
+    manufacturer_part_number: model_number
+    category: product_type
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    bus_standard: bus_type
+    interface: interface_type
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+    connector: storage_connection_type
+    memory_technology: memory_type
+    colour: color
+    form_factor: form_factor
+  products_2:
+    brandName: brand
+    name: title
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    cluster_id: cluster_id
+    productUrl: url
+    titleAndDescription: title_description
+    modelName: model
+    mpn: model_number
+    productCategory: product_type
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    busType: bus_type
+    interfaceType: interface_type
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+    connectionType: storage_connection_type
+    memoryType: memory_type
+    color: color
+    formFactor: form_factor
+  products_3:
+    Brand: brand
+    ProductTitle: title
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    cluster_id: cluster_id
+    Link: url
+    TitleDetails: title_description
+    Model: model
+    PartNo: model_number
+    Type: product_type
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Bus: bus_type
+    Interface: interface_type
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+    Connector: storage_connection_type
+    MemoryType: memory_type
+    Colour: color
+    FormFactor: form_factor
+  products_4:
+    mfr: brand
+    name: title
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cluster_id: cluster_id
+    link: url
+    name_desc: title_description
+    mdl: model
+    pn: model_number
+    cat: product_type
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    bus: bus_type
+    iface: interface_type
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
+    conn: storage_connection_type
+    mem: memory_type
+    clr: color
+    ff: form_factor
 
 evaluation_functions:
   # Full data_cleaned_final wide schema (plan_revision §R1 / §R10-L).

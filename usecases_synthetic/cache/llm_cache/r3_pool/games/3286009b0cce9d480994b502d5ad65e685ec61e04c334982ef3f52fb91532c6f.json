@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17046|metacritic_17464|name=Q*bert (1999 video game) | platform=Dreamcast | genres=Action game | developer=Majesco Entertainment | releaseYear=1999-01-01||name=Q*Bert | platform=Dreamcast | genres=Action,General | developer=Artech Digital Entertainment | releaseYear=2000-01-01 | criticScore=58.0 | userScore=7.2",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Q*bert (1999 video game) | platform=Dreamcast | genres=Action game | developer=Majesco Entertainment | releaseYear=1999-01-01\nRecord B: name=Q*Bert | platform=Dreamcast | genres=Action,General | developer=Artech Digital Entertainment | releaseYear=2000-01-01 | criticScore=58.0 | userScore=7.2\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

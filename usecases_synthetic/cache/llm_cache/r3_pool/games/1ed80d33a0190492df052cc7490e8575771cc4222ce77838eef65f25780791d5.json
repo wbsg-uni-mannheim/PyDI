@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_35124|metacritic_20094|name=Overkill's The Walking Dead | platform=Microsoft Windows | genres=First-person shooter | developer=Overkill Software | releaseYear=2018-01-01||name=The Walking Dead: Survival Instinct | platform=PC | genres=Action,Action Adventure,Shooter,Shooter,Survival,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=Terminal Reality | releaseYear=2013-01-01 | criticScore=38.0 | userScore=2.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Overkill's The Walking Dead | platform=Microsoft Windows | genres=First-person shooter | developer=Overkill Software | releaseYear=2018-01-01\nRecord B: name=The Walking Dead: Survival Instinct | platform=PC | genres=Action,Action Adventure,Shooter,Shooter,Survival,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=Terminal Reality | releaseYear=2013-01-01 | criticScore=38.0 | userScore=2.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

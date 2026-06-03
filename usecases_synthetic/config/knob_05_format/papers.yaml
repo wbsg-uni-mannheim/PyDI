@@ -1,0 +1,143 @@
+# Knob 05 — Format/Unit Diversity: Papers domain config.
+#
+# Seeded from music 2026-06-01; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run. The numeric VALUES
+# below (normalize_down_threshold, level pool structure) are carried over
+# verbatim from the music K5 config as seeds, NOT papers-tuned figures.
+#
+# Papers baseline (DBLP / Crossref / OpenAlex; all three share the same
+# 14 canonical columns, so per-source attribute_classes are IDENTICAL):
+#   - publication_year is a bare 4-digit year INTEGER (2018-2020 only —
+#     very low cardinality). It is the only temporal attribute. The date
+#     format pool is THIN by construction: the only operator that does
+#     NOT invent a month/day is precision_year (strftime "%Y" -> "2018").
+#     A two-digit-year-only representation ("'18", i.e. "'%y") would be
+#     the natural second rung, but there is no such format_id in the
+#     immutable _tables/date_formats.yaml and reformat_date cannot
+#     round-trip a bare 2-digit year, so it is NOT emitted here (adding
+#     it would require touching the shared, immutable date table). We do
+#     NOT fall back to iso / us_slash / eu_dot for years because those
+#     would fabricate "2018-01-01"-style full dates from a year-only
+#     value. Net effect: the date branch is effectively identity at
+#     baseline (year already equals "%Y") and degrades gracefully —
+#     publication_year carries no format heterogeneity until the year
+#     format pool / operators are widened.
+#   - first_page, last_page, referenced_works_count, cited_by_count are
+#     numeric (page locators are MOSTLY numeric; the counts are plain
+#     integers up to ~100000). They route through the "number" family for
+#     thousands-separator / locale rewriting. Non-numeric page locators
+#     (e.g. "D607") fail the round-trip parse and are logged to the
+#     skipped audit rather than mangled.
+#   - NO currency and NO duration attributes in papers, so the money /
+#     duration / file_size / rate operator pools are omitted entirely;
+#     unit_pool_per_level stays empty (number reformatting is
+#     locale-only, no magnitude scaling).
+#
+# id and doi are NEVER targeted: id is the minted synthetic record id and
+# doi is the fusion-gold join key (perturbing doi would break fusion-by-doi
+# scoring). Neither appears in attribute_classes.
+
+domain: papers
+
+# --- Attribute format family classification ---
+# Shared with Knob 10 (authoritative source of truth for comparator
+# routing). The three sources are target-shaped (identical columns), so
+# the per-source maps are identical. "date" => publication_year (year-only
+# temporal); "number" => the four numeric bibliographic counters/locators.
+attribute_classes:
+  dblp:
+    publication_year: date
+    first_page: number
+    last_page: number
+    referenced_works_count: number
+    cited_by_count: number
+  crossref:
+    publication_year: date
+    first_page: number
+    last_page: number
+    referenced_works_count: number
+    cited_by_count: number
+  open_alex:
+    publication_year: date
+    first_page: number
+    last_page: number
+    referenced_works_count: number
+    cited_by_count: number
+
+# --- ID columns (for provenance entity_id) ---
+# The synthetic loader renames every primary id column to the canonical
+# "id" (values "<source>-NNNNN").
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+# --- Format pools per level ---
+# Pinned pool sizes (per knob card): easy=2, medium=3, hard=4. The
+# "number" family meets this (locale IDs, additive per level, same shape
+# as the companies/games money pool). The "date" family CANNOT meet it
+# without fabricating full dates from a bare year, so it stays a single
+# year-only rung at every level (precision_year => "%Y"); see the
+# top-of-file note. format_pools_per_level entries for "number" are
+# locale IDs handled by reformat_number.
+format_pools_per_level:
+  easy:
+    date:
+      - precision_year   # YYYY (year-only; identity at baseline)
+    number:
+      - en_US            # 1,234
+      - plain            # 1234
+  medium:
+    date:
+      - precision_year
+    number:
+      - en_US
+      - de_DE            # 1.234
+      - plain
+  hard:
+    date:
+      - precision_year
+    number:
+      - en_US
+      - de_DE
+      - fr_FR            # 1 234
+      - plain
+
+# --- Locale pool per level ---
+locale_pool_per_level:
+  easy:
+    - en_US
+  medium:
+    - en_US
+    - de_DE
+  hard:
+    - en_US
+    - de_DE
+    - fr_FR
+
+# --- Within-source consistency ---
+within_source_consistency:
+  easy: source    # one draw per (source, attribute)
+  medium: source
+  hard: row       # per-row draw
+
+# --- Unit/magnitude pool per level ---
+# Papers has no currency and no duration; the numeric counters are bare
+# integers with no implicit magnitude, so number reformatting is
+# locale-only (no magnitude scaling, no currency rotation). The pools are
+# intentionally empty at every level, mirroring music (which likewise
+# carries empty unit pools because its duration is reformatting-only).
+unit_pool_per_level:
+  easy: {}
+  medium: {}
+  hard: {}
+
+# --- Normalize-down threshold ---
+# If no single format covers >= this share, easy must normalize down.
+# (Seeded from music; UNTUNED for papers.)
+normalize_down_threshold: 0.85
+
+# --- Source magnitude context ---
+# No implicit magnitudes/currencies/units on any papers attribute (the
+# numeric counters are bare raw integers), so this is empty.
+source_magnitude_context: {}

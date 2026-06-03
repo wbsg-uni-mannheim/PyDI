@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_213|metacritic_16283|name=Barnyard (video game) | platform=PS2 | genres=Party game | developer=Blue Tongue Entertainment | releaseYear=2006-01-01||name=Barnyard | platform=PS2 | genres=Action,General | developer=Blue Tongue Entertainment | releaseYear=2006-01-01 | criticScore=62.0 | userScore=8.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Barnyard (video game) | platform=PS2 | genres=Party game | developer=Blue Tongue Entertainment | releaseYear=2006-01-01\nRecord B: name=Barnyard | platform=PS2 | genres=Action,General | developer=Blue Tongue Entertainment | releaseYear=2006-01-01 | criticScore=62.0 | userScore=8.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_10215|sales_952|name=Max Payne 2: The Fall of Max Payne | platform=PS2 | genres=Action,Shooter,Third-Person,Modern | developer=Rockstar Vienna | releaseYear=2003-01-01 | criticScore=73.0 | userScore=8.2 | ESRB=M||name=Max Payne 2: The Fall of Max Payne | platform=PS2 | genres=Shooter | developer=Rockstar Vienna | publisher=Take-Two Interactive | releaseYear=2003-01-01 | criticScore=73 | userScore=8.2 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Max Payne 2: The Fall of Max Payne | platform=PS2 | genres=Action,Shooter,Third-Person,Modern | developer=Rockstar Vienna | releaseYear=2003-01-01 | criticScore=73.0 | userScore=8.2 | ESRB=M\nRecord B: name=Max Payne 2: The Fall of Max Payne | platform=PS2 | genres=Shooter | developer=Rockstar Vienna | publisher=Take-Two Interactive | releaseYear=2003-01-01 | criticScore=73 | userScore=8.2 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

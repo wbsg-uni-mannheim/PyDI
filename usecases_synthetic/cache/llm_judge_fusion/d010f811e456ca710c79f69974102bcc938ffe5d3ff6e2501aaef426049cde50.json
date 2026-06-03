@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Telus TV"
+    },
+    {
+      "source": "forbes",
+      "value": "TELUS"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Forbes uses the parent company name, which is the canonical form over the product-specific variant.",
+    "value": "TELUS"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"TELUS\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Forbes uses the parent company name, which is the canonical form over the product-specific variant.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_456|http://dbpedia.org/resource/Dick_Clark_Architecture|name=Kimberly-Clark Corporation (United States) | country=United States | city=Neenah | founded=1872-01-01||name=Dick Clark Architecture | country=United States | city=Austin, Texas | industry=Architecture | founded=1979-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Kimberly-Clark Corporation (United States) | country=United States | city=Neenah | founded=1872-01-01\nRecord B: name=Dick Clark Architecture | country=United States | city=Austin, Texas | industry=Architecture | founded=1979-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

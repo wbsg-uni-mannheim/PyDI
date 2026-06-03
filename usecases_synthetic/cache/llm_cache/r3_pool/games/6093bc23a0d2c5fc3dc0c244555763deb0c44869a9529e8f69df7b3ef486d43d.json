@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_6935|sales_7378|name=Braid (video game) | platform=Microsoft Windows | genres=Puzzle-platform game | developer=Number None | releaseYear=2008-01-01||name=Braid | platform=PC | genres=Platform | developer=Number None Inc., Knockout Games | publisher=Number None | releaseYear=2009-01-01 | criticScore=90 | userScore=8.6 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Braid (video game) | platform=Microsoft Windows | genres=Puzzle-platform game | developer=Number None | releaseYear=2008-01-01\nRecord B: name=Braid | platform=PC | genres=Platform | developer=Number None Inc., Knockout Games | publisher=Number None | releaseYear=2009-01-01 | criticScore=90 | userScore=8.6 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

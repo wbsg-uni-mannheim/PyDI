@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1690|sales_853|name=Onimusha 3: Demon Siege | platform=PS2 | genres=Action Adventure,Fantasy | developer=Capcom | releaseYear=2004-01-01 | criticScore=85.0 | userScore=8.7 | ESRB=M||name=Onimusha 3: Demon Siege | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2004-01-01 | criticScore=85 | userScore=8.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Onimusha 3: Demon Siege | platform=PS2 | genres=Action Adventure,Fantasy | developer=Capcom | releaseYear=2004-01-01 | criticScore=85.0 | userScore=8.7 | ESRB=M\nRecord B: name=Onimusha 3: Demon Siege | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2004-01-01 | criticScore=85 | userScore=8.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

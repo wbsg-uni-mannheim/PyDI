@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_3456|sales_837|name=Major League Baseball 2K5 | platform=PS2 | genres=Sports,Traditional,Baseball,Sim | developer=Kush Games | releaseYear=2005-01-01 | criticScore=82.0 | userScore=7.4 | ESRB=E||name=Major League Baseball 2K5 | platform=PS2 | genres=Sports | developer=Kush Games | publisher=Take-Two Interactive | releaseYear=2005-01-01 | criticScore=82 | userScore=7.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Major League Baseball 2K5 | platform=PS2 | genres=Sports,Traditional,Baseball,Sim | developer=Kush Games | releaseYear=2005-01-01 | criticScore=82.0 | userScore=7.4 | ESRB=E\nRecord B: name=Major League Baseball 2K5 | platform=PS2 | genres=Sports | developer=Kush Games | publisher=Take-Two Interactive | releaseYear=2005-01-01 | criticScore=82 | userScore=7.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

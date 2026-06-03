@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_19116|sales_5410|name=NeverDead | platform=PS3 | genres=Action Adventure,Horror,Horror,Survival | developer=Rebellion | releaseYear=2012-01-01 | criticScore=50.0 | userScore=4.9 | ESRB=M||name=NeverDead | platform=PS3 | genres=Shooter | developer=Rebellion | publisher=Konami Digital Entertainment | releaseYear=2012-01-01 | criticScore=50 | userScore=4.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=NeverDead | platform=PS3 | genres=Action Adventure,Horror,Horror,Survival | developer=Rebellion | releaseYear=2012-01-01 | criticScore=50.0 | userScore=4.9 | ESRB=M\nRecord B: name=NeverDead | platform=PS3 | genres=Shooter | developer=Rebellion | publisher=Konami Digital Entertainment | releaseYear=2012-01-01 | criticScore=50 | userScore=4.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_64671|sales_5223|name=Dead Rising 2 | platform=Microsoft Windows | genres=Action-adventure | developer=Blue Castle Games | releaseYear=2016-01-01||name=Dead Rising 2 | platform=PC | genres=Action | developer=Blue Castle Games | publisher=Capcom | releaseYear=2010-01-01 | criticScore=78 | userScore=6.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dead Rising 2 | platform=Microsoft Windows | genres=Action-adventure | developer=Blue Castle Games | releaseYear=2016-01-01\nRecord B: name=Dead Rising 2 | platform=PC | genres=Action | developer=Blue Castle Games | publisher=Capcom | releaseYear=2010-01-01 | criticScore=78 | userScore=6.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

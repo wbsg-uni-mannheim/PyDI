@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "CaliforniaOakland, CaliforniaClorox Building"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Oakland"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The dbpedia candidate contains Oakland, California with extra location text; the canonical city is Oakland.",
+    "value": "Oakland"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Oakland\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The dbpedia candidate contains Oakland, California with extra location text; the canonical city is Oakland.\"}"
+}

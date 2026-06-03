@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_22217|metacritic_16729|name=Crafting Mama | platform=DS | genres=Minigame | developer=Cooking Mama Limited | releaseYear=2010-01-01||name=Gardening Mama | platform=DS | genres=Simulation,Miscellaneous,Puzzle,Puzzle,General,Puzzle,Virtual,General,Career | developer=Taito Corporation | releaseYear=2009-01-01 | criticScore=60.0 | userScore=8.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crafting Mama | platform=DS | genres=Minigame | developer=Cooking Mama Limited | releaseYear=2010-01-01\nRecord B: name=Gardening Mama | platform=DS | genres=Simulation,Miscellaneous,Puzzle,Puzzle,General,Puzzle,Virtual,General,Career | developer=Taito Corporation | releaseYear=2009-01-01 | criticScore=60.0 | userScore=8.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

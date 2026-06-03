@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_8648|sales_3773|name=Shadow of Rome | platform=PS2 | genres=Action Adventure,Historic | developer=Capcom | releaseYear=2005-01-01 | criticScore=75.0 | userScore=8.5 | ESRB=M||name=Shadow of Rome | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2005-01-01 | criticScore=75 | userScore=8.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shadow of Rome | platform=PS2 | genres=Action Adventure,Historic | developer=Capcom | releaseYear=2005-01-01 | criticScore=75.0 | userScore=8.5 | ESRB=M\nRecord B: name=Shadow of Rome | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2005-01-01 | criticScore=75 | userScore=8.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_6550|sales_3857|name=Excitebots: Trick Racing | platform=Wii | genres=Driving,Racing,General,Arcade,Arcade,Automobile | developer=Monster Games Inc. | releaseYear=2009-01-01 | criticScore=77.0 | userScore=8.1 | ESRB=E||name=ExciteBots: Trick Racing | platform=Wii | genres=Racing | developer=Monster Games Inc. | publisher=Nintendo | releaseYear=2009-01-01 | criticScore=77 | userScore=8.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Excitebots: Trick Racing | platform=Wii | genres=Driving,Racing,General,Arcade,Arcade,Automobile | developer=Monster Games Inc. | releaseYear=2009-01-01 | criticScore=77.0 | userScore=8.1 | ESRB=E\nRecord B: name=ExciteBots: Trick Racing | platform=Wii | genres=Racing | developer=Monster Games Inc. | publisher=Nintendo | releaseYear=2009-01-01 | criticScore=77 | userScore=8.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

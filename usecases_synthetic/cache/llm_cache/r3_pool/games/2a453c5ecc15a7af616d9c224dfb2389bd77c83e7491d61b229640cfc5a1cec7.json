@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_2354|sales_1594|name=Darksiders II | platform=PS3 | genres=Action Adventure,Modern,Fantasy,Fantasy,Open-World | developer=Vigil Games | releaseYear=2012-01-01 | criticScore=84.0 | userScore=7.5 | ESRB=M||name=Darksiders II | platform=PS3 | genres=Action | developer=Vigil Games | publisher=THQ | releaseYear=2012-01-01 | criticScore=84 | userScore=7.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Darksiders II | platform=PS3 | genres=Action Adventure,Modern,Fantasy,Fantasy,Open-World | developer=Vigil Games | releaseYear=2012-01-01 | criticScore=84.0 | userScore=7.5 | ESRB=M\nRecord B: name=Darksiders II | platform=PS3 | genres=Action | developer=Vigil Games | publisher=THQ | releaseYear=2012-01-01 | criticScore=84 | userScore=7.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

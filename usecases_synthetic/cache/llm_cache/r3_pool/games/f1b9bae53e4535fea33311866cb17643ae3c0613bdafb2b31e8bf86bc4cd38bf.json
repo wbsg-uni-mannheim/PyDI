@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_2919|sales_20|name=Call of Duty: Black Ops II | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Historic,Modern,Modern,Arcade | developer=Treyarch | releaseYear=2012-01-01 | criticScore=83.0 | userScore=5.9 | ESRB=M||name=Call of Duty: Black Ops II | platform=PS3 | genres=Shooter | developer=Treyarch | publisher=Activision | releaseYear=2012-01-01 | criticScore=83 | userScore=5.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty: Black Ops II | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Historic,Modern,Modern,Arcade | developer=Treyarch | releaseYear=2012-01-01 | criticScore=83.0 | userScore=5.9 | ESRB=M\nRecord B: name=Call of Duty: Black Ops II | platform=PS3 | genres=Shooter | developer=Treyarch | publisher=Activision | releaseYear=2012-01-01 | criticScore=83 | userScore=5.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

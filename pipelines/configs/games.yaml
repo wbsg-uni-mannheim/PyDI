@@ -27,6 +27,12 @@ stages:
     selection_metric: macro_f1
     apply_winner: false
     vacuous_epsilon: 0.005
+    # Score normalized outputs against the games target_schema's
+    # JSON-Schema constraints + x-pydi-consistency rules (date_range
+    # on releaseYear, numeric ranges on criticScore/userScore, plus
+    # x-pydi-taxonomy on genres/platform/ESRB). See
+    # pipelines/lib/schema_constraint_scorer.py.
+    scoring_surface: schema_constraints
   em:
     enabled: true
     blocking_selection_metric: reduction_ratio
@@ -48,13 +54,12 @@ column_types:
   name: text
   releaseYear: temporal
   developer: text
-  genres: categorical
+  genres: list  # array of subgenres; handled at cluster level (skip distributional)
   publisher: text
   platform: categorical
   criticScore: numerical
   userScore: numerical
   ESRB: categorical
-  globalSales: numerical
   series: categorical
 
 # Panel numerical tolerance. Games notebook uses
@@ -65,7 +70,6 @@ panel_tolerance:
   overrides:
     criticScore: 0.04
     userScore: 0.04
-    globalSales: 0.15
 
 composite_weights:
   entity_coverage: 0.10

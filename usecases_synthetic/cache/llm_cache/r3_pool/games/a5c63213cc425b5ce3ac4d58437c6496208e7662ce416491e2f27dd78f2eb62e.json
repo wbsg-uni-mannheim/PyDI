@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_10447|sales_1797|name=Sword of Mana | platform=Game Boy Advance | genres=Role-Playing,Action RPG | developer=Brownie Brown | releaseYear=2003-01-01 | criticScore=72.0 | userScore=8.5 | ESRB=E||name=Sword of Mana | platform=Game Boy Advance | genres=Role-Playing | developer=Brownie Brown | publisher=Nintendo | releaseYear=2003-01-01 | criticScore=72 | userScore=8.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sword of Mana | platform=Game Boy Advance | genres=Role-Playing,Action RPG | developer=Brownie Brown | releaseYear=2003-01-01 | criticScore=72.0 | userScore=8.5 | ESRB=E\nRecord B: name=Sword of Mana | platform=Game Boy Advance | genres=Role-Playing | developer=Brownie Brown | publisher=Nintendo | releaseYear=2003-01-01 | criticScore=72 | userScore=8.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

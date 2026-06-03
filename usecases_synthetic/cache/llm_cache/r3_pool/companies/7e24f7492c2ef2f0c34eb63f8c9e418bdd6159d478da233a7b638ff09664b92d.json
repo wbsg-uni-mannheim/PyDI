@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Stanley_Park_Ecology_Society|http://www.forbes.com/companies/stanley-black-decker/|name=Stanley Park Ecology Society | country=Canada | city=VancouverBritish ColumbiaStanley Park | industry=Conservation biology | founded=1988-01-01||name=Stanley Black & Decker | country=United States of America | industry=Household/Personal Care",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stanley Park Ecology Society | country=Canada | city=VancouverBritish ColumbiaStanley Park | industry=Conservation biology | founded=1988-01-01\nRecord B: name=Stanley Black & Decker | country=United States of America | industry=Household/Personal Care\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

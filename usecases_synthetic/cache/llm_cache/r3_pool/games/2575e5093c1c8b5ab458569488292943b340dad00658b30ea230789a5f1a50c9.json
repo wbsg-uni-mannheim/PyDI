@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59573|sales_7122|name=Patrician IV | platform=Microsoft Windows | genres=Business simulation game | developer=RuneSoft | releaseYear=2014-01-01||name=Patrician IV | platform=PC | genres=Strategy | developer=Gaming Minds Studios | publisher=Kalypso Media | releaseYear=2010-01-01 | criticScore=66 | userScore=6.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Patrician IV | platform=Microsoft Windows | genres=Business simulation game | developer=RuneSoft | releaseYear=2014-01-01\nRecord B: name=Patrician IV | platform=PC | genres=Strategy | developer=Gaming Minds Studios | publisher=Kalypso Media | releaseYear=2010-01-01 | criticScore=66 | userScore=6.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

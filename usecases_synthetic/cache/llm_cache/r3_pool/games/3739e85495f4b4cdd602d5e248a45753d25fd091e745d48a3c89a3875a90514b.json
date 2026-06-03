@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_33800|metacritic_1235|name=Fate/Extella: The Umbral Star | platform=Microsoft Windows | genres=Action game | developer=Marvelous (company) | releaseYear=2016-01-01||name=Hex: Shards of Fate | platform=PC | genres=Miscellaneous,Card Battle,Strategy,Turn-Based,Card Battle | developer=Cryptozoic Entertainment,Hex Entertainment | releaseYear=2016-01-01 | criticScore=87.0 | userScore=6.3",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fate/Extella: The Umbral Star | platform=Microsoft Windows | genres=Action game | developer=Marvelous (company) | releaseYear=2016-01-01\nRecord B: name=Hex: Shards of Fate | platform=PC | genres=Miscellaneous,Card Battle,Strategy,Turn-Based,Card Battle | developer=Cryptozoic Entertainment,Hex Entertainment | releaseYear=2016-01-01 | criticScore=87.0 | userScore=6.3\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

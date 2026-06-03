@@ -379,13 +379,22 @@ def _run_norm(
     bundle: VariantBundle,
     *,
     with_llm: bool,
+    scoring_surface: str,
 ) -> CommitteeResult:
-    """Run the Normalization committee against ``bundle``."""
+    """Run the Normalization committee against ``bundle``.
+
+    ``scoring_surface`` is read from the baseline meta by the caller so
+    every variant is scored against the same surface the baseline was
+    measured with (``"schema_constraints"`` compares to the canonical
+    target_schema constraints; ``"xml_targets"`` is the legacy fusion
+    val/test comparison).
+    """
     runner = NormCommitteeRunner(
         resolve_committee_path(
             "normalization_committee", bundle.domain, committee_dir=COMMITTEE_DIR
         ),
         with_llm=with_llm,
+        scoring_surface=scoring_surface,
     )
     return runner.run(bundle)
 
@@ -997,6 +1006,13 @@ def validate_variant(
         else baseline_fusion_input
     )
 
+    # Resolve the Norm scoring surface from the baseline so the variant is
+    # scored against the exact surface the baseline was measured with
+    # (no independent override — variant scoring must equal baseline
+    # scoring). Baselines predating the surface knob carry no key and
+    # fall back to the legacy "xml_targets", matching their norm numbers.
+    norm_scoring_surface: str = str(baseline.meta.get("scoring_surface", "xml_targets"))
+
     # Verify committee YAMLs haven't drifted.
     current_versions = _check_committee_versions(baseline, active_stages, domain)
 
@@ -1032,8 +1048,13 @@ def validate_variant(
 
     # --- Normalization ---
     if "norm" in active_stages:
-        logger.info("Running Normalization committee...")
-        norm_result = _run_norm(bundle, with_llm=with_llm)
+        logger.info(
+            "Running Normalization committee (scoring_surface=%s)...",
+            norm_scoring_surface,
+        )
+        norm_result = _run_norm(
+            bundle, with_llm=with_llm, scoring_surface=norm_scoring_surface
+        )
         measured_per_stage["norm"] = norm_result.as_dict()
         logger.info(
             "Norm done: macro_f1=%.4f best_member_f1=%.4f (%.1fs)",
@@ -1122,6 +1143,10 @@ def validate_variant(
         "fusion_input_member": active_fusion_input,
         "total_runtime_s": round(total_runtime, 2),
     }
+    # Provenance: the Norm surface this variant was scored against (== the
+    # baseline's, by construction). Stamped only when norm actually ran.
+    if "norm" in active_stages:
+        meta["scoring_surface"] = norm_scoring_surface
 
     json_path = out_dir / "metrics.json"
     write_metrics_json(

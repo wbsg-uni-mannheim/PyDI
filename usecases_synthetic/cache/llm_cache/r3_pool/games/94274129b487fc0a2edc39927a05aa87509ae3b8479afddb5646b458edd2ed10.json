@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_58105|sales_1513|name=Finding Nemo (video game) | platform=GameCube | genres=Action-adventure game | developer=KnowWonder | releaseYear=2003-01-01||name=Finding Nemo | platform=GameCube | genres=Action | developer=Traveller's Tales | publisher=THQ | releaseYear=2003-01-01 | criticScore=62 | userScore=5.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Finding Nemo (video game) | platform=GameCube | genres=Action-adventure game | developer=KnowWonder | releaseYear=2003-01-01\nRecord B: name=Finding Nemo | platform=GameCube | genres=Action | developer=Traveller's Tales | publisher=THQ | releaseYear=2003-01-01 | criticScore=62 | userScore=5.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

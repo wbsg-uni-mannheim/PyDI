@@ -14,54 +14,208 @@ id_columns:
   products_4: id
 
 attribute_classes:
-  products_1: &products_attr_classes
-    title: primary
-    brand: key
-    description: secondary
-    price: secondary
-    priceCurrency: secondary
-    title_description: secondary
-    product_type: key
-    model: secondary
-    model_number: secondary
-    chipset_name: secondary
-    vram_gb: secondary
-    storage_gb: secondary
-    bus_type: secondary
-    interface_type: secondary
-    memory_type: secondary
-    storage_connection_type: secondary
+  products_1:
+    product_name: primary
+    manufacturer: key
+    product_description: secondary
+    list_price: secondary
+    currency_code: secondary
+    name_and_description: secondary
+    category: key
+    model_name: secondary
+    manufacturer_part_number: secondary
+    gpu_chipset: secondary
+    video_memory_gb: secondary
+    capacity_gb: secondary
+    bus_standard: secondary
+    interface: secondary
+    memory_technology: secondary
+    connector: secondary
     form_factor: secondary
-    read_speed_mb_s: secondary
-    write_speed_mb_s: secondary
-  products_2: *products_attr_classes
-  products_3: *products_attr_classes
-  products_4: *products_attr_classes
+    sequential_read_mb_s: secondary
+    sequential_write_mb_s: secondary
+    colour: secondary
+    width_millimeters: secondary
+    length_millimeters: secondary
+    height_millimeters: secondary
+    weight_grams: secondary
+  products_2:
+    name: primary
+    brandName: key
+    descriptionText: secondary
+    priceAmount: secondary
+    currency: secondary
+    titleAndDescription: secondary
+    productCategory: key
+    modelName: secondary
+    mpn: secondary
+    chipset: secondary
+    vramGb: secondary
+    capacityGb: secondary
+    busType: secondary
+    interfaceType: secondary
+    memoryType: secondary
+    connectionType: secondary
+    formFactor: secondary
+    readSpeedMbps: secondary
+    writeSpeedMbps: secondary
+    color: secondary
+    widthMm: secondary
+    depthMm: secondary
+    heightMm: secondary
+    weightG: secondary
+  products_3:
+    ProductTitle: primary
+    Brand: key
+    Details: secondary
+    Price: secondary
+    Currency: secondary
+    TitleDetails: secondary
+    Type: key
+    Model: secondary
+    PartNo: secondary
+    Chipset: secondary
+    MemorySizeGB: secondary
+    CapacityGB: secondary
+    Bus: secondary
+    Interface: secondary
+    MemoryType: secondary
+    Connector: secondary
+    FormFactor: secondary
+    ReadMBs: secondary
+    WriteMBs: secondary
+    Colour: secondary
+    WidthMM: secondary
+    LengthMM: secondary
+    HeightMM: secondary
+    WeightG: secondary
+  products_4:
+    name: primary
+    mfr: key
+    desc: secondary
+    amt: secondary
+    cur: secondary
+    name_desc: secondary
+    cat: key
+    mdl: secondary
+    pn: secondary
+    chip: secondary
+    vram: secondary
+    cap_gb: secondary
+    bus: secondary
+    iface: secondary
+    mem: secondary
+    conn: secondary
+    ff: secondary
+    rd_mbs: secondary
+    wr_mbs: secondary
+    clr: secondary
+    w_mm: secondary
+    l_mm: secondary
+    h_mm: secondary
+    wt_g: secondary
 
 attribute_mapping:
-  products_1: &products_attr_mapping
-    title: title
-    brand: brand
-    description: description
-    price: price
-    priceCurrency: priceCurrency
-    title_description: title_description
-    product_type: product_type
-    model: model
-    model_number: model_number
-    chipset_name: chipset_name
-    vram_gb: vram_gb
-    storage_gb: storage_gb
-    bus_type: bus_type
-    interface_type: interface_type
-    memory_type: memory_type
-    storage_connection_type: storage_connection_type
+  products_1:
+    product_name: title
+    manufacturer: brand
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    name_and_description: title_description
+    category: product_type
+    model_name: model
+    manufacturer_part_number: model_number
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    bus_standard: bus_type
+    interface: interface_type
+    memory_technology: memory_type
+    connector: storage_connection_type
     form_factor: form_factor
-    read_speed_mb_s: read_speed_mb_s
-    write_speed_mb_s: write_speed_mb_s
-  products_2: *products_attr_mapping
-  products_3: *products_attr_mapping
-  products_4: *products_attr_mapping
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    colour: color
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+  products_2:
+    name: title
+    brandName: brand
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    titleAndDescription: title_description
+    productCategory: product_type
+    modelName: model
+    mpn: model_number
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    busType: bus_type
+    interfaceType: interface_type
+    memoryType: memory_type
+    connectionType: storage_connection_type
+    formFactor: form_factor
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    color: color
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+  products_3:
+    ProductTitle: title
+    Brand: brand
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    TitleDetails: title_description
+    Type: product_type
+    Model: model
+    PartNo: model_number
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    Bus: bus_type
+    Interface: interface_type
+    MemoryType: memory_type
+    Connector: storage_connection_type
+    FormFactor: form_factor
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Colour: color
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+  products_4:
+    name: title
+    mfr: brand
+    desc: description
+    amt: price
+    cur: priceCurrency
+    name_desc: title_description
+    cat: product_type
+    mdl: model
+    pn: model_number
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    bus: bus_type
+    iface: interface_type
+    mem: memory_type
+    conn: storage_connection_type
+    ff: form_factor
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    clr: color
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
 
 noise_rates_per_level:
   easy:
@@ -127,54 +281,100 @@ taxonomies:
   storage_interface:
     csv: products/input/schemamatching/Storage_Interface_Taxonomy.csv
     levels:
-      - Interface Family
-      - Generation
-      - Variant
+    - Interface Family
+    - Generation
+    - Variant
     bind:
-      products_1: &storage_interface_bind
-        bus_type: storage_interface
-        interface_type: storage_interface
-        storage_connection_type: storage_interface
-      products_2: *storage_interface_bind
-      products_3: *storage_interface_bind
-      products_4: *storage_interface_bind
+      products_1:
+        bus_standard: storage_interface
+        interface: storage_interface
+        connector: storage_interface
+      products_2:
+        busType: storage_interface
+        interfaceType: storage_interface
+        connectionType: storage_interface
+      products_3:
+        Bus: storage_interface
+        Interface: storage_interface
+        Connector: storage_interface
+      products_4:
+        bus: storage_interface
+        iface: storage_interface
+        conn: storage_interface
   gpu_memory:
     csv: products/input/schemamatching/GPU_Memory_Taxonomy.csv
     levels:
-      - Memory Family
-      - Generation
-      - Variant
+    - Memory Family
+    - Generation
+    - Variant
     bind:
-      products_1: &gpu_memory_bind
-        memory_type: gpu_memory
-      products_2: *gpu_memory_bind
-      products_3: *gpu_memory_bind
-      products_4: *gpu_memory_bind
+      products_1:
+        memory_technology: gpu_memory
+      products_2:
+        memoryType: gpu_memory
+      products_3:
+        MemoryType: gpu_memory
+      products_4:
+        mem: gpu_memory
   product_type:
     csv: products/input/schemamatching/Product_Type_Taxonomy.csv
     levels:
-      - Category
-      - Subcategory
-      - Type
+    - Category
+    - Subcategory
+    - Type
     bind:
-      products_1: &product_type_bind
-        product_type: product_type
-      products_2: *product_type_bind
-      products_3: *product_type_bind
-      products_4: *product_type_bind
+      products_1:
+        category: product_type
+      products_2:
+        productCategory: product_type
+      products_3:
+        Type: product_type
+      products_4:
+        cat: product_type
 
 # Pending #6: ±2 % relative jitter cap.
 numeric_jitter_max_relative: 0.02
 
 numeric_attributes:
-  products_1: &products_numeric
-    price: continuous
-    vram_gb: continuous
-    storage_gb: continuous
-    read_speed_mb_s: continuous
-    write_speed_mb_s: continuous
-  products_2: *products_numeric
-  products_3: *products_numeric
-  products_4: *products_numeric
+  products_1:
+    list_price: continuous
+    video_memory_gb: continuous
+    capacity_gb: continuous
+    sequential_read_mb_s: continuous
+    sequential_write_mb_s: continuous
+    width_millimeters: continuous
+    length_millimeters: continuous
+    height_millimeters: continuous
+    weight_grams: continuous
+  products_2:
+    priceAmount: continuous
+    vramGb: continuous
+    capacityGb: continuous
+    readSpeedMbps: continuous
+    writeSpeedMbps: continuous
+    widthMm: continuous
+    depthMm: continuous
+    heightMm: continuous
+    weightG: continuous
+  products_3:
+    Price: continuous
+    MemorySizeGB: continuous
+    CapacityGB: continuous
+    ReadMBs: continuous
+    WriteMBs: continuous
+    WidthMM: continuous
+    LengthMM: continuous
+    HeightMM: continuous
+    WeightG: continuous
+  products_4:
+    amt: continuous
+    vram: continuous
+    cap_gb: continuous
+    rd_mbs: continuous
+    wr_mbs: continuous
+    w_mm: continuous
+    l_mm: continuous
+    h_mm: continuous
+    wt_g: continuous
 
 cleanup_rules: []

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_2224|sales_3692|name=Dead or Alive (video game) | platform=Playstation | genres=Fighting game | developer=Team Ninja | releaseYear=1996-01-01||name=Dead or Alive | platform=Playstation | genres=Fighting | developer=Team Ninja | publisher=Sony Computer Entertainment | releaseYear=1998-01-01 | criticScore=84 | userScore=8.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dead or Alive (video game) | platform=Playstation | genres=Fighting game | developer=Team Ninja | releaseYear=1996-01-01\nRecord B: name=Dead or Alive | platform=Playstation | genres=Fighting | developer=Team Ninja | publisher=Sony Computer Entertainment | releaseYear=1998-01-01 | criticScore=84 | userScore=8.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,93 @@
+# Knob 03 — Per-source Attribute Drop Rate — Papers
+#
+# Seeded from music 2026-06-02; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run.
+#
+# Papers data is already target-shaped: all three sources (dblp, crossref,
+# open_alex) ship the SAME 14 canonical columns, so every attribute_mapping
+# is identity and the per-source attribute_classes are identical across the
+# three sources (expressed with a YAML anchor below).
+#
+# id and doi are NEVER targeted by value knobs: id is the synthetic record
+# id and doi is the fusion-gold join key, so neither is listed in
+# attribute_classes / attribute_mapping here.
+
+domain: papers
+
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+attribute_classes:
+  dblp: &papers_attr_classes
+    title: primary
+    type: key
+    publication_year: key
+    journal: key
+    authors: secondary
+    publisher: secondary
+    keywords: secondary
+    volume: secondary
+    issue: secondary
+    first_page: secondary
+    last_page: secondary
+    referenced_works_count: secondary
+    cited_by_count: secondary
+  crossref: *papers_attr_classes
+  open_alex: *papers_attr_classes
+
+# Data is already target-shaped, so every attribute_mapping is identity and
+# identical across the three sources (one anchor reused per source).
+attribute_mapping:
+  dblp: &papers_attr_mapping
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  crossref: *papers_attr_mapping
+  open_alex: *papers_attr_mapping
+
+rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.05
+  medium:
+    primary: 0.0
+    key: 0.10
+    secondary: 0.15
+  hard:
+    primary: 0.03
+    key: 0.25
+    secondary: 0.35
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+compression_factor: 0.7
+stretch_factor: 1.5
+
+single_source_survivor_cap_hard: 0.05
+per_cell_ceiling_delta: 0.10
+
+# No per-source attribute overrides yet: papers has no measured per-attribute
+# baseline coverage (no pool/baseline-audit artifacts built for papers), so we
+# cannot identify already-sparse attributes the way music tightens discogs /
+# lastfm duration ceilings. Add per_source_attribute_overrides here once a
+# papers baseline-coverage audit exists, to keep stretch from demanding
+# negative headroom on sparse attributes.
+# per_source_attribute_overrides:
+#   <source>:
+#     <attribute>: <ceiling>

@@ -66,7 +66,9 @@ class NotebookFusionSpec:
     rules: tuple[tuple[str, Callable[..., Any], dict[str, Any]], ...]
 
 
-_PRODUCTS_RULES = (
+_Rule = tuple[str, Callable[..., Any], dict[str, Any]]
+
+_PRODUCTS_RULES: tuple[_Rule, ...] = (
     ("brand", exact_match, {}),
     ("product_type", exact_match, {}),
     ("vram_gb", numeric_tolerance_match, {"tolerance": 0.15}),
@@ -83,7 +85,7 @@ _PRODUCTS_RULES = (
     ("memory_type", hardware_strict_spec_match, {}),
 )
 
-_MUSIC_RULES = (
+_MUSIC_RULES: tuple[_Rule, ...] = (
     ("name", tokenized_match, {}),
     ("artist", tokenized_match, {}),
     ("duration", numeric_tolerance_match, {"tolerance": 10}),
@@ -93,7 +95,7 @@ _MUSIC_RULES = (
     ("tracks", tokenized_match, {}),
 )
 
-_GAMES_RULES = (
+_GAMES_RULES: tuple[_Rule, ...] = (
     ("name", exact_match, {}),
     ("platform", exact_match, {}),
     ("developer", exact_match, {}),
@@ -110,12 +112,43 @@ _GAMES_RULES = (
 # numeric_tolerance_match tol=0.1). DataFusionStrategy stores eval
 # functions in an attribute->callable dict so the later registration
 # wins. We mirror that ordering.
-_COMPANIES_RULES = (
+# Papers — the notebook's strategy_v5 ONLY registers fusers; it does
+# NOT call add_evaluation_function for any attribute. The
+# DataFusionEvaluator still runs (defaulting per-attr matchers to
+# exact_match internally). For the comparison harness's
+# apples-to-apples surface we provide sensible per-attribute matchers
+# aligned with target_schema.json types + the fuser choices the
+# notebook makes. Adjust if/when the notebook adds explicit
+# add_evaluation_function calls.
+_PAPERS_RULES: tuple[_Rule, ...] = (
+    ("doi", exact_match, {}),
+    ("type", exact_match, {}),
+    ("title", tokenized_match, {}),
+    ("authors", set_equality_match, {}),
+    ("publication_year", year_only_match, {}),
+    ("journal", tokenized_match, {}),
+    ("publisher", tokenized_match, {}),
+    ("keywords", tokenized_match, {}),
+    ("volume", exact_match, {}),
+    ("issue", exact_match, {}),
+    ("first_page", exact_match, {}),
+    ("last_page", exact_match, {}),
+    ("referenced_works_count", numeric_tolerance_match, {"tolerance": 0.1}),
+    ("cited_by_count", numeric_tolerance_match, {"tolerance": 0.1}),
+)
+
+_COMPANIES_RULES: tuple[_Rule, ...] = (
     ("name", tokenized_match, {}),
     ("assets", tokenized_match, {}),
     ("revenue", numeric_tolerance_match, {"tolerance": 0.1}),
     ("assets", numeric_tolerance_match, {"tolerance": 0.1}),
-    ("founders", set_equality_match, {}),
+    # Companies target_schema.json was renamed founders -> keypeople
+    # in the 2026 schema refresh; notebook still references founders
+    # (it does ``fusion_test_set['founders'] = fusion_test_set['keypeople_name'].apply(...)``
+    # before evaluation). Align with the schema authority and rename
+    # the gold's ``keypeople_name`` to ``keypeople`` in the loader; the
+    # set_equality_match matcher is preserved.
+    ("keypeople", set_equality_match, {}),
     ("founded", year_only_match, {}),
     ("country", tokenized_match, {}),
     ("city", tokenized_match, {}),
@@ -149,6 +182,15 @@ _SPECS: dict[str, NotebookFusionSpec] = {
         fused_id_column="forbes_id",
         gold_id_column="id",
         rules=_COMPANIES_RULES,
+    ),
+    "papers": NotebookFusionSpec(
+        domain="papers",
+        strategy_name="papers_fusion_strategy",
+        # Notebook joins the fused frame to the gold via DOI
+        # (the gold has no surrogate id column).
+        fused_id_column="doi",
+        gold_id_column="doi",
+        rules=_PAPERS_RULES,
     ),
 }
 

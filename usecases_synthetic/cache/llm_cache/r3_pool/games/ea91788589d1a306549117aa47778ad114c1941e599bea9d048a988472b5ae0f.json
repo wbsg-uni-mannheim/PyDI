@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_18301|sales_7116|name=Conflict: Vietnam | platform=PC | genres=Action,Shooter,Shooter,Third-Person,Historic,Historic,Arcade | developer=Pivotal Games | releaseYear=2004-01-01 | criticScore=55.0 | userScore=7.0 | ESRB=M||name=Men of War: Vietnam | platform=PC | genres=Strategy | developer=Best Way | publisher=Unknown | releaseYear=2011-01-01 | criticScore=68 | userScore=4.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Conflict: Vietnam | platform=PC | genres=Action,Shooter,Shooter,Third-Person,Historic,Historic,Arcade | developer=Pivotal Games | releaseYear=2004-01-01 | criticScore=55.0 | userScore=7.0 | ESRB=M\nRecord B: name=Men of War: Vietnam | platform=PC | genres=Strategy | developer=Best Way | publisher=Unknown | releaseYear=2011-01-01 | criticScore=68 | userScore=4.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

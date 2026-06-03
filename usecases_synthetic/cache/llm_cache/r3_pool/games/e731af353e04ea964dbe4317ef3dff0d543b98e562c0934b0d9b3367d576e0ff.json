@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_57815|sales_4929|name=Klonoa (2008 video game) | platform=Wii | genres=Platform game | developer=Paon | releaseYear=2008-01-01||name=Klonoa | platform=Wii | genres=Platform | developer=Paon Corporation | publisher=Namco Bandai Games | releaseYear=2008-01-01 | criticScore=77 | userScore=8.6 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Klonoa (2008 video game) | platform=Wii | genres=Platform game | developer=Paon | releaseYear=2008-01-01\nRecord B: name=Klonoa | platform=Wii | genres=Platform | developer=Paon Corporation | publisher=Namco Bandai Games | releaseYear=2008-01-01 | criticScore=77 | userScore=8.6 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

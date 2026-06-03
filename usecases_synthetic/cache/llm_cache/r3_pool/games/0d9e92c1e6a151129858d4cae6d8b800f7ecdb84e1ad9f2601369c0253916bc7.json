@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_12021|metacritic_12923|name=Monster Energy Supercross: The Official Videogame | platform=Xbox One | genres=Racing game | developer=Milestone srl | releaseYear=2018-01-01||name=Monster Energy Supercross - The Official Videogame | platform=Xbox One | genres=Racing,Arcade,Automobile | developer=Milestone S.r.l | releaseYear=2018-01-01 | criticScore=69.0 | userScore=7.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monster Energy Supercross: The Official Videogame | platform=Xbox One | genres=Racing game | developer=Milestone srl | releaseYear=2018-01-01\nRecord B: name=Monster Energy Supercross - The Official Videogame | platform=Xbox One | genres=Racing,Arcade,Automobile | developer=Milestone S.r.l | releaseYear=2018-01-01 | criticScore=69.0 | userScore=7.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

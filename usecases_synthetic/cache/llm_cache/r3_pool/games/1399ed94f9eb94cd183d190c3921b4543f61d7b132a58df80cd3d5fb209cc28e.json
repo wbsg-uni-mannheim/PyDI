@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_16680|sales_971|name=Turok: Evolution | platform=PS2 | genres=Action,Shooter,First-Person,Sci-Fi | developer=Acclaim | releaseYear=2002-01-01 | criticScore=61.0 | userScore=7.0 | ESRB=M||name=Turok: Evolution | platform=PS2 | genres=Shooter | developer=Acclaim | publisher=Acclaim Entertainment | releaseYear=2002-01-01 | criticScore=61 | userScore=7.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Turok: Evolution | platform=PS2 | genres=Action,Shooter,First-Person,Sci-Fi | developer=Acclaim | releaseYear=2002-01-01 | criticScore=61.0 | userScore=7.0 | ESRB=M\nRecord B: name=Turok: Evolution | platform=PS2 | genres=Shooter | developer=Acclaim | publisher=Acclaim Entertainment | releaseYear=2002-01-01 | criticScore=61 | userScore=7.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

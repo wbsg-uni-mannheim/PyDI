@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_19016|sales_6538|name=NanoBreaker | platform=PS2 | genres=Action Adventure,Sci-Fi | developer=KCET | releaseYear=2005-01-01 | criticScore=51.0 | userScore=7.0 | ESRB=M||name=NanoBreaker | platform=PS2 | genres=Action | developer=KCET | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=51 | userScore=6.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=NanoBreaker | platform=PS2 | genres=Action Adventure,Sci-Fi | developer=KCET | releaseYear=2005-01-01 | criticScore=51.0 | userScore=7.0 | ESRB=M\nRecord B: name=NanoBreaker | platform=PS2 | genres=Action | developer=KCET | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=51 | userScore=6.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_45836|metacritic_777|name=Hyper Light Drifter | platform=Switch | genres=Action role-playing game | developer=Heart Machine | releaseYear=2018-01-01||name=Hyper Light Drifter | platform=Switch | genres=Role-Playing,Action RPG | developer=Heart Machine | releaseYear=2018-01-01 | criticScore=88.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hyper Light Drifter | platform=Switch | genres=Action role-playing game | developer=Heart Machine | releaseYear=2018-01-01\nRecord B: name=Hyper Light Drifter | platform=Switch | genres=Role-Playing,Action RPG | developer=Heart Machine | releaseYear=2018-01-01 | criticScore=88.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -196,11 +196,17 @@ def _consistency_subscore(
     block = consistency.get(level)
     if block is None:
         return None
-    validity = block.get("validity_per_column") or {}
-    if not validity:
-        return 1.0
     if level == "RF":
-        # No silver-side comparison — use the pipe-only validity rate.
+        # Schema-aware engine: a single cell-weighted consistency_score
+        # in [0, 1] (None when nothing was evaluable). Present only when
+        # the panel was given a target_schema.
+        if "consistency_score" in block:
+            score = block.get("consistency_score")
+            return 1.0 if score is None else _clip01(score)
+        # Schema-agnostic fallback — pipe-only per-column validity rate.
+        validity = block.get("validity_per_column") or {}
+        if not validity:
+            return 1.0
         rates = [
             _clip01(v.get("validity_rate_pipe"))
             for v in validity.values()
@@ -211,6 +217,9 @@ def _consistency_subscore(
         return _clip01(float(np.mean(rates)))
     # SR / GR: only negative deltas penalise — pipeline more strict than
     # reference isn't punished.
+    validity = block.get("validity_per_column") or {}
+    if not validity:
+        return 1.0
     penalties = [
         max(0.0, -v.get("delta", 0.0))
         for v in validity.values()

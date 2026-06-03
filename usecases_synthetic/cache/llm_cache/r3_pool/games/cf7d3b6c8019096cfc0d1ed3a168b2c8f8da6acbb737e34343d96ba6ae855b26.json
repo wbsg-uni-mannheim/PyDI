@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_431|metacritic_2422|name=The End Is Nigh (video game) | platform=Microsoft Windows | genres=Platform game | developer=Tyler Glaiel | releaseYear=2017-01-01||name=The End Is Nigh | platform=PC | genres=Action,Platformer,2D | developer=Edmund McMillen,Tyler Glaiel | releaseYear=2017-01-01 | criticScore=84.0 | userScore=7.5",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The End Is Nigh (video game) | platform=Microsoft Windows | genres=Platform game | developer=Tyler Glaiel | releaseYear=2017-01-01\nRecord B: name=The End Is Nigh | platform=PC | genres=Action,Platformer,2D | developer=Edmund McMillen,Tyler Glaiel | releaseYear=2017-01-01 | criticScore=84.0 | userScore=7.5\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

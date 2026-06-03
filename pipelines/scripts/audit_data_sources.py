@@ -38,7 +38,7 @@ import pandas as pd
 from pipelines.lib.bundle import load_pipeline_bundle
 from pipelines.lib.pipeline import PipelineConfig
 
-DOMAINS = ("products", "music", "games", "companies")
+DOMAINS = ("products", "music", "games", "companies", "papers")
 SYNTHETIC_PREFIX = REPO_ROOT / "usecases_synthetic"
 CANONICAL_PREFIX = REPO_ROOT / "usecases"
 

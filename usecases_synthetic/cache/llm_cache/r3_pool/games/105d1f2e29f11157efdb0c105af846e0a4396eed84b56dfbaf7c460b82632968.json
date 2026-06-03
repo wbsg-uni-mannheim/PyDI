@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_45165|metacritic_3562|name=Victor Vran | platform=Switch | genres=Action role-playing game | developer=Haemimont Games | releaseYear=2017-01-01||name=Victor Vran: Overkill Edition | platform=Switch | genres=Role-Playing,Action RPG | developer=Haemimont Games | releaseYear=2018-01-01 | criticScore=82.0 | userScore=7.9 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Victor Vran | platform=Switch | genres=Action role-playing game | developer=Haemimont Games | releaseYear=2017-01-01\nRecord B: name=Victor Vran: Overkill Edition | platform=Switch | genres=Role-Playing,Action RPG | developer=Haemimont Games | releaseYear=2018-01-01 | criticScore=82.0 | userScore=7.9 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -27,6 +27,12 @@ stages:
     selection_metric: macro_f1
     apply_winner: false
     vacuous_epsilon: 0.005
+    # Score normalized outputs against the companies target_schema's
+    # JSON-Schema constraints + x-pydi-consistency rules (date_range
+    # on founded, numeric ranges on assets/revenue, plus
+    # x-pydi-taxonomy on country/industry). See
+    # pipelines/lib/schema_constraint_scorer.py.
+    scoring_surface: schema_constraints
   em:
     enabled: true
     blocking_selection_metric: reduction_ratio
@@ -41,19 +47,19 @@ stages:
     selection_metric: macro_accuracy
 
 # Column type config for the e2e panel.
-# Derived from usecases/companies/input/schemamatching/target_schema.json.
+# Derived from usecases/companies/input/schemamatching/target_schema.json
+# (2026 schema refresh: founders -> keypeople; website removed).
 column_types:
   id: identifier
   cluster_id: identifier
   name: text
-  website: identifier
   founded: temporal
   country: categorical
   city: categorical
   industry: categorical
   assets: numerical
   revenue: numerical
-  founders: text
+  keypeople: list  # array of names; handled at cluster level (skip distributional)
 
 # Panel numerical tolerance. Companies notebook uses
 # numeric_tolerance_match(tolerance=0.1) for revenue and assets.

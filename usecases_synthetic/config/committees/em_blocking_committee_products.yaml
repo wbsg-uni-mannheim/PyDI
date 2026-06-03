@@ -125,11 +125,11 @@ members:
   - name: sc_block
     description: >-
       Supervised-contrastive encoder + FAISS ANN (hybrid). Per-domain
-      checkpoint at ``cache/sc_block_checkpoints/products/best`` — must
-      be retrained via ``scripts/sc_block/train.py`` against the
-      ``data_cleaned_final`` schema (plan_revision.md §R1 + §R3)
-      before re-running the committee, otherwise the blocker raises
-      FileNotFoundError on instantiation. ``text_cols`` mirrors the
+      checkpoint at ``cache/sc_block_checkpoints/products/best`` — the
+      current 19-field checkpoint (run_20260530) is valid; EM scope
+      intentionally stays at 19 (the 5 sparse dims are excluded from EM
+      per the 2026-06-02 scope decision), so no retrain is required.
+      ``text_cols`` mirrors the
       ditto/llm/comem ``fields`` set per the canonical
       "ditto fields = sc_block text_cols" invariant.
 
@@ -161,12 +161,117 @@ composition:
 required_axes:
   blocking_type: [lexical, sparse, embedding]
 
-# Column mapping - all four products_<n>.json files share the canonical
-# schema (id, title, brand, description, price, priceCurrency); no
-# per-source renames required. Empty dicts keep the cross-committee
-# column_mapping invariant satisfied for all four sources.
+# Column mapping - per-source native->canonical. Sources now carry
+# source-native column vocabularies (2026-06-02 schema-heterogeneity
+# adoption); derived from sm_mapping_gold.csv. MUST stay identical across
+# em_blocking / em_matching / fusion products yamls (the committee runner
+# enforces blocking==matching). id excluded (loader-renamed to 'id').
 column_mapping:
-  products_1: {}
-  products_2: {}
-  products_3: {}
-  products_4: {}
+  products_1:
+    manufacturer: brand
+    product_name: title
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    cluster_id: cluster_id
+    product_url: url
+    name_and_description: title_description
+    model_name: model
+    manufacturer_part_number: model_number
+    category: product_type
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    bus_standard: bus_type
+    interface: interface_type
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+    connector: storage_connection_type
+    memory_technology: memory_type
+    colour: color
+    form_factor: form_factor
+  products_2:
+    brandName: brand
+    name: title
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    cluster_id: cluster_id
+    productUrl: url
+    titleAndDescription: title_description
+    modelName: model
+    mpn: model_number
+    productCategory: product_type
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    busType: bus_type
+    interfaceType: interface_type
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+    connectionType: storage_connection_type
+    memoryType: memory_type
+    color: color
+    formFactor: form_factor
+  products_3:
+    Brand: brand
+    ProductTitle: title
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    cluster_id: cluster_id
+    Link: url
+    TitleDetails: title_description
+    Model: model
+    PartNo: model_number
+    Type: product_type
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Bus: bus_type
+    Interface: interface_type
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+    Connector: storage_connection_type
+    MemoryType: memory_type
+    Colour: color
+    FormFactor: form_factor
+  products_4:
+    mfr: brand
+    name: title
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cluster_id: cluster_id
+    link: url
+    name_desc: title_description
+    mdl: model
+    pn: model_number
+    cat: product_type
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    bus: bus_type
+    iface: interface_type
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
+    conn: storage_connection_type
+    mem: memory_type
+    clr: color
+    ff: form_factor

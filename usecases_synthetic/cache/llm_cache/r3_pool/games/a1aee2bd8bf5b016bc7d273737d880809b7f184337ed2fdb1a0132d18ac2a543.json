@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_5455|metacritic_3908|name=Star Wars Jedi Knight II: Jedi Outcast | platform=Xbox | genres=Third-person shooter | developer=Aspyr | releaseYear=2002-01-01||name=Star Wars Jedi Knight II: Jedi Outcast | platform=Xbox | genres=Action,Shooter,First-Person,Sci-Fi | developer=Vicarious Visions | releaseYear=2002-01-01 | criticScore=81.0 | userScore=6.5 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Star Wars Jedi Knight II: Jedi Outcast | platform=Xbox | genres=Third-person shooter | developer=Aspyr | releaseYear=2002-01-01\nRecord B: name=Star Wars Jedi Knight II: Jedi Outcast | platform=Xbox | genres=Action,Shooter,First-Person,Sci-Fi | developer=Vicarious Visions | releaseYear=2002-01-01 | criticScore=81.0 | userScore=6.5 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

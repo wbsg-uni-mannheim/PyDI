@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17217|metacritic_5321|name=New Pokémon Snap | platform=Switch | genres=First-person shooter | developer=Bandai Namco Studios | releaseYear=2021-01-01||name=New Pokemon Snap | platform=Switch | genres=Action,Shooter,Rail | developer=Bandai Namco Games,The Pokemon Company | releaseYear=2021-01-01 | criticScore=79.0 | userScore=6.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=New Pokémon Snap | platform=Switch | genres=First-person shooter | developer=Bandai Namco Studios | releaseYear=2021-01-01\nRecord B: name=New Pokemon Snap | platform=Switch | genres=Action,Shooter,Rail | developer=Bandai Namco Games,The Pokemon Company | releaseYear=2021-01-01 | criticScore=79.0 | userScore=6.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

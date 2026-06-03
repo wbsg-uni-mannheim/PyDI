@@ -84,6 +84,18 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     p.add_argument(
+        "--variant",
+        choices=["baseline", "easy", "medium", "hard"],
+        default="baseline",
+        help=(
+            "Bundle level. ``baseline`` (default) reads the original "
+            "usecases/<domain>/ tree. ``easy`` / ``medium`` / ``hard`` "
+            "read usecases/<domain>-augmented/<variant>/ — only valid "
+            "for domains that have been augmented (today: music, products). "
+            "Out dir defaults to pipelines/<domain>/run_<variant>_<ts>/."
+        ),
+    )
+    p.add_argument(
         "--llm-sm",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -170,11 +182,12 @@ def main() -> int:
     )
 
     config = PipelineConfig.from_yaml(args.config)
+    ts = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     out_dir = args.out or (
         REPO_ROOT
         / "pipelines"
         / config.domain
-        / f"run_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+        / (f"run_{ts}" if args.variant == "baseline" else f"run_{args.variant}_{ts}")
     )
 
     # Per-stage LLM toggles. The legacy --no-llm flag forces all three off.
@@ -206,6 +219,7 @@ def main() -> int:
         with_llm_em=with_llm_em,
         with_llm_fusion=with_llm_fusion,
         mode=args.mode,
+        level=args.variant,
         ditto_checkpoint_override=args.ditto_checkpoint_override,
         sc_block_checkpoint_override=args.sc_block_checkpoint_override,
         out_dir=out_dir,

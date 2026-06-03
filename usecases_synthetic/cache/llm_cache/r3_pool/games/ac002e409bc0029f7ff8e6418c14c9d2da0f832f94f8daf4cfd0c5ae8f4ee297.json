@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_63688|metacritic_1580|name=Day of the Tentacle | platform=Microsoft Windows | genres=Graphic adventure | developer=LucasArts | releaseYear=1993-01-01||name=Day of the Tentacle Remastered | platform=PC | genres=Adventure,Point-and-Click | developer=Double Fine Productions | releaseYear=2016-01-01 | criticScore=86.0 | userScore=7.9",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Day of the Tentacle | platform=Microsoft Windows | genres=Graphic adventure | developer=LucasArts | releaseYear=1993-01-01\nRecord B: name=Day of the Tentacle Remastered | platform=PC | genres=Adventure,Point-and-Click | developer=Double Fine Productions | releaseYear=2016-01-01 | criticScore=86.0 | userScore=7.9\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

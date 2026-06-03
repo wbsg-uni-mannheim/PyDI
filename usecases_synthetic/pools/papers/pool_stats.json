@@ -1,0 +1,27 @@
+{
+  "domain": "papers",
+  "source": "doi_exact_match (deterministic identity key) U em_gold_positives",
+  "n_sources": 3,
+  "pool_size": 156506,
+  "per_pair_doi_matches": {
+    "dblp_crossref": 50456,
+    "dblp_open_alex": 55530,
+    "crossref_open_alex": 50515
+  },
+  "n_gold_positive_keys": 6664,
+  "n_gold_only_retained": 5,
+  "n_clusters": 55585,
+  "cluster_size_distribution": {
+    "max": 4,
+    "p99": 3,
+    "cap": 9,
+    "n_size_2": 5124,
+    "n_size_3": 50459,
+    "n_size_gt_3": 2
+  },
+  "egregious_filter": {
+    "applied": true,
+    "dropped_pairs": 0,
+    "dropped_clusters": []
+  }
+}

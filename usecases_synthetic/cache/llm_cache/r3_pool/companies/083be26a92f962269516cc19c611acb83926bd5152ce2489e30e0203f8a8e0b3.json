@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Fran%C3%A7aise_des_Jeux_(lottery)|http://www.forbes.com/companies/financiere-de-lodet/|name=Française des Jeux (lottery) | country=France | city=Boulogne-Billancourt | industry=Lottery | founded=1976-01-01||name=Financiere de l'Odet | country=France | industry=Conglomerates",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Française des Jeux (lottery) | country=France | city=Boulogne-Billancourt | industry=Lottery | founded=1976-01-01\nRecord B: name=Financiere de l'Odet | country=France | industry=Conglomerates\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

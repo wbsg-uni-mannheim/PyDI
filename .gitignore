@@ -189,6 +189,9 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file. However, if you prefer, 
 #  you could uncomment the following to ignore the entire vscode folder
 # .vscode/
+# Per-machine editor settings (untracked on request); shared .vscode files
+# (launch.json, extensions.json, ...) can still be committed.
+.vscode/settings.json
 
 # Ruff stuff:
 .ruff_cache/
@@ -209,7 +212,21 @@ CLAUDE.md
 .claude/settings.json
 benchmark/
 
+# macOS cruft (now ignored repo-wide; previously tracked copies are being removed).
+.DS_Store
+
 scripts/output
+
+# Root-level regenerable / foreign working dirs (anchored with a leading "/" so
+# they never touch the deliberately-tracked usecases_synthetic/cache/ LLM caches).
+# ditto_checkpoints + *_tuning sweeps (~14 GB, regenerable)
+/cache/
+# run logs, debug blocking CSVs, ditto_runs (regenerable)
+/output/
+# separate nested git repo, not part of this tree
+/automatic-data-integration/
+# research scratch (per-method dirs + search logs)
+/literature-search-generation/
 
 # Pipeline run artifacts (large CSVs / JSON / model checkpoints — regeneratable from configs)
 pipelines/*/run_*/
@@ -225,14 +242,15 @@ pipelines/*/checkpoints/
 # ...but the broad lib/** re-allow above also un-ignores Python bytecode caches
 # under lib/; keep those ignored (the former nested repo never tracked them).
 usecases_synthetic/lib/**/__pycache__/
+pipelines/lib/**/__pycache__/
 
 # === usecases_synthetic (folded-in subtree; was previously a nested git repo) ===
 # Generic Python/tooling artifacts are already ignored repo-wide by the rules
 # above. The entries below are the synthetic-pipeline-specific ones merged from
 # the former usecases_synthetic/.gitignore. Everything here is regenerable.
 
-# macOS cruft inside the subtree. Scoped (not global) because the outer repo
-# deliberately tracks .DS_Store files elsewhere.
+# macOS cruft inside the subtree (redundant now that .DS_Store is ignored
+# repo-wide above; kept for documentation).
 usecases_synthetic/**/.DS_Store
 
 # Generated pipeline output (top-level and per-domain output/ dirs, any depth).

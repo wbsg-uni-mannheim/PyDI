@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38947|sales_3208|name=Worms: Open Warfare 2 | platform=DS | genres=Strategy game | developer=Team17 | releaseYear=2007-01-01||name=Worms: Open Warfare 2 | platform=DS | genres=Strategy | developer=Team 17, Two Tribes | publisher=THQ | releaseYear=2007-01-01 | criticScore=81 | userScore=9.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Worms: Open Warfare 2 | platform=DS | genres=Strategy game | developer=Team17 | releaseYear=2007-01-01\nRecord B: name=Worms: Open Warfare 2 | platform=DS | genres=Strategy | developer=Team 17, Two Tribes | publisher=THQ | releaseYear=2007-01-01 | criticScore=81 | userScore=9.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_14518|metacritic_10152|name=Need for Speed: Carbon | platform=PlayStation Portable | genres=Racing game | developer=EA Canada | releaseYear=2006-01-01||name=Need for Speed Carbon: Own the City | platform=Playstation Portable | genres=Driving,Racing,Simulation,Arcade,GT / Street,GT / Street,Automobile | developer=EA Canada | releaseYear=2006-01-01 | criticScore=73.0 | userScore=8.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Need for Speed: Carbon | platform=PlayStation Portable | genres=Racing game | developer=EA Canada | releaseYear=2006-01-01\nRecord B: name=Need for Speed Carbon: Own the City | platform=Playstation Portable | genres=Driving,Racing,Simulation,Arcade,GT / Street,GT / Street,Automobile | developer=EA Canada | releaseYear=2006-01-01 | criticScore=73.0 | userScore=8.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

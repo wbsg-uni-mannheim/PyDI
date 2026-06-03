@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_37|sales_7112|name=Company of Heroes | platform=PC | genres=Strategy,Real-Time,Historic,General,Historic | developer=Relic,Relic Entertainment | releaseYear=2006-01-01 | criticScore=93.0 | userScore=8.7 | ESRB=M||name=Company of Heroes: Opposing Fronts | platform=PC | genres=Strategy | developer=Relic | publisher=THQ | releaseYear=2007-01-01 | criticScore=87 | userScore=8.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Company of Heroes | platform=PC | genres=Strategy,Real-Time,Historic,General,Historic | developer=Relic,Relic Entertainment | releaseYear=2006-01-01 | criticScore=93.0 | userScore=8.7 | ESRB=M\nRecord B: name=Company of Heroes: Opposing Fronts | platform=PC | genres=Strategy | developer=Relic | publisher=THQ | releaseYear=2007-01-01 | criticScore=87 | userScore=8.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_58688|metacritic_11701|name=Silent Hill 2 (upcoming video game) | platform=Windows | genres=Survival horror | developer=Bloober Team||name=Silent Hill 2 | platform=PC | genres=Action Adventure,Survival | developer=Bloober Team | releaseYear=0001-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Silent Hill 2 (upcoming video game) | platform=Windows | genres=Survival horror | developer=Bloober Team\nRecord B: name=Silent Hill 2 | platform=PC | genres=Action Adventure,Survival | developer=Bloober Team | releaseYear=0001-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

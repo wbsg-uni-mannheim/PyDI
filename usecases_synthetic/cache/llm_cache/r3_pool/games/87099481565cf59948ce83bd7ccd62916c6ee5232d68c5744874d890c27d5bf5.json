@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_7936|sales_571|name=Harry Potter and the Chamber of Secrets | platform=Game Boy Advance | genres=Action Adventure,Fantasy | developer=Eurocom Entertainment Software | releaseYear=2002-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E||name=Harry Potter and the Chamber of Secrets | platform=Game Boy Advance | genres=Action | developer=Eurocom Entertainment Software | publisher=Electronic Arts | releaseYear=2002-01-01 | criticScore=76 | userScore=7.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Harry Potter and the Chamber of Secrets | platform=Game Boy Advance | genres=Action Adventure,Fantasy | developer=Eurocom Entertainment Software | releaseYear=2002-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E\nRecord B: name=Harry Potter and the Chamber of Secrets | platform=Game Boy Advance | genres=Action | developer=Eurocom Entertainment Software | publisher=Electronic Arts | releaseYear=2002-01-01 | criticScore=76 | userScore=7.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

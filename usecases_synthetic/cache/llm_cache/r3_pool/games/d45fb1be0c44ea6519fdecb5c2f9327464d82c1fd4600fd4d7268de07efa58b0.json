@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_43570|metacritic_2448|name=Shatter (video game) | platform=Microsoft Windows | genres=Action game | developer=Sidhe (game developer) | releaseYear=2022-01-01||name=Shatter (2009) | platform=PC | genres=Action,General,General,Arcade | developer=Sidhe Interactive | releaseYear=2010-01-01 | criticScore=84.0 | userScore=7.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shatter (video game) | platform=Microsoft Windows | genres=Action game | developer=Sidhe (game developer) | releaseYear=2022-01-01\nRecord B: name=Shatter (2009) | platform=PC | genres=Action,General,General,Arcade | developer=Sidhe Interactive | releaseYear=2010-01-01 | criticScore=84.0 | userScore=7.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

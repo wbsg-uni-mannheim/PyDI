@@ -463,6 +463,79 @@ class TestMeasureBaseline:
 
         assert result["meta"]["fusion_input_member"] == ""
 
+    def test_norm_scoring_surface_default_is_schema_constraints(
+        self, tmp_path: Path
+    ) -> None:
+        patches = _patch_runners()
+        with (
+            patches[0],
+            patches[1] as norm_cls,
+            patches[2],
+            patches[3],
+            patches[4],
+            patches[5],
+        ):
+            result = measure_baseline("companies", out_dir=tmp_path)
+
+        # Default surface is forwarded to the Norm runner...
+        assert norm_cls.call_args.kwargs["scoring_surface"] == "schema_constraints"
+        # ...and recorded in meta (so validate_variant reuses it).
+        assert result["meta"]["scoring_surface"] == "schema_constraints"
+        json_path = tmp_path / "baseline_metrics.json"
+        with open(json_path, encoding="utf-8") as f:
+            payload = json.load(f)
+        assert payload["meta"]["scoring_surface"] == "schema_constraints"
+
+    def test_norm_scoring_surface_override(self, tmp_path: Path) -> None:
+        patches = _patch_runners()
+        with (
+            patches[0],
+            patches[1] as norm_cls,
+            patches[2],
+            patches[3],
+            patches[4],
+            patches[5],
+        ):
+            result = measure_baseline(
+                "companies", out_dir=tmp_path, norm_scoring_surface="xml_targets"
+            )
+
+        assert norm_cls.call_args.kwargs["scoring_surface"] == "xml_targets"
+        assert result["meta"]["scoring_surface"] == "xml_targets"
+
+    def test_norm_scoring_surface_absent_when_norm_skipped_fresh(
+        self, tmp_path: Path
+    ) -> None:
+        patches = _patch_runners()
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5]:
+            result = measure_baseline(
+                "companies", stages=["sm", "fusion"], out_dir=tmp_path
+            )
+
+        # No norm measured and no prior file: nothing to claim a surface for.
+        assert "scoring_surface" not in result["meta"]
+
+    def test_norm_scoring_surface_preserved_on_partial_rerun(
+        self, tmp_path: Path
+    ) -> None:
+        # First run records schema_constraints for the norm block.
+        first = _patch_runners()
+        with first[0], first[1], first[2], first[3], first[4], first[5]:
+            measure_baseline("companies", out_dir=tmp_path)
+
+        # A later fusion-only run must NOT relabel the surface of the
+        # unchanged norm block, even if a different surface is requested.
+        second = _patch_runners()
+        with second[0], second[1], second[2], second[3], second[4], second[5]:
+            result = measure_baseline(
+                "companies",
+                stages=["fusion"],
+                out_dir=tmp_path,
+                norm_scoring_surface="xml_targets",
+            )
+
+        assert result["meta"]["scoring_surface"] == "schema_constraints"
+
     def test_meta_contains_committee_versions(self, tmp_path: Path) -> None:
         patches = _patch_runners()
         with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5]:

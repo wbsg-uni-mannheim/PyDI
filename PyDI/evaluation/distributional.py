@@ -39,8 +39,34 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
+def _hashable(value: Any) -> Any:
+    """Coerce list / set / dict cell values into a hashable form so they
+    can be counted in :class:`collections.Counter`. Tuples and frozensets
+    are already hashable and pass through; unhashable nested structures
+    fall back to their ``repr`` so categorical histograms still produce a
+    valid distribution (per-cell stability matters more than structural
+    equality here).
+    """
+    if isinstance(value, list):
+        return tuple(_hashable(v) for v in value)
+    if isinstance(value, set):
+        return tuple(sorted((_hashable(v) for v in value), key=repr))
+    if isinstance(value, dict):
+        return tuple(
+            sorted(
+                ((k, _hashable(v)) for k, v in value.items()),
+                key=lambda kv: repr(kv[0]),
+            )
+        )
+    try:
+        hash(value)
+        return value
+    except TypeError:
+        return repr(value)
+
+
 def _values_to_probability(values: Iterable[Any]) -> Dict[Any, float]:
-    counts = Counter(v for v in values if not _is_nan(v))
+    counts = Counter(_hashable(v) for v in values if not _is_nan(v))
     total = sum(counts.values())
     if total == 0:
         return {}
@@ -434,10 +460,16 @@ def datetime_metrics(
     pipe_series: pd.Series, silver_series: pd.Series
 ) -> Dict[str, float]:
     """Wasserstein-1 on epoch seconds (reported in days)."""
-    pipe_dt = pd.to_datetime(pipe_series, errors="coerce").dropna()
-    silver_dt = pd.to_datetime(silver_series, errors="coerce").dropna()
-    pipe_secs = pipe_dt.astype("int64").to_numpy() / 1e9
-    silver_secs = silver_dt.astype("int64").to_numpy() / 1e9
+    # utc=True forces a tz-aware datetime64[ns, UTC] result even when the
+    # inputs carry mixed time zones; without it pandas returns an object
+    # Series of Timestamps and the epoch-second cast below raises
+    # ("int() argument must be ... not 'Timestamp'"). tz_convert(None)
+    # then drops the tz (keeping the instant) so .astype('int64') — which
+    # is only defined on tz-naive datetime64 — is well-formed.
+    pipe_dt = pd.to_datetime(pipe_series, errors="coerce", utc=True).dropna()
+    silver_dt = pd.to_datetime(silver_series, errors="coerce", utc=True).dropna()
+    pipe_secs = pipe_dt.dt.tz_convert(None).astype("int64").to_numpy() / 1e9
+    silver_secs = silver_dt.dt.tz_convert(None).astype("int64").to_numpy() / 1e9
     w_seconds = wasserstein_1d(pipe_secs, silver_secs)
     return {"wasserstein_1_days": w_seconds / 86400.0}
 

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_5438|metacritic_4339|name=Dangerous Golf | platform=Microsoft Windows | genres=Sports game | developer=Three Fields Entertainment | releaseYear=2016-01-01||name=Cursed to Golf | platform=PC | genres=Sports,Individual,Golf,Arcade | developer=Chuhai Labs | releaseYear=2022-01-01 | criticScore=80.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dangerous Golf | platform=Microsoft Windows | genres=Sports game | developer=Three Fields Entertainment | releaseYear=2016-01-01\nRecord B: name=Cursed to Golf | platform=PC | genres=Sports,Individual,Golf,Arcade | developer=Chuhai Labs | releaseYear=2022-01-01 | criticScore=80.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_33516|sales_1660|name=Ben 10: Alien Force (video game) | platform=Wii | genres=Action-adventure game | developer=Monkey Bar Games | releaseYear=2008-01-01||name=Ben 10: Alien Force | platform=Wii | genres=Action | developer=Monkey Bar Games | publisher=Koch Media | releaseYear=2008-01-01 | criticScore=45 | userScore=7.8 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ben 10: Alien Force (video game) | platform=Wii | genres=Action-adventure game | developer=Monkey Bar Games | releaseYear=2008-01-01\nRecord B: name=Ben 10: Alien Force | platform=Wii | genres=Action | developer=Monkey Bar Games | publisher=Koch Media | releaseYear=2008-01-01 | criticScore=45 | userScore=7.8 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

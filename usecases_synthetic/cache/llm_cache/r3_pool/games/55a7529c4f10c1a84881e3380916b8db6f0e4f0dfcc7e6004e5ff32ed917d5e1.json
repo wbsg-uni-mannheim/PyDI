@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_58414|metacritic_16679|name=The End Is Nigh (video game) | platform=Microsoft Windows | genres=Platform game | developer=Edmund McMillen | releaseYear=2017-01-01||name=Watchmen: The End Is Nigh | platform=PC | genres=Action,Beat-'Em-Up,Beat-'Em-Up,2D | developer=Deadline Games | releaseYear=2009-01-01 | criticScore=61.0 | userScore=6.9 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The End Is Nigh (video game) | platform=Microsoft Windows | genres=Platform game | developer=Edmund McMillen | releaseYear=2017-01-01\nRecord B: name=Watchmen: The End Is Nigh | platform=PC | genres=Action,Beat-'Em-Up,Beat-'Em-Up,2D | developer=Deadline Games | releaseYear=2009-01-01 | criticScore=61.0 | userScore=6.9 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

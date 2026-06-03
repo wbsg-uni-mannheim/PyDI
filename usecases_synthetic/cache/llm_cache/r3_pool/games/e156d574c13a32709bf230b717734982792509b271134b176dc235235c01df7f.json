@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24792|sales_7749|name=Assetto Corsa | platform=Xbox One | genres=Sim racing | developer=Kunos Simulazioni | releaseYear=2014-01-01||name=Assetto Corsa | platform=XOne | genres=Racing | developer=Kunos Simulazioni | publisher=505 Games | releaseYear=2016-01-01 | criticScore=63 | userScore=6.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Assetto Corsa | platform=Xbox One | genres=Sim racing | developer=Kunos Simulazioni | releaseYear=2014-01-01\nRecord B: name=Assetto Corsa | platform=XOne | genres=Racing | developer=Kunos Simulazioni | publisher=505 Games | releaseYear=2016-01-01 | criticScore=63 | userScore=6.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

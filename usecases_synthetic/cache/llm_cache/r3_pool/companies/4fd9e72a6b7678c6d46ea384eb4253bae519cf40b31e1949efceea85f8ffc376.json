@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/GAC_Toyota|http://www.forbes.com/companies/toyota-industries/|name=GAC Toyota | country=China | city=Guangzhou | industry=Automotive industry | founded=2004-01-01||name=Toyota Industries | country=Japan | industry=Auto & Truck Parts",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=GAC Toyota | country=China | city=Guangzhou | industry=Automotive industry | founded=2004-01-01\nRecord B: name=Toyota Industries | country=Japan | industry=Auto & Truck Parts\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -79,6 +79,11 @@ from .distributional import (
     compute_type_routed_metrics,
     schema_diff,
 )
+from .schema_consistency import (
+    SchemaInput,
+    evaluate_schema_consistency,
+    write_metric_report,
+)
 from .silver_standard import SilverStandard
 from .source_composition import source_composition_summary
 
@@ -160,6 +165,86 @@ class E2EPanel:
             _write_json(output_dir / "composite_score.json", self.composite)
         return output_dir
 
+    def write_per_metric(
+        self,
+        output_dir: Union[str, Path],
+        *,
+        metadata: Optional[Mapping[str, Any]] = None,
+    ) -> Dict[str, Path]:
+        """Emit one JSON file per quality dimension in the shared envelope.
+
+        Each file uses the same ``{metric, metadata, result}`` envelope as
+        ``consistency.json`` (via :func:`write_metric_report`). The files are
+        slices of the same :attr:`panel` aggregate written by :meth:`write`,
+        so they cannot drift from ``panel.json``.
+
+        Files written (when the block is present and non-empty):
+        ``coverage.json``, ``consistency.json``, ``correctness.json``,
+        ``headline.json``, and — when resource fields were supplied —
+        ``resource_usage.json``.
+
+        ``consistency.json`` carries the flat schema-consistency result
+        (``consistency_score`` + ``per_column``) when the panel was computed
+        with a ``target_schema`` — matching the standalone consistency report
+        — otherwise it carries the whole consistency block. The reference
+        (SR/GR) consistency deltas remain available under ``panel.json``.
+
+        Parameters
+        ----------
+        output_dir : str or Path
+            Destination directory (created if absent).
+        metadata : mapping, optional
+            Extra provenance merged into every file's ``metadata`` block on
+            top of the panel-level ``usecase`` / ``run_id`` / ``silver_source``
+            / ``gold_source`` fields.
+
+        Returns
+        -------
+        dict
+            ``{metric_name: written_path}``.
+        """
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        base_metadata: Dict[str, Any] = {
+            "usecase": self.panel.get("usecase", ""),
+            "run_id": self.panel.get("run_id", ""),
+            "silver_source": self.panel.get("silver_source", ""),
+        }
+        if self.panel.get("gold_source"):
+            base_metadata["gold_source"] = self.panel["gold_source"]
+        if metadata:
+            base_metadata.update(dict(metadata))
+
+        written: Dict[str, Path] = {}
+        for metric in ("coverage", "consistency", "correctness", "headline"):
+            block = self.panel.get(metric)
+            if not block:
+                continue
+            result: Mapping[str, Any] = block
+            if metric == "consistency":
+                rf = block.get("RF")
+                if isinstance(rf, Mapping) and "consistency_score" in rf:
+                    # Flat schema-consistency result — same shape as the
+                    # standalone consistency.json.
+                    result = rf
+            written[metric] = write_metric_report(
+                metric,
+                result,
+                output_dir / f"{metric}.json",
+                metadata=base_metadata,
+            )
+
+        resource_usage = self.panel.get("resource_usage")
+        if resource_usage:
+            written["resource_usage"] = write_metric_report(
+                "resource_usage",
+                resource_usage,
+                output_dir / "resource_usage.json",
+                metadata=base_metadata,
+            )
+        return written
+
 
 def compute_e2e_panel(
     *,
@@ -180,6 +265,8 @@ def compute_e2e_panel(
     numerical_tolerance: float = 0.04,
     numerical_tolerance_overrides: Optional[Mapping[str, float]] = None,
     column_constraints: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    target_schema: Optional[SchemaInput] = None,
+    taxonomy_base_path: Optional[Union[str, Path]] = None,
     semantic_value_similarity: Optional[Callable[[str, str], float]] = None,
     semantic_value_threshold: float = 0.85,
     pipeline_duration_seconds: Optional[float] = None,
@@ -283,6 +370,21 @@ def compute_e2e_panel(
     source_prefix_map : mapping, optional
         Source-id prefix → source name. Passed to source-attribution
         bucketing.
+    target_schema : mapping or path, optional
+        Canonical target schema (JSON-Schema object or path to a
+        ``target_schema.json``). When supplied, the **RF consistency**
+        block is computed by the schema-aware engine
+        (:func:`evaluate_schema_consistency`) — it validates each filled
+        cell against the schema's native constraints plus the
+        ``x-pydi-*`` extensions and reports a cell-weighted
+        ``consistency_score`` + per-column breakdown. When omitted, the
+        RF consistency block falls back to the schema-agnostic
+        per-column ``validity_per_column`` rates (backward compatible).
+        The SR/GR consistency deltas always use the
+        ``validity_per_column`` comparison.
+    taxonomy_base_path : str or Path, optional
+        Root for resolving relative ``x-pydi-taxonomy`` CSV paths in
+        ``target_schema``. Defaults to the schema directory.
     usecase, run_id, silver_source_label : str
         Informational fields written to ``panel.json``.
 
@@ -368,6 +470,8 @@ def compute_e2e_panel(
         cell_provenance_pipe=cell_provenance_pipe,
         source_prefix_map=source_prefix_map,
         column_constraints=column_constraints,
+        target_schema=target_schema,
+        taxonomy_base_path=taxonomy_base_path,
     )
 
     # --- Silver reference (SR), if provided ---
@@ -583,6 +687,72 @@ def compute_e2e_panel(
     )
 
 
+def write_usecase_metrics(
+    output_dir: Union[str, Path],
+    *,
+    pipe_fused: pd.DataFrame,
+    sources_pipe: Sequence[pd.DataFrame],
+    column_types: Mapping[str, str],
+    target_schema: SchemaInput,
+    taxonomy_base_path: Optional[Union[str, Path]] = None,
+    extra_metadata: Optional[Mapping[str, Any]] = None,
+    **panel_kwargs: Any,
+) -> E2EPanel:
+    """Compute the panel for one use case and persist it under *output_dir*.
+
+    Convenience wrapper used by the per-use-case workflow notebooks: it
+    runs :func:`compute_e2e_panel` (schema-aware consistency, via
+    ``target_schema``) and writes, under ``<output_dir>`` (typically
+    ``usecases/<domain>/output/metrics/``):
+
+    * ``panel.json`` (+ ``panel.csv`` / ``panel_glossary.json`` /
+      ``composite_score.json`` and, when a reference is supplied, the
+      ``schema_diff.json`` / ``*.csv`` side-artifacts) — the big aggregate.
+    * one enveloped ``{metric, metadata, result}`` file per quality
+      dimension (``coverage.json``, ``consistency.json``,
+      ``correctness.json``, ``headline.json``, and ``resource_usage.json``
+      when resource fields were passed) via
+      :meth:`E2EPanel.write_per_metric`.
+
+    Pass ``silver=`` (and optionally ``gold=``) through ``panel_kwargs`` to
+    get the SR/GR sub-blocks under coverage/correctness/consistency; with no
+    reference the panel is reference-free (``consistency.json`` and the RF
+    coverage blocks are still emitted).
+
+    Parameters
+    ----------
+    output_dir : str or Path
+        Destination directory (created if absent).
+    pipe_fused, sources_pipe, column_types, target_schema, taxonomy_base_path
+        Forwarded to :func:`compute_e2e_panel`. ``target_schema`` makes the
+        consistency dimension schema-aware (the same engine that backs the
+        standalone ``consistency.json``).
+    extra_metadata : mapping, optional
+        Extra provenance merged into every per-metric file's ``metadata``.
+    **panel_kwargs
+        Any other :func:`compute_e2e_panel` keyword (``silver``, ``gold``,
+        ``correspondences_pipe``, ``pipe_id_column``, ``usecase``,
+        ``run_id``, resource fields, ...).
+
+    Returns
+    -------
+    E2EPanel
+        The computed panel (already persisted).
+    """
+    panel = compute_e2e_panel(
+        pipe_fused=pipe_fused,
+        sources_pipe=sources_pipe,
+        column_types=column_types,
+        target_schema=target_schema,
+        taxonomy_base_path=taxonomy_base_path,
+        **panel_kwargs,
+    )
+    output_dir = Path(output_dir)
+    panel.write(output_dir)
+    panel.write_per_metric(output_dir, metadata=extra_metadata)
+    return panel
+
+
 # ---------------------------------------------------------------------------
 # Per-reference compute block — runs every reference-dependent metric
 # against a single SilverStandard. Called once for silver and (when
@@ -599,6 +769,8 @@ def _compute_reference_free(
     cell_provenance_pipe: Optional[pd.DataFrame],
     source_prefix_map: Optional[Mapping[str, str]],
     column_constraints: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    target_schema: Optional[SchemaInput] = None,
+    taxonomy_base_path: Optional[Union[str, Path]] = None,
 ) -> Dict[str, Any]:
     """Reference-free metrics — computed on the output and the sources only.
 
@@ -676,25 +848,38 @@ def _compute_reference_free(
         if winning:
             coverage_source_based["winning_source_distribution_per_attribute"] = winning
 
-    constraints = column_constraints or {}
-    validity_per_column: Dict[str, Any] = {}
-    for column in pipe_fused.columns:
-        col_type = column_types.get(column)
-        if col_type is None or col_type == "identifier":
-            continue
-        if column in columns_skipped:
-            continue
-        info = column_validity_rate(
-            pipe_fused[column], col_type, constraints.get(column)
+    if target_schema is not None:
+        # Schema-aware engine: validate each filled cell against the
+        # canonical target schema's native constraints + x-pydi-*
+        # extensions. This is the same engine that backs the per-usecase
+        # consistency.json, so the panel and that file agree.
+        consistency = evaluate_schema_consistency(
+            pipe_fused,
+            target_schema,
+            taxonomy_base_path=taxonomy_base_path,
+            exclude_identifier_columns=True,
         )
-        validity_per_column[column] = {
-            "validity_rate_pipe": info["validity_rate"],
-            "parse_failures_pipe": info["parse_failures"],
-            "constraint_failures_pipe": info["constraint_failures"],
-            "n_evaluated_pipe": info["n_evaluated"],
-        }
-
-    consistency = {"validity_per_column": validity_per_column}
+    else:
+        # Schema-agnostic fallback: per-column type+constraint validity
+        # rate (backward compatible with callers that pass no schema).
+        constraints = column_constraints or {}
+        validity_per_column: Dict[str, Any] = {}
+        for column in pipe_fused.columns:
+            col_type = column_types.get(column)
+            if col_type is None or col_type == "identifier":
+                continue
+            if column in columns_skipped:
+                continue
+            info = column_validity_rate(
+                pipe_fused[column], col_type, constraints.get(column)
+            )
+            validity_per_column[column] = {
+                "validity_rate_pipe": info["validity_rate"],
+                "parse_failures_pipe": info["parse_failures"],
+                "constraint_failures_pipe": info["constraint_failures"],
+                "n_evaluated_pipe": info["n_evaluated"],
+            }
+        consistency = {"validity_per_column": validity_per_column}
 
     return {
         "coverage_entity": coverage_entity,

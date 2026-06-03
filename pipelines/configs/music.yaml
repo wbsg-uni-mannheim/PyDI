@@ -22,6 +22,11 @@ stages:
     selection_metric: macro_f1
     apply_winner: false
     vacuous_epsilon: 0.005
+    # Score normalized outputs against the music target_schema's
+    # JSON-Schema constraints + x-pydi-consistency rules (date_range,
+    # country_or_release_market, zero_as_missing). See
+    # pipelines/lib/schema_constraint_scorer.py.
+    scoring_surface: schema_constraints
   em:
     enabled: true
     blocking_selection_metric: reduction_ratio
@@ -46,7 +51,7 @@ column_types:
   release-country: categorical
   label: categorical
   genre: categorical
-  tracks: text
+  tracks: list  # array of track names; handled at cluster level (skip distributional)
   duration: numerical
 
 # Panel numerical tolerance. Music notebook uses

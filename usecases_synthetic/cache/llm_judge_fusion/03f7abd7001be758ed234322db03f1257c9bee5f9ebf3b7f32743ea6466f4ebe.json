@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Paris"
+    },
+    {
+      "source": "dbpedia",
+      "value": "Riviera Beach, Florida"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict and both are valid city names, so I selected the more likely canonical city form from the list.",
+    "value": "Paris"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Paris\",\"operation\":\"verbatim_pick\",\"confidence\":0.86,\"reasoning\":\"The candidates conflict and both are valid city names, so I selected the more likely canonical city form from the list.\"}"
+}

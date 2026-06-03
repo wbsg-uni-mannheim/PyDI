@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_8927|metacritic_17987|name=Thor: God of Thunder | platform=Wii | genres=Action game | developer=Nintendo 3DS | releaseYear=2011-01-01||name=Thor: God of Thunder | platform=Wii | genres=Action,General,General,Beat-'Em-Up,3D | developer=Red Fly Studio | releaseYear=2011-01-01 | criticScore=56.0 | userScore=7.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Thor: God of Thunder | platform=Wii | genres=Action game | developer=Nintendo 3DS | releaseYear=2011-01-01\nRecord B: name=Thor: God of Thunder | platform=Wii | genres=Action,General,General,Beat-'Em-Up,3D | developer=Red Fly Studio | releaseYear=2011-01-01 | criticScore=56.0 | userScore=7.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

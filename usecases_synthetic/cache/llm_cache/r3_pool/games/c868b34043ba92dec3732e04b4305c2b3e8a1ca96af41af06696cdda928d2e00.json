@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9975|sales_7448|name=Drome Racers | platform=Game Boy Advance | genres=Driving,Racing,Rally / Offroad | developer=Mobius Entertainment | releaseYear=2003-01-01 | criticScore=73.0 | ESRB=E||name=Drome Racers | platform=Game Boy Advance | genres=Racing | developer=Mobius Entertainment | publisher=THQ | releaseYear=2003-01-01 | criticScore=73 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Drome Racers | platform=Game Boy Advance | genres=Driving,Racing,Rally / Offroad | developer=Mobius Entertainment | releaseYear=2003-01-01 | criticScore=73.0 | ESRB=E\nRecord B: name=Drome Racers | platform=Game Boy Advance | genres=Racing | developer=Mobius Entertainment | publisher=THQ | releaseYear=2003-01-01 | criticScore=73 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

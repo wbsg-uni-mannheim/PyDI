@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_15558|sales_4912|name=Eragon | platform=DS | genres=Action,Role-Playing,Action Adventure,Action RPG,General,Fantasy,Beat-'Em-Up,Japanese-Style,3D | developer=Amaze Entertainment | releaseYear=2006-01-01 | criticScore=63.0 | userScore=7.5 | ESRB=T||name=Eragon | platform=DS | genres=Action | developer=Amaze Entertainment | publisher=Vivendi Games | releaseYear=2006-01-01 | criticScore=63 | userScore=7.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Eragon | platform=DS | genres=Action,Role-Playing,Action Adventure,Action RPG,General,Fantasy,Beat-'Em-Up,Japanese-Style,3D | developer=Amaze Entertainment | releaseYear=2006-01-01 | criticScore=63.0 | userScore=7.5 | ESRB=T\nRecord B: name=Eragon | platform=DS | genres=Action | developer=Amaze Entertainment | publisher=Vivendi Games | releaseYear=2006-01-01 | criticScore=63 | userScore=7.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -54,9 +54,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=7.0,<8.0",
+  "pytest>=9.0,<10.0",
   "pytest-cov>=4.0.0,<5.0.0",
-  "black>=23.0,<24.0",
+  "black>=26.0,<27.0",
   "isort>=5.12.0,<6.0.0",
   "flake8>=6.0.0,<7.0.0",
   "mypy>=1.5.0,<2.0.0",
@@ -72,7 +72,7 @@ ui = [
   "streamlit>=1.32.0,<2.0.0",
 ]
 test = [
-  "pytest>=7.0,<8.0",
+  "pytest>=9.0,<10.0",
   "pytest-cov>=4.0.0,<5.0.0",
   "pytest-mock>=3.11.0,<4.0.0",
 ]
@@ -93,6 +93,29 @@ faiss = [
 ]
 hnsw = [
   "hnswlib>=0.8.0,<1.0.0",
+]
+# Optional package features that degrade gracefully if absent
+# (fusion HTML reports, progress bars, JSON-Schema validation in IE).
+features = [
+  "Jinja2>=3.1,<4.0",
+  "tqdm>=4.67,<5.0",
+  "jsonschema>=4.23,<5.0",
+]
+# Dependencies required to run the synthetic use-case pipelines
+# (usecases_synthetic/, pipelines/) and the vendored third-party
+# matchers (magneto, ditto, coma). Pinned to the versions in pydi-dev.
+synthetic = [
+  "PyYAML>=6.0,<7.0",
+  "openpyxl>=3.1,<4.0",
+  "psutil>=7.0,<8.0",
+  "Levenshtein>=0.27,<1.0",
+  "bm25s>=0.3.4,<1.0",
+  "valentine>=0.5.0,<1.0",
+  "litellm>=1.83,<2.0",
+  "json-repair>=0.59,<1.0",
+  "mmh3>=5.0,<6.0",
+  "fuzzywuzzy>=0.18,<1.0",
+  "nltk>=3.9,<4.0",
 ]
 
 [build-system]

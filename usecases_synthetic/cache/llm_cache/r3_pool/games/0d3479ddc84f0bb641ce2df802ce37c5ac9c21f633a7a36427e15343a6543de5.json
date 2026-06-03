@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21251|sales_4108|name=Madden NFL 06 | platform=Mobile game | genres=Sports game | developer=Exient Entertainment | releaseYear=2005-01-01||name=Madden NFL 06 | platform=Game Boy Advance | genres=Sports | developer=Exient Entertainment | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=71 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Madden NFL 06 | platform=Mobile game | genres=Sports game | developer=Exient Entertainment | releaseYear=2005-01-01\nRecord B: name=Madden NFL 06 | platform=Game Boy Advance | genres=Sports | developer=Exient Entertainment | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=71 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

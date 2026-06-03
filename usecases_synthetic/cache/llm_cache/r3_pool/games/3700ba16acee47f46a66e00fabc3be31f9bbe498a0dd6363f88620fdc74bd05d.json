@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_19840|sales_6031|name=Yaiba: Ninja Gaiden Z | platform=PS3 | genres=Horror,Action Adventure,General,Horror,Survival,Linear | developer=Spark Unlimited,comcept | releaseYear=2014-01-01 | criticScore=43.0 | userScore=4.5 | ESRB=M||name=Yaiba: Ninja Gaiden Z | platform=PS3 | genres=Action | developer=Spark Unlimited, comcept | publisher=Tecmo Koei | releaseYear=2014-01-01 | criticScore=43 | userScore=4.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Yaiba: Ninja Gaiden Z | platform=PS3 | genres=Horror,Action Adventure,General,Horror,Survival,Linear | developer=Spark Unlimited,comcept | releaseYear=2014-01-01 | criticScore=43.0 | userScore=4.5 | ESRB=M\nRecord B: name=Yaiba: Ninja Gaiden Z | platform=PS3 | genres=Action | developer=Spark Unlimited, comcept | publisher=Tecmo Koei | releaseYear=2014-01-01 | criticScore=43 | userScore=4.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -50,7 +50,10 @@ sm_mapping:
     Attribute_2: name
     Attribute_3: country
     Attribute_4: city
-    Attribute_5: industry
+    # R10-N (2026-06-02): fixed industry -> keypeople. Attribute_5 holds
+    # people-names ("Raphael Bemporad", "['Fernand Renault', ...]"); fullcontact
+    # has no industry column. Matches the committee/K2 column_mapping + the data.
+    Attribute_5: keypeople
     Attribute_6: founded
 
 # Per-source, per-column rename table.
@@ -153,9 +156,9 @@ rename_table:
       cryptic: cy
       anonymized: Attribute_4
     Attribute_5:
-      descriptive: industry
-      abbreviated: ind
-      cryptic: isg
+      descriptive: keypeople
+      abbreviated: key_ppl
+      cryptic: kp
       anonymized: Attribute_5
     Attribute_6:
       descriptive: founded

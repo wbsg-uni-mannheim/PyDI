@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "HollyFrontier"
+    },
+    {
+      "source": "fullcontact",
+      "value": "HollyFrontier Corporation"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The longer candidate is the canonical full company name, with the other being an abbreviated form.",
+    "value": "HollyFrontier Corporation"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"HollyFrontier Corporation\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The longer candidate is the canonical full company name, with the other being an abbreviated form.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_29278|metacritic_11759|name=007: Quantum of Solace | platform=Microsoft Windows | genres=First-person shooter | developer=Beenox | releaseYear=2008-01-01||name=007: Quantum of Solace | platform=PC | genres=Action,General,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Treyarch,Beenox | releaseYear=2008-01-01 | criticScore=70.0 | userScore=6.3 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=007: Quantum of Solace | platform=Microsoft Windows | genres=First-person shooter | developer=Beenox | releaseYear=2008-01-01\nRecord B: name=007: Quantum of Solace | platform=PC | genres=Action,General,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Treyarch,Beenox | releaseYear=2008-01-01 | criticScore=70.0 | userScore=6.3 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

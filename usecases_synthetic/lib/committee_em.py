@@ -53,7 +53,7 @@ from PyDI.entitymatching.post_clustering.maximum_bipartite_matching import (
 )
 
 from .column_mapping import apply_column_mapping
-from .loaders import read_em_gold_csv
+from .loaders import em_gold_candidates, read_em_gold_pair
 from .committee import CommitteeResult, CommitteeRunner, MemberResult
 from .committee_em_scoring import (
     blocking_pair_recall,
@@ -476,25 +476,23 @@ def _load_labelled_split_from_bundle(
     if version in regen_split:
         return regen_split[version]
     em_dir = bundle.variant_root / "input" / "entitymatching"
-    src1, src2 = pair
-    fwd_path = em_dir / f"{src1}_2_{src2}_{split}.csv"
-    rev_path = em_dir / f"{src2}_2_{src1}_{split}.csv"
-    if fwd_path.exists():
-        return read_em_gold_csv(fwd_path)
-    if rev_path.exists():
-        # Swap id1<->id2 so id1 belongs to src1 (matches the declared
-        # pair direction the matcher / blocker input expects — same fix
-        # as ``variant_loader._load_em_gold``, 2026-05-27 regression on
-        # games metacritic_dbpedia where direction-tolerance without
-        # the swap silently produced F1=0 and crashed magellan).
-        df = read_em_gold_csv(rev_path)
-        return pd.DataFrame(
-            {
-                "id1": df["id2"].values,
-                "id2": df["id1"].values,
-                "label": df["label"].values,
-            }
-        )
+    # Candidate resolution (canonical ``<src1>_2_<src2>`` first, then the
+    # condensed papers naming) shared with ``variant_loader._load_em_gold``.
+    # ``read_em_gold_pair`` swaps id1<->id2 for reverse-direction files so
+    # id1 always belongs to the declared pair's src1 (the matcher / blocker
+    # input expects this; 2026-05-27 regression on games metacritic_dbpedia
+    # where direction-tolerance without the swap silently produced F1=0 and
+    # crashed magellan).
+    match = next(
+        (
+            (path, swap)
+            for path, swap in em_gold_candidates(em_dir, pair, split)
+            if path.exists()
+        ),
+        None,
+    )
+    if match is not None:
+        return read_em_gold_pair(*match)
     return None
 
 

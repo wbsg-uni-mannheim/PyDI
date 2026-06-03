@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19215|sales_1392|name=ESPN NFL 2K5 | platform=Xbox | genres=List of American football video games | developer=Visual Concepts | releaseYear=2004-01-01||name=ESPN NBA 2K5 | platform=Xbox | genres=Sports | developer=Visual Concepts | publisher=Global Star | releaseYear=2004-01-01 | criticScore=85 | userScore=8.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ESPN NFL 2K5 | platform=Xbox | genres=List of American football video games | developer=Visual Concepts | releaseYear=2004-01-01\nRecord B: name=ESPN NBA 2K5 | platform=Xbox | genres=Sports | developer=Visual Concepts | publisher=Global Star | releaseYear=2004-01-01 | criticScore=85 | userScore=8.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

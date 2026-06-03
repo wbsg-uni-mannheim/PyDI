@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17034|metacritic_9971|name=The Kings' Crusade | platform=Microsoft Windows | genres=Role-playing video game | developer=NeocoreGames | releaseYear=2010-01-01||name=Crusader Kings | platform=PC | genres=Strategy,Real-Time,Historic,General,Historic | developer=Paradox Development Studio | releaseYear=2004-01-01 | criticScore=73.0 | userScore=7.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Kings' Crusade | platform=Microsoft Windows | genres=Role-playing video game | developer=NeocoreGames | releaseYear=2010-01-01\nRecord B: name=Crusader Kings | platform=PC | genres=Strategy,Real-Time,Historic,General,Historic | developer=Paradox Development Studio | releaseYear=2004-01-01 | criticScore=73.0 | userScore=7.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

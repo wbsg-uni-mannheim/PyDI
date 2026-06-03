@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Lindt_&_Spr%C3%BCngli|http://www.forbes.com/companies/linde/|name=Lindt & Sprüngli | country=Switzerland | city=Kilchberg, Zürich | industry=Confectionery | founded=1845-01-01||name=Linde | industry=Diversified Chemicals",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lindt & Sprüngli | country=Switzerland | city=Kilchberg, Zürich | industry=Confectionery | founded=1845-01-01\nRecord B: name=Linde | industry=Diversified Chemicals\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

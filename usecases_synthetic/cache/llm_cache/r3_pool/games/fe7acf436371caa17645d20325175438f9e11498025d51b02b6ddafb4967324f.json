@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_27979|sales_2821|name=My French Coach and My Spanish Coach | platform=DS | genres=Puzzle video game | developer=Sensory Sweep Studios | releaseYear=2008-01-01||name=My Spanish Coach | platform=DS | genres=Misc | developer=Ubisoft, Sensory Sweep | publisher=Ubisoft | releaseYear=2007-01-01 | criticScore=73 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=My French Coach and My Spanish Coach | platform=DS | genres=Puzzle video game | developer=Sensory Sweep Studios | releaseYear=2008-01-01\nRecord B: name=My Spanish Coach | platform=DS | genres=Misc | developer=Ubisoft, Sensory Sweep | publisher=Ubisoft | releaseYear=2007-01-01 | criticScore=73 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

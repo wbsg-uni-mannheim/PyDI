@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_11020|metacritic_409|name=The Chronicles of Riddick: Escape from Butcher Bay | platform=Microsoft Windows | genres=Stealth game | developer=Starbreeze Studios | releaseYear=2004-01-01||name=The Chronicles of Riddick: Escape From Butcher Bay - Developer's Cut | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=Starbreeze | releaseYear=2004-01-01 | criticScore=90.0 | userScore=8.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Chronicles of Riddick: Escape from Butcher Bay | platform=Microsoft Windows | genres=Stealth game | developer=Starbreeze Studios | releaseYear=2004-01-01\nRecord B: name=The Chronicles of Riddick: Escape From Butcher Bay - Developer's Cut | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=Starbreeze | releaseYear=2004-01-01 | criticScore=90.0 | userScore=8.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

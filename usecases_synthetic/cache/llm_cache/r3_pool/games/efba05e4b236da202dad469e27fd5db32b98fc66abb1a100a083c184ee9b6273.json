@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_40737|metacritic_9113|name=Collar × Malice | platform=PlayStation Vita | genres=Visual novel | developer=Idea Factory | releaseYear=2016-01-01||name=Collar x Malice | platform=PlayStation Vita | genres=General,Adventure,Visual Novel | developer=Otomate | releaseYear=2017-01-01 | criticScore=74.0 | userScore=7.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Collar × Malice | platform=PlayStation Vita | genres=Visual novel | developer=Idea Factory | releaseYear=2016-01-01\nRecord B: name=Collar x Malice | platform=PlayStation Vita | genres=General,Adventure,Visual Novel | developer=Otomate | releaseYear=2017-01-01 | criticScore=74.0 | userScore=7.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

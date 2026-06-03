@@ -1,0 +1,30 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "97350000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "4800000000"
+    },
+    {
+      "source": "forbes",
+      "value": "1200000000"
+    },
+    {
+      "source": "forbes",
+      "value": "10300000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "The Forbes candidates cluster around multi-billion revenue, and the DBpedia value is a clear outlier likely referring to a different scope.",
+    "value": 10300000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":10300000000,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"The Forbes candidates cluster around multi-billion revenue, and the DBpedia value is a clear outlier likely referring to a different scope.\"}"
+}

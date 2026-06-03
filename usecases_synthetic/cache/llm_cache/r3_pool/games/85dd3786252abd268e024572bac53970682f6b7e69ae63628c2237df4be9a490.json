@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_43846|sales_2872|name=Lemony Snicket's A Series of Unfortunate Events (video game) | platform=Game Boy Advance | genres=Platform game | developer=Nintendo GameCube | releaseYear=2004-01-01||name=Lemony Snicket's A Series of Unfortunate Events | platform=Game Boy Advance | genres=Platform | developer=Griptonite Games | publisher=Activision | releaseYear=2004-01-01 | criticScore=72 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lemony Snicket's A Series of Unfortunate Events (video game) | platform=Game Boy Advance | genres=Platform game | developer=Nintendo GameCube | releaseYear=2004-01-01\nRecord B: name=Lemony Snicket's A Series of Unfortunate Events | platform=Game Boy Advance | genres=Platform | developer=Griptonite Games | publisher=Activision | releaseYear=2004-01-01 | criticScore=72 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

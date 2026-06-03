@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_20752|metacritic_8795|name=Tangle Tower | platform=Switch | genres=Adventure game | developer=SFB Games | releaseYear=2019-01-01||name=Tricky Towers | platform=Switch | genres=Puzzle,Stacking | developer=WeirdBeard | releaseYear=2018-01-01 | criticScore=74.0 | userScore=7.5",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tangle Tower | platform=Switch | genres=Adventure game | developer=SFB Games | releaseYear=2019-01-01\nRecord B: name=Tricky Towers | platform=Switch | genres=Puzzle,Stacking | developer=WeirdBeard | releaseYear=2018-01-01 | criticScore=74.0 | userScore=7.5\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

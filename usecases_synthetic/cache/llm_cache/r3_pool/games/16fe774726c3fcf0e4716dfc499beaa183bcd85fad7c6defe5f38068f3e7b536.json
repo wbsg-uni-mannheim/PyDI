@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_63061|metacritic_1436|name=Medal of Honor: Underground | platform=Playstation | genres=First-person shooter | developer=DreamWorks Interactive | releaseYear=2000-01-01||name=Medal of Honor Underground | platform=PlayStation | genres=Action,Shooter,First-Person,Historic | developer=Dreamworks Interactive | releaseYear=2000-01-01 | criticScore=86.0 | userScore=8.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Medal of Honor: Underground | platform=Playstation | genres=First-person shooter | developer=DreamWorks Interactive | releaseYear=2000-01-01\nRecord B: name=Medal of Honor Underground | platform=PlayStation | genres=Action,Shooter,First-Person,Historic | developer=Dreamworks Interactive | releaseYear=2000-01-01 | criticScore=86.0 | userScore=8.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

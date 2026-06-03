@@ -86,7 +86,10 @@ llm_normalizer:
   class: LLMCanonicalizer
   params:
     model_name: gpt-5.4-mini
-    num_examples: 5
+    # R9 norm sweep (2026-06-02): num_examples 5->0 (zero-shot). Companies
+    # mean_f1 0.380@5 -> 0.466@0 (+0.086); 0 > 10 (0.414) > 5 > 3 (0.313).
+    # Mirrors music's R9 llm_normalizer winner.
+    num_examples: 0
     temperature: 0.0
     max_tokens: 2048
     prompt_version: v2

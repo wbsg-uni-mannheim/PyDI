@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38150|sales_7156|name=Supreme Commander: Forged Alliance | platform=Microsoft Windows | genres=Real-time strategy | developer=Gas Powered Games | releaseYear=2007-01-01||name=Supreme Commander: Forged Alliance | platform=PC | genres=Strategy | developer=Gas Powered Games | publisher=THQ | releaseYear=2007-01-01 | criticScore=81 | userScore=8.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Supreme Commander: Forged Alliance | platform=Microsoft Windows | genres=Real-time strategy | developer=Gas Powered Games | releaseYear=2007-01-01\nRecord B: name=Supreme Commander: Forged Alliance | platform=PC | genres=Strategy | developer=Gas Powered Games | publisher=THQ | releaseYear=2007-01-01 | criticScore=81 | userScore=8.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

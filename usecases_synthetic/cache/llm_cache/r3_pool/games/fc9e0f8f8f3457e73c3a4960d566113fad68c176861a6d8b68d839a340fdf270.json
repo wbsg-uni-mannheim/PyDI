@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_19037|sales_6151|name=Captain America: Super Soldier | platform=3DS | genres=Action,Action Adventure,General,General | developer=High Voltage Software | releaseYear=2011-01-01 | criticScore=51.0 | userScore=6.5 | ESRB=T||name=Captain America: Super Soldier | platform=3DS | genres=Action | developer=High Voltage Software | publisher=Sega | releaseYear=2011-01-01 | criticScore=51 | userScore=5.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Captain America: Super Soldier | platform=3DS | genres=Action,Action Adventure,General,General | developer=High Voltage Software | releaseYear=2011-01-01 | criticScore=51.0 | userScore=6.5 | ESRB=T\nRecord B: name=Captain America: Super Soldier | platform=3DS | genres=Action | developer=High Voltage Software | publisher=Sega | releaseYear=2011-01-01 | criticScore=51 | userScore=5.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

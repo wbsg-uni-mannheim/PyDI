@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44128|sales_7428|name=MySims | platform=Microsoft Windows | genres=Life simulation game | developer=TOSE | releaseYear=2007-01-01||name=MySims | platform=PC | genres=Simulation | developer=EA Redwood Shores | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=70 | userScore=6.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MySims | platform=Microsoft Windows | genres=Life simulation game | developer=TOSE | releaseYear=2007-01-01\nRecord B: name=MySims | platform=PC | genres=Simulation | developer=EA Redwood Shores | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=70 | userScore=6.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

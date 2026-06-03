@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "TexasDallas"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Dallas"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "TexasDallas is a malformed/concatenated form of Dallas, which is confirmed by the other source.",
+    "value": "Dallas"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Dallas\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"TexasDallas is a malformed/concatenated form of Dallas, which is confirmed by the other source.\"}"
+}

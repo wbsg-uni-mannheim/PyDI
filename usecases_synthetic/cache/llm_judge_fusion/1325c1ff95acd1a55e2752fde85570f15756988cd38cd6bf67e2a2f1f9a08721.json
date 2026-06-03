@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "BurnabyBritish Columbia"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Vancouver"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "verbatim_pick",
+    "reasoning": "Vancouver is the clean canonical city name and the other candidate appears to be a malformed place string.",
+    "value": "Vancouver"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Vancouver\",\"operation\":\"verbatim_pick\",\"confidence\":0.97,\"reasoning\":\"Vancouver is the clean canonical city name and the other candidate appears to be a malformed place string.\"}"
+}

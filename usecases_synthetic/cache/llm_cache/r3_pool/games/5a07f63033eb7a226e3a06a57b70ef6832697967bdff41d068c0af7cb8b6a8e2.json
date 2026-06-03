@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_11331|sales_660|name=State of Emergency | platform=PS2 | genres=Action,Beat-'Em-Up | developer=VIS Entertainment | releaseYear=2002-01-01 | criticScore=71.0 | userScore=6.1 | ESRB=M||name=State of Emergency | platform=PS2 | genres=Action | developer=VIS Entertainment | publisher=Take-Two Interactive | releaseYear=2002-01-01 | criticScore=71 | userScore=5.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=State of Emergency | platform=PS2 | genres=Action,Beat-'Em-Up | developer=VIS Entertainment | releaseYear=2002-01-01 | criticScore=71.0 | userScore=6.1 | ESRB=M\nRecord B: name=State of Emergency | platform=PS2 | genres=Action | developer=VIS Entertainment | publisher=Take-Two Interactive | releaseYear=2002-01-01 | criticScore=71 | userScore=5.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

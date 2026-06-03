@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59824|sales_5191|name=Odin Sphere | platform=PlayStation Vita | genres=Action role-playing game | developer=Vanillaware | releaseYear=2007-01-01||name=Odin Sphere: Leifthrasir | platform=Playstation Vita | genres=Role-Playing | developer=Vanillaware | publisher=Nippon Ichi Software | releaseYear=2016-01-01 | criticScore=93 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Odin Sphere | platform=PlayStation Vita | genres=Action role-playing game | developer=Vanillaware | releaseYear=2007-01-01\nRecord B: name=Odin Sphere: Leifthrasir | platform=Playstation Vita | genres=Role-Playing | developer=Vanillaware | publisher=Nippon Ichi Software | releaseYear=2016-01-01 | criticScore=93 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

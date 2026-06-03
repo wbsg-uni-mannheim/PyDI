@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7072|sales_5169|name=Arctic Tale (video game) | platform=DS | genres=Adventure game | developer=Atomic Planet Entertainment | releaseYear=2007-01-01||name=Arctic Tale | platform=DS | genres=Adventure | developer=Atomic Planet Entertainment | publisher=Zoo Digital Publishing | releaseYear=2007-01-01 | criticScore=38 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Arctic Tale (video game) | platform=DS | genres=Adventure game | developer=Atomic Planet Entertainment | releaseYear=2007-01-01\nRecord B: name=Arctic Tale | platform=DS | genres=Adventure | developer=Atomic Planet Entertainment | publisher=Zoo Digital Publishing | releaseYear=2007-01-01 | criticScore=38 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

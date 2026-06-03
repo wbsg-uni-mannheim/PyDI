@@ -639,7 +639,13 @@ class TestCrossCommitteeInvariants:
 # invariants on each per-domain fork without duplicating every
 # companies-specific assertion.
 
-PER_DOMAIN_COMMITTEE_DOMAINS: list[str] = ["games", "music", "movies", "products"]
+PER_DOMAIN_COMMITTEE_DOMAINS: list[str] = [
+    "games",
+    "music",
+    "movies",
+    "papers",
+    "products",
+]
 
 
 @pytest.mark.parametrize("domain", PER_DOMAIN_COMMITTEE_DOMAINS)
@@ -991,7 +997,7 @@ class TestCommitteePathResolver:
 # ===================================================================
 
 
-NORM_COMMITTEE_DOMAINS: list[str] = ["companies", "games", "music"]
+NORM_COMMITTEE_DOMAINS: list[str] = ["companies", "games", "music", "papers"]
 
 
 @pytest.mark.parametrize("domain", NORM_COMMITTEE_DOMAINS)

@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Telefónica"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Telefónica I+D"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "The DBpedia candidate is the broader canonical company name, while the other appears to be a subsidiary/division variant.",
+    "value": "Telefónica"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Telefónica\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"The DBpedia candidate is the broader canonical company name, while the other appears to be a subsidiary/division variant.\"}"
+}

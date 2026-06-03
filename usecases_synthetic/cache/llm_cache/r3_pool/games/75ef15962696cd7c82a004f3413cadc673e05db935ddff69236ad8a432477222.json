@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38888|metacritic_880|name=Tekken 5: Dark Resurrection | platform=PlayStation Portable | genres=Fighting game | developer=Namco | releaseYear=2006-01-01||name=Tekken: Dark Resurrection | platform=Playstation Portable | genres=Action,Fighting,Fighting,3D,3D | developer=Namco Bandai Games | releaseYear=2006-01-01 | criticScore=88.0 | userScore=8.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tekken 5: Dark Resurrection | platform=PlayStation Portable | genres=Fighting game | developer=Namco | releaseYear=2006-01-01\nRecord B: name=Tekken: Dark Resurrection | platform=Playstation Portable | genres=Action,Fighting,Fighting,3D,3D | developer=Namco Bandai Games | releaseYear=2006-01-01 | criticScore=88.0 | userScore=8.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -203,6 +203,54 @@ def schema_consistency_per_column_frame(result: Mapping[str, Any]) -> pd.DataFra
     return pd.DataFrame(rows)
 
 
+def write_metric_report(
+    metric: str,
+    result: Mapping[str, Any],
+    output_path: Union[str, Path],
+    *,
+    metadata: Optional[Mapping[str, Any]] = None,
+) -> Path:
+    """Write a single metric report as JSON in the standard envelope.
+
+    The envelope is ``{"metric", "metadata", "result"}`` — the same shape
+    long used for ``consistency.json``. Every per-metric report file
+    (``consistency.json``, ``coverage.json``, ``correctness.json``, ...) and
+    the panel's per-metric emitter route through here so all metric files
+    share one structure and one serialization (indented UTF-8 JSON with a
+    trailing newline).
+
+    Parameters
+    ----------
+    metric : str
+        Metric/dimension name written under the ``"metric"`` key
+        (e.g. ``"consistency"``, ``"coverage"``).
+    result : mapping
+        The metric result dict, stored verbatim under ``"result"``.
+    output_path : str or Path
+        Destination file. Parent directories are created.
+    metadata : mapping, optional
+        Caller-supplied provenance (use case, schema path, run id, ...)
+        stored under ``"metadata"``.
+
+    Returns
+    -------
+    Path
+        The written path.
+    """
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    payload: Dict[str, Any] = {
+        "metric": metric,
+        "metadata": dict(metadata or {}),
+        "result": dict(result),
+    }
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False, default=_json_default)
+        f.write("\n")
+    return output_path
+
+
 def write_schema_consistency_report(
     result: Mapping[str, Any],
     output_path: Union[str, Path],
@@ -211,22 +259,12 @@ def write_schema_consistency_report(
 ) -> Path:
     """Write a schema-consistency report as JSON.
 
+    Thin wrapper over :func:`write_metric_report` with ``metric="consistency"``.
     The written payload keeps the metric result intact and adds optional
     caller-supplied metadata such as use case name, schema path, or fusion
     output path.
     """
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    payload: Dict[str, Any] = {
-        "metric": "consistency",
-        "metadata": dict(metadata or {}),
-        "result": dict(result),
-    }
-    with output_path.open("w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2, ensure_ascii=False, default=_json_default)
-        f.write("\n")
-    return output_path
+    return write_metric_report("consistency", result, output_path, metadata=metadata)
 
 
 def _load_schema(

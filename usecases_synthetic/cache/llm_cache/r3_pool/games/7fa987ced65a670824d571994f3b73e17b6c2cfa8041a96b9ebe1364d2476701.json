@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_16257|sales_7540|name=F1 Race Stars | platform=PC | genres=Formula One,Driving,Racing,Arcade,Kart,Formula One,Automobile | developer=Codemasters | releaseYear=2012-01-01 | criticScore=62.0 | userScore=5.7 | ESRB=E||name=F1 Race Stars | platform=PC | genres=Racing | developer=Codemasters | publisher=Codemasters | releaseYear=2012-01-01 | criticScore=62 | userScore=5.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=F1 Race Stars | platform=PC | genres=Formula One,Driving,Racing,Arcade,Kart,Formula One,Automobile | developer=Codemasters | releaseYear=2012-01-01 | criticScore=62.0 | userScore=5.7 | ESRB=E\nRecord B: name=F1 Race Stars | platform=PC | genres=Racing | developer=Codemasters | publisher=Codemasters | releaseYear=2012-01-01 | criticScore=62 | userScore=5.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

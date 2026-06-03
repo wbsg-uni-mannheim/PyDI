@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_1033|http://dbpedia.org/resource/DCI_Group|name=DCI Group | country=United States | city=Washington, District of Columbia||name=DCI Group | country=United States | city=Washington, D.C. | industry=Lobbying | founded=1996-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DCI Group | country=United States | city=Washington, District of Columbia\nRecord B: name=DCI Group | country=United States | city=Washington, D.C. | industry=Lobbying | founded=1996-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

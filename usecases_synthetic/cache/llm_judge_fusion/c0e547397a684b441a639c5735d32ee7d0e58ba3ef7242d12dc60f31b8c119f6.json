@@ -1,0 +1,22 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Vestas"
+    },
+    {
+      "source": "forbes",
+      "value": "Vestas Wind Systems"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.93,
+    "operation": "normalization",
+    "reasoning": "The longer candidate is the canonical full company name and the shorter form is an abbreviation.",
+    "value": "Vestas Wind Systems"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Vestas Wind Systems\",\"operation\":\"normalization\",\"confidence\":0.93,\"reasoning\":\"The longer candidate is the canonical full company name and the shorter form is an abbreviation.\"}"
+}

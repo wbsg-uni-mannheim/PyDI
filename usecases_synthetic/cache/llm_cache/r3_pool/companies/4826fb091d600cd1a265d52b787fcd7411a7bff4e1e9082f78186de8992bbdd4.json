@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Cyprus_Popular_Bank|http://www.forbes.com/companies/popular/|name=Cyprus Popular Bank | country=Cyprus | city=Nicosia | industry=Financial services | founded=1901-01-01||name=Popular | industry=Regional Banks",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Cyprus Popular Bank | country=Cyprus | city=Nicosia | industry=Financial services | founded=1901-01-01\nRecord B: name=Popular | industry=Regional Banks\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_15881|metacritic_19236|name=Pac-Man and the Ghostly Adventures (video game) | platform=Xbox 360 | genres=Platform game | developer=Monkey Bar Games | releaseYear=2013-01-01||name=Pac-Man and the Ghostly Adventures | platform=Xbox 360 | genres=Action,Platformer,3D | developer=Namco Bandai Games,Monkey Bar Games | releaseYear=2013-01-01 | criticScore=49.0 | userScore=5.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pac-Man and the Ghostly Adventures (video game) | platform=Xbox 360 | genres=Platform game | developer=Monkey Bar Games | releaseYear=2013-01-01\nRecord B: name=Pac-Man and the Ghostly Adventures | platform=Xbox 360 | genres=Action,Platformer,3D | developer=Namco Bandai Games,Monkey Bar Games | releaseYear=2013-01-01 | criticScore=49.0 | userScore=5.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

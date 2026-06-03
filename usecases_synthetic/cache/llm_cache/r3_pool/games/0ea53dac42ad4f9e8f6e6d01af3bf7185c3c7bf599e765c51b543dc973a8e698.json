@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_5655|metacritic_15487|name=Exit (video game) | platform=DS | genres=Action game | developer=Taito Corporation | releaseYear=2005-01-01||name=Exit DS | platform=DS | genres=Action,Puzzle,General,General | developer=Moss | releaseYear=2008-01-01 | criticScore=64.0 | userScore=5.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Exit (video game) | platform=DS | genres=Action game | developer=Taito Corporation | releaseYear=2005-01-01\nRecord B: name=Exit DS | platform=DS | genres=Action,Puzzle,General,General | developer=Moss | releaseYear=2008-01-01 | criticScore=64.0 | userScore=5.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

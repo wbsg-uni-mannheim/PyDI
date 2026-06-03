@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_2362|sales_379|name=Madden NFL 11 | platform=Xbox 360 | genres=Sports,Traditional,Team,Football,Sim,Sim | developer=EA Tiburon | releaseYear=2010-01-01 | criticScore=84.0 | userScore=5.9 | ESRB=E||name=Madden NFL 11 | platform=Xbox 360 | genres=Sports | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2010-01-01 | criticScore=84 | userScore=5.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Madden NFL 11 | platform=Xbox 360 | genres=Sports,Traditional,Team,Football,Sim,Sim | developer=EA Tiburon | releaseYear=2010-01-01 | criticScore=84.0 | userScore=5.9 | ESRB=E\nRecord B: name=Madden NFL 11 | platform=Xbox 360 | genres=Sports | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2010-01-01 | criticScore=84 | userScore=5.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

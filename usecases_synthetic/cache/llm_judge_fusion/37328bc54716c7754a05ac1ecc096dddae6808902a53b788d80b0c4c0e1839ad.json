@@ -1,0 +1,34 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "McCafé"
+    },
+    {
+      "source": "dbpedia",
+      "value": "McDonald's Canada"
+    },
+    {
+      "source": "dbpedia",
+      "value": "McDonald's Israel"
+    },
+    {
+      "source": "forbes",
+      "value": "McDonald's"
+    },
+    {
+      "source": "fullcontact",
+      "value": "McDonald's Corporation"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.95,
+    "operation": "normalization",
+    "reasoning": "The candidates are variants of the same corporate name, and the base canonical form is McDonald's.",
+    "value": "McDonald's"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"McDonald's\",\"operation\":\"normalization\",\"confidence\":0.95,\"reasoning\":\"The candidates are variants of the same corporate name, and the base canonical form is McDonald's.\"}"
+}

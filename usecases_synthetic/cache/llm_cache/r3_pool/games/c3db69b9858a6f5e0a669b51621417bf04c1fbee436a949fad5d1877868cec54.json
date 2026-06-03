@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24944|sales_7720|name=Worms World Party | platform=Microsoft Windows | genres=Artillery game | developer=Team17 | releaseYear=2002-01-01||name=Worms World Party | platform=PC | genres=Strategy | developer=Team 17 | publisher=Virgin Interactive | releaseYear=2001-01-01 | criticScore=75 | userScore=7.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Worms World Party | platform=Microsoft Windows | genres=Artillery game | developer=Team17 | releaseYear=2002-01-01\nRecord B: name=Worms World Party | platform=PC | genres=Strategy | developer=Team 17 | publisher=Virgin Interactive | releaseYear=2001-01-01 | criticScore=75 | userScore=7.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

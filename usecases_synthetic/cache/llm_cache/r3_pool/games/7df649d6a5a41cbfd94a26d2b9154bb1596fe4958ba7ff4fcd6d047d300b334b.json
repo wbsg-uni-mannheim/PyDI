@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_13084|metacritic_3960|name=Victoria II | platform=Microsoft Windows | genres=Single-player | developer=Paradox Development Studio | releaseYear=2012-01-01||name=Victoria II: Heart of Darkness | platform=PC | genres=Strategy,Real-Time,Historic,General | developer=Paradox Development Studio | releaseYear=2013-01-01 | criticScore=81.0 | userScore=8.7",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Victoria II | platform=Microsoft Windows | genres=Single-player | developer=Paradox Development Studio | releaseYear=2012-01-01\nRecord B: name=Victoria II: Heart of Darkness | platform=PC | genres=Strategy,Real-Time,Historic,General | developer=Paradox Development Studio | releaseYear=2013-01-01 | criticScore=81.0 | userScore=8.7\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

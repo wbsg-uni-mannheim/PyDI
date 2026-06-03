@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_315|http://dbpedia.org/resource/Diamond_Bank|name=First Bank of Nigeria Limited | country=Nigeria | city=Lagos | founded=1894-01-01||name=Diamond Bank | country=Nigeria | city=LagosVictoria Island (Nigeria) | founded=1990-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=First Bank of Nigeria Limited | country=Nigeria | city=Lagos | founded=1894-01-01\nRecord B: name=Diamond Bank | country=Nigeria | city=LagosVictoria Island (Nigeria) | founded=1990-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

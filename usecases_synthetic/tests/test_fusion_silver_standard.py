@@ -236,13 +236,21 @@ _skip_if_no_companies_inputs = pytest.mark.skipif(
 
 
 class TestSupportedDomains:
-    def test_music_games_companies_wired(self) -> None:
-        # Products is deferred until R1 (data_cleaned_final schema).
-        assert supported_domains() == ["companies", "games", "music"]
+    def test_wired_domains(self) -> None:
+        # products wired with the 2026-06-02 data_cleaned_final schema;
+        # papers wired 2026-06-03 (jsonl sources, Version_5 fusion stack).
+        assert supported_domains() == [
+            "companies",
+            "games",
+            "music",
+            "papers",
+            "products",
+        ]
 
     def test_unsupported_raises_friendly(self) -> None:
+        # movies has no fusion stack (no per-domain workflow notebook).
         with pytest.raises(NotImplementedError, match="not yet wired"):
-            build_silver_standard("products")
+            build_silver_standard("movies")
 
 
 @_skip_if_no_music_inputs

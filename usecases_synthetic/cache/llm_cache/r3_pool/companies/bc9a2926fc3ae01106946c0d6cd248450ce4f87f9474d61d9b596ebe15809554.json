@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/FAW_Group|http://www.forbes.com/companies/bmw-group/|name=FAW Group | country=China | city=Changchun | industry=Automotive industry | founded=1953-01-01||name=BMW Group | industry=Auto & Truck Manufacturers",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=FAW Group | country=China | city=Changchun | industry=Automotive industry | founded=1953-01-01\nRecord B: name=BMW Group | industry=Auto & Truck Manufacturers\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

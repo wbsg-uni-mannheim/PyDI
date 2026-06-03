@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59289|metacritic_12762|name=Ivy the Kiwi? | platform=DS | genres=Platform game | developer=Prope | releaseYear=2010-01-01||name=Ivy the Kiwi? | platform=DS | genres=Action,General,Platformer,Platformer,2D,2D | developer=Prope | releaseYear=2010-01-01 | criticScore=69.0 | userScore=7.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ivy the Kiwi? | platform=DS | genres=Platform game | developer=Prope | releaseYear=2010-01-01\nRecord B: name=Ivy the Kiwi? | platform=DS | genres=Action,General,Platformer,Platformer,2D,2D | developer=Prope | releaseYear=2010-01-01 | criticScore=69.0 | userScore=7.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_34803|metacritic_9050|name=Star Trek: Starfleet Academy | platform=Microsoft Windows | genres=Space flight simulator | developer=Interplay Entertainment | releaseYear=1997-01-01||name=Star Trek: Klingon Academy | platform=PC | genres=Simulation,Sci-Fi,Space,Large Spaceship,Large Spaceship,Civilian | developer=14 Degrees East | releaseYear=2000-01-01 | criticScore=74.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Star Trek: Starfleet Academy | platform=Microsoft Windows | genres=Space flight simulator | developer=Interplay Entertainment | releaseYear=1997-01-01\nRecord B: name=Star Trek: Klingon Academy | platform=PC | genres=Simulation,Sci-Fi,Space,Large Spaceship,Large Spaceship,Civilian | developer=14 Degrees East | releaseYear=2000-01-01 | criticScore=74.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_3144|metacritic_6165|name=The Last Remnant | platform=Microsoft Windows | genres=Adventure game | developer=Square Enix | releaseYear=2018-01-01||name=Remnant: From the Ashes | platform=PC | genres=Action,Shooter,Third-Person,Arcade | developer=Gunfire Games | releaseYear=2019-01-01 | criticScore=78.0 | userScore=6.8 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Last Remnant | platform=Microsoft Windows | genres=Adventure game | developer=Square Enix | releaseYear=2018-01-01\nRecord B: name=Remnant: From the Ashes | platform=PC | genres=Action,Shooter,Third-Person,Arcade | developer=Gunfire Games | releaseYear=2019-01-01 | criticScore=78.0 | userScore=6.8 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

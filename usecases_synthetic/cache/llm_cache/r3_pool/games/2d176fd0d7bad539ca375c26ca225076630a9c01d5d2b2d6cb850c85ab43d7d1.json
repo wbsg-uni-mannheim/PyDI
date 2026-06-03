@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_64700|metacritic_12741|name=Need for Speed: Shift | platform=PlayStation Portable | genres=Racing game | developer=Slightly Mad Studios | releaseYear=2009-01-01||name=Need for Speed: Shift | platform=Playstation Portable | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=EA Bright Light | releaseYear=2009-01-01 | criticScore=69.0 | userScore=6.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Need for Speed: Shift | platform=PlayStation Portable | genres=Racing game | developer=Slightly Mad Studios | releaseYear=2009-01-01\nRecord B: name=Need for Speed: Shift | platform=Playstation Portable | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=EA Bright Light | releaseYear=2009-01-01 | criticScore=69.0 | userScore=6.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

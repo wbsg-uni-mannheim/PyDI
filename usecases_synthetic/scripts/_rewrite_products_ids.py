@@ -171,7 +171,11 @@ def _copy_target_schema(synthetic_input: Path, *, dry_run: bool) -> None:
 
     Idempotent — overwrites the synthetic-side copy each run.
     """
-    upstream = UPSTREAM_INPUT_DIR / "schemamatching" / "products_target_schema.json"
+    # New upstream uses ``target_schema.json``; older layout used
+    # ``products_target_schema.json``. Prefer the canonical name.
+    upstream = UPSTREAM_INPUT_DIR / "schemamatching" / "target_schema.json"
+    if not upstream.exists():
+        upstream = UPSTREAM_INPUT_DIR / "schemamatching" / "products_target_schema.json"
     if not upstream.exists():
         logger.warning("Upstream target schema missing: %s", upstream)
         return
@@ -217,9 +221,16 @@ def main() -> int:
     logger.info("Phase 1: rewrite source JSON ids")
     upstream_data = UPSTREAM_INPUT_DIR / "data"
     for name in SOURCE_NAMES:
+        # New upstream (2026-06-02) ships per-source-native schemas in
+        # files named ``dataset_<n>.json``; map products_<n> ->
+        # dataset_<n>.json. (Pre-2026-06-02 layout used products_<n>.json.)
+        idx = name.rsplit("_", 1)[1]
+        upstream_src = upstream_data / f"dataset_{idx}.json"
+        if not upstream_src.exists():
+            upstream_src = upstream_data / f"{name}.json"  # legacy fallback
         _rewrite_source_json(
             name,
-            upstream_data / f"{name}.json",
+            upstream_src,
             synthetic_input / "data" / f"{name}.json",
             dry_run=args.dry_run,
         )

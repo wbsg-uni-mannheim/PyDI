@@ -540,17 +540,12 @@ def _build_fusion_gold_ids(domain_config: DomainConfig) -> set[str]:
     plan_s1_scale.md, both fusion validation and test entities are
     protected at every value- and entity-mutating knob, K3 included.
     """
-    import xml.etree.ElementTree as ET
+    # Delegate to the shared protection loader so XML (pre-2026 domains)
+    # and JSONL-by-DOI fusion gold (papers; mapped to per-DOI anchor source
+    # ids) are handled identically and in one place.
+    from usecases_synthetic.lib.protection import _load_fusion_protected_ids
 
-    ids: set[str] = set()
-    for fusion_path in domain_config.fusion_paths():
-        if not fusion_path.exists():
-            continue
-        tree = ET.parse(fusion_path)
-        for id_elem in tree.getroot().iter("id"):
-            if id_elem.text:
-                ids.add(id_elem.text.strip())
-    return ids
+    return _load_fusion_protected_ids(domain_config.domain)
 
 
 def _compute_protected_cells(

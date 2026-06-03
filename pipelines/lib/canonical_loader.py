@@ -67,6 +67,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -78,10 +79,140 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 _PRODUCTS_SOURCE_FILES = {
-    "products_1": "dataset_1_normalized.json",
-    "products_2": "dataset_2_normalized.json",
-    "products_3": "dataset_3_normalized.json",
-    "products_4": "dataset_4_normalized.json",
+    "products_1": "dataset_1.json",
+    "products_2": "dataset_2.json",
+    "products_3": "dataset_3.json",
+    "products_4": "dataset_4.json",
+}
+
+# Per-source raw-column -> canonical-column mapping mirrored verbatim
+# from usecases/products/products_workflow_minimal.ipynb (the
+# notebook's ``SCHEMA_MATCHES`` dict). The canonical product sources
+# ship varied column naming styles (snake_case / camelCase / PascalCase
+# / terse ERP codes) precisely to exercise schema matching. The
+# canonical loader applies this mapping in-memory so downstream stages
+# see the canonical target-schema column names, while the BoB SM
+# committee still scores against the matching gold at
+# ``input/schemamatching/sm_mapping_gold.csv`` (derived from the same
+# dict — every (source_dataset, source_column) row maps to the same
+# target_column listed here).
+_PRODUCTS_SCHEMA_MATCHES: dict[str, dict[str, str]] = {
+    "products_1": {
+        "id": "id",
+        "manufacturer": "brand",
+        "product_name": "title",
+        "product_description": "description",
+        "list_price": "price",
+        "currency_code": "priceCurrency",
+        "cluster_id": "cluster_id",
+        "product_url": "url",
+        "name_and_description": "title_description",
+        "model_name": "model",
+        "manufacturer_part_number": "model_number",
+        "category": "product_type",
+        "gpu_chipset": "chipset_name",
+        "video_memory_gb": "vram_gb",
+        "capacity_gb": "storage_gb",
+        "sequential_read_mb_s": "read_speed_mb_s",
+        "sequential_write_mb_s": "write_speed_mb_s",
+        "bus_standard": "bus_type",
+        "interface": "interface_type",
+        "width_millimeters": "width_mm",
+        "length_millimeters": "length_mm",
+        "height_millimeters": "height_mm",
+        "weight_grams": "weight_g",
+        "connector": "storage_connection_type",
+        "memory_technology": "memory_type",
+        "colour": "color",
+        "form_factor": "form_factor",
+    },
+    "products_2": {
+        "id": "id",
+        "brandName": "brand",
+        "name": "title",
+        "descriptionText": "description",
+        "priceAmount": "price",
+        "currency": "priceCurrency",
+        "cluster_id": "cluster_id",
+        "productUrl": "url",
+        "titleAndDescription": "title_description",
+        "modelName": "model",
+        "mpn": "model_number",
+        "productCategory": "product_type",
+        "chipset": "chipset_name",
+        "vramGb": "vram_gb",
+        "capacityGb": "storage_gb",
+        "readSpeedMbps": "read_speed_mb_s",
+        "writeSpeedMbps": "write_speed_mb_s",
+        "busType": "bus_type",
+        "interfaceType": "interface_type",
+        "widthMm": "width_mm",
+        "depthMm": "length_mm",
+        "heightMm": "height_mm",
+        "weightG": "weight_g",
+        "connectionType": "storage_connection_type",
+        "memoryType": "memory_type",
+        "color": "color",
+        "formFactor": "form_factor",
+    },
+    "products_3": {
+        "id": "id",
+        "Brand": "brand",
+        "ProductTitle": "title",
+        "Details": "description",
+        "Price": "price",
+        "Currency": "priceCurrency",
+        "cluster_id": "cluster_id",
+        "Link": "url",
+        "TitleDetails": "title_description",
+        "Model": "model",
+        "PartNo": "model_number",
+        "Type": "product_type",
+        "Chipset": "chipset_name",
+        "MemorySizeGB": "vram_gb",
+        "CapacityGB": "storage_gb",
+        "ReadMBs": "read_speed_mb_s",
+        "WriteMBs": "write_speed_mb_s",
+        "Bus": "bus_type",
+        "Interface": "interface_type",
+        "WidthMM": "width_mm",
+        "LengthMM": "length_mm",
+        "HeightMM": "height_mm",
+        "WeightG": "weight_g",
+        "Connector": "storage_connection_type",
+        "MemoryType": "memory_type",
+        "Colour": "color",
+        "FormFactor": "form_factor",
+    },
+    "products_4": {
+        "id": "id",
+        "mfr": "brand",
+        "name": "title",
+        "desc": "description",
+        "amt": "price",
+        "cur": "priceCurrency",
+        "cluster_id": "cluster_id",
+        "link": "url",
+        "name_desc": "title_description",
+        "mdl": "model",
+        "pn": "model_number",
+        "cat": "product_type",
+        "chip": "chipset_name",
+        "vram": "vram_gb",
+        "cap_gb": "storage_gb",
+        "rd_mbs": "read_speed_mb_s",
+        "wr_mbs": "write_speed_mb_s",
+        "bus": "bus_type",
+        "iface": "interface_type",
+        "w_mm": "width_mm",
+        "l_mm": "length_mm",
+        "h_mm": "height_mm",
+        "wt_g": "weight_g",
+        "conn": "storage_connection_type",
+        "mem": "memory_type",
+        "clr": "color",
+        "ff": "form_factor",
+    },
 }
 
 _PRODUCTS_EM_PAIRS: tuple[tuple[str, str, str], ...] = (
@@ -117,21 +248,37 @@ def _prefix_ids(df: pd.DataFrame, column: str, prefix: str) -> pd.DataFrame:
 def _load_canonical_sources(
     products_root: Path,
 ) -> dict[str, pd.DataFrame]:
-    """Load the 4 canonical product sources with in-memory id prefix."""
+    """Load the 4 canonical product sources with their RAW per-source
+    column names intact (manufacturer / brandName / Brand / mfr, ...).
+
+    The SM committee scores these raw columns against the canonical
+    SM gold; the orchestrator applies the gold (or the SM winner's)
+    mapping after SM scoring to translate sources to canonical column
+    names for downstream stages. IDs are prefixed so they remain
+    cross-source unique.
+    """
     sources: dict[str, pd.DataFrame] = {}
     for source_name, fname in _PRODUCTS_SOURCE_FILES.items():
-        path = products_root / "input" / "data_cleaned_final" / fname
+        path = products_root / "input" / "data" / fname
         if not path.exists():
             raise FileNotFoundError(
                 f"Canonical products source missing: {path}. "
-                f"Check usecases/products/input/data_cleaned_final/."
+                f"Check usecases/products/input/data/."
             )
         with path.open() as f:
             records = json.load(f)
         df = pd.DataFrame(records)
+        if "id" not in df.columns:
+            raise KeyError(
+                f"Canonical source {source_name} has no 'id' column; cannot "
+                "prefix. Check the dataset file."
+            )
         prefix = f"{source_name}_"
         df = _prefix_ids(df, "id", prefix)
         df.attrs["dataset_name"] = source_name
+        # Tag the source so the orchestrator knows it needs post-SM
+        # gold-based column translation before EM / Norm / Fusion.
+        df.attrs["needs_sm_column_translation"] = True
         sources[source_name] = df
     return sources
 
@@ -285,4 +432,277 @@ def load_canonical_products_bundle() -> VariantBundle:
         fusion_validation=fusion_validation,
         pooled_positives=None,
         variant_root=products_root,
+    )
+
+
+def load_canonical_products_workflow_silver() -> "Any":
+    """Build a :class:`SilverStandard` for products directly from the
+    canonical wide-format ``fusion_test_set.csv``.
+
+    The PyDI ``load_workflow_silver`` loader expects
+    ``input/fusion/test_set.xml``; the canonical products tree only
+    has CSV (id_left/id_right/source_left/source_right/cluster_id +
+    27 attribute columns). This helper reads that CSV directly and
+    assembles the same :class:`SilverStandard` shape (fused frame
+    keyed by ``cluster_id`` + membership table).
+    """
+    from PyDI.evaluation.silver_standard import SilverStandard
+
+    products_root = REPO_ROOT / "usecases" / "products"
+    csv_path = products_root / "input" / "fusion" / "fusion_test_set.csv"
+    if not csv_path.exists():
+        raise FileNotFoundError(csv_path)
+    df = pd.read_csv(csv_path)
+    if "filled" in df.columns:
+        df = df[df["filled"] == "y"].copy()
+    if "cluster_id" not in df.columns:
+        raise ValueError(
+            f"Canonical fusion silver missing cluster_id column at {csv_path}"
+        )
+
+    # Build the fused frame: one row per cluster_id with the canonical
+    # expected attribute values. Drop pair-only metadata columns; what
+    # remains is the cluster-level fused state.
+    drop_cols = _FUSION_DROP_COLS | {
+        "id_left",
+        "id_right",
+        "source_left",
+        "source_right",
+    }
+    keep_cols = [c for c in df.columns if c not in drop_cols]
+    grouped = df.drop_duplicates(subset=["cluster_id"]).copy()
+    fused = grouped[keep_cols].reset_index(drop=True)
+    # cluster_id stays as the canonical cluster id; no prefixing needed.
+
+    # Build membership from the pair rows: each (id_left, source_left,
+    # cluster_id) and (id_right, source_right, cluster_id) becomes one
+    # row. The CSV uses short source codes ``p1``/``p2``/``p3``/``p4``
+    # and bare-int ids; translate them to the pipeline's
+    # ``products_<n>`` convention with ``products_<n>_<id>`` prefixed
+    # record ids so membership aligns with bundle.sources keys.
+    _short_to_full = {
+        "p1": "products_1",
+        "p2": "products_2",
+        "p3": "products_3",
+        "p4": "products_4",
+    }
+
+    def _full_source(short: Any) -> str | None:
+        if pd.isna(short):
+            return None
+        return _short_to_full.get(str(short), str(short))
+
+    def _prefix_record_id(record_id: Any, full_source: str | None) -> str | None:
+        if pd.isna(record_id) or full_source is None:
+            return None
+        return f"{full_source}_{record_id}"
+
+    left_rows = df[["id_left", "source_left", "cluster_id"]].rename(
+        columns={"id_left": "record_id", "source_left": "source"}
+    )
+    right_rows = df[["id_right", "source_right", "cluster_id"]].rename(
+        columns={"id_right": "record_id", "source_right": "source"}
+    )
+    membership = pd.concat([left_rows, right_rows], ignore_index=True).dropna(
+        subset=["record_id", "source"]
+    )
+    membership["source"] = [_full_source(s) for s in membership["source"]]
+    membership = membership.dropna(subset=["source"])
+    membership["record_id"] = [
+        _prefix_record_id(rid, src)
+        for rid, src in zip(membership["record_id"], membership["source"])
+    ]
+    membership = (
+        membership.dropna(subset=["record_id"])
+        .drop_duplicates(subset=["record_id", "source", "cluster_id"])
+        .reset_index(drop=True)
+    )
+
+    logger.info(
+        "Loaded canonical products workflow silver: %d clusters, %d "
+        "membership rows (from %s)",
+        len(fused),
+        len(membership),
+        csv_path.relative_to(REPO_ROOT),
+    )
+    return SilverStandard(
+        fused=fused,
+        membership=membership,
+        cell_provenance=None,
+    )
+
+
+# ===========================================================================
+# Papers
+# ===========================================================================
+#
+# Papers is a new (2026 pull) domain not yet wired into
+# usecases_synthetic. It has 3 sources (dblp, crossref, open_alex) all
+# read from JSONL with PyDI.io.load_json(add_index=True), which
+# generates ids of the form ``<source>-<NNNNN>`` (dash separator,
+# zero-padded). The EM gold under input/entitymatching/ uses the
+# domain-specific columns ``id_dblp + id_<other>`` (NOT the standard
+# ``id1/id2/label``); the loader renames them. Fusion gold is JSONL
+# (NOT XML/CSV) and joins on ``doi`` — the loader returns it
+# verbatim. SM gold is not authored yet.
+
+_PAPERS_SOURCE_FILES = {
+    "dblp": "dblp.jsonl",
+    "crossref": "crossref.jsonl",
+    "open_alex": "open_alex.jsonl",
+}
+
+# EM pair declarations: (src1, src2, em-csv-stem).
+# Filenames are ``<stem>_{train,val,test}.csv``.
+_PAPERS_EM_PAIRS: tuple[tuple[str, str, str], ...] = (
+    ("dblp", "crossref", "dblp_crossref"),
+    ("dblp", "open_alex", "dblp_openalex"),
+)
+
+
+def _load_canonical_papers_sources(
+    papers_root: Path,
+) -> dict[str, pd.DataFrame]:
+    """Load papers' 3 JSONL sources via :func:`PyDI.io.load_json` so
+    the auto-generated ids match the dash-prefixed format the EM gold
+    references (``dblp-NNNNN``, ``crossref-NNNNN``, ``open_alex-NNNNN``)."""
+    from PyDI.io import load_json
+
+    sources: dict[str, pd.DataFrame] = {}
+    for name, fname in _PAPERS_SOURCE_FILES.items():
+        path = papers_root / "input" / "data" / fname
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Canonical papers source missing: {path}. "
+                f"Check usecases/papers/input/data/."
+            )
+        df = load_json(path, add_index=True, lines=True, name=name)
+        id_col = f"{name}_id"
+        if id_col in df.columns and "id" not in df.columns:
+            df = df.rename(columns={id_col: "id"})
+        df.attrs["dataset_name"] = name
+        sources[name] = df
+    return sources
+
+
+def _read_papers_em_csv(path: Path, src1: str, src2: str) -> pd.DataFrame:
+    """Read a papers EM CSV. The columns are ``id_<src1>,id_<src2>,label``;
+    rename to ``id1,id2,label`` and convert 0/1 labels to ``true``/``false``
+    matching the synthetic-side convention. IDs are already prefixed."""
+    df = pd.read_csv(path)
+    col1, col2 = f"id_{src1}", f"id_{src2}"
+    # The crossref+openalex files use the non-anchor source's prefix
+    # directly in the column name; accept short aliases too.
+    if col1 not in df.columns or col2 not in df.columns:
+        # Fall back to whatever id_* columns are present, with src1
+        # matching the column whose values start with src1+"-".
+        id_cols = [c for c in df.columns if c.startswith("id_")]
+        if len(id_cols) != 2:
+            raise ValueError(
+                f"Papers EM CSV {path} has unexpected columns {list(df.columns)}"
+            )
+        col1, col2 = id_cols
+    rename = {col1: "id1", col2: "id2"}
+    df = df.rename(columns=rename)
+    if "label" not in df.columns:
+        raise ValueError(f"Papers EM CSV {path} missing label column")
+    df["label"] = df["label"].apply(lambda v: "true" if int(v) == 1 else "false")
+    return df[["id1", "id2", "label"]]
+
+
+def _load_canonical_papers_em(
+    papers_root: Path,
+) -> tuple[
+    dict[tuple[str, str], pd.DataFrame],
+    dict[tuple[str, str], dict[str, pd.DataFrame]],
+]:
+    em_dir = papers_root / "input" / "entitymatching"
+    em_gold: dict[tuple[str, str], pd.DataFrame] = {}
+    em_splits: dict[tuple[str, str], dict[str, pd.DataFrame]] = {}
+    for src1, src2, stem in _PAPERS_EM_PAIRS:
+        # Treat the union of train+val+test as ``all`` since the
+        # canonical papers tree doesn't ship an explicit ``_all.csv``.
+        pair_splits: dict[str, pd.DataFrame] = {}
+        for split in ("train", "val", "test"):
+            sp_path = em_dir / f"{stem}_{split}.csv"
+            if sp_path.exists():
+                pair_splits[split] = _read_papers_em_csv(sp_path, src1, src2)
+        if not pair_splits:
+            logger.warning(
+                "Papers EM gold missing for %s-%s under %s; skipping pair.",
+                src1,
+                src2,
+                em_dir,
+            )
+            continue
+        all_df = pd.concat(pair_splits.values(), ignore_index=True)
+        pair_splits["all"] = all_df
+        em_gold[(src1, src2)] = all_df
+        em_splits[(src1, src2)] = pair_splits
+    return em_gold, em_splits
+
+
+def _load_canonical_papers_fusion(
+    papers_root: Path,
+) -> tuple[pd.DataFrame, pd.DataFrame | None]:
+    """Read the JSONL fusion silvers; both have one row per fused
+    paper keyed on ``doi``."""
+    fusion_dir = papers_root / "input" / "fusion"
+    test_path = fusion_dir / "fusion_test.jsonl"
+    if not test_path.exists():
+        raise FileNotFoundError(
+            f"Canonical papers fusion test silver missing at {test_path}"
+        )
+    test = pd.read_json(test_path, lines=True)
+    val_path = fusion_dir / "fusion_val.jsonl"
+    validation = pd.read_json(val_path, lines=True) if val_path.exists() else None
+    return test, validation
+
+
+def load_canonical_papers_bundle() -> VariantBundle:
+    """Return a baseline :class:`VariantBundle` for papers sourced
+    from canonical ``usecases/papers/``.
+
+    SM gold is intentionally left as ``None`` — the papers domain
+    does not (yet) ship a ``sm_mapping_gold.csv``. Downstream SM
+    committee scoring will be unavailable until the file is authored.
+    """
+    papers_root = REPO_ROOT / "usecases" / "papers"
+    if not papers_root.exists():
+        raise FileNotFoundError(f"Canonical papers root not found at {papers_root}")
+
+    sources = _load_canonical_papers_sources(papers_root)
+    em_gold, em_splits = _load_canonical_papers_em(papers_root)
+    fusion_gold, fusion_validation = _load_canonical_papers_fusion(papers_root)
+    target_schema_path = papers_root / "input" / "schemamatching" / "target_schema.json"
+    if not target_schema_path.exists():
+        raise FileNotFoundError(target_schema_path)
+    with target_schema_path.open() as f:
+        target_schema = json.load(f)
+
+    sm_gold_path = papers_root / "input" / "schemamatching" / "sm_mapping_gold.csv"
+    sm_mapping = pd.read_csv(sm_gold_path) if sm_gold_path.exists() else None
+
+    logger.info(
+        "Loaded canonical papers bundle from %s "
+        "(sources=%d, em_pairs=%d, fusion_test_rows=%d, sm_gold=%s)",
+        papers_root,
+        len(sources),
+        len(em_gold),
+        len(fusion_gold),
+        "yes" if sm_mapping is not None else "no",
+    )
+
+    return VariantBundle(
+        domain="papers",
+        level="baseline",
+        sources=sources,
+        target_schema=target_schema,
+        sm_mapping=sm_mapping,
+        em_gold=em_gold,
+        em_splits=em_splits,
+        fusion_gold=fusion_gold,
+        fusion_validation=fusion_validation,
+        pooled_positives=None,
+        variant_root=papers_root,
     )

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49327|metacritic_13689|name=Robinson's Requiem | platform=Microsoft Windows | genres=Simulation video game | developer=Silmarils (company) | releaseYear=2009-01-01||name=Penumbra: Requiem | platform=PC | genres=Action Adventure,Horror,Horror,Survival | developer=Frictional Games | releaseYear=2008-01-01 | criticScore=67.0 | userScore=6.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Robinson's Requiem | platform=Microsoft Windows | genres=Simulation video game | developer=Silmarils (company) | releaseYear=2009-01-01\nRecord B: name=Penumbra: Requiem | platform=PC | genres=Action Adventure,Horror,Horror,Survival | developer=Frictional Games | releaseYear=2008-01-01 | criticScore=67.0 | userScore=6.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

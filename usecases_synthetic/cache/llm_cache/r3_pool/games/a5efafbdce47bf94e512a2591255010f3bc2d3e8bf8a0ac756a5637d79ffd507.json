@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_61317|sales_2071|name=Buzz Lightyear of Star Command (video game) | platform=Playstation | genres=Shooter game | developer=Traveller's Tales | releaseYear=2001-01-01||name=Buzz Lightyear of Star Command | platform=Playstation | genres=Platform | developer=Traveller's Tales | publisher=Activision | releaseYear=2000-01-01 | criticScore=54 | userScore=5.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Buzz Lightyear of Star Command (video game) | platform=Playstation | genres=Shooter game | developer=Traveller's Tales | releaseYear=2001-01-01\nRecord B: name=Buzz Lightyear of Star Command | platform=Playstation | genres=Platform | developer=Traveller's Tales | publisher=Activision | releaseYear=2000-01-01 | criticScore=54 | userScore=5.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

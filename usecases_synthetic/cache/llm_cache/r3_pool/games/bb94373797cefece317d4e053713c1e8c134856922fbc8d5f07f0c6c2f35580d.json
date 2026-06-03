@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38716|metacritic_16981|name=Pokémon Mystery Dungeon: Gates to Infinity | platform=3DS | genres=Roguelike | developer=Spike Chunsoft||name=Pokemon Mystery Dungeon: Gates to Infinity | platform=3DS | genres=General,Role-Playing,Console-style RPG,Console-style RPG,Roguelike | developer=Nintendo,Spike Chunsoft | releaseYear=2013-01-01 | criticScore=59.0 | userScore=6.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pokémon Mystery Dungeon: Gates to Infinity | platform=3DS | genres=Roguelike | developer=Spike Chunsoft\nRecord B: name=Pokemon Mystery Dungeon: Gates to Infinity | platform=3DS | genres=General,Role-Playing,Console-style RPG,Console-style RPG,Roguelike | developer=Nintendo,Spike Chunsoft | releaseYear=2013-01-01 | criticScore=59.0 | userScore=6.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

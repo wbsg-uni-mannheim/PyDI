@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_56887|sales_2091|name=Mafia III | platform=Xbox One | genres=Action-adventure | developer=Hangar 13 | releaseYear=2017-01-01||name=Mafia III | platform=XOne | genres=Action | developer=Hangar 13 | publisher=Take-Two Interactive | releaseYear=2016-01-01 | criticScore=67 | userScore=4.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mafia III | platform=Xbox One | genres=Action-adventure | developer=Hangar 13 | releaseYear=2017-01-01\nRecord B: name=Mafia III | platform=XOne | genres=Action | developer=Hangar 13 | publisher=Take-Two Interactive | releaseYear=2016-01-01 | criticScore=67 | userScore=4.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

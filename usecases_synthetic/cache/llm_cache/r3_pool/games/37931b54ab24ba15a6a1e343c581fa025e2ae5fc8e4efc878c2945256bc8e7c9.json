@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_20922|sales_3767|name=Rory McIlroy PGA Tour | platform=Xbox One | genres=Sports game | developer=EA Tiburon | releaseYear=2015-01-01||name=Rory McIlroy PGA Tour | platform=XOne | genres=Action | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2015-01-01 | criticScore=60 | userScore=4.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Rory McIlroy PGA Tour | platform=Xbox One | genres=Sports game | developer=EA Tiburon | releaseYear=2015-01-01\nRecord B: name=Rory McIlroy PGA Tour | platform=XOne | genres=Action | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2015-01-01 | criticScore=60 | userScore=4.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

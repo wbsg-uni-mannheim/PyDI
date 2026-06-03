@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_30917|metacritic_7947|name=NBA Live 2002 | platform=Xbox | genres=Sports game | developer=EA Canada | releaseYear=2001-01-01||name=NBA Live 2002 | platform=Xbox | genres=Sports,Traditional,Basketball,Sim | developer=Electronic Arts | releaseYear=2001-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=NBA Live 2002 | platform=Xbox | genres=Sports game | developer=EA Canada | releaseYear=2001-01-01\nRecord B: name=NBA Live 2002 | platform=Xbox | genres=Sports,Traditional,Basketball,Sim | developer=Electronic Arts | releaseYear=2001-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_37985|metacritic_13970|name=The Park (video game) | platform=Microsoft Windows | genres=Psychological horror | developer=Funcom | releaseYear=2015-01-01||name=The Park | platform=PC | genres=Action Adventure,Survival | developer=Funcom | releaseYear=2015-01-01 | criticScore=67.0 | userScore=6.1",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Park (video game) | platform=Microsoft Windows | genres=Psychological horror | developer=Funcom | releaseYear=2015-01-01\nRecord B: name=The Park | platform=PC | genres=Action Adventure,Survival | developer=Funcom | releaseYear=2015-01-01 | criticScore=67.0 | userScore=6.1\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

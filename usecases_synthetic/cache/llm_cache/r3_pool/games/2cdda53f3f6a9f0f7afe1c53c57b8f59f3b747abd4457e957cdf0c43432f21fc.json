@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42372|metacritic_5733|name=RollerCoaster Tycoon 3 | genres=Construction and management simulation | developer=Frontier Developments | releaseYear=2015-01-01||name=RollerCoaster Tycoon 3: Soaked! | platform=PC | genres=Strategy,Tycoon,Management,Tycoon,Business / Tycoon | developer=Frontier Developments | releaseYear=2005-01-01 | criticScore=79.0 | userScore=4.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=RollerCoaster Tycoon 3 | genres=Construction and management simulation | developer=Frontier Developments | releaseYear=2015-01-01\nRecord B: name=RollerCoaster Tycoon 3: Soaked! | platform=PC | genres=Strategy,Tycoon,Management,Tycoon,Business / Tycoon | developer=Frontier Developments | releaseYear=2005-01-01 | criticScore=79.0 | userScore=4.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

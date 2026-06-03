@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Jardine_Cycle_&_Carriage|http://www.forbes.com/companies/jardine-matheson/|name=Jardine Cycle & Carriage | country=Singapore | industry=Automotive industry | founded=1899-01-01||name=Jardine Matheson | country=Hong Kong | industry=Conglomerates",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Jardine Cycle & Carriage | country=Singapore | industry=Automotive industry | founded=1899-01-01\nRecord B: name=Jardine Matheson | country=Hong Kong | industry=Conglomerates\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

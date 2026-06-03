@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_22212|metacritic_15880|name=The Book of Unwritten Tales 2 | platform=PS4 | genres=Adventure game | developer=King Art Games | releaseYear=2019-01-01||name=The Book of Unwritten Tales 2 | platform=PS4 | genres=Adventure,General,Point-and-Click | developer=KING Art | releaseYear=2015-01-01 | criticScore=63.0 | userScore=6.8",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Book of Unwritten Tales 2 | platform=PS4 | genres=Adventure game | developer=King Art Games | releaseYear=2019-01-01\nRecord B: name=The Book of Unwritten Tales 2 | platform=PS4 | genres=Adventure,General,Point-and-Click | developer=KING Art | releaseYear=2015-01-01 | criticScore=63.0 | userScore=6.8\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

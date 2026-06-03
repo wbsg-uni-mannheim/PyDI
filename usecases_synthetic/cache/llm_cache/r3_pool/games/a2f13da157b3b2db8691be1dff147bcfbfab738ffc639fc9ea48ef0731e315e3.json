@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24029|metacritic_11567|name=Minecraft: Story Mode | platform=Windows | genres=Point-and-click | developer=Telltale Games | releaseYear=2016-01-01||name=Minecraft: Story Mode - Episode 1: The Order of the Stone | platform=PC | genres=Action Adventure,Adventure,General,Point-and-Click,Linear | developer=Telltale Games | releaseYear=2015-01-01 | criticScore=71.0 | userScore=4.6 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Minecraft: Story Mode | platform=Windows | genres=Point-and-click | developer=Telltale Games | releaseYear=2016-01-01\nRecord B: name=Minecraft: Story Mode - Episode 1: The Order of the Stone | platform=PC | genres=Action Adventure,Adventure,General,Point-and-Click,Linear | developer=Telltale Games | releaseYear=2015-01-01 | criticScore=71.0 | userScore=4.6 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_13373|metacritic_19503|name=Crisis Zone | platform=PS2 | genres=Light gun shooter | developer=Tose (company) | releaseYear=2004-01-01||name=Conflict Zone | platform=PS2 | genres=Strategy,Real-Time,Military | developer=MASA Group | releaseYear=2002-01-01 | criticScore=47.0 | userScore=7.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crisis Zone | platform=PS2 | genres=Light gun shooter | developer=Tose (company) | releaseYear=2004-01-01\nRecord B: name=Conflict Zone | platform=PS2 | genres=Strategy,Real-Time,Military | developer=MASA Group | releaseYear=2002-01-01 | criticScore=47.0 | userScore=7.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

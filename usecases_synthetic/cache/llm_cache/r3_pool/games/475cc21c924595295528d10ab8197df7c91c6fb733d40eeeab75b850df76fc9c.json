@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1976|sales_1677|name=DmC: Devil May Cry | platform=PS3 | genres=Action,General,Action Adventure,Fantasy,General,Fantasy,Linear | developer=Ninja Theory | releaseYear=2013-01-01 | criticScore=85.0 | userScore=5.6 | ESRB=M||name=DmC: Devil May Cry | platform=PS3 | genres=Action | developer=Ninja Theory | publisher=Capcom | releaseYear=2013-01-01 | criticScore=85 | userScore=5.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DmC: Devil May Cry | platform=PS3 | genres=Action,General,Action Adventure,Fantasy,General,Fantasy,Linear | developer=Ninja Theory | releaseYear=2013-01-01 | criticScore=85.0 | userScore=5.6 | ESRB=M\nRecord B: name=DmC: Devil May Cry | platform=PS3 | genres=Action | developer=Ninja Theory | publisher=Capcom | releaseYear=2013-01-01 | criticScore=85 | userScore=5.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

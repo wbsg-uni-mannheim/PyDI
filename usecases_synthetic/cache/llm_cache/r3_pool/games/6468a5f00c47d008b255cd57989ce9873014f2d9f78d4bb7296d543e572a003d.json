@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21825|metacritic_6221|name=Guardians of the Galaxy: The Telltale Series | platform=Microsoft Windows | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2017-01-01||name=Marvel's Guardians of the Galaxy: The Telltale Series | platform=PC | genres=Action,Adventure,General,3D,Third-Person | developer=Telltale Games | releaseYear=2017-01-01 | criticScore=78.0 | userScore=7.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Guardians of the Galaxy: The Telltale Series | platform=Microsoft Windows | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2017-01-01\nRecord B: name=Marvel's Guardians of the Galaxy: The Telltale Series | platform=PC | genres=Action,Adventure,General,3D,Third-Person | developer=Telltale Games | releaseYear=2017-01-01 | criticScore=78.0 | userScore=7.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

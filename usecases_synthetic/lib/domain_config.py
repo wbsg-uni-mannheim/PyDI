@@ -27,6 +27,7 @@ VALID_DOMAINS: list[str] = [
     "music",
     "music-small",
     "movies",
+    "papers",
     "products",
     "products-small",
 ]

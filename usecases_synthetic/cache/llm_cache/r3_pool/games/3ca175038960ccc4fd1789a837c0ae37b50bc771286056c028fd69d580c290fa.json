@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_13554|sales_3674|name=Kung Fu Chaos | platform=Xbox | genres=Action,Fighting,3D | developer=Just Add Monsters | releaseYear=2003-01-01 | criticScore=68.0 | userScore=8.5 | ESRB=T||name=Kung Fu Chaos | platform=Xbox | genres=Fighting | developer=Just Add Monsters | publisher=Microsoft Game Studios | releaseYear=2003-01-01 | criticScore=68 | userScore=8.5 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Kung Fu Chaos | platform=Xbox | genres=Action,Fighting,3D | developer=Just Add Monsters | releaseYear=2003-01-01 | criticScore=68.0 | userScore=8.5 | ESRB=T\nRecord B: name=Kung Fu Chaos | platform=Xbox | genres=Fighting | developer=Just Add Monsters | publisher=Microsoft Game Studios | releaseYear=2003-01-01 | criticScore=68 | userScore=8.5 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

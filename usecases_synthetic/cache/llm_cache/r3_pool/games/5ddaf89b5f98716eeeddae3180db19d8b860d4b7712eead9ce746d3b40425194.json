@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46290|metacritic_18432|name=Stubbs the Zombie in Rebel Without a Pulse | platform=Switch | genres=Action game | developer=Wideload Games | releaseYear=2021-01-01||name=Stubbs the Zombie in Rebel Without a Pulse | platform=Switch | genres=Action Adventure,General | developer=Aspyr | releaseYear=2021-01-01 | criticScore=54.0 | userScore=6.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stubbs the Zombie in Rebel Without a Pulse | platform=Switch | genres=Action game | developer=Wideload Games | releaseYear=2021-01-01\nRecord B: name=Stubbs the Zombie in Rebel Without a Pulse | platform=Switch | genres=Action Adventure,General | developer=Aspyr | releaseYear=2021-01-01 | criticScore=54.0 | userScore=6.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

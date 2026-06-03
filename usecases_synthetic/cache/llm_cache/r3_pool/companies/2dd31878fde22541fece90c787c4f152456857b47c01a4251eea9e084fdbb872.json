@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_919|http://dbpedia.org/resource/H._H._Franklin_Manufacturing_Company|name=Google Inc. | country=United States | city=Mountain View | founded=1998-01-01||name=H. H. Franklin Manufacturing Company | country=United States | city=Onondaga County, New YorkSyracuse, New York | industry=Die casting | founded=1893-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Google Inc. | country=United States | city=Mountain View | founded=1998-01-01\nRecord B: name=H. H. Franklin Manufacturing Company | country=United States | city=Onondaga County, New YorkSyracuse, New York | industry=Die casting | founded=1893-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

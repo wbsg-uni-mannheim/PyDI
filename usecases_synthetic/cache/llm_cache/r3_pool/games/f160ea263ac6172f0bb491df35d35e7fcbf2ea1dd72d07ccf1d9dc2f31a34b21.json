@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_32269|metacritic_1388|name=Punch-Out!! (Wii) | platform=Wii | genres=Sports game | developer=Next Level Games | releaseYear=2009-01-01||name=Punch-Out!! | platform=Wii | genres=Sports,Traditional,Individual,Boxing,Boxing,Combat,Boxing / Martial Arts | developer=Next Level Games | releaseYear=2009-01-01 | criticScore=86.0 | userScore=8.6 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Punch-Out!! (Wii) | platform=Wii | genres=Sports game | developer=Next Level Games | releaseYear=2009-01-01\nRecord B: name=Punch-Out!! | platform=Wii | genres=Sports,Traditional,Individual,Boxing,Boxing,Combat,Boxing / Martial Arts | developer=Next Level Games | releaseYear=2009-01-01 | criticScore=86.0 | userScore=8.6 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

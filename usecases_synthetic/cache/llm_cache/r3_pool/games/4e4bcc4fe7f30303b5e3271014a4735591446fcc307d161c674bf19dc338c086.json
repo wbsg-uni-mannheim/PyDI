@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_1654|metacritic_7001|name=Doom II | platform=Xbox 360 | genres=First-person shooter | developer=Id Software | releaseYear=2012-01-01||name=DOOM II | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=id Software | releaseYear=2010-01-01 | criticScore=77.0 | userScore=8.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Doom II | platform=Xbox 360 | genres=First-person shooter | developer=Id Software | releaseYear=2012-01-01\nRecord B: name=DOOM II | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=id Software | releaseYear=2010-01-01 | criticScore=77.0 | userScore=8.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

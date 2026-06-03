@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_1443|metacritic_6849|name=No More Heroes III | genres=Hack and slash | developer=Grasshopper Manufacture | releaseYear=2021-01-01||name=No More Heroes III | platform=Xbox Series X | genres=Action Adventure,General,Open-World | developer=Grasshopper Manufacture | releaseYear=2022-01-01 | criticScore=77.0 | userScore=7.8 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=No More Heroes III | genres=Hack and slash | developer=Grasshopper Manufacture | releaseYear=2021-01-01\nRecord B: name=No More Heroes III | platform=Xbox Series X | genres=Action Adventure,General,Open-World | developer=Grasshopper Manufacture | releaseYear=2022-01-01 | criticScore=77.0 | userScore=7.8 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

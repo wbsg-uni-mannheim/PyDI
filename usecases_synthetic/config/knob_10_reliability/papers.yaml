@@ -1,0 +1,263 @@
+# Knob 10 — Source Reliability Differentiation: Papers domain config.
+#
+# Seeded from music 2026-05-07 (K10 sign-off, plan_s1_scale.md
+# §"K10 sign-off"); rate tables are UNTUNED starting points, to be
+# validated/tuned before a real papers run. The level structure
+# (easy/medium/hard), compromise_rate_per_level, corr_strength_per_level,
+# and concentration_cap are carried over verbatim from music.
+#
+# Papers is target-shaped: all three sources (dblp, crossref, open_alex)
+# carry the SAME 14 canonical columns, so attribute_mapping is IDENTITY
+# and every attribute has 3 eligible sources after the (no-op) remap.
+#
+# Eligible attributes = the attributes the papers notebook ("Version_5")
+# actually fuses; publisher and cited_by_count are dropped by the
+# notebook and so are NOT targeted here. id and doi are never targeted
+# by value knobs (doi is the fusion-gold join key).
+#
+# Per-attribute winner identity is seeded from the Version_5 fuser /
+# trust intent (NOT a measured baseline B[s,a] — papers has no signed-off
+# K10 baseline yet, so these target shapes must be re-validated):
+#   title                  -> dblp      (longest_string fuser; dblp is the
+#                                         anchor with the fullest titles)
+#   authors                -> crossref  (prefer_higher_trust; global trust
+#                                         crossref=3 > dblp=1, open_alex=1)
+#   last_page              -> crossref  (prefer_higher_trust trust_map
+#                                         {crossref:3, open_alex:1, dblp:1})
+#   referenced_works_count -> crossref  (prefer_higher_trust trust_map
+#                                         {crossref:3, open_alex:1, dblp:1})
+#   keywords               -> open_alex (prefer_higher_trust trust_map
+#                                         {crossref:1, open_alex:3, dblp:1})
+#   type, publication_year, journal, volume, issue, first_page
+#                          -> voting / most_recent fusers => no single
+#                             trust winner, so targets stay spread (the
+#                             three sources share the mass evenly).
+
+domain: papers
+
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+# Identity mapping: the data is already target-shaped, so each source's
+# canonical column maps to itself. Per-source attribute_classes are
+# identical across the three sources (target_schema.json canonical names).
+# Only the fused attributes are listed (publisher, cited_by_count are
+# dropped by the notebook fuser and excluded).
+attribute_mapping:
+  dblp:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+  crossref:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+  open_alex:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+
+# --- Per-attribute target distributions per level (T[a, s]) ---
+# Sums to 1.0 per (attr, level). Trust-winner attributes concentrate on
+# the winner at easy and relax toward uniform at hard (same shape as
+# music's winner-concentrated attributes). Voting / most_recent
+# attributes have no winner and stay (near-)uniform across all levels.
+attribute_targets:
+  # voting fuser -> no winner; mass stays spread across the 3 sources.
+  type:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # longest_string fuser -> dblp (anchor) wins; concentrate then relax.
+  title:
+    easy:
+      dblp: 0.85
+      crossref: 0.10
+      open_alex: 0.05
+    medium:
+      dblp: 0.65
+      crossref: 0.20
+      open_alex: 0.15
+    hard:
+      dblp: 0.40
+      crossref: 0.30
+      open_alex: 0.30
+  # most_recent fuser -> no winner; mass stays spread across the 3 sources.
+  publication_year:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # voting fuser -> no winner; mass stays spread across the 3 sources.
+  journal:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # prefer_higher_trust -> crossref (global trust=3) wins.
+  authors:
+    easy:
+      dblp: 0.10
+      crossref: 0.85
+      open_alex: 0.05
+    medium:
+      dblp: 0.20
+      crossref: 0.65
+      open_alex: 0.15
+    hard:
+      dblp: 0.30
+      crossref: 0.40
+      open_alex: 0.30
+  # prefer_higher_trust trust_map {crossref:1, open_alex:3, dblp:1}
+  # -> open_alex wins.
+  keywords:
+    easy:
+      dblp: 0.05
+      crossref: 0.10
+      open_alex: 0.85
+    medium:
+      dblp: 0.15
+      crossref: 0.20
+      open_alex: 0.65
+    hard:
+      dblp: 0.30
+      crossref: 0.30
+      open_alex: 0.40
+  # voting fuser -> no winner; mass stays spread across the 3 sources.
+  volume:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # voting fuser -> no winner; mass stays spread across the 3 sources.
+  issue:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # voting fuser -> no winner; mass stays spread across the 3 sources.
+  first_page:
+    easy:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    medium:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+    hard:
+      dblp: 0.34
+      crossref: 0.33
+      open_alex: 0.33
+  # prefer_higher_trust trust_map {crossref:3, open_alex:1, dblp:1}
+  # -> crossref wins.
+  last_page:
+    easy:
+      dblp: 0.10
+      crossref: 0.85
+      open_alex: 0.05
+    medium:
+      dblp: 0.20
+      crossref: 0.65
+      open_alex: 0.15
+    hard:
+      dblp: 0.30
+      crossref: 0.40
+      open_alex: 0.30
+  # prefer_higher_trust trust_map {crossref:3, open_alex:1, dblp:1}
+  # -> crossref wins.
+  referenced_works_count:
+    easy:
+      dblp: 0.10
+      crossref: 0.85
+      open_alex: 0.05
+    medium:
+      dblp: 0.20
+      crossref: 0.65
+      open_alex: 0.15
+    hard:
+      dblp: 0.30
+      crossref: 0.40
+      open_alex: 0.30
+
+# --- Compromise rates per level (carried over verbatim from music) ---
+compromise_rate_per_level:
+  easy: 0.0
+  medium: 0.05
+  hard: 0.15
+
+# --- Correlation strength per level (carried over verbatim from music) ---
+corr_strength_per_level:
+  easy: 0.0
+  medium: 0.20
+  hard: 0.50
+
+# --- Defensive concentration cap (carried over verbatim from music) ---
+concentration_cap: 0.99

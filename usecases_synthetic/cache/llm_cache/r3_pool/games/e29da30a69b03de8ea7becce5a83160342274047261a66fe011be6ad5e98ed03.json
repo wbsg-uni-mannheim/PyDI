@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_35254|sales_387|name=FIFA 17 | platform=Xbox One | genres=Sports game | developer=EA Vancouver | releaseYear=2016-01-01||name=FIFA 17 | platform=XOne | genres=Sports | developer=EA Sports, EA Vancouver | publisher=Electronic Arts | releaseYear=2016-01-01 | criticScore=84 | userScore=5.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=FIFA 17 | platform=Xbox One | genres=Sports game | developer=EA Vancouver | releaseYear=2016-01-01\nRecord B: name=FIFA 17 | platform=XOne | genres=Sports | developer=EA Sports, EA Vancouver | publisher=Electronic Arts | releaseYear=2016-01-01 | criticScore=84 | userScore=5.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

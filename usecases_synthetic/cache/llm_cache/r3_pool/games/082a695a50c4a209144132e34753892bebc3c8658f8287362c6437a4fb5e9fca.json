@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_61043|sales_4148|name=Spec Ops: The Line | platform=Microsoft Windows | genres=Third-person shooter | developer=Yager Development | releaseYear=2012-01-01||name=Spec Ops: The Line | platform=PC | genres=Shooter | developer=Yager | publisher=Take-Two Interactive | releaseYear=2012-01-01 | criticScore=76 | userScore=8.2 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spec Ops: The Line | platform=Microsoft Windows | genres=Third-person shooter | developer=Yager Development | releaseYear=2012-01-01\nRecord B: name=Spec Ops: The Line | platform=PC | genres=Shooter | developer=Yager | publisher=Take-Two Interactive | releaseYear=2012-01-01 | criticScore=76 | userScore=8.2 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

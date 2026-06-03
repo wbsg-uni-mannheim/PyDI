@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9816|sales_1168|name=The Legend of Zelda: Tri Force Heroes | platform=3DS | genres=Action Adventure,Open-World | developer=Nintendo | releaseYear=2015-01-01 | criticScore=73.0 | userScore=7.2 | ESRB=E||name=The Legend of Zelda: Tri Force Heroes | platform=3DS | genres=Action | developer=Nintendo | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=73 | userScore=7.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Legend of Zelda: Tri Force Heroes | platform=3DS | genres=Action Adventure,Open-World | developer=Nintendo | releaseYear=2015-01-01 | criticScore=73.0 | userScore=7.2 | ESRB=E\nRecord B: name=The Legend of Zelda: Tri Force Heroes | platform=3DS | genres=Action | developer=Nintendo | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=73 | userScore=7.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

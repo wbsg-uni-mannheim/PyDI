@@ -209,6 +209,7 @@ def run_norm(
     norm_yaml: Path,
     vacuous_epsilon: float = 0.005,
     apply_winner: bool = False,
+    scoring_surface: str = "xml_targets",
 ) -> StageSelection:
     """Run Norm committee; pick the highest macro-F1 member.
 
@@ -217,10 +218,17 @@ def run_norm(
     frames. If the spread across members is smaller than
     ``vacuous_epsilon``, the selection is flagged vacuous in the
     notes block.
+
+    ``scoring_surface`` selects how each member's normalized output is
+    scored. ``"xml_targets"`` (default) compares to per-entity fusion
+    XML target values — the historical synthetic-side surface.
+    ``"schema_constraints"`` checks that the output satisfies the
+    JSON-Schema + ``x-pydi-consistency`` constraints declared in the
+    canonical target_schema.json — recommended for canonical runs.
     """
     t0 = time.monotonic()
     with PeakRSSTracker() as _rss:
-        runner = NormCommitteeRunner(norm_yaml)
+        runner = NormCommitteeRunner(norm_yaml, scoring_surface=scoring_surface)
         result = runner.run(state.bundle)
 
         per_member_val = {

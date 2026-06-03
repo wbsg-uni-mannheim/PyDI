@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49818|sales_5779|name=Wasteland 2 | platform=Microsoft Windows | genres=Role-playing video game | developer=InXile Entertainment | releaseYear=2015-01-01||name=Wasteland 2 | platform=PC | genres=Role-Playing | developer=InXile Entertainment | publisher=inXile Entertainment | releaseYear=2015-01-01 | criticScore=81 | userScore=7.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wasteland 2 | platform=Microsoft Windows | genres=Role-playing video game | developer=InXile Entertainment | releaseYear=2015-01-01\nRecord B: name=Wasteland 2 | platform=PC | genres=Role-Playing | developer=InXile Entertainment | publisher=inXile Entertainment | releaseYear=2015-01-01 | criticScore=81 | userScore=7.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

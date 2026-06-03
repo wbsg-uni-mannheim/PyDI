@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21535|metacritic_14066|name=Runaway 2: The Dream of the Turtle | platform=Microsoft Windows | genres=Adventure game | developer=Pendulo Studios | releaseYear=2009-01-01||name=Runaway: The Dream of the Turtle | platform=PC | genres=Adventure,3D,Modern,Third-Person,Modern | developer=Pendulo Studios | releaseYear=2007-01-01 | criticScore=67.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Runaway 2: The Dream of the Turtle | platform=Microsoft Windows | genres=Adventure game | developer=Pendulo Studios | releaseYear=2009-01-01\nRecord B: name=Runaway: The Dream of the Turtle | platform=PC | genres=Adventure,3D,Modern,Third-Person,Modern | developer=Pendulo Studios | releaseYear=2007-01-01 | criticScore=67.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -15,38 +15,104 @@ id_columns:
   products_4: id
 
 attribute_classes:
-  products_1: &products_attr_classes
-    title: primary
-    brand: key
-    description: secondary
-    price: secondary
-    title_description: secondary
-    product_type: key
-    model: secondary
-    model_number: secondary
-    chipset_name: secondary
-    vram_gb: secondary
-    storage_gb: secondary
-  products_2: *products_attr_classes
-  products_3: *products_attr_classes
-  products_4: *products_attr_classes
+  products_1:
+    product_name: primary
+    manufacturer: key
+    product_description: secondary
+    list_price: secondary
+    name_and_description: secondary
+    category: key
+    model_name: secondary
+    manufacturer_part_number: secondary
+    gpu_chipset: secondary
+    video_memory_gb: secondary
+    capacity_gb: secondary
+  products_2:
+    name: primary
+    brandName: key
+    descriptionText: secondary
+    priceAmount: secondary
+    titleAndDescription: secondary
+    productCategory: key
+    modelName: secondary
+    mpn: secondary
+    chipset: secondary
+    vramGb: secondary
+    capacityGb: secondary
+  products_3:
+    ProductTitle: primary
+    Brand: key
+    Details: secondary
+    Price: secondary
+    TitleDetails: secondary
+    Type: key
+    Model: secondary
+    PartNo: secondary
+    Chipset: secondary
+    MemorySizeGB: secondary
+    CapacityGB: secondary
+  products_4:
+    name: primary
+    mfr: key
+    desc: secondary
+    amt: secondary
+    name_desc: secondary
+    cat: key
+    mdl: secondary
+    pn: secondary
+    chip: secondary
+    vram: secondary
+    cap_gb: secondary
 
 attribute_mapping:
-  products_1: &products_attr_mapping
-    title: title
-    brand: brand
-    description: description
-    price: price
-    title_description: title_description
-    product_type: product_type
-    model: model
-    model_number: model_number
-    chipset_name: chipset_name
-    vram_gb: vram_gb
-    storage_gb: storage_gb
-  products_2: *products_attr_mapping
-  products_3: *products_attr_mapping
-  products_4: *products_attr_mapping
+  products_1:
+    product_name: title
+    manufacturer: brand
+    product_description: description
+    list_price: price
+    name_and_description: title_description
+    category: product_type
+    model_name: model
+    manufacturer_part_number: model_number
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+  products_2:
+    name: title
+    brandName: brand
+    descriptionText: description
+    priceAmount: price
+    titleAndDescription: title_description
+    productCategory: product_type
+    modelName: model
+    mpn: model_number
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+  products_3:
+    ProductTitle: title
+    Brand: brand
+    Details: description
+    Price: price
+    TitleDetails: title_description
+    Type: product_type
+    Model: model
+    PartNo: model_number
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+  products_4:
+    name: title
+    mfr: brand
+    desc: description
+    amt: price
+    name_desc: title_description
+    cat: product_type
+    mdl: model
+    pn: model_number
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
 
 paraphrase_rate_primary:
   easy: 0.0

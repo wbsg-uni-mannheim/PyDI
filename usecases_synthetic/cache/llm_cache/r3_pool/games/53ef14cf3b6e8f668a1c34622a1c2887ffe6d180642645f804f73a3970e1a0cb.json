@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59478|sales_6016|name=GripShift | platform=PlayStation Portable | genres=Puzzle-platform game | developer=Sidhe (game developer) | releaseYear=2005-01-01||name=GripShift | platform=Playstation Portable | genres=Racing | developer=Sidhe Interactive | publisher=Ubisoft | releaseYear=2005-01-01 | criticScore=70 | userScore=8.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=GripShift | platform=PlayStation Portable | genres=Puzzle-platform game | developer=Sidhe (game developer) | releaseYear=2005-01-01\nRecord B: name=GripShift | platform=Playstation Portable | genres=Racing | developer=Sidhe Interactive | publisher=Ubisoft | releaseYear=2005-01-01 | criticScore=70 | userScore=8.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

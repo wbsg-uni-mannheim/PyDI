@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_18416|sales_2016|name=Need for Speed Undercover | platform=Wii | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=Exient Entertainment | releaseYear=2008-01-01 | criticScore=54.0 | userScore=6.4 | ESRB=T||name=Need For Speed: Undercover | platform=Wii | genres=Racing | developer=Exient Entertainment | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=54 | userScore=6.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Need for Speed Undercover | platform=Wii | genres=Driving,Racing,Simulation,GT / Street,GT / Street,Automobile | developer=Exient Entertainment | releaseYear=2008-01-01 | criticScore=54.0 | userScore=6.4 | ESRB=T\nRecord B: name=Need For Speed: Undercover | platform=Wii | genres=Racing | developer=Exient Entertainment | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=54 | userScore=6.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

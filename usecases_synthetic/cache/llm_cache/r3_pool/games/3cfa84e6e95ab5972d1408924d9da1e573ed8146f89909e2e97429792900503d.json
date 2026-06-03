@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21776|metacritic_17163|name=Noctropolis | platform=Microsoft Windows | genres=Adventure game | developer=Night Dive Studios | releaseYear=2015-01-01||name=Necropolis | platform=PC | genres=Action Adventure,General | developer=Harebrained Schemes LLC | releaseYear=2016-01-01 | criticScore=59.0 | userScore=4.8",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Noctropolis | platform=Microsoft Windows | genres=Adventure game | developer=Night Dive Studios | releaseYear=2015-01-01\nRecord B: name=Necropolis | platform=PC | genres=Action Adventure,General | developer=Harebrained Schemes LLC | releaseYear=2016-01-01 | criticScore=59.0 | userScore=4.8\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

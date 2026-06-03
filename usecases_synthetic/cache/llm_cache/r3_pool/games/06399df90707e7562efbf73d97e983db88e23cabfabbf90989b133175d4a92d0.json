@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_56300|sales_7022|name=Shaun the Sheep (video game) | platform=DS | genres=Action game | developer=Art Co., Ltd | releaseYear=2008-01-01||name=Shaun the Sheep | platform=DS | genres=Adventure | developer=Art | publisher=D3Publisher | releaseYear=2008-01-01 | criticScore=58 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shaun the Sheep (video game) | platform=DS | genres=Action game | developer=Art Co., Ltd | releaseYear=2008-01-01\nRecord B: name=Shaun the Sheep | platform=DS | genres=Adventure | developer=Art | publisher=D3Publisher | releaseYear=2008-01-01 | criticScore=58 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

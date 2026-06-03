@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_2713|sales_6904|name=Plants vs. Zombies: Garden Warfare 2 | platform=Microsoft Windows | genres=Third-person shooter | developer=PopCap Games | releaseYear=2016-01-01||name=Plants vs. Zombies: Garden Warfare 2 | platform=PC | genres=Shooter | developer=PopCap | publisher=Electronic Arts | releaseYear=2016-01-01 | criticScore=82 | userScore=7.5 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Plants vs. Zombies: Garden Warfare 2 | platform=Microsoft Windows | genres=Third-person shooter | developer=PopCap Games | releaseYear=2016-01-01\nRecord B: name=Plants vs. Zombies: Garden Warfare 2 | platform=PC | genres=Shooter | developer=PopCap | publisher=Electronic Arts | releaseYear=2016-01-01 | criticScore=82 | userScore=7.5 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

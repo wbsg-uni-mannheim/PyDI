@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_940|http://www.forbes.com/companies/basf/|name=ZF Friedrichshafen AG | country=United States | city=Vernon Hills | founded=1915-01-01||name=BASF | industry=Diversified Chemicals",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ZF Friedrichshafen AG | country=United States | city=Vernon Hills | founded=1915-01-01\nRecord B: name=BASF | industry=Diversified Chemicals\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

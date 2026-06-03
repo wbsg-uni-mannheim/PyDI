@@ -1,0 +1,26 @@
+{
+  "attribute": "country",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "United States"
+    },
+    {
+      "source": "forbes",
+      "value": "United States of America"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Netherlands"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "The first two candidates are canonical variants of the same country, and they are more consistent than the outlier.",
+    "value": "United States"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United States\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"The first two candidates are canonical variants of the same country, and they are more consistent than the outlier.\"}"
+}

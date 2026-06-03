@@ -233,6 +233,37 @@ def load_fusion_gold(fusion_gold_path: Path) -> dict[str, dict[str, str]]:
     dict[str, dict[str, str]]
         Gold values keyed by entity ID and attribute name.
     """
+    if fusion_gold_path.suffix.lower() in (".jsonl", ".json"):
+        # Papers JSONL-by-DOI fusion gold: key by the same per-DOI anchor
+        # source id used by the protection loaders (so K10's entity lookup
+        # resolves), single scalar value per attribute. doi / publisher /
+        # cited_by_count carry no fusion target.
+        from .protection import (
+            _PAPERS_NON_TARGET_ATTRS,
+            _coerce_target_values,
+            _doi_to_anchor_id,
+            _normalize_doi,
+            _read_fusion_records,
+        )
+
+        domain = fusion_gold_path.parents[2].name
+        anchors = _doi_to_anchor_id(domain)
+        gold_jsonl: dict[str, dict[str, str]] = {}
+        for record in _read_fusion_records(fusion_gold_path):
+            ndoi = _normalize_doi(record.get("doi"))
+            if ndoi is None or ndoi not in anchors:
+                continue
+            eid = anchors[ndoi]
+            attrs_jsonl: dict[str, str] = {}
+            for key, value in record.items():
+                if key in _PAPERS_NON_TARGET_ATTRS:
+                    continue
+                vals = _coerce_target_values(value)
+                if vals:
+                    attrs_jsonl[key] = vals[0]
+            gold_jsonl[eid] = attrs_jsonl
+        return gold_jsonl
+
     tree = ET.parse(fusion_gold_path)
     root = tree.getroot()
 
@@ -573,10 +604,26 @@ def build_entity_linkage(
                 return source
         return None
 
-    # Build linkage: group by shared entity
+    # Build linkage: group by shared entity.
     # Gold entity IDs are the canonical IDs (typically from the first source
-    # in each pair, e.g. Forbes)
+    # in each pair, e.g. Forbes).
+    #
+    # Noisy-EM-gold guard (2026-06-02): in some domains the EM gold labels a
+    # single physical source record as a true match against several distinct
+    # gold entities (e.g. one FullContact row matched to several similarly
+    # named Forbes companies). That would make multiple (gold_eid, attribute)
+    # cells alias the SAME physical source row; K10's per-cell reshuffle then
+    # writes one entity's value into the shared row and corrupts the others
+    # (breaking assert_multiset_invariant), and K1/K3/K4/K6 likewise treat the
+    # shared row ambiguously. We accept the underlying label noise (eval-set
+    # noise policy) and assign each physical source record to at most ONE gold
+    # entity: first claim wins (deterministic given the sorted file + row
+    # order); later claims on the same record are skipped so a shared row is
+    # never mutated on behalf of more than one entity. Domains with no such
+    # over-linking (e.g. music) see no skips and are unaffected.
     linkage: dict[str, dict[str, str]] = {}
+    record_owner: dict[str, str] = {}
+    skipped = 0
     for id1, id2 in pairs:
         src1 = _resolve_source(id1)
         src2 = _resolve_source(id2)
@@ -586,9 +633,24 @@ def build_entity_linkage(
         if gold_eid not in linkage:
             linkage[gold_eid] = {}
         if src1:
-            linkage[gold_eid][src1] = id1
+            if record_owner.setdefault(id1, gold_eid) == gold_eid:
+                linkage[gold_eid][src1] = id1
+            else:
+                skipped += 1
         if src2:
-            linkage[gold_eid][src2] = id2
+            if record_owner.setdefault(id2, gold_eid) == gold_eid:
+                linkage[gold_eid][src2] = id2
+            else:
+                skipped += 1
+
+    if skipped:
+        logger.warning(
+            "build_entity_linkage: skipped %d source-record assignment(s) "
+            "where one physical record is labelled a true match to >1 gold "
+            "entity (noisy EM gold). Each record is owned by its first-claiming "
+            "entity to keep K10's per-cell multiset invariant intact.",
+            skipped,
+        )
 
     return linkage
 

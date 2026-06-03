@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_11771|metacritic_19339|name=CSI: Hard Evidence | platform=Xbox 360 | genres=Adventure game | developer=Telltale Games | releaseYear=2007-01-01||name=CSI: Crime Scene Investigation: Hard Evidence | platform=Xbox 360 | genres=Adventure,General,General,Point-and-Click | developer=Telltale Games | releaseYear=2007-01-01 | criticScore=48.0 | userScore=5.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=CSI: Hard Evidence | platform=Xbox 360 | genres=Adventure game | developer=Telltale Games | releaseYear=2007-01-01\nRecord B: name=CSI: Crime Scene Investigation: Hard Evidence | platform=Xbox 360 | genres=Adventure,General,General,Point-and-Click | developer=Telltale Games | releaseYear=2007-01-01 | criticScore=48.0 | userScore=5.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

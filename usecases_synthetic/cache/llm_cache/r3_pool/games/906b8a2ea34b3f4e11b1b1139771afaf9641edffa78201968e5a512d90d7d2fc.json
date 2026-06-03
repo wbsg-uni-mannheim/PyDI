@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_40495|sales_4391|name=SpyHunter | platform=GameCube | genres=Vehicular combat game | developer=Sidhe (game developer) | releaseYear=2001-01-01||name=Spy Hunter | platform=GameCube | genres=Racing | developer=Point of View | publisher=Midway Games | releaseYear=2002-01-01 | criticScore=71 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=SpyHunter | platform=GameCube | genres=Vehicular combat game | developer=Sidhe (game developer) | releaseYear=2001-01-01\nRecord B: name=Spy Hunter | platform=GameCube | genres=Racing | developer=Point of View | publisher=Midway Games | releaseYear=2002-01-01 | criticScore=71 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

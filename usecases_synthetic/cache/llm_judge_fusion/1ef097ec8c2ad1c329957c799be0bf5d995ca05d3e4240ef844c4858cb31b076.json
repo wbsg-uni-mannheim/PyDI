@@ -1,0 +1,26 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "37152000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "38300000000"
+    },
+    {
+      "source": "forbes",
+      "value": "1300000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "aggregation",
+    "reasoning": "Two candidates cluster around 37–38B while one is a clear outlier, so a robust aggregate is appropriate.",
+    "value": 37726000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":37726000000,\"operation\":\"aggregation\",\"confidence\":0.92,\"reasoning\":\"Two candidates cluster around 37–38B while one is a clear outlier, so a robust aggregate is appropriate.\"}"
+}

@@ -1,34 +1,51 @@
 {
   "casefusion_only": {
     "price": "prefer_higher_trust",
+    "read_speed_mb_s": "minimum",
     "storage_gb": "median",
-    "vram_gb": "median"
+    "vram_gb": "median",
+    "write_speed_mb_s": "maximum"
   },
   "fusionquery_only": {
     "price": "prefer_higher_trust",
+    "read_speed_mb_s": "minimum",
     "storage_gb": "median",
-    "vram_gb": "median"
+    "vram_gb": "median",
+    "write_speed_mb_s": "maximum"
   },
   "ltm_only": {
     "price": "prefer_higher_trust",
+    "read_speed_mb_s": "minimum",
     "storage_gb": "median",
-    "vram_gb": "median"
+    "vram_gb": "median",
+    "write_speed_mb_s": "maximum"
   },
   "pydi_per_attribute_optimal": {
     "brand": "most_complete",
+    "bus_type": "voting",
     "chipset_name": "voting",
     "description": "longest_string",
-    "model": "voting",
+    "form_factor": "voting",
+    "interface_type": "prefer_higher_trust",
+    "memory_type": "voting",
+    "model": "longest_string",
+    "model_number": "voting",
     "price": "prefer_higher_trust",
     "priceCurrency": "prefer_higher_trust",
     "product_type": "voting",
+    "read_speed_mb_s": "minimum",
+    "storage_connection_type": "voting",
     "storage_gb": "median",
     "title": "longest_string",
-    "vram_gb": "median"
+    "title_description": "longest_string",
+    "vram_gb": "median",
+    "write_speed_mb_s": "maximum"
   },
   "truthfinder_only": {
     "price": "prefer_higher_trust",
+    "read_speed_mb_s": "minimum",
     "storage_gb": "median",
-    "vram_gb": "median"
+    "vram_gb": "median",
+    "write_speed_mb_s": "maximum"
   }
 }

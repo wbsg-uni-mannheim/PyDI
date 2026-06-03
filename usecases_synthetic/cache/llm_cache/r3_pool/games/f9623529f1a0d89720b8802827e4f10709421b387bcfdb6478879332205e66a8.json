@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_53598|metacritic_17653|name=Teenage Mutant Ninja Turtles (arcade game) | platform=GameCube | genres=Beat 'em up | developer=Konami | releaseYear=1990-01-01||name=Teenage Mutant Ninja Turtles | platform=GameCube | genres=Action,Beat-'Em-Up | developer=Konami | releaseYear=2003-01-01 | criticScore=57.0 | userScore=8.2 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Teenage Mutant Ninja Turtles (arcade game) | platform=GameCube | genres=Beat 'em up | developer=Konami | releaseYear=1990-01-01\nRecord B: name=Teenage Mutant Ninja Turtles | platform=GameCube | genres=Action,Beat-'Em-Up | developer=Konami | releaseYear=2003-01-01 | criticScore=57.0 | userScore=8.2 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

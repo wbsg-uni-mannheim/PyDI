@@ -1,0 +1,99 @@
+domain: papers
+master_seed: 42
+
+# Papers (2026) — scholarly-paper metadata integrated from DBLP,
+# Crossref, and OpenAlex. Unlike every pre-2026 synthetic domain the
+# sources ship as JSON-lines (``*.jsonl``) with NO on-disk id column;
+# the stable ``<source>-NNNNN`` ids that the EM + fusion gold reference
+# are minted at load time by ``PyDI.io.load_json(add_index=True)`` (dash
+# separator, 5-digit zero-pad). The synthetic loader gained native
+# ``jsonl`` support for this domain (``loaders._FORMAT_LOADERS``); the
+# per-source ``reader_kwargs`` opt into the dash-id generation.
+#
+# NOTE on the two id_prefix values below (intentional, not a typo):
+#   * top-level ``id_prefix: "<src>-"`` is the prefix the minted ids
+#     start with (used by K10 reliability prefix->source mapping,
+#     reliability.py:567, matching pipelines/configs/papers.yaml's
+#     source_prefix_map).
+#   * ``reader_kwargs.id_prefix: <src>`` is handed to PyDI.io.load_json,
+#     which appends the dash itself (``f"{prefix}-{i:05d}"``), so it must
+#     NOT carry the trailing dash.
+sources:
+  - name: dblp
+    file: dblp.jsonl
+    format: jsonl
+    id_prefix: "dblp-"
+    reader_kwargs:
+      lines: true
+      add_index: true
+      index_column_name: id
+      id_prefix: dblp
+  - name: crossref
+    file: crossref.jsonl
+    format: jsonl
+    id_prefix: "crossref-"
+    reader_kwargs:
+      lines: true
+      add_index: true
+      index_column_name: id
+      id_prefix: crossref
+  - name: open_alex
+    file: open_alex.jsonl
+    format: jsonl
+    id_prefix: "open_alex-"
+    reader_kwargs:
+      lines: true
+      add_index: true
+      index_column_name: id
+      id_prefix: open_alex
+
+# dblp is the anchor (EM left / id1 in both pairs; fusion trust anchor).
+# There is no crossref<->open_alex pair. EM gold ships on disk as
+# ``dblp_crossref_{train,val,test}.csv`` / ``dblp_openalex_{...}.csv``
+# (single underscore, header row ``id_dblp,id_<other>,label``, 0/1
+# labels). The synthetic EM-gold loader resolves these condensed names
+# via ``loaders.em_gold_candidates`` (note ``open_alex`` condenses to
+# ``openalex`` in the filename + id columns) and auto-detects the header.
+source_pairs:
+  - [dblp, crossref]
+  - [dblp, open_alex]
+
+# Fusion gold is JSON-lines (one flat fused gold record per line, joined
+# to fused output on ``doi``), not the per-attribute-provenance XML the
+# pre-2026 domains use. ``variant_loader._load_fusion_file`` dispatches on
+# the ``.jsonl`` extension. Because the gold carries no provenance/cluster
+# structure (the notebook rebuilds clusters from the EM correspondences at
+# eval time), source-attribution fusion metrics are unavailable for papers
+# — only value-correctness by the ``doi`` join. The fusion committee roster
+# sets ``gold_id_column: doi`` accordingly.
+fusion_files:
+  validation: fusion_val.jsonl
+  test: fusion_test.jsonl
+
+# Canonical attribute classes for knob targeting (flat canonical->class
+# map; the data is already target-shaped so per-source attribute_mapping
+# is identity across all three sources). Drawn from
+# input/schemamatching/target_schema.json.
+#   primary  -> the disambiguating title-like attribute (matching signal)
+#   key      -> low-cardinality partitioners (K2 niche density / K10
+#               reliability routing): publication type, year (2018-2020),
+#               and venue
+#   secondary-> the remaining bibliographic detail
+# ``id`` and ``doi`` are intentionally OMITTED: ``id`` is the synthetic
+# record id and ``doi`` is the fusion-gold join key, so neither is
+# perturbed by the value knobs (perturbing doi would break the
+# fusion-by-doi scoring join).
+attribute_classes:
+  title: primary
+  type: key
+  publication_year: key
+  journal: key
+  authors: secondary
+  publisher: secondary
+  keywords: secondary
+  volume: secondary
+  issue: secondary
+  first_page: secondary
+  last_page: secondary
+  referenced_works_count: secondary
+  cited_by_count: secondary

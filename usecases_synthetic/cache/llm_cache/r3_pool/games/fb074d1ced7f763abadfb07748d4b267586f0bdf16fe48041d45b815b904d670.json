@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_10450|metacritic_19920|name=Xiaolin Showdown (video game) | platform=PS2 | genres=Fighting game | developer=BottleRocket Entertainment | releaseYear=2006-01-01||name=Xiaolin Showdown | platform=PS2 | genres=Action,Beat-'Em-Up | developer=BottleRocket Entertainment | releaseYear=2006-01-01 | criticScore=42.0 | userScore=5.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Xiaolin Showdown (video game) | platform=PS2 | genres=Fighting game | developer=BottleRocket Entertainment | releaseYear=2006-01-01\nRecord B: name=Xiaolin Showdown | platform=PS2 | genres=Action,Beat-'Em-Up | developer=BottleRocket Entertainment | releaseYear=2006-01-01 | criticScore=42.0 | userScore=5.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

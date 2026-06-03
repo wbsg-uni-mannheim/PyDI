@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_61749|metacritic_12676|name=Freddi Fish 4: The Case of the Hogfish Rustlers of Briny Gulch | platform=Microsoft Windows | genres=Adventure game | developer=Humongous Entertainment | releaseYear=1999-01-01||name=Rust | platform=PC | genres=Historic,Action Adventure,Survival | developer=Facepunch Studios | releaseYear=2018-01-01 | criticScore=69.0 | userScore=6.4",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Freddi Fish 4: The Case of the Hogfish Rustlers of Briny Gulch | platform=Microsoft Windows | genres=Adventure game | developer=Humongous Entertainment | releaseYear=1999-01-01\nRecord B: name=Rust | platform=PC | genres=Historic,Action Adventure,Survival | developer=Facepunch Studios | releaseYear=2018-01-01 | criticScore=69.0 | userScore=6.4\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

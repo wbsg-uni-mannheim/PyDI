@@ -2601,12 +2601,14 @@ gold; delete or overwrite before the Phase 2 companies cascade
 runs.
 
 The cross-domain Phase 2 order (added 2026-05-29 user directive):
-**products first**, then companies, music, games (or
-parallelise on hardware that supports it). Products is the lead
-domain — it's already been through the methodology audit this
-session, the R10 changes were debugged against products data, and
-the products numbers re-publish first as the canonical regression
-target before the other three domains' first-time publications.
+~~**products first**, then companies, music, games~~ — **SUPERSEDED.**
+Actual order this session (user redirects): **music first** (done /
+in-flight 2026-06-01), then **companies** (user 2026-06-02: "put the
+companies run right after music"), then **products** (deferred to after
+companies, plan R10-M), then games. The companies readiness audit +
+refreshed cascade + rigorous music-parity cross-checks are in **R10-N**
+(2026-06-02), which supersedes the 2026-05-29 "Companies-conventions
+audit" checklist above.
 
 ---
 
@@ -5310,6 +5312,418 @@ the knobs/metrics are next reworked** (per user, 2026-06-01):
 Also deferred: the K5 token-key mapping was validated on **music +
 products only** — re-validate on companies / games provenance when those
 regenerate (their operator vocab may differ).
+
+### R10-M — Music R9 cascade + fusion/norm tooling fixes + products staleness audit — 2026-06-01
+
+Work done driving the **music** R9 → measure/validate chain (continues
+the per-domain cascade after R10-G music variant retrain completed: all 3
+levels, 6 checkpoints, val-F1 0.970/0.947/0.926).
+
+**R9 tooling fixes (landed 2026-06-01):**
+- **Fusion sweep harness** ([committee_fusion_c12.py](../usecases_synthetic/lib/committee_fusion_c12.py)
+  + [_tune_fusion_committee.py](../usecases_synthetic/scripts/_tune_fusion_committee.py)),
+  4 fixes — the committee RUNTIME was never broken (only the tuning
+  sweep): (1) `reselect: bool=False` on `C12FusionCommitteeRunner.run`
+  bypasses the persisted `(domain,member,attr)` selection cache per sweep
+  cell (the cache froze candidate-param sweeps like `trim` to no-ops);
+  default False = byte-identical normal runs. (2) `_score_run` captures
+  `per_member` so single-member sub-sweeps are picked by the swept
+  member's `macro_accuracy`, not the committee-wide `overall_accuracy`
+  (= best-member macro, invariant to the swept member). (3) `_sub_llm_judge`
+  skips the enabled cell when `OPENAI_API_KEY` is unset (else `llm_only`
+  scores 0.0 and corrupts the comparison). (4) docstring refresh. 223
+  fusion tests pass; 2 pre-existing `TestSupportedDomains` failures unrelated.
+- **Norm tuner** ([_tune_norm_committee.py](../usecases_synthetic/scripts/_tune_norm_committee.py)):
+  the `llm_canonicalize` SPEC swept `max_tokens=[64]` (reasoning-model
+  floor is 1024 → every cell errored → 0.0) and `prompt_version=[v1]`
+  (committee uses v2). Fixed to `[2048]` / `[v2]` + docstring note. The
+  tuner was **NOT** C12-incompatible (an earlier unverified caution): its
+  SPECS members (text_clean/date_iso/…) ARE the `rule_normalizers`
+  candidates that `rule_per_attribute_optimal` selects among.
+- **Products fusion gold XML staleness** ([_author_products_fusion_xml.py:61](../usecases_synthetic/scripts/_author_products_fusion_xml.py#L61)):
+  hardcoded 5-attr `CANONICAL_ATTRS` → emitted a 6-tag fusion XML despite
+  the upstream CSV carrying all 19. Now derives the scope from
+  `load_domain_config('products').attribute_classes`; regenerated both
+  XMLs to 19 attrs. Products fusion YAML widened to 19 (eval_functions +
+  attribute_types) with numeric `tolerance=0.15` hard-set from the human
+  baseline (`products_workflow_v2.ipynb`); `price` left 0.1.
+  (numeric_tolerance_match is an ABSOLUTE band, not %.)
+
+**Music R9 winners applied (2026-06-01):**
+- EM matching (magellan): winner = current sklearn default (n_estimators=100,
+  max_depth=None) → no change.
+- EM blocking: **sc_block top_k 50→100, threshold 0.3→0.0** (R9 recall
+  0.9993). embedding kept bge-base (bge-small led by +0.0001 = noise);
+  standard/sn = current.
+- Fusion: re-sweep (trust/trim/truthfinder/accusim/casefusion/fusionquery/ltm)
+  **confirms the R5 params within n=161 val noise** (~1 correspondence) →
+  no change. Tolerance hard-set `duration=10` (from `music_workflow.ipynb`,
+  absolute ±10s). tolerance + list_threshold (eval params) + llm_judge
+  (LLM cost) excluded from the sweep.
+- Norm rules (n=2288): **text_clean lowercase false→true** (+0.019);
+  **country_iso name→official_name** (+0.27). The latter overturns a
+  deliberate `name` comment — investigation confirmed the fusion reference
+  is dominated by official long-forms ('United Kingdom of Great Britain
+  and Northern Ireland' 123 >> 'United Kingdom' 13; 'United States of
+  America' 24 >> 'United States' 2), so official_name matches ~150/200 vs
+  name ~34/200.
+- **llm_canonicalize**: sweep RUNNING (apply best `num_examples` when done).
+- **Remaining music steps**: apply llm winner → `measure_baseline --domain
+  music --with-llm` → `validate_variant --domain music --level {easy,
+  medium,hard} --with-llm` (no `--level all`) → `analyze_monotonicity` +
+  `build_statistics`. Headline = build_statistics committee_summary
+  em_matching row `macro_f1_variant_model_on_regen_test`.
+
+**Music norm scope note:** music kind_map covers 5 of 7 canonical attrs
+(genre/label are discogs-only, by design). Music fusion set is full
+(unlike products) — no staleness.
+
+#### Products staleness audit (2026-06-01) + ⚠️ DEFERRED products-phase plan
+
+A 3-agent audit confirmed the wide-schema (19-attr) propagation MOSTLY
+worked: SM gold (80 rows, R10-C), both EM committees (R10-I wide scope),
+Ditto + sc_block checkpoints (wide 19-field, run_20260530), and knob
+configs K3/K6/K8/K10 are all at 19; K1/K4/K5 are narrow **by design**
+(step4h review). The fusion XML + norm kind_map were the exceptions.
+
+**New issues found (beyond fusion XML + kind_map):**
+1. **K2 generation gap** — [knob_02_niche/products.yaml](../usecases_synthetic/config/knob_02_niche/products.yaml):
+   `canonical_schema` widened to 12 but `attribute_mapping` left at 10 →
+   **priceCurrency + title_description absent**; K2-synthesized niche
+   entities in the products variants silently drop those 2 attrs
+   (`apply_knob_02_niche.py` reverse-lookup returns empty). Config fix is
+   trivial; **decision pending**: does it warrant a products variant regen
+   or is it acceptable on existing variants (affects only K2 niche entities)?
+2. **fusion_silver_standard.csv/.json built from wrong schema** — contains
+   4 phantom attrs (width/height/length_mm, weight_g — explicitly excluded
+   from products.yaml as too-sparse) and misses 5 real ones (title,
+   description, price, title_description, model). Regenerate from the
+   19-attr gold.
+3. **Products fusion R9 winners stale** — `trust_scores` + TD params in
+   [fusion_committee_products.yaml](../usecases_synthetic/config/committees/fusion_committee_products.yaml)
+   were tuned on the retired 5-attr gold (`sweep_products_full.json`, May
+   28); no 19-attr products fusion sweep exists.
+
+**Downstream-stale (all regenerated by the products re-measure):**
+`baselines/products/baseline_metrics.json` + report (fusion/norm 5-attr,
+written 2026-05-30, pre Jun-1 XML refresh), `fusion_committee_selection.json`
+(10/19 attrs), `norm_committee_selection.json` (5/19),
+`validation/products/{easy,medium,hard}/metrics.json` (fusion/norm 5-attr),
+the monotonicity/cross_level CSVs, and `final_report.md` (2026-05-16, pre-R1).
+
+**Cosmetic (comment-only):** stale fusion-YAML NOTE block (lines 14-21,
+contradicts the accurate R10-L block at 51-58), ditto_plm "must be
+retrained" TODO (done 2026-05-30), K10 "9 attributes" / S11/S13 comments.
+
+**Products phase — GATED (user 2026-06-01): do NOT auto-start. Stop after
+the music chain (validate ×3 → analyze_monotonicity + build_statistics)
+completes and wait for the user's next task.** Ordered plan when resumed:
+
+> **STATUS (2026-06-02) — SUPERSEDED by R10-O.** Step 1 (Config) LANDED at
+> the FULL 24-attr scope under the new `schema_constraints` methodology
+> (not the 19-attr / xml_targets framing below); steps 2-3 DEFERRED per
+> user. The 19-attr text below is kept for audit trail. See R10-O.
+
+1. Config: K2 `attribute_mapping` (+priceCurrency,+title_description);
+   norm widen — kind_map (protection.py: continuous vram_gb/storage_gb/
+   read_speed/write_speed; nominal product_type/bus_type/interface_type/
+   memory_type/storage_connection_type/form_factor; long_string model/
+   model_number/chipset_name; free_text title_description) +
+   normalization_committee_products.yaml rule_normalizers (number_locale
+   numerics, text_clean strings/cats, add taxonomy_lookup) + copy the 3
+   K6 taxonomies (Product_Type / Storage_Interface / GPU_Memory) into the
+   synthetic data_root + confirm Storage_Interface→interface_type vs
+   storage_connection_type; cosmetic comment cleanups.
+2. Re-sweep/regen: products fusion sweep on 19-attr gold + apply (with the
+   fixed harness); products norm sweep (text_clean/number_locale/taxonomy/
+   llm_canonicalize) + apply; regenerate fusion_silver_standard.
+3. Re-measure: baseline (fusion+norm) + validate ×3 + monotonicity +
+   final_report on the 19-attr scope.
+
+**Held uncommitted (per user, 2026-06-01):** the R10-L gate-hardening, the
+R10-M fusion/norm tooling fixes + music R9 YAML edits, and (when done) the
+products-phase changes. usecases_synthetic was folded into the PyDI repo
+2026-06-01 (no longer a nested git repo).
+
+### R10-N — Companies-FULL readiness audit + music-parity cross-checks — 2026-06-02
+
+**Order (user 2026-06-02): companies runs RIGHT AFTER music**, before the
+products phase (R10-M). Supersedes the 2026-05-29 R0 "Companies-conventions
+audit" (plan ~§R0) — that checklist predates R5/R6/R7/R9 + all R10 items;
+this is the current-state re-audit (3-agent workflow) + the rigorous
+cross-checks vs the finished music run that the user requested. Companies
+is **very out of date — a near-full redo**; most artifacts must be
+(re)done or wired new.
+
+#### Current-state audit (2026-06-02)
+
+**BLOCKERS:**
+- **`fusion_files` not wired** — `config/domains/companies.yaml` has NO
+  `fusion_files:` block, so `domain_config.py:108-113` defaults to
+  `validation_set.xml` (25) / `test_set.xml` (18) — the **stale small gold**
+  the whole R0 "load-bearing zone" rationale exists to fix. The expanded
+  100/100 `*_set_final.xml` (user-authored 2026-05-29) is **never loaded**.
+  FIX: add `fusion_files: {validation: validation_set_final.xml, test:
+  test_set_final.xml}` (mirror music.yaml:34-36). *Highest-impact item.*
+- **`usecases/companies-augmented/` missing entirely** — `generate_variant
+  --domain companies` has never run. The variant pipeline must run from scratch.
+
+**HIGH — scope inconsistency + data/checkpoints:**
+- **Scope is a mess across artifacts** — `sector` (K2/committees) vs
+  `industry` (SM/kind_map/K8/norm-taxonomy) vs `keypeople` (fusion gold) vs
+  `founders` (canonical target_schema) vs `website` (canonical only). K2
+  `knob_02_niche/companies.yaml` canonical_schema = 6 attrs (drops
+  assets/revenue/keypeople, adds phantom `sector`); `domains/companies.yaml`
+  attribute_classes = 7 (omits `industry`); fusion gold = 7; committees = 9;
+  target_schema.json = 9 data attrs (name,website,founded,country,city,
+  industry,assets,revenue,founders). **RESOLUTION (user 2026-06-02,
+  CORRECTED): use the FULL target_schema, NOT the fusion-test subset — for
+  ALL domains.** So the companies fusion gold must be WIDENED from 7 → the
+  full target-schema scope (add industry + website; reconcile keypeople↔
+  founders), and K2 canonical_schema/attribute_mapping + attribute_classes +
+  silver harmonize to that full set. (My earlier "keep 7-attr" resolution was
+  wrong.) Cross-domain coverage vs target_schema: **music 8/8 already full
+  (the finished music run is correct — no redo)**; companies 7/9 (missing
+  industry, website); games 9/11 (missing globalSales, series); products
+  19/24 (missing the 5 sparse dims color/width/length/height_mm/weight_g).
+  Games + products widenings happen in their phases.
+  **RESOLVED (user 2026-06-02): "if source and fusion gold agree, fix the
+  names in the target schema."** Source (`keypeople_name`) + gold
+  (`keypeople`, multi-truth nested `<name>` list, 91/100 populated) agree on
+  **keypeople**, so `target_schema.json` `founders` was RENAMED →
+  `keypeople` (title/desc broadened from founders-only to key-people; DONE
+  2026-06-02). The two missing attrs are NOT naming conflicts — they're
+  absent from the gold and get ADDED by widening: `industry` (derive per
+  cluster from the trusted source — forbes `business_segment` / dbpedia
+  `sector`) + `website` (forbes `url`), with provenance, consistent with how
+  the gold's existing values are source-derived. **Companies full scope = 9:
+  name, website, founded, country, city, industry, assets, revenue,
+  keypeople.** K2 canonical_schema/attribute_mapping + attribute_classes +
+  silver harmonize to those 9. **General principle (all domains):** where the
+  source and fusion gold agree on a name, fix the target_schema to match
+  (rather than the gold) — apply when auditing products/games target schemas.
+  Tracked in repo-root `companies_run_progress.md`.
+- **EM gold ID convention** — `usecases/companies/input/entitymatching/*.csv`
+  (dated 2026-05-04) carry raw native IDs (forbes URLs, dbpedia URIs,
+  fullcontact_N), not the source-prefixed `companies_<n>_<id>`. Verify the
+  current loader's expectation; rewire if it needs the prefix.
+- **sc_block checkpoint NARROW** — `text_cols=[name,country]` only (May 15,
+  pre-R9/R10-I); must retrain on the wide 9-attr scope like the other domains.
+- **R10-H baseline Ditto retrain mandatory** — the −0.058 F1 hit on companies
+  was the strongest argument for R10-H. (The `usecases_synthetic`-side Ditto
+  best IS valid/post-R7 — May 27 R6-3 PyDI, val_f1 0.93 — but R10-H still
+  mandates the fresh baseline retrain. NOTE: `hard_negative_gate.plm_checkpoint`
+  + some runners point at the **top-level** `cache/ditto_checkpoints/companies/best`
+  = May 4 **ADI-trained** stale checkpoint — repoint to the post-R7 one.)
+- **pool STALE** (ADI-era, 2026-05-05, references the May-4 ADI checkpoint) →
+  rebuild after the Ditto retrain.
+- **fusion_silver_standard STALE** (May 23, pre-final-gold + pre-R10) →
+  rebuild under the harmonized canonical scope.
+- **Published baseline + validation STALE/pre-C12** — `baselines/companies/
+  baseline_metrics.json` (May 12, pre-C12 per-(attr,strategy) names, small
+  gold) + `validation/companies/{easy,medium,hard}/` (Apr/May leftovers,
+  mixed committee hashes) → delete/regenerate. Old plain `test_set.xml`/
+  `validation_set.xml` (Apr 2) → delete.
+- **norm sweep NEVER run** — `baselines/companies/norm_committee_selection.json`
+  missing (unapplied-sweep-winner class); run the companies norm sweep + apply.
+
+**VERIFY-ONLY / already OK** (no products-style gap): committees are
+C12-shaped (companies is the **canonical unsuffixed** domain —
+`em_blocking_committee.yaml` / `em_matching_committee.yaml` /
+`fusion_committee.yaml` ARE the companies files; only norm is
+`_companies`-suffixed; `committee_paths.py`); committee attr scope is the
+full R10-I wide 9-attr set; K1/K2/K4 already `gpt-5.4-mini` + prompt v2 (no
+claude-opus leftover); norm **kind_map is near-full (8 attrs)** — NOT the
+products narrow-kind_map gap; SM gold full scope; K8 full coverage; K10
+scope OK; fusion `*_final.xml` fresh + load-bearing-sized (100/100, 7 attrs).
+
+#### Companies cascade (refreshed; runs right after music)
+
+0. **Config-fix pre-step**: wire `fusion_files` → `*_final.xml` (blocker);
+   harmonize scope (K2 canonical_schema/attribute_mapping + attribute_classes
+   + silver to the agreed authoritative set — DECISION); rewire EM gold IDs
+   if needed; repoint `hard_negative_gate` checkpoint to the post-R7 Ditto;
+   delete stale published + old plain XML.
+1. **R10-H baseline Ditto retrain** (wide scope) + **sc_block retrain** (wide
+   9-attr, currently [name,country] only).
+2. **Pool rebuild** (post-retrain Ditto) → **silver rebuild** (harmonized scope).
+3. **R9-deferred sweep** under R10-I wide scope — EM blocking (incl sc_block,
+   with the R10-M `reselect` fix), EM matching (magellan), fusion (R10-M
+   harness), **norm (never run)** — apply per-domain winners (NOT music's).
+4. `generate_variant --domain companies` (never run) under R10 A/D/E/F.
+5. R10-G `retrain_variant_cascade --domain companies`.
+6. `measure_baseline --domain companies --with-llm`.
+7. `validate_variant --domain companies --level {easy,medium,hard} --with-llm`.
+8. `analyze_monotonicity` + `build_statistics --domain companies`.
+
+#### Rigorous music-parity cross-checks
+
+*must-pass-BEFORE-run:* fusion_files → `*_final` (100/100); K1/K2/K4 =
+gpt-5.4-mini + v2; committee files C12-shape (companies unsuffixed); EM
+matching roster parity (4 members enabled, threshold 0.5, gpt-5.4-mini/2048);
+sc_block reflects a **companies** R9 re-sweep (not the frozen R5 sign-off,
+and NOT music's 100/0.0 — per-domain); norm llm_canonicalize at
+max_tokens=2048/prompt v2; fusion numeric tolerance hard-set from the
+**companies** human-baseline notebook (assets/revenue rel-0.1, founded
+year_only — NOT music's abs-10); fusion_silver + baseline rebuilt under
+current canonical+C12.
+
+*must-pass-AFTER-run:* R10-L monotonicity gate **GREEN (0 FAIL)** with the
+shared ADVISORY_CHECKS, + any companies-specific genuine inversion added to
+`KNOWN_WEAK_EXCEPTIONS` with a dated justification (companies has none yet);
+K1 sample-gate (floor 30) applied + K1 rate check passes; **K5
+`distinct_format_families` re-validated on companies provenance** (the
+R10-L token-key fix — must be monotone non-decreasing, NOT pinned flat);
+R10-F dual-test 4 surfaces emitted + `build_statistics` headline =
+`em_matching macro_f1_variant_model_on_regen_test`; **SM committee reports
+best_member** (this session's fix); cross-level committee macro_f1 monotone
+easy≥medium≥hard (C2 contract).
+
+*sanity-compare:* companies baseline committee F1s land in a plausible band
+vs music — **band-check, never equality** (a companies value identical to
+music's would itself flag an accidental config copy).
+
+**Companies LEGITIMATELY differs from music — do NOT "correct" to music's
+values:** (1) DBpedia is the noisiest source → trust leans Forbes/FullContact
+(except GICS industry/sector where DBpedia can win — `feedback_dbpedia_noise_profile`);
+(2) GICS industry taxonomy (vs music genre); (3) 3 sources forbes/fullcontact/
+dbpedia, forbes-hub pairing, **non-empty column_mapping** (music's is `{}`);
+(4) norm choices are *opposite* by design — text_clean `lowercase:false`
+(music true), country_iso `output_format:name` (music official_name) — both
+domain-justified, must NOT be flipped; (5) fusion tolerance from companies
+notebook; (6) magellan `class_weight:balanced/max_depth:20` (companies R5
+winner) vs music's null/null; (7) lower absolute F1 band expected (noisier
+sources, ~1543 EM pairs). The one real norm gap: llm_canonicalize
+`num_examples` is UN-swept (=5) → measure the companies optimum, do NOT copy
+music's 0.
+
+**GATE (updated user 2026-06-02):** do NOT stop after music — **auto-continue
+directly into the companies cascade** (config-fixes → retrains → pool/silver
+→ R9 sweep → generate_variant → R10-G → measure/validate/analyze), then
+**stop and wait after companies completes**. Run companies autonomously
+(handle the config fixes + scope harmonization per the resolution below);
+surface results + any genuine anomalies when stopping after companies.
+
+### R10-O — `schema_constraints` norm surface + products config-prep landing — 2026-06-02
+
+> **FOLLOW-ON (2026-06-02): products SOURCE-NATIVE schema adopted — see
+> repo-root `products_native_schema_plan.md` (steps 1-5 EXECUTED) +
+> `products_run_progress.md`.** The new upstream gives each of the 4
+> products sources its OWN native column vocabulary (same values/IDs;
+> SM is now a real task, mirroring companies). Executed: source
+> re-materialized native + id-prefixed; `column_mapping` populated in the
+> 3 committees (native→canonical); `sm_mapping_gold` ← upstream per-source
+> map; all knob per-source `attribute_mapping`/`attribute_classes`/etc.
+> + K8 `sm_mapping`/`rename_table` re-keyed native; norm-eligible verified
+> 24/24. **No ditto/sc_block retrain** (matchers serialize canonical
+> post-`column_mapping`; values+canonical-names unchanged). The
+> canonical-keyed config below (kind_map, scorer fix, fusion eval=19 given
+> gold, norm committee, domain attribute_classes, EM fields) STANDS; the
+> per-source `attribute_mapping`/`rename_table` parts were re-expressed
+> native. Compute (sweeps/measure/validate + silver fix) still DEFERRED
+> behind the companies run.
+
+Supersedes R10-M's products-phase step 1 (which assumed the legacy
+`xml_targets` norm methodology). Two things converged: a new norm-scoring
+surface discovered in the working tree, and the products scope decision.
+
+**`schema_constraints` norm-scoring surface (new; discovered + verified
+from source 2026-06-02, not previously in this plan).** A working-tree-only
+mechanism that scores the Normalization committee against the per-domain
+canonical `target_schema.json` constraints instead of the legacy fusion
+val/test XML targets:
+- New module [schema_constraint_scorer.py](../pipelines/lib/schema_constraint_scorer.py)
+  (`parse_target_schema` + `AttributeConstraints` + `SchemaConstraintScores`)
+  parses JSON-Schema + `x-pydi-consistency` into per-attribute constraints.
+- Uncommitted edits to [committee_norm.py](../usecases_synthetic/lib/committee_norm.py)
+  + [committee_norm_c12.py](../usecases_synthetic/lib/committee_norm_c12.py)
+  add a `scoring_surface` param; `C12NormCommitteeRunner` gains
+  `_score_member_against_schema` (no per-entity gold — the constraint set
+  IS the gold) and computes eligible attrs as `sm_resolved ∩ {schema attrs
+  with has_any_constraint} ∩ kind_map`.
+- [measure_baseline.py](../usecases_synthetic/scripts/measure_baseline.py)
+  adds `--norm-scoring-surface` **defaulting to `schema_constraints`** and
+  records it in baseline meta; [validate_variant.py](../usecases_synthetic/scripts/validate_variant.py)
+  reads it back so every variant scores against the same surface.
+- **Cross-domain impact:** every domain measured/validated after this lands
+  uses `schema_constraints` by default — including the in-flight companies
+  run (the first consumer). Reads `usecases/<domain>/input/schemamatching/
+  <domain>_target_schema.json` (preferred) or `target_schema.json`.
+- **Scorer bug fixed (2026-06-02):** `AttributeConstraints.has_any_constraint`
+  used `v not in (None, False, (), [])`, which via `0.0 == False` silently
+  dropped any attribute whose only constraint is a zero numeric bound —
+  e.g. products `price` (`minimum: 0`) — from norm scoring. Fixed at BOTH
+  compute sites (the dataclass `__post_init__` + the `parse_target_schema`
+  recompute) to identity checks. Verified: products `price` now eligible;
+  companies(7)/music(7)/games(9) constrained-attr sets UNCHANGED (strict
+  no-op for the running companies run); 11 scorer tests pass.
+
+**Products scope decision (user 2026-06-02): 24 (full target_schema), NOT
+19 — applied PER-SURFACE.** The 5 sparse dims previously excluded as
+too-sparse (R10-M) are brought into the **norm (schema_constraints) +
+K-knob + SM** scope to match the authoritative `target_schema.json`
+(user-edited 2026-06-02). Source coverage: color 8-15%, width/length/
+height_mm 4-6%, weight_g 3% (vs 50-78% for the 19-set). 24 = target_schema
+minus id + url. **Fusion is NOT widened: it scores only the GIVEN fusion
+val/test gold (validation_set.xml / test_set.xml, 100 records, fixed at 19
+attrs) — the gold is not regenerated and attributes absent from it are not
+fusion-scored (same principle as companies' industry). EM = 19 fields.**
+So per-surface: SM/norm/K-knobs = 24; fusion = given 19-attr gold; EM = 19.
+
+**EM match fields stay at 19 (user 2026-06-02).** The 5 sparse dims are
+perturbed (K-knobs) + scored (norm/fusion) but are NOT EM match features
+(magellan documents excluding sparse columns; 3-15% coverage won't aid
+matching). The 19-field ditto + sc_block checkpoints (run_20260530) stay
+valid → no products EM retrain.
+
+**Config-prep LANDED 2026-06-02 (products-only + 2 signed-off shared
+touches; companies/music/games files untouched; all 11 configs parse;
+24-attr consistency verified). Live tracker: repo-root
+`products_run_progress.md`.**
+- K2 `attribute_mapping` +priceCurrency,+title_description (R10-M #1, the
+  confirmed silent-drop bug).
+- [protection.py](../usecases_synthetic/lib/protection.py) products kind_map
+  5→24 (shared file, products-key only; companies/music maps untouched).
+- [domains/products.yaml](../usecases_synthetic/config/domains/products.yaml)
+  attribute_classes 19→24.
+- [fusion_committee_products.yaml](../usecases_synthetic/config/committees/fusion_committee_products.yaml):
+  stale NOTE-block cleanup only — committee scope stays at the GIVEN
+  19-attr gold (an initial +5 widening was REVERTED 2026-06-02 after
+  confirming the gold carries exactly 19; sparse dims not fusion-scored).
+- [normalization_committee_products.yaml](../usecases_synthetic/config/committees/normalization_committee_products.yaml):
+  text_clean→15, number_locale→9, new taxonomy_lookup (product_type→
+  Product_Type; bus_type+interface_type→Storage_Interface; memory_type→
+  GPU_Memory). **No taxonomy copy needed** — TaxonomyLookupNormalizer
+  resolves via `USECASES_DIR`=`usecases/`, where the 3 taxonomies already
+  ship (corrects R10-M's "copy into the synthetic data_root" step).
+- K3/K6/K8/K10 products configs +5 dims each (K3 tight 0.02 drop caps; K6
+  color=string + 4 numerics; K8 rename ladder Attribute_21-25; K10 targets).
+  EM ditto_plm/sc_block stale "must be retrained" comments corrected.
+
+**K5 (format) EXCLUDES the sparse dims (user-confirmed 2026-06-02 "leave as
+is").** K5's engine hardcodes money/number/file_size/rate families with
+`unit_factors.yaml` unit tables; length/weight units would need a SHARED
+`apply_knob_05_format.py` change (companies risk), the `number` family is
+unused/ill-suited (currency/magnitude path), and at 3-6% coverage the
+format dial is marginal. Sparse dims remain in 6 of 7 surfaces.
+
+**DEFERRED (user 2026-06-02 "wait with the compute-heavy stuff") — run only
+AFTER the companies cascade completes** (shared scripts/files in active use
++ MPS/CPU contention):
+NO fusion gold regen — the val/test gold is the fixed GIVEN 19-attr set.
+1. fusion_silver_standard.py `_PRODUCTS_STACK` fix (R10-M #2) — align the
+   silver to the GIVEN 19-attr gold: drop the 4 phantom dims (width/length/
+   height_mm, weight_g — absent from the gold) + add the missing real gold
+   attrs (title/description/price/priceCurrency/title_description/model).
+   SHARED file companies' silver build uses right now.
+2. Products fusion sweep on the GIVEN 19-attr gold (R10-M #3: trust/TD
+   params stale from the retired 5-attr gold) + apply → rebuild
+   fusion_silver_standard.
+3. Products norm sweep (text_clean/number_locale/taxonomy/llm_canonicalize)
+   under schema_constraints (24) + apply.
+4. measure_baseline (`--with-llm`) → validate ×3 → analyze_monotonicity +
+   build_statistics; likely a variant regen so the K-knobs exercise the
+   now-in-scope dims + the K2 fix.
 
 ### R10 sequence + gate
 

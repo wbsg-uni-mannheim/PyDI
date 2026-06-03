@@ -270,7 +270,11 @@ class NormCommitteeRunner(CommitteeRunner):
     stage: Literal["norm"] = "norm"
 
     def __new__(
-        cls, roster_path: Path, *, with_llm: bool = False
+        cls,
+        roster_path: Path,
+        *,
+        with_llm: bool = False,
+        scoring_surface: str = "xml_targets",
     ) -> "NormCommitteeRunner":
         """Dispatch on YAML shape: C12 schema → C12 runner."""
         raw = _load_roster_yaml(roster_path)
@@ -278,7 +282,9 @@ class NormCommitteeRunner(CommitteeRunner):
             from .committee_norm_c12 import C12NormCommitteeRunner
 
             return C12NormCommitteeRunner(  # type: ignore[return-value]
-                roster_path, with_llm=with_llm
+                roster_path,
+                with_llm=with_llm,
+                scoring_surface=scoring_surface,
             )
         return super().__new__(cls)
 
@@ -287,11 +293,15 @@ class NormCommitteeRunner(CommitteeRunner):
         roster_path: Path,
         *,
         with_llm: bool = False,
+        scoring_surface: str = "xml_targets",
     ) -> None:
         raw = _load_roster_yaml(roster_path)
         if _is_c12_shape(raw):
             # __new__ already returned a C12 runner; skip legacy init.
             return
+        # scoring_surface only meaningful for the C12 path; legacy
+        # members preserve the historical xml_targets behavior.
+        del scoring_surface
         members = _parse_roster(raw["members"], with_llm=with_llm)
         self._specs = members
         self._seed = raw.get("seed", 42)

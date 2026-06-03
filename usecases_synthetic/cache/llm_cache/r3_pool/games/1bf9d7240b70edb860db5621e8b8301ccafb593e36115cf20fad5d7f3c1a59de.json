@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_55413|sales_289|name=Super Mario Maker | platform=Wii U | genres=Level editor | developer=Nintendo EAD | releaseYear=2015-01-01||name=Super Mario Maker | platform=WiiU | genres=Platform | developer=Nintendo | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=88 | userScore=8.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Super Mario Maker | platform=Wii U | genres=Level editor | developer=Nintendo EAD | releaseYear=2015-01-01\nRecord B: name=Super Mario Maker | platform=WiiU | genres=Platform | developer=Nintendo | publisher=Nintendo | releaseYear=2015-01-01 | criticScore=88 | userScore=8.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -9,54 +9,208 @@ id_columns:
   products_4: id
 
 attribute_classes:
-  products_1: &products_attr_classes
-    title: primary
-    brand: key
-    description: secondary
-    price: secondary
-    priceCurrency: secondary
-    title_description: secondary
-    product_type: key
-    model: secondary
-    model_number: secondary
-    chipset_name: secondary
-    vram_gb: secondary
-    storage_gb: secondary
-    bus_type: secondary
-    interface_type: secondary
-    memory_type: secondary
-    storage_connection_type: secondary
+  products_1:
+    product_name: primary
+    manufacturer: key
+    product_description: secondary
+    list_price: secondary
+    currency_code: secondary
+    name_and_description: secondary
+    category: key
+    model_name: secondary
+    manufacturer_part_number: secondary
+    gpu_chipset: secondary
+    video_memory_gb: secondary
+    capacity_gb: secondary
+    bus_standard: secondary
+    interface: secondary
+    memory_technology: secondary
+    connector: secondary
     form_factor: secondary
-    read_speed_mb_s: secondary
-    write_speed_mb_s: secondary
-  products_2: *products_attr_classes
-  products_3: *products_attr_classes
-  products_4: *products_attr_classes
+    sequential_read_mb_s: secondary
+    sequential_write_mb_s: secondary
+    colour: secondary
+    width_millimeters: secondary
+    length_millimeters: secondary
+    height_millimeters: secondary
+    weight_grams: secondary
+  products_2:
+    name: primary
+    brandName: key
+    descriptionText: secondary
+    priceAmount: secondary
+    currency: secondary
+    titleAndDescription: secondary
+    productCategory: key
+    modelName: secondary
+    mpn: secondary
+    chipset: secondary
+    vramGb: secondary
+    capacityGb: secondary
+    busType: secondary
+    interfaceType: secondary
+    memoryType: secondary
+    connectionType: secondary
+    formFactor: secondary
+    readSpeedMbps: secondary
+    writeSpeedMbps: secondary
+    color: secondary
+    widthMm: secondary
+    depthMm: secondary
+    heightMm: secondary
+    weightG: secondary
+  products_3:
+    ProductTitle: primary
+    Brand: key
+    Details: secondary
+    Price: secondary
+    Currency: secondary
+    TitleDetails: secondary
+    Type: key
+    Model: secondary
+    PartNo: secondary
+    Chipset: secondary
+    MemorySizeGB: secondary
+    CapacityGB: secondary
+    Bus: secondary
+    Interface: secondary
+    MemoryType: secondary
+    Connector: secondary
+    FormFactor: secondary
+    ReadMBs: secondary
+    WriteMBs: secondary
+    Colour: secondary
+    WidthMM: secondary
+    LengthMM: secondary
+    HeightMM: secondary
+    WeightG: secondary
+  products_4:
+    name: primary
+    mfr: key
+    desc: secondary
+    amt: secondary
+    cur: secondary
+    name_desc: secondary
+    cat: key
+    mdl: secondary
+    pn: secondary
+    chip: secondary
+    vram: secondary
+    cap_gb: secondary
+    bus: secondary
+    iface: secondary
+    mem: secondary
+    conn: secondary
+    ff: secondary
+    rd_mbs: secondary
+    wr_mbs: secondary
+    clr: secondary
+    w_mm: secondary
+    l_mm: secondary
+    h_mm: secondary
+    wt_g: secondary
 
 attribute_mapping:
-  products_1: &products_attr_mapping
-    title: title
-    brand: brand
-    description: description
-    price: price
-    priceCurrency: priceCurrency
-    title_description: title_description
-    product_type: product_type
-    model: model
-    model_number: model_number
-    chipset_name: chipset_name
-    vram_gb: vram_gb
-    storage_gb: storage_gb
-    bus_type: bus_type
-    interface_type: interface_type
-    memory_type: memory_type
-    storage_connection_type: storage_connection_type
+  products_1:
+    product_name: title
+    manufacturer: brand
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    name_and_description: title_description
+    category: product_type
+    model_name: model
+    manufacturer_part_number: model_number
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    bus_standard: bus_type
+    interface: interface_type
+    memory_technology: memory_type
+    connector: storage_connection_type
     form_factor: form_factor
-    read_speed_mb_s: read_speed_mb_s
-    write_speed_mb_s: write_speed_mb_s
-  products_2: *products_attr_mapping
-  products_3: *products_attr_mapping
-  products_4: *products_attr_mapping
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    colour: color
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+  products_2:
+    name: title
+    brandName: brand
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    titleAndDescription: title_description
+    productCategory: product_type
+    modelName: model
+    mpn: model_number
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    busType: bus_type
+    interfaceType: interface_type
+    memoryType: memory_type
+    connectionType: storage_connection_type
+    formFactor: form_factor
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    color: color
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+  products_3:
+    ProductTitle: title
+    Brand: brand
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    TitleDetails: title_description
+    Type: product_type
+    Model: model
+    PartNo: model_number
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    Bus: bus_type
+    Interface: interface_type
+    MemoryType: memory_type
+    Connector: storage_connection_type
+    FormFactor: form_factor
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Colour: color
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+  products_4:
+    name: title
+    mfr: brand
+    desc: description
+    amt: price
+    cur: priceCurrency
+    name_desc: title_description
+    cat: product_type
+    mdl: model
+    pn: model_number
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    bus: bus_type
+    iface: interface_type
+    mem: memory_type
+    conn: storage_connection_type
+    ff: form_factor
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    clr: color
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
 
 rates_per_level:
   easy:
@@ -87,18 +241,67 @@ per_cell_ceiling_delta: 0.10
 # attributes so stretch never demands negative headroom. Mirrors companies dbpedia
 # financials + games dbpedia.franchise pattern.
 per_source_attribute_overrides:
-  products_1: &products_attr_caps
-    chipset_name: 0.02         # 72% missing
-    vram_gb: 0.02              # 72% missing
-    memory_type: 0.02          # 74% missing
-    read_speed_mb_s: 0.02      # 82% missing
-    write_speed_mb_s: 0.02     # 85% missing
-    model_number: 0.05         # 60% missing
-    storage_gb: 0.05           # 30% missing
-    interface_type: 0.05       # 48% missing
-    storage_connection_type: 0.05  # 50% missing
-    form_factor: 0.05          # 50% missing
-    # bus_type: ~25% missing → default 0.10 ceiling (no override)
-  products_2: *products_attr_caps
-  products_3: *products_attr_caps
-  products_4: *products_attr_caps
+  products_1:
+    gpu_chipset: 0.02
+    video_memory_gb: 0.02
+    memory_technology: 0.02
+    sequential_read_mb_s: 0.02
+    sequential_write_mb_s: 0.02
+    manufacturer_part_number: 0.05
+    capacity_gb: 0.05
+    interface: 0.05
+    connector: 0.05
+    form_factor: 0.05
+    colour: 0.02
+    width_millimeters: 0.02
+    length_millimeters: 0.02
+    height_millimeters: 0.02
+    weight_grams: 0.02
+  products_2:
+    chipset: 0.02
+    vramGb: 0.02
+    memoryType: 0.02
+    readSpeedMbps: 0.02
+    writeSpeedMbps: 0.02
+    mpn: 0.05
+    capacityGb: 0.05
+    interfaceType: 0.05
+    connectionType: 0.05
+    formFactor: 0.05
+    color: 0.02
+    widthMm: 0.02
+    depthMm: 0.02
+    heightMm: 0.02
+    weightG: 0.02
+  products_3:
+    Chipset: 0.02
+    MemorySizeGB: 0.02
+    MemoryType: 0.02
+    ReadMBs: 0.02
+    WriteMBs: 0.02
+    PartNo: 0.05
+    CapacityGB: 0.05
+    Interface: 0.05
+    Connector: 0.05
+    FormFactor: 0.05
+    Colour: 0.02
+    WidthMM: 0.02
+    LengthMM: 0.02
+    HeightMM: 0.02
+    WeightG: 0.02
+  products_4:
+    chip: 0.02
+    vram: 0.02
+    mem: 0.02
+    rd_mbs: 0.02
+    wr_mbs: 0.02
+    pn: 0.05
+    cap_gb: 0.05
+    iface: 0.05
+    conn: 0.05
+    ff: 0.05
+    clr: 0.02
+    w_mm: 0.02
+    l_mm: 0.02
+    h_mm: 0.02
+    wt_g: 0.02

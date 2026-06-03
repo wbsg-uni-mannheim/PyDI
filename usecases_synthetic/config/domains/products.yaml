@@ -71,9 +71,15 @@ fusion_files:
 # taxonomy_walk under K6 + rename_table under K8 + reliability
 # distribution under K10. 2 numerics (read_speed_mb_s,
 # write_speed_mb_s) get the new K5 ``rate`` class + numeric jitter
-# under K6. Skipped: color (8-15% coverage, mixed-locale chaos),
-# width/length/height_mm + weight_g (3-6% coverage, too sparse for
-# meaningful dial movement).
+# under K6.
+#
+# 2026-06-02 (full-target_schema scope decision, user-signed-off): the
+# 5 previously-skipped sparse dims are brought into scope to match the
+# authoritative target_schema.json: color (8-15% coverage, nominal) +
+# width_mm / length_mm / height_mm / weight_g (3-6% coverage,
+# continuous). Low coverage means few populated cells per cluster, so
+# their per-knob dial movement is shallow; the monotonicity gate may
+# need products KNOWN_WEAK exceptions for them after the re-measure.
 attribute_classes:
   title: primary
   brand: key
@@ -94,3 +100,8 @@ attribute_classes:
   form_factor: secondary
   read_speed_mb_s: secondary
   write_speed_mb_s: secondary
+  color: secondary
+  width_mm: secondary
+  length_mm: secondary
+  height_mm: secondary
+  weight_g: secondary

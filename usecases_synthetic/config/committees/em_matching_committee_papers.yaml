@@ -1,0 +1,139 @@
+# Entity-matching MATCHING committee roster — papers domain.
+#
+# Per-domain fork of em_matching_committee.yaml (companies-canonical).
+# Same 4-member roster (ditto_plm / magellan / llm_matcher / comem),
+# enable-all posture per R5 EM matching sign-off.
+#
+# Seeded from music 2026-06-02; rate tables / classifier hyperparameters
+# are UNTUNED starting points carried over verbatim from the music roster.
+# Validate / tune (esp. magellan classifier_params, thresholds) before a
+# real papers run.
+#
+# Papers quirks:
+#   * `title` is the primary disambiguating attribute (paper title), so it
+#     leads every fields list (mirrors music's `name`).
+#   * `publication_year` is a bare integer year (2018-2020 only), NOT a
+#     date string — it is hinted to magellan via `numeric_attributes`, and
+#     `date_attributes` is empty.
+#   * `doi` is the fusion-gold join key and `id` is the primary key; neither
+#     is ever exposed as a matching field.
+#   * No trained papers Ditto checkpoint exists yet — the path below is a
+#     papers-namespaced placeholder. It must be (re)trained for papers; the
+#     runtime loudly disables a missing checkpoint.
+
+seed: 42
+
+preprocess_text: "normalize_text"
+
+members:
+  - name: ditto_plm
+    description: >-
+      Ditto PLM matcher (learned, missing-value tolerant). Checkpoint path
+      is a papers placeholder at
+      usecases_synthetic/cache/ditto_checkpoints/papers/best — must be
+      (re)trained for papers; the runtime loudly disables a missing
+      checkpoint. Do NOT point this at another domain's checkpoint.
+    matcher:
+      class: DittoMatcher
+      module: usecases_synthetic.lib.ditto_matcher
+      params:
+        # Placeholder — must be (re)trained for papers; runtime loudly
+        # disables a missing checkpoint.
+        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/papers/best
+        fields: [title, authors, journal, publication_year, type, volume, issue]
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: magellan
+    description: >-
+      Classical-ML matcher: auto-generated comparator-vector features +
+      sklearn RandomForest. `training_gold_path` runner-injected per
+      source pair. Numeric hints on the page-locator / count columns;
+      `publication_year` is treated as numeric (bare integer year, not a
+      date), so `date_attributes` is empty.
+    matcher:
+      class: MagellanMatcher
+      module: usecases_synthetic.lib.magellan_em_matcher
+      params:
+        numeric_attributes: [publication_year, first_page, last_page, referenced_works_count, cited_by_count]
+        date_attributes: []
+        classifier_class: sklearn.ensemble.RandomForestClassifier
+        # UNTUNED — seeded verbatim from music 2026-06-02 (music R5 winner:
+        # n_estimators=100, max_depth=None, class_weight=None). These are
+        # starting points only; re-run the EM matching sweep on papers
+        # before trusting them.
+        classifier_params:
+          n_estimators: 100
+          max_depth: null
+          random_state: 42
+          n_jobs: 1
+          class_weight: null
+        preprocess: normalize_text
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: learned
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: llm_matcher
+    description: >-
+      MatchGPT-style zero-shot LLM matcher. Sparse attributes (volume /
+      issue) render as `<missing>` where absent, acceptable for LLM
+      prompts. No demonstrations retrieval — every pair scored zero-shot.
+    matcher:
+      class: MatchGPTMatcher
+      module: usecases_synthetic.lib.matchgpt_em_matcher
+      params:
+        fields: [title, authors, journal, publication_year, type, volume, issue]
+        chat_model_name: openai/gpt-5.4-mini
+        temperature: 0.0
+        max_tokens: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+  - name: comem
+    description: >-
+      Compound Entity Matching (ComEM). Two-stage LLM pipeline. Paper
+      defaults locked.
+    matcher:
+      class: ComEMMatcher
+      module: usecases_synthetic.lib.comem_em_matcher
+      params:
+        fields: [title, authors, journal, publication_year, type, volume, issue]
+        stage1_model: openai/gpt-5.4-mini
+        stage2_model: null
+        stage1_set_size: 10
+        skip_stage1_below: 2
+        temperature: 0.0
+        max_tokens_stage1: 2048
+        max_tokens_stage2: 2048
+        seed: 42
+    comparators: []
+    weights: []
+    threshold: 0.5
+    matching_type: llm
+    missing_value_tolerant: true
+    enabled_by_default: true
+
+required_axes:
+  matching_type: [learned, llm]
+  missing_value_tolerant: [true]
+
+# Column mapping — must stay identical to em_blocking_committee_papers.yaml
+# and fusion_committee_papers.yaml. All three sources already use canonical
+# column names, so no per-source rename is needed.
+column_mapping:
+  dblp: {}
+  crossref: {}
+  open_alex: {}

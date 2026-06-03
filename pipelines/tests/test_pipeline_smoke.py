@@ -143,10 +143,20 @@ def test_report_writer_with_minimal_state(tmp_path: Path) -> None:
     assert summary.iloc[0]["winner"] == "label_jw"
 
 
-@pytest.mark.parametrize("non_baseline", ["easy", "medium", "hard"])
-def test_load_pipeline_bundle_rejects_non_baseline(non_baseline: str) -> None:
-    """The best-of-breed loader only accepts baseline."""
+def test_load_pipeline_bundle_rejects_unknown_level() -> None:
+    """Variant levels easy/medium/hard are now accepted (and routed
+    via load_variant against usecases/<domain>-augmented/<level>/);
+    only genuinely unknown levels should raise."""
     from pipelines.lib.bundle import load_pipeline_bundle
 
-    with pytest.raises(ValueError, match="baseline data only"):
-        load_pipeline_bundle("products", level=non_baseline)
+    with pytest.raises(ValueError, match="Unknown level"):
+        load_pipeline_bundle("products", level="bogus")
+
+
+@pytest.mark.parametrize("variant", ["easy", "medium", "hard"])
+def test_papers_rejects_variant_levels(variant: str) -> None:
+    """Papers has no augmented tree yet; variants must raise loudly."""
+    from pipelines.lib.bundle import load_pipeline_bundle
+
+    with pytest.raises(NotImplementedError, match="papers"):
+        load_pipeline_bundle("papers", level=variant)

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_1307|http://dbpedia.org/resource/STI_International|name=STI International||name=STI International | country=United States | city=Georgetown, Texas | industry=Weapon | founded=1980-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=STI International\nRecord B: name=STI International | country=United States | city=Georgetown, Texas | industry=Weapon | founded=1980-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

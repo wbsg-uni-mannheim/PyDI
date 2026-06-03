@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_8739|metacritic_3925|name=Sam & Max: The Devil's Playhouse | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2010-01-01||name=Sam & Max: The Devil's Playhouse - Episode 1: The Penal Zone | platform=PC | genres=Miscellaneous,Adventure,General,3D,Compilation,Third-Person | developer=Telltale Games | releaseYear=2010-01-01 | criticScore=81.0 | userScore=7.8 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sam & Max: The Devil's Playhouse | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2010-01-01\nRecord B: name=Sam & Max: The Devil's Playhouse - Episode 1: The Penal Zone | platform=PC | genres=Miscellaneous,Adventure,General,3D,Compilation,Third-Person | developer=Telltale Games | releaseYear=2010-01-01 | criticScore=81.0 | userScore=7.8 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

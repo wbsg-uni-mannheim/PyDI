@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_56684|sales_6131|name=Charlotte's Web (video game) | platform=DS | genres=Adventure game | developer=Backbone Entertainment | releaseYear=2007-01-01||name=Charlotte's Web | platform=DS | genres=Action | developer=Backbone Entertainment | publisher=Sega | releaseYear=2006-01-01 | criticScore=60 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Charlotte's Web (video game) | platform=DS | genres=Adventure game | developer=Backbone Entertainment | releaseYear=2007-01-01\nRecord B: name=Charlotte's Web | platform=DS | genres=Action | developer=Backbone Entertainment | publisher=Sega | releaseYear=2006-01-01 | criticScore=60 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

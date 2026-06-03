@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17815|metacritic_511|name=Call of Duty 2 | platform=Xbox 360 | genres=First-person shooter | developer=Infinity Ward | releaseYear=2005-01-01||name=Call of Duty 2 | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Historic,Historic,Arcade | developer=Infinity Ward | releaseYear=2005-01-01 | criticScore=89.0 | userScore=8.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty 2 | platform=Xbox 360 | genres=First-person shooter | developer=Infinity Ward | releaseYear=2005-01-01\nRecord B: name=Call of Duty 2 | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Historic,Historic,Arcade | developer=Infinity Ward | releaseYear=2005-01-01 | criticScore=89.0 | userScore=8.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

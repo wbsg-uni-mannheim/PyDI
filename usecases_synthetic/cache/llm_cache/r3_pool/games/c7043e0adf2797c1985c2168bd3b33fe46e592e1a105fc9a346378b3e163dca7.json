@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_2567|sales_917|name=The Sims 2 | platform=PlayStation Portable | genres=Social simulation game | developer=Maxis Redwood Shores | releaseYear=2005-01-01||name=The Sims 2 | platform=Playstation Portable | genres=Simulation | developer=Maxis | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=65 | userScore=6.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Sims 2 | platform=PlayStation Portable | genres=Social simulation game | developer=Maxis Redwood Shores | releaseYear=2005-01-01\nRecord B: name=The Sims 2 | platform=Playstation Portable | genres=Simulation | developer=Maxis | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=65 | userScore=6.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

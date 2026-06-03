@@ -43,7 +43,9 @@ KNOBS_WITH_ID_COLUMNS = (
 )
 
 # Active S1 domains (movies + products are descoped per plan_s1_scale.md).
-ACTIVE_DOMAINS = ("companies", "games", "music")
+# papers (2026) folds in here so its per-knob YAMLs are validated against
+# the actual loaded source columns (jsonl sources, dash-minted ids).
+ACTIVE_DOMAINS = ("companies", "games", "music", "papers")
 
 
 def _load_yaml(path: Path) -> dict:

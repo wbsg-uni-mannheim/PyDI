@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_50880|metacritic_1854|name=Halo: The Master Chief Collection | platform=Xbox One | genres=First-person shooter | developer=343 Industries | releaseYear=2014-01-01||name=Halo: The Master Chief Collection | platform=Xbox One | genres=Action,Miscellaneous,Shooter,Compilation,First-Person,Sci-Fi,Arcade | developer=343 Industries | releaseYear=2014-01-01 | criticScore=85.0 | userScore=7.9 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Halo: The Master Chief Collection | platform=Xbox One | genres=First-person shooter | developer=343 Industries | releaseYear=2014-01-01\nRecord B: name=Halo: The Master Chief Collection | platform=Xbox One | genres=Action,Miscellaneous,Shooter,Compilation,First-Person,Sci-Fi,Arcade | developer=343 Industries | releaseYear=2014-01-01 | criticScore=85.0 | userScore=7.9 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

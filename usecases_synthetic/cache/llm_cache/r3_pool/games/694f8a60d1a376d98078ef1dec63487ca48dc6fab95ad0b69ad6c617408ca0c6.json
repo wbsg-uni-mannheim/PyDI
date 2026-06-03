@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1051|sales_3583|name=Syphon Filter: Dark Mirror | platform=Playstation Portable | genres=Action,Shooter,Shooter,Third-Person,Tactical,Modern,Modern | developer=Sony Bend | releaseYear=2006-01-01 | criticScore=87.0 | userScore=8.7 | ESRB=M||name=Syphon Filter: Dark Mirror | platform=Playstation Portable | genres=Shooter | developer=Sony Bend | publisher=Sony Computer Entertainment | releaseYear=2006-01-01 | criticScore=87 | userScore=9.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Syphon Filter: Dark Mirror | platform=Playstation Portable | genres=Action,Shooter,Shooter,Third-Person,Tactical,Modern,Modern | developer=Sony Bend | releaseYear=2006-01-01 | criticScore=87.0 | userScore=8.7 | ESRB=M\nRecord B: name=Syphon Filter: Dark Mirror | platform=Playstation Portable | genres=Shooter | developer=Sony Bend | publisher=Sony Computer Entertainment | releaseYear=2006-01-01 | criticScore=87 | userScore=9.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Royale_Furniture_Holdings|http://www.forbes.com/companies/alfresa-holdings/|name=Royale Furniture Holdings | country=China | city=Hong Kong | industry=Furniture | founded=1997-01-01||name=Alfresa Holdings | country=Japan | industry=Pharmaceuticals",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Royale Furniture Holdings | country=China | city=Hong Kong | industry=Furniture | founded=1997-01-01\nRecord B: name=Alfresa Holdings | country=Japan | industry=Pharmaceuticals\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

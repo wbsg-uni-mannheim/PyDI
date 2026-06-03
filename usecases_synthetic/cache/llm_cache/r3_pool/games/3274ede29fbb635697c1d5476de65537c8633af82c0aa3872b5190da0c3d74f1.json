@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_3526|sales_1171|name=ModNation Racers | platform=PS3 | genres=Driving,Racing,Arcade,Kart,Other,Kart | developer=United Front Games | releaseYear=2010-01-01 | criticScore=82.0 | userScore=8.3 | ESRB=E||name=ModNation Racers | platform=PS3 | genres=Racing | developer=United Front Games | publisher=Sony Computer Entertainment | releaseYear=2010-01-01 | criticScore=82 | userScore=8.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ModNation Racers | platform=PS3 | genres=Driving,Racing,Arcade,Kart,Other,Kart | developer=United Front Games | releaseYear=2010-01-01 | criticScore=82.0 | userScore=8.3 | ESRB=E\nRecord B: name=ModNation Racers | platform=PS3 | genres=Racing | developer=United Front Games | publisher=Sony Computer Entertainment | releaseYear=2010-01-01 | criticScore=82 | userScore=8.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

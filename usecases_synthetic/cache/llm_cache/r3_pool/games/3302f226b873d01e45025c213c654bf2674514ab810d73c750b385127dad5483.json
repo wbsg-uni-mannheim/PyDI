@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_12239|metacritic_19929|name=Planet of the Apes (video game) | platform=Microsoft Windows | genres=Action-adventure game | developer=Torus Games | releaseYear=2001-01-01||name=Planet of the Apes | platform=PC | genres=Action,Action Adventure,General,General | developer=Visiware Studios | releaseYear=2001-01-01 | criticScore=41.0 | userScore=4.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Planet of the Apes (video game) | platform=Microsoft Windows | genres=Action-adventure game | developer=Torus Games | releaseYear=2001-01-01\nRecord B: name=Planet of the Apes | platform=PC | genres=Action,Action Adventure,General,General | developer=Visiware Studios | releaseYear=2001-01-01 | criticScore=41.0 | userScore=4.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

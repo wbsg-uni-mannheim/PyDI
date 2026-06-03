@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_28433|sales_1506|name=SOCOM 4 U.S. Navy SEALs | platform=PS3 | genres=Tactical shooter | developer=Zipper Interactive | releaseYear=2011-01-01||name=SOCOM 4: U.S. Navy SEALs | platform=PS3 | genres=Shooter | developer=Zipper Interactive | publisher=Sony Computer Entertainment | releaseYear=2011-01-01 | criticScore=67 | userScore=6.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=SOCOM 4 U.S. Navy SEALs | platform=PS3 | genres=Tactical shooter | developer=Zipper Interactive | releaseYear=2011-01-01\nRecord B: name=SOCOM 4: U.S. Navy SEALs | platform=PS3 | genres=Shooter | developer=Zipper Interactive | publisher=Sony Computer Entertainment | releaseYear=2011-01-01 | criticScore=67 | userScore=6.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

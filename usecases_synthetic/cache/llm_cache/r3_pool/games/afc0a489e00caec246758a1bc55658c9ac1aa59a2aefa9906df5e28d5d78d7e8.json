@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_937|sales_6779|name=Front Mission Evolved | platform=Microsoft Windows | genres=Vehicle simulation game | developer=Double Helix Games | releaseYear=2010-01-01||name=Front Mission Evolved | platform=PC | genres=Shooter | developer=Double Helix Games | publisher=Square Enix | releaseYear=2010-01-01 | criticScore=63 | userScore=5.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Front Mission Evolved | platform=Microsoft Windows | genres=Vehicle simulation game | developer=Double Helix Games | releaseYear=2010-01-01\nRecord B: name=Front Mission Evolved | platform=PC | genres=Shooter | developer=Double Helix Games | publisher=Square Enix | releaseYear=2010-01-01 | criticScore=63 | userScore=5.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

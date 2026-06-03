@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_13272|metacritic_14381|name=Dengeki Bunko: Fighting Climax | platform=PS3 | genres=Fighting game | developer=Ecole Software | releaseYear=2014-01-01||name=Dengeki Bunko: Fighting Climax | platform=PS3 | genres=Action,Fighting,2D | developer=Sega,French-Bread | releaseYear=2015-01-01 | criticScore=66.0 | userScore=8.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dengeki Bunko: Fighting Climax | platform=PS3 | genres=Fighting game | developer=Ecole Software | releaseYear=2014-01-01\nRecord B: name=Dengeki Bunko: Fighting Climax | platform=PS3 | genres=Action,Fighting,2D | developer=Sega,French-Bread | releaseYear=2015-01-01 | criticScore=66.0 | userScore=8.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

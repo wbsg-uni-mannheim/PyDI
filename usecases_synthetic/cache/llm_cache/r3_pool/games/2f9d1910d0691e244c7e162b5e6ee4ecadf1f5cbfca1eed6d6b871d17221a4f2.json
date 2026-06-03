@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_51502|sales_6128|name=Puss in Boots (video game) | platform=PS3 | genres=Action game | developer=ImaginEngine | releaseYear=2011-01-01||name=Puss in Boots | platform=PS3 | genres=Action | developer=THQ | publisher=THQ | releaseYear=2011-01-01 | criticScore=70 | userScore=7.0 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Puss in Boots (video game) | platform=PS3 | genres=Action game | developer=ImaginEngine | releaseYear=2011-01-01\nRecord B: name=Puss in Boots | platform=PS3 | genres=Action | developer=THQ | publisher=THQ | releaseYear=2011-01-01 | criticScore=70 | userScore=7.0 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

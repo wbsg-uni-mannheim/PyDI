@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24249|metacritic_873|name=The Stanley Parable | platform=Microsoft Windows | genres=Interactive story | developer=Crows Crows Crows | releaseYear=2011-01-01||name=The Stanley Parable | platform=PC | genres=Action,Adventure,General,General,3D,First-Person,Modern | developer=Davey Wreden | releaseYear=2013-01-01 | criticScore=88.0 | userScore=8.1",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Stanley Parable | platform=Microsoft Windows | genres=Interactive story | developer=Crows Crows Crows | releaseYear=2011-01-01\nRecord B: name=The Stanley Parable | platform=PC | genres=Action,Adventure,General,General,3D,First-Person,Modern | developer=Davey Wreden | releaseYear=2013-01-01 | criticScore=88.0 | userScore=8.1\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

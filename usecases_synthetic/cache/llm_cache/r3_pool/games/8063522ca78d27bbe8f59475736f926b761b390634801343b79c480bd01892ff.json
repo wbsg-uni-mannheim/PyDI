@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_6464|metacritic_968|name=XCOM 2: War of the Chosen | platform=PS4 | genres=Turn-based tactics | developer=Firaxis Games | releaseYear=2020-01-01||name=XCOM 2 | platform=PS4 | genres=Strategy,Turn-Based,General,Tactics | developer=Firaxis Games | releaseYear=2016-01-01 | criticScore=87.0 | userScore=7.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=XCOM 2: War of the Chosen | platform=PS4 | genres=Turn-based tactics | developer=Firaxis Games | releaseYear=2020-01-01\nRecord B: name=XCOM 2 | platform=PS4 | genres=Strategy,Turn-Based,General,Tactics | developer=Firaxis Games | releaseYear=2016-01-01 | criticScore=87.0 | userScore=7.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

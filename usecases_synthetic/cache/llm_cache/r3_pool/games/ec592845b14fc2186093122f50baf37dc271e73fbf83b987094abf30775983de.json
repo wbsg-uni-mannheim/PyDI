@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_18375|sales_3301|name=Iron Man 2 | platform=DS | genres=Action,Action Adventure,General,General | developer=Sega Studios San Francisco | releaseYear=2010-01-01 | criticScore=54.0 | userScore=6.4 | ESRB=E10+||name=Iron Man 2 | platform=DS | genres=Action | developer=Sega Studios San Francisco | publisher=Sega | releaseYear=2010-01-01 | criticScore=54 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Iron Man 2 | platform=DS | genres=Action,Action Adventure,General,General | developer=Sega Studios San Francisco | releaseYear=2010-01-01 | criticScore=54.0 | userScore=6.4 | ESRB=E10+\nRecord B: name=Iron Man 2 | platform=DS | genres=Action | developer=Sega Studios San Francisco | publisher=Sega | releaseYear=2010-01-01 | criticScore=54 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

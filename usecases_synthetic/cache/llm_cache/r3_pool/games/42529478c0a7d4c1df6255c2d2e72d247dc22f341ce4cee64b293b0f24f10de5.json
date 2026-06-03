@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_12125|sales_6124|name=Killer7 | platform=PS2 | genres=Action Adventure,Modern | developer=Grasshopper Manufacture | releaseYear=2005-01-01 | criticScore=70.0 | userScore=8.6 | ESRB=M||name=Killer7 | platform=PS2 | genres=Action | developer=Grasshopper Manufacture | publisher=Capcom | releaseYear=2005-01-01 | criticScore=70 | userScore=8.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Killer7 | platform=PS2 | genres=Action Adventure,Modern | developer=Grasshopper Manufacture | releaseYear=2005-01-01 | criticScore=70.0 | userScore=8.6 | ESRB=M\nRecord B: name=Killer7 | platform=PS2 | genres=Action | developer=Grasshopper Manufacture | publisher=Capcom | releaseYear=2005-01-01 | criticScore=70 | userScore=8.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

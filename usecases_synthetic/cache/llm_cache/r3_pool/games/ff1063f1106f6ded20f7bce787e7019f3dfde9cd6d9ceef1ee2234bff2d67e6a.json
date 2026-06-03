@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24939|metacritic_3615|name=Joe Danger 2: The Movie | platform=Xbox 360 | genres=Racing video game | developer=Hello Games | releaseYear=2015-01-01||name=Joe Danger 2: The Movie | platform=Xbox 360 | genres=Action,Racing,General,General,Arcade,Other | developer=Hello Games | releaseYear=2012-01-01 | criticScore=82.0 | userScore=7.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Joe Danger 2: The Movie | platform=Xbox 360 | genres=Racing video game | developer=Hello Games | releaseYear=2015-01-01\nRecord B: name=Joe Danger 2: The Movie | platform=Xbox 360 | genres=Action,Racing,General,General,Arcade,Other | developer=Hello Games | releaseYear=2012-01-01 | criticScore=82.0 | userScore=7.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

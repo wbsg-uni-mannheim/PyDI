@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_28821|metacritic_426|name=Bayonetta (video game) | genres=Action-adventure | developer=PlatinumGames | releaseYear=2009-01-01||name=Bayonetta | platform=PC | genres=Action Adventure,Linear | developer=PlatinumGames,Nex Entertainment | releaseYear=2017-01-01 | criticScore=90.0 | userScore=8.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bayonetta (video game) | genres=Action-adventure | developer=PlatinumGames | releaseYear=2009-01-01\nRecord B: name=Bayonetta | platform=PC | genres=Action Adventure,Linear | developer=PlatinumGames,Nex Entertainment | releaseYear=2017-01-01 | criticScore=90.0 | userScore=8.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

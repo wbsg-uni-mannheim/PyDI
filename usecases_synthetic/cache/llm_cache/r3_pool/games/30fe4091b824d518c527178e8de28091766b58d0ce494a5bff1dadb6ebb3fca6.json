@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_51326|metacritic_1505|name=Warhammer Online: Age of Reckoning | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Mythic Entertainment | releaseYear=2008-01-01||name=Warhammer Online: Age of Reckoning | platform=PC | genres=Role-Playing,Massively Multiplayer Online,Massively Multiplayer,Fantasy | developer=EA Mythic | releaseYear=2008-01-01 | criticScore=86.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Warhammer Online: Age of Reckoning | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Mythic Entertainment | releaseYear=2008-01-01\nRecord B: name=Warhammer Online: Age of Reckoning | platform=PC | genres=Role-Playing,Massively Multiplayer Online,Massively Multiplayer,Fantasy | developer=EA Mythic | releaseYear=2008-01-01 | criticScore=86.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

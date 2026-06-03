@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_3584|sales_6401|name=NCAA College Basketball 2K3 | platform=GameCube | genres=Sports game | developer=Kush Games | releaseYear=2002-01-01||name=NCAA College Football 2K3 | platform=GameCube | genres=Sports | developer=Avalanche Software | publisher=Sega | releaseYear=2002-01-01 | criticScore=70 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=NCAA College Basketball 2K3 | platform=GameCube | genres=Sports game | developer=Kush Games | releaseYear=2002-01-01\nRecord B: name=NCAA College Football 2K3 | platform=GameCube | genres=Sports | developer=Avalanche Software | publisher=Sega | releaseYear=2002-01-01 | criticScore=70 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

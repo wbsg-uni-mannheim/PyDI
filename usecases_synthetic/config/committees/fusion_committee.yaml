@@ -73,11 +73,13 @@ evaluation_functions:
   country: tokenized_match
   city: tokenized_match
   keypeople: tokenized_match
-  # R10-N (2026-06-02): industry added to reach the 8-attr target_schema
-  # scope (was 7). industry <- forbes.business_segment (GICS-categorical) ->
-  # tokenized_match, consistent with country/city. (website dropped — it is
-  # degenerate: forbes.url == the cluster id in all rows, no real source.)
-  industry: tokenized_match
+  # R10-N (2026-06-02): industry is a target_schema attr that flows through
+  # SM / normalization / EM, but it is NOT fusion-scored — the GIVEN fusion
+  # gold (test_set_final.xml / validation_set_final.xml) has no <industry>
+  # column, so there is nothing to evaluate against. Fusion macro_accuracy is
+  # reported over the 7 given-gold attrs (name, country, city, assets,
+  # revenue, founded, keypeople). industry stays in column_mapping below for
+  # EM/SM consistency. (website dropped — degenerate: forbes.url == id.)
 
 evaluation_params:
   assets:
@@ -102,7 +104,6 @@ attribute_types:
   country: categorical
   city: string
   keypeople: list
-  industry: categorical
 
 # PyDI candidate registry for val-selection sweeps. Used by
 # pydi_per_attribute_optimal (across every attribute) and by the TD

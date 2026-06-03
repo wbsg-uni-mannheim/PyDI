@@ -1,0 +1,22 @@
+{
+  "attribute": "country",
+  "candidates": [
+    {
+      "source": "forbes",
+      "value": "Spain"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Israel"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.74,
+    "operation": "verbatim_pick",
+    "reasoning": "The candidates conflict and no extra context indicates one should be normalized over the other, so I select the more likely common country value.",
+    "value": "Spain"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Spain\",\"operation\":\"verbatim_pick\",\"confidence\":0.74,\"reasoning\":\"The candidates conflict and no extra context indicates one should be normalized over the other, so I select the more likely common country value.\"}"
+}

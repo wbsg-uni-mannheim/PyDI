@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19923|sales_7647|name=Crime Scene (video game) | platform=DS | genres=Adventure game | developer=White Birds | releaseYear=2009-01-01||name=Crime Scene | platform=DS | genres=Adventure | developer=White Birds Productions | publisher=Nobilis | releaseYear=2009-01-01 | criticScore=54 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Crime Scene (video game) | platform=DS | genres=Adventure game | developer=White Birds | releaseYear=2009-01-01\nRecord B: name=Crime Scene | platform=DS | genres=Adventure | developer=White Birds Productions | publisher=Nobilis | releaseYear=2009-01-01 | criticScore=54 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

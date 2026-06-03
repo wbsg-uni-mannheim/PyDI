@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7363|metacritic_6744|name=Total War: Arena | platform=Microsoft Windows | genres=Real-time tactics | developer=Creative Assembly | releaseYear=2018-01-01||name=Arena Wars | platform=PC | genres=Strategy,Real-Time,Modern,General,Modern | developer=Ascaron Entertainment GmbH,Ascaron Entertainment | releaseYear=2004-01-01 | criticScore=77.0 | userScore=7.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Total War: Arena | platform=Microsoft Windows | genres=Real-time tactics | developer=Creative Assembly | releaseYear=2018-01-01\nRecord B: name=Arena Wars | platform=PC | genres=Strategy,Real-Time,Modern,General,Modern | developer=Ascaron Entertainment GmbH,Ascaron Entertainment | releaseYear=2004-01-01 | criticScore=77.0 | userScore=7.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

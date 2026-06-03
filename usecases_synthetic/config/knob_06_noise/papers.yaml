@@ -1,0 +1,205 @@
+# Knob 06 — Value Noise Injection Rate — Papers
+#
+# Seeded from music 2026-06-02; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run. noise_rates_per_level,
+# operator_mix relative weights, the max_* caps, and the
+# compression/stretch factors are inherited from music and have NOT been
+# recalibrated for the papers sources.
+#
+# Papers data is already target-shaped: all three sources (dblp, crossref,
+# open_alex) carry the SAME 14 canonical columns, so per-source
+# attribute_classes are IDENTICAL across sources and every
+# attribute_mapping is identity. ``id`` and ``doi`` are NEVER targeted by
+# the value knobs (doi is the fusion-gold join key), so neither appears in
+# attribute_classes / attribute_mapping / numeric_attributes.
+#
+# Unlike music/games this domain has NO controlled-vocabulary taxonomy CSV,
+# so the ``taxonomies`` block is OMITTED entirely and the music
+# ``taxonomy_walk`` operator weight has been dropped from operator_mix and
+# its mass redistributed proportionally over the remaining operators (so
+# the relative mix of the survivors is unchanged from music).
+
+domain: papers
+
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+attribute_classes:
+  dblp:
+    title: primary
+    type: key
+    publication_year: key
+    journal: key
+    authors: secondary
+    publisher: secondary
+    keywords: secondary
+    volume: secondary
+    issue: secondary
+    first_page: secondary
+    last_page: secondary
+    referenced_works_count: secondary
+    cited_by_count: secondary
+  crossref:
+    title: primary
+    type: key
+    publication_year: key
+    journal: key
+    authors: secondary
+    publisher: secondary
+    keywords: secondary
+    volume: secondary
+    issue: secondary
+    first_page: secondary
+    last_page: secondary
+    referenced_works_count: secondary
+    cited_by_count: secondary
+  open_alex:
+    title: primary
+    type: key
+    publication_year: key
+    journal: key
+    authors: secondary
+    publisher: secondary
+    keywords: secondary
+    volume: secondary
+    issue: secondary
+    first_page: secondary
+    last_page: secondary
+    referenced_works_count: secondary
+    cited_by_count: secondary
+
+# Data is already target-shaped (config/domains/papers.yaml: the canonical
+# attributes title / type / publication_year / journal / authors /
+# publisher / keywords / volume / issue / first_page / last_page /
+# referenced_works_count / cited_by_count are present under those exact
+# names on all three sources), so every mapping below is identity.
+attribute_mapping:
+  dblp:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  crossref:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  open_alex:
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+
+noise_rates_per_level:
+  easy:
+    primary: 0.0
+    key: 0.0
+    secondary: 0.01
+  medium:
+    primary: 0.0
+    key: 0.02
+    secondary: 0.04
+  hard:
+    primary: 0.01
+    key: 0.06
+    secondary: 0.12
+
+transform_per_level:
+  easy: compress
+  medium: identity
+  hard: stretch
+
+# taxonomy_walk dropped (no papers taxonomy CSV); its music weight was
+# redistributed proportionally over the surviving operators so their
+# relative proportions match music exactly (per-level totals restored to
+# the original music sums: medium 5.5, hard 7.0).
+operator_mix:
+  easy:
+    whitespace_corrupt: 1.0
+    case_corrupt: 1.0
+  medium:
+    whitespace_corrupt: 1.22222
+    case_corrupt: 1.22222
+    typo_substitute: 1.83333
+    ocr_confuse: 1.22222
+  hard:
+    whitespace_corrupt: 0.63636
+    case_corrupt: 0.63636
+    typo_substitute: 2.54545
+    ocr_confuse: 1.90909
+    truncate: 1.27273
+
+max_edits_per_cell:
+  easy: 1
+  medium: 1
+  hard: 3
+
+max_ocr_per_cell:
+  easy: 1
+  medium: 1
+  hard: 2
+
+max_truncate_chars:
+  easy: 1
+  medium: 2
+  hard: 3
+
+soft_global_primary_cap_hard: 0.35
+
+compression_factor: 0.5
+stretch_factor: 1.5
+
+# Pending #6: +/-2 % relative jitter cap. publication_year is a 4-digit
+# integer year (2018-2020); first_page / last_page are page locators and
+# referenced_works_count / cited_by_count are integer counts -- all jitter
+# as continuous floats within the cap.
+numeric_jitter_max_relative: 0.02
+
+numeric_attributes:
+  dblp:
+    publication_year: year
+    first_page: continuous
+    last_page: continuous
+    referenced_works_count: continuous
+    cited_by_count: continuous
+  crossref:
+    publication_year: year
+    first_page: continuous
+    last_page: continuous
+    referenced_works_count: continuous
+    cited_by_count: continuous
+  open_alex:
+    publication_year: year
+    first_page: continuous
+    last_page: continuous
+    referenced_works_count: continuous
+    cited_by_count: continuous

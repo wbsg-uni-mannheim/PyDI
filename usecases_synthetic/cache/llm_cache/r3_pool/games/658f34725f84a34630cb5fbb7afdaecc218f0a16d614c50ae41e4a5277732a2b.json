@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_43032|metacritic_8445|name=Star Conflict | platform=Microsoft Windows | genres=Action game | developer=Targem Games | releaseYear=2013-01-01||name=Star Conflict | platform=PC | genres=Action,Role-Playing,General,General,Massively Multiplayer | developer=Star Gem Inc. | releaseYear=2013-01-01 | criticScore=75.0 | userScore=6.9",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Star Conflict | platform=Microsoft Windows | genres=Action game | developer=Targem Games | releaseYear=2013-01-01\nRecord B: name=Star Conflict | platform=PC | genres=Action,Role-Playing,General,General,Massively Multiplayer | developer=Star Gem Inc. | releaseYear=2013-01-01 | criticScore=75.0 | userScore=6.9\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

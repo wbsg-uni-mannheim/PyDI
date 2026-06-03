@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42412|metacritic_14015|name=D4: Dark Dreams Don't Die | platform=Microsoft Windows | genres=Adventure game | developer=Access Games | releaseYear=2015-01-01||name=D4: Dark Dreams Don't Die | platform=PC | genres=Adventure,3D,Point-and-Click,Third-Person | developer=Access Games | releaseYear=2015-01-01 | criticScore=67.0 | userScore=7.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=D4: Dark Dreams Don't Die | platform=Microsoft Windows | genres=Adventure game | developer=Access Games | releaseYear=2015-01-01\nRecord B: name=D4: Dark Dreams Don't Die | platform=PC | genres=Adventure,3D,Point-and-Click,Third-Person | developer=Access Games | releaseYear=2015-01-01 | criticScore=67.0 | userScore=7.0\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

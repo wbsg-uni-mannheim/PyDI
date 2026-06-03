@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_3950|sales_2420|name=Mario Tennis: Power Tour | platform=Game Boy Advance | genres=Sports,Traditional,Tennis | developer=Camelot Software Planning | releaseYear=2005-01-01 | criticScore=81.0 | userScore=8.6 | ESRB=E||name=Mario Tennis: Power Tour | platform=Game Boy Advance | genres=Sports | developer=Camelot Software Planning | publisher=Nintendo | releaseYear=2005-01-01 | criticScore=81 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mario Tennis: Power Tour | platform=Game Boy Advance | genres=Sports,Traditional,Tennis | developer=Camelot Software Planning | releaseYear=2005-01-01 | criticScore=81.0 | userScore=8.6 | ESRB=E\nRecord B: name=Mario Tennis: Power Tour | platform=Game Boy Advance | genres=Sports | developer=Camelot Software Planning | publisher=Nintendo | releaseYear=2005-01-01 | criticScore=81 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

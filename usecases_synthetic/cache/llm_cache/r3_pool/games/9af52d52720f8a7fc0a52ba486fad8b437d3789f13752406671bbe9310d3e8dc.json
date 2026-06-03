@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21638|metacritic_2895|name=Nintendogs | platform=DS | genres=Digital pet | developer=Nintendo EAD | releaseYear=2006-01-01||name=Nintendogs: Dalmatian & Friends | platform=DS | genres=Simulation,Miscellaneous,Virtual Life,Virtual Life,Virtual,Pet | developer=Nintendo | releaseYear=2006-01-01 | criticScore=83.0 | userScore=7.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Nintendogs | platform=DS | genres=Digital pet | developer=Nintendo EAD | releaseYear=2006-01-01\nRecord B: name=Nintendogs: Dalmatian & Friends | platform=DS | genres=Simulation,Miscellaneous,Virtual Life,Virtual Life,Virtual,Pet | developer=Nintendo | releaseYear=2006-01-01 | criticScore=83.0 | userScore=7.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

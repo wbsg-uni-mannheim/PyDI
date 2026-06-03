@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_54694|metacritic_4265|name=Age of Wonders | platform=Microsoft Windows | genres=Turn-based strategy | developer=Epic MegaGames | releaseYear=1999-01-01||name=Age of Wonders: Planetfall | platform=PC | genres=Strategy,Turn-Based,General,4X | developer=Triumph Studios | releaseYear=2019-01-01 | criticScore=81.0 | userScore=7.5 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Age of Wonders | platform=Microsoft Windows | genres=Turn-based strategy | developer=Epic MegaGames | releaseYear=1999-01-01\nRecord B: name=Age of Wonders: Planetfall | platform=PC | genres=Strategy,Turn-Based,General,4X | developer=Triumph Studios | releaseYear=2019-01-01 | criticScore=81.0 | userScore=7.5 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_31897|metacritic_17623|name=X2: Wolverine's Revenge | platform=Xbox | genres=Action game | developer=Warthog Games | releaseYear=2003-01-01||name=X2: Wolverine's Revenge | platform=Xbox | genres=Action Adventure,Sci-Fi | developer=GenePool | releaseYear=2003-01-01 | criticScore=58.0 | userScore=6.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=X2: Wolverine's Revenge | platform=Xbox | genres=Action game | developer=Warthog Games | releaseYear=2003-01-01\nRecord B: name=X2: Wolverine's Revenge | platform=Xbox | genres=Action Adventure,Sci-Fi | developer=GenePool | releaseYear=2003-01-01 | criticScore=58.0 | userScore=6.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

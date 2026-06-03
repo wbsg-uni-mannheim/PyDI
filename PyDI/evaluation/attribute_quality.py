@@ -149,6 +149,13 @@ def _compare_scalar(
         silver_dt = pd.to_datetime(silver_value, errors="coerce")
         if pd.isna(pipe_dt) or pd.isna(silver_dt):
             return _compare_text(pipe_value, silver_value)
+        # Drop tz info when only one side carries it — subtracting a
+        # tz-aware and a tz-naive Timestamp raises. Comparing wall-clock
+        # times is the right call here (the values are calendar dates).
+        if getattr(pipe_dt, "tzinfo", None) is not None:
+            pipe_dt = pipe_dt.tz_localize(None)
+        if getattr(silver_dt, "tzinfo", None) is not None:
+            silver_dt = silver_dt.tz_localize(None)
         delta_days = abs((pipe_dt - silver_dt).total_seconds()) / 86400.0
         return {
             "evaluable": True,

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19681|metacritic_17306|name=Pokémon Rumble | platform=Wii | genres=Beat 'em up | developer=Ambrella | releaseYear=2009-01-01||name=Pokemon Rumble | platform=Wii | genres=Action,Beat-'Em-Up,Beat-'Em-Up,2D,3D | developer=Ambrella | releaseYear=2009-01-01 | criticScore=59.0 | userScore=8.2 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pokémon Rumble | platform=Wii | genres=Beat 'em up | developer=Ambrella | releaseYear=2009-01-01\nRecord B: name=Pokemon Rumble | platform=Wii | genres=Action,Beat-'Em-Up,Beat-'Em-Up,2D,3D | developer=Ambrella | releaseYear=2009-01-01 | criticScore=59.0 | userScore=8.2 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

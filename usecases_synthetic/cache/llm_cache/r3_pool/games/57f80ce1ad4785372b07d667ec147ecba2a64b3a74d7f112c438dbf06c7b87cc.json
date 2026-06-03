@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_55559|metacritic_3503|name=Far Cry 3: Blood Dragon | platform=PS3 | genres=First-person shooter | developer=Ubisoft Montreal | releaseYear=2013-01-01||name=Far Cry 3: Blood Dragon | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Ubisoft Montreal | releaseYear=2013-01-01 | criticScore=82.0 | userScore=8.3 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Far Cry 3: Blood Dragon | platform=PS3 | genres=First-person shooter | developer=Ubisoft Montreal | releaseYear=2013-01-01\nRecord B: name=Far Cry 3: Blood Dragon | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Ubisoft Montreal | releaseYear=2013-01-01 | criticScore=82.0 | userScore=8.3 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

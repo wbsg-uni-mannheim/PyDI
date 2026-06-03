@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_20774|sales_4425|name=Dying Light: The Following | platform=Microsoft Windows | genres=Survival horror | developer=Techland | releaseYear=2016-01-01||name=Dying Light | platform=PC | genres=Action | developer=Techland | publisher=Warner Bros. Interactive Entertainment | releaseYear=2015-01-01 | criticScore=75 | userScore=7.9 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dying Light: The Following | platform=Microsoft Windows | genres=Survival horror | developer=Techland | releaseYear=2016-01-01\nRecord B: name=Dying Light | platform=PC | genres=Action | developer=Techland | publisher=Warner Bros. Interactive Entertainment | releaseYear=2015-01-01 | criticScore=75 | userScore=7.9 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

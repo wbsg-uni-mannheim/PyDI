@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38871|metacritic_14648|name=Arthur and the Invisibles (video game) | platform=Microsoft Windows | genres=Adventure game | developer=Neko Entertainment | releaseYear=2007-01-01||name=Arthur and the Invisibles: The Game | platform=PC | genres=Action Adventure,Fantasy,General,Fantasy | developer=Etranges Libellules | releaseYear=2007-01-01 | criticScore=65.0 | userScore=6.7 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Arthur and the Invisibles (video game) | platform=Microsoft Windows | genres=Adventure game | developer=Neko Entertainment | releaseYear=2007-01-01\nRecord B: name=Arthur and the Invisibles: The Game | platform=PC | genres=Action Adventure,Fantasy,General,Fantasy | developer=Etranges Libellules | releaseYear=2007-01-01 | criticScore=65.0 | userScore=6.7 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

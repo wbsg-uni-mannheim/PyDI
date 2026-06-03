@@ -112,10 +112,15 @@ def load_pipeline_bundle(
     VariantBundle
         Loaded bundle.
     """
-    if level != "baseline":
+    # Synthetic-side variant_loader.VALID_BUNDLE_LEVELS =
+    # ['baseline','easy','medium','hard']. The canonical_loader path
+    # currently only handles baseline; pass any non-baseline level
+    # through to load_variant (which serves the usecases/<domain>-
+    # augmented/<level>/ tree).
+    if level not in {"baseline", "easy", "medium", "hard"}:
         raise ValueError(
-            "Best-of-breed pipeline runs on baseline data only; "
-            f"got level={level!r}."
+            f"Unknown level {level!r}; expected one of "
+            "{baseline, easy, medium, hard}."
         )
     if bundle_source not in {"synthetic_baseline", "canonical"}:
         raise ValueError(
@@ -123,15 +128,39 @@ def load_pipeline_bundle(
             "expected 'synthetic_baseline' or 'canonical'."
         )
 
-    if bundle_source == "canonical" and domain == "products":
+    if level == "baseline" and bundle_source == "canonical" and domain == "products":
         from .canonical_loader import load_canonical_products_bundle
 
-        logger.info("Loading %s canonical bundle (products-specific loader)", domain)
+        logger.info("Loading %s canonical baseline bundle (products-specific)", domain)
         return load_canonical_products_bundle()
 
+    if level == "baseline" and domain == "papers":
+        # ``papers`` is not registered in usecases_synthetic's
+        # VALID_DOMAINS; load_variant would raise. The canonical
+        # loader is the only path for now (variants not yet generated).
+        from .canonical_loader import load_canonical_papers_bundle
+
+        logger.info("Loading papers canonical bundle (no synthetic-side variant)")
+        return load_canonical_papers_bundle()
+
+    if level != "baseline" and domain == "papers":
+        raise NotImplementedError(
+            "Variant levels are not yet supported for the papers domain "
+            "(no usecases/papers-augmented/<level>/ tree)."
+        )
+    if level != "baseline" and domain == "products" and bundle_source == "canonical":
+        # Variants of products go through the standard load_variant path
+        # against usecases/products-augmented/<level>/.
+        logger.info(
+            "Loading products %s variant via load_variant "
+            "(canonical_loader supports baseline only)",
+            level,
+        )
+
     logger.info(
-        "Loading %s baseline bundle via load_variant (bundle_source=%s)",
+        "Loading %s %s bundle via load_variant (bundle_source=%s)",
         domain,
+        level,
         bundle_source,
     )
     return load_variant(domain, level=level)

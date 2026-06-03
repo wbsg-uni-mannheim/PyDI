@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Grupo_Aeroportuario_del_Pac%C3%ADfico|http://www.forbes.com/companies/grupo-modelo/|name=Grupo Aeroportuario del Pacífico | country=Mexico | city=Guadalajara | industry=Aviation | founded=1998-01-01||name=Grupo Modelo | country=Mexico | industry=Beverages",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Grupo Aeroportuario del Pacífico | country=Mexico | city=Guadalajara | industry=Aviation | founded=1998-01-01\nRecord B: name=Grupo Modelo | country=Mexico | industry=Beverages\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49890|sales_7422|name=The Technomancer | platform=Xbox One | genres=Action role-playing game | developer=Spiders (company) | releaseYear=2016-01-01||name=The Technomancer | platform=XOne | genres=Role-Playing | developer=Spiders | publisher=Focus Home Interactive | releaseYear=2016-01-01 | criticScore=68 | userScore=7.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Technomancer | platform=Xbox One | genres=Action role-playing game | developer=Spiders (company) | releaseYear=2016-01-01\nRecord B: name=The Technomancer | platform=XOne | genres=Role-Playing | developer=Spiders | publisher=Focus Home Interactive | releaseYear=2016-01-01 | criticScore=68 | userScore=7.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_27016|metacritic_13803|name=Final Fantasy (video game) | platform=PlayStation Portable | genres=Role-playing video game | developer=Square (video game company) | releaseYear=1987-01-01||name=Final Fantasy | platform=Playstation Portable | genres=Role-Playing,Console-style RPG,Console-style RPG,Japanese-Style | developer=TOSE | releaseYear=2007-01-01 | criticScore=67.0 | userScore=8.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Final Fantasy (video game) | platform=PlayStation Portable | genres=Role-playing video game | developer=Square (video game company) | releaseYear=1987-01-01\nRecord B: name=Final Fantasy | platform=Playstation Portable | genres=Role-Playing,Console-style RPG,Console-style RPG,Japanese-Style | developer=TOSE | releaseYear=2007-01-01 | criticScore=67.0 | userScore=8.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -37,7 +37,11 @@ def test_products_canonical_bundle_lands_on_usecases_tree() -> None:
     assert bundle.level == "baseline"
 
 
-def test_products_canonical_sources_are_id_prefixed() -> None:
+def test_products_canonical_sources_are_id_prefixed_and_raw_named() -> None:
+    """Sources keep RAW per-source column names so the SM committee
+    can score against varied real schemas (manufacturer / brandName /
+    Brand / mfr). The pipeline applies the SM gold mapping after SM
+    scoring to translate to canonical column names for downstream."""
     bundle = load_pipeline_bundle("products", bundle_source="canonical")
     assert set(bundle.sources.keys()) == {
         "products_1",
@@ -45,13 +49,29 @@ def test_products_canonical_sources_are_id_prefixed() -> None:
         "products_3",
         "products_4",
     }
+    expected_raw_brand = {
+        "products_1": "manufacturer",
+        "products_2": "brandName",
+        "products_3": "Brand",
+        "products_4": "mfr",
+    }
     for name, df in bundle.sources.items():
         prefix = f"{name}_"
-        # The downstream pipeline assumes prefixed source ids; the
-        # canonical loader applies the prefix in-memory.
         bad = df[~df["id"].astype(str).str.startswith(prefix)]
         assert bad.empty, f"{name}: {len(bad)} ids missing prefix {prefix!r}"
         assert df.attrs.get("dataset_name") == name
+        # Raw schema preserved — the canonical loader no longer
+        # renames columns at load time.
+        assert expected_raw_brand[name] in df.columns, (
+            f"{name}: expected raw brand col "
+            f"{expected_raw_brand[name]!r} in {list(df.columns)[:10]}..."
+        )
+        # And canonical name absent until post-SM translation.
+        assert "brand" not in df.columns, (
+            f"{name}: canonical 'brand' should not be present pre-SM; "
+            "the loader leaves columns raw."
+        )
+        assert df.attrs.get("needs_sm_column_translation") is True
 
 
 def test_products_canonical_em_gold_matches_synthetic_translation() -> None:

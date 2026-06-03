@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17788|metacritic_271|name=Ninja Gaiden (2004 video game) | genres=Action-adventure game | developer=Team Ninja | releaseYear=2012-01-01||name=Ninja Gaiden | platform=Xbox | genres=Action Adventure,Fantasy | developer=Team Ninja | releaseYear=2004-01-01 | criticScore=91.0 | userScore=8.8 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ninja Gaiden (2004 video game) | genres=Action-adventure game | developer=Team Ninja | releaseYear=2012-01-01\nRecord B: name=Ninja Gaiden | platform=Xbox | genres=Action Adventure,Fantasy | developer=Team Ninja | releaseYear=2004-01-01 | criticScore=91.0 | userScore=8.8 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}
