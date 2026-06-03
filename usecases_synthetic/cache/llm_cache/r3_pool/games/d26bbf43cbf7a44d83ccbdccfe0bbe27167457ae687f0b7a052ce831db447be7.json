@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_40911|sales_4896|name=Fracture (video game) | platform=PS3 | genres=Third-person shooter | developer=Day 1 Studios | releaseYear=2008-01-01||name=Fracture | platform=PS3 | genres=Shooter | developer=Day 1 Studios | publisher=LucasArts | releaseYear=2008-01-01 | criticScore=62 | userScore=5.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fracture (video game) | platform=PS3 | genres=Third-person shooter | developer=Day 1 Studios | releaseYear=2008-01-01\nRecord B: name=Fracture | platform=PS3 | genres=Shooter | developer=Day 1 Studios | publisher=LucasArts | releaseYear=2008-01-01 | criticScore=62 | userScore=5.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

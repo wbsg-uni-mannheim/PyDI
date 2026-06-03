@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16741|sales_3597|name=Deadpool (video game) | platform=PS4 | genres=Action-adventure game | developer=High Moon Studios | releaseYear=2015-01-01||name=Deadpool | platform=PS4 | genres=Action | developer=High Moon Studios | publisher=Activision | releaseYear=2015-01-01 | criticScore=60 | userScore=5.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Deadpool (video game) | platform=PS4 | genres=Action-adventure game | developer=High Moon Studios | releaseYear=2015-01-01\nRecord B: name=Deadpool | platform=PS4 | genres=Action | developer=High Moon Studios | publisher=Activision | releaseYear=2015-01-01 | criticScore=60 | userScore=5.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

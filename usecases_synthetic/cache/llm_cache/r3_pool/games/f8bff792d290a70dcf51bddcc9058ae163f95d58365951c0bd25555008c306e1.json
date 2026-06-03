@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46630|metacritic_9307|name=Atelier Firis: The Alchemist and the Mysterious Journey | genres=Role-playing video game | developer=Gust Co. Ltd. | releaseYear=2016-01-01||name=Atelier Firis: The Alchemist and the Mysterious Journey | platform=PS4 | genres=Role-Playing,Japanese-Style | developer=Koei Tecmo Games | releaseYear=2017-01-01 | criticScore=74.0 | userScore=7.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Atelier Firis: The Alchemist and the Mysterious Journey | genres=Role-playing video game | developer=Gust Co. Ltd. | releaseYear=2016-01-01\nRecord B: name=Atelier Firis: The Alchemist and the Mysterious Journey | platform=PS4 | genres=Role-Playing,Japanese-Style | developer=Koei Tecmo Games | releaseYear=2017-01-01 | criticScore=74.0 | userScore=7.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

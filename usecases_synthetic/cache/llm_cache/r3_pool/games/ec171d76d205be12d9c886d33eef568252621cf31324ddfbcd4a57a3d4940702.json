@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_17179|sales_5126|name=Monster House | platform=PS2 | genres=Action Adventure,Horror | developer=Artificial Mind and Movement | releaseYear=2006-01-01 | criticScore=59.0 | userScore=5.4 | ESRB=E10+||name=Monster House | platform=PS2 | genres=Adventure | developer=Artificial Mind and Movement | publisher=THQ | releaseYear=2006-01-01 | criticScore=59 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Monster House | platform=PS2 | genres=Action Adventure,Horror | developer=Artificial Mind and Movement | releaseYear=2006-01-01 | criticScore=59.0 | userScore=5.4 | ESRB=E10+\nRecord B: name=Monster House | platform=PS2 | genres=Adventure | developer=Artificial Mind and Movement | publisher=THQ | releaseYear=2006-01-01 | criticScore=59 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

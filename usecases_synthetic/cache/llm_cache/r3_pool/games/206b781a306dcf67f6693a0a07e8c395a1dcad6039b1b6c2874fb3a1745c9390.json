@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_5327|metacritic_2078|name=Wasteland 3 | genres=Role-playing video game | developer=InXile Entertainment | releaseYear=2020-01-01||name=Wasteland 3 | platform=Xbox One | genres=Role-Playing,Strategy,Turn-Based,Western-Style,Tactics | developer=InXile Entertainment | releaseYear=2020-01-01 | criticScore=84.0 | userScore=7.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wasteland 3 | genres=Role-playing video game | developer=InXile Entertainment | releaseYear=2020-01-01\nRecord B: name=Wasteland 3 | platform=Xbox One | genres=Role-Playing,Strategy,Turn-Based,Western-Style,Tactics | developer=InXile Entertainment | releaseYear=2020-01-01 | criticScore=84.0 | userScore=7.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

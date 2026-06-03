@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_41380|metacritic_1001|name=Burnout Paradise | platform=Microsoft Windows | genres=Racing video game | developer=Criterion Games | releaseYear=2008-01-01||name=Burnout Paradise: The Ultimate Box | platform=PC | genres=Driving,Racing,Arcade,Arcade,Automobile | developer=Criterion Games | releaseYear=2009-01-01 | criticScore=87.0 | userScore=7.6 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Burnout Paradise | platform=Microsoft Windows | genres=Racing video game | developer=Criterion Games | releaseYear=2008-01-01\nRecord B: name=Burnout Paradise: The Ultimate Box | platform=PC | genres=Driving,Racing,Arcade,Arcade,Automobile | developer=Criterion Games | releaseYear=2009-01-01 | criticScore=87.0 | userScore=7.6 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

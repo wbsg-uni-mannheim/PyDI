@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16149|metacritic_11102|name=DmC: Devil May Cry | platform=PS3 | genres=Action-adventure | developer=Ninja Theory | releaseYear=2013-01-01||name=DmC: Devil May Cry - Vergil's Downfall | platform=PS3 | genres=Action Adventure,Fantasy,General,Fantasy,Linear | developer=Ninja Theory | releaseYear=2013-01-01 | criticScore=71.0 | userScore=6.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DmC: Devil May Cry | platform=PS3 | genres=Action-adventure | developer=Ninja Theory | releaseYear=2013-01-01\nRecord B: name=DmC: Devil May Cry - Vergil's Downfall | platform=PS3 | genres=Action Adventure,Fantasy,General,Fantasy,Linear | developer=Ninja Theory | releaseYear=2013-01-01 | criticScore=71.0 | userScore=6.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

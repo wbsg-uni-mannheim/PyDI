@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_33223|sales_3142|name=Wanted: Weapons of Fate | platform=Xbox 360 | genres=Third-person shooter | developer=Oberon Media | releaseYear=2009-01-01||name=Wanted: Weapons of Fate | platform=Xbox 360 | genres=Shooter | developer=GRIN | publisher=Warner Bros. Interactive Entertainment | releaseYear=2009-01-01 | criticScore=62 | userScore=7.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wanted: Weapons of Fate | platform=Xbox 360 | genres=Third-person shooter | developer=Oberon Media | releaseYear=2009-01-01\nRecord B: name=Wanted: Weapons of Fate | platform=Xbox 360 | genres=Shooter | developer=GRIN | publisher=Warner Bros. Interactive Entertainment | releaseYear=2009-01-01 | criticScore=62 | userScore=7.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

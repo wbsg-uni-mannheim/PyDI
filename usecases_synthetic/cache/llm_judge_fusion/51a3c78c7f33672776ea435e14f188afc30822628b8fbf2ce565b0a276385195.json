@@ -1,0 +1,30 @@
+{
+  "attribute": "founded",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "1953-01-01"
+    },
+    {
+      "source": "dbpedia",
+      "value": "2005-01-01"
+    },
+    {
+      "source": "dbpedia",
+      "value": "1991-01-01"
+    },
+    {
+      "source": "fullcontact",
+      "value": "1971-01-01"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.33,
+    "operation": "verbatim_pick",
+    "reasoning": "All candidates are conflicting dates, so I selected the most plausible single founding date without enough evidence to synthesize a better one.",
+    "value": "1953-01-01"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"1953-01-01\",\"operation\":\"verbatim_pick\",\"confidence\":0.33,\"reasoning\":\"All candidates are conflicting dates, so I selected the most plausible single founding date without enough evidence to synthesize a better one.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_12940|sales_6386|name=Romance of the Three Kingdoms XI | platform=PS2 | genres=Strategy,Turn-Based,Historic | developer=Koei | releaseYear=2007-01-01 | criticScore=69.0 | userScore=7.7 | ESRB=E10+||name=Romance of the Three Kingdoms XI | platform=PS2 | genres=Strategy | developer=Koei | publisher=Tecmo Koei | releaseYear=2007-01-01 | criticScore=69 | userScore=8.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Romance of the Three Kingdoms XI | platform=PS2 | genres=Strategy,Turn-Based,Historic | developer=Koei | releaseYear=2007-01-01 | criticScore=69.0 | userScore=7.7 | ESRB=E10+\nRecord B: name=Romance of the Three Kingdoms XI | platform=PS2 | genres=Strategy | developer=Koei | publisher=Tecmo Koei | releaseYear=2007-01-01 | criticScore=69 | userScore=8.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

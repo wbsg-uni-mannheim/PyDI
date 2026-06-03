@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_30521|metacritic_17733|name=Gundam: Battle Assault | platform=Game Boy Advance | genres=Versus fighting game | developer=Natsume Co., Ltd | releaseYear=2004-01-01||name=Mobile Suit Gundam Seed: Battle Assault | platform=Game Boy Advance | genres=Action,Fighting,2D | developer=Bandai | releaseYear=2004-01-01 | criticScore=57.0 | userScore=6.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gundam: Battle Assault | platform=Game Boy Advance | genres=Versus fighting game | developer=Natsume Co., Ltd | releaseYear=2004-01-01\nRecord B: name=Mobile Suit Gundam Seed: Battle Assault | platform=Game Boy Advance | genres=Action,Fighting,2D | developer=Bandai | releaseYear=2004-01-01 | criticScore=57.0 | userScore=6.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

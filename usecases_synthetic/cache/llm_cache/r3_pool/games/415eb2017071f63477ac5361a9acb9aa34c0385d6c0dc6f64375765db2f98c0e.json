@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17423|metacritic_13200|name=Gauntlet (2014 video game) | platform=Microsoft Windows | genres=Dungeon crawl | developer=Arrowhead Game Studios | releaseYear=2015-01-01||name=Gauntlet (2014) | platform=PC | genres=Role-Playing,PC-style RPG,Western-Style | developer=Warner Bros. Interactive Entertainment | releaseYear=2014-01-01 | criticScore=68.0 | userScore=7.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gauntlet (2014 video game) | platform=Microsoft Windows | genres=Dungeon crawl | developer=Arrowhead Game Studios | releaseYear=2015-01-01\nRecord B: name=Gauntlet (2014) | platform=PC | genres=Role-Playing,PC-style RPG,Western-Style | developer=Warner Bros. Interactive Entertainment | releaseYear=2014-01-01 | criticScore=68.0 | userScore=7.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

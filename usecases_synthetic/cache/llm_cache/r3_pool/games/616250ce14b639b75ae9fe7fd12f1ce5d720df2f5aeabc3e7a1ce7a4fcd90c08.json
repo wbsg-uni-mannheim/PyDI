@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_32899|metacritic_4486|name=Far Cry 3: Blood Dragon | platform=Xbox 360 | genres=First-person shooter | developer=Ubisoft Montreal | releaseYear=2022-01-01||name=Far Cry 3: Blood Dragon | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Ubisoft Montreal | releaseYear=2013-01-01 | criticScore=80.0 | userScore=8.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Far Cry 3: Blood Dragon | platform=Xbox 360 | genres=First-person shooter | developer=Ubisoft Montreal | releaseYear=2022-01-01\nRecord B: name=Far Cry 3: Blood Dragon | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Ubisoft Montreal | releaseYear=2013-01-01 | criticScore=80.0 | userScore=8.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

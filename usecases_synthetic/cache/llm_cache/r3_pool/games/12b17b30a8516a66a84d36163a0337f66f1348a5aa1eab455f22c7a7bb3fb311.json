@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_6938|sales_4889|name=Dynasty Warriors 4 | platform=Xbox | genres=Action game | developer=Omega Force | releaseYear=2003-01-01||name=Dynasty Warriors 4 | platform=Xbox | genres=Action | developer=Omega Force | publisher=Tecmo Koei | releaseYear=2003-01-01 | criticScore=75 | userScore=8.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dynasty Warriors 4 | platform=Xbox | genres=Action game | developer=Omega Force | releaseYear=2003-01-01\nRecord B: name=Dynasty Warriors 4 | platform=Xbox | genres=Action | developer=Omega Force | publisher=Tecmo Koei | releaseYear=2003-01-01 | criticScore=75 | userScore=8.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19928|sales_3344|name=Etrian Odyssey (video game) | platform=DS | genres=Dungeon crawl | releaseYear=2007-01-01||name=Etrian Odyssey | platform=DS | genres=Role-Playing | developer=Lancarse, Atlus | publisher=Nintendo | releaseYear=2007-01-01 | criticScore=75 | userScore=8.5 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Etrian Odyssey (video game) | platform=DS | genres=Dungeon crawl | releaseYear=2007-01-01\nRecord B: name=Etrian Odyssey | platform=DS | genres=Role-Playing | developer=Lancarse, Atlus | publisher=Nintendo | releaseYear=2007-01-01 | criticScore=75 | userScore=8.5 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

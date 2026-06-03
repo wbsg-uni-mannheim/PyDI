@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7345|metacritic_7472|name=Tony Hawk's Downhill Jam | genres=Racing video game | developer=Toys for Bob | releaseYear=2006-01-01||name=Tony Hawk's Downhill Jam | platform=DS | genres=Sports,Alternative,Individual,Skateboarding,Skateboarding,Skate / Skateboard | developer=Vicarious Visions | releaseYear=2006-01-01 | criticScore=76.0 | userScore=6.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tony Hawk's Downhill Jam | genres=Racing video game | developer=Toys for Bob | releaseYear=2006-01-01\nRecord B: name=Tony Hawk's Downhill Jam | platform=DS | genres=Sports,Alternative,Individual,Skateboarding,Skateboarding,Skate / Skateboard | developer=Vicarious Visions | releaseYear=2006-01-01 | criticScore=76.0 | userScore=6.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "OntarioTorontoBrookfield Place (Toronto)"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Toronto"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.98,
+    "operation": "normalization",
+    "reasoning": "One source provides the clean city name and the other appears to be a noisy concatenation referencing Toronto.",
+    "value": "Toronto"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Toronto\",\"operation\":\"normalization\",\"confidence\":0.98,\"reasoning\":\"One source provides the clean city name and the other appears to be a noisy concatenation referencing Toronto.\"}"
+}

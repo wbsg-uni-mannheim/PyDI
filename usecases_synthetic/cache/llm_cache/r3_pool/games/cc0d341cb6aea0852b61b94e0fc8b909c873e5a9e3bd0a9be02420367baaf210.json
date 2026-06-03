@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_13999|sales_2284|name=Bolt (video game) | platform=Wii | genres=Platform game | developer=Avalanche Software | releaseYear=2008-01-01||name=Bolt | platform=Wii | genres=Adventure | developer=Avalanche Software | publisher=Disney Interactive Studios | releaseYear=2008-01-01 | criticScore=50 | userScore=5.8 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bolt (video game) | platform=Wii | genres=Platform game | developer=Avalanche Software | releaseYear=2008-01-01\nRecord B: name=Bolt | platform=Wii | genres=Adventure | developer=Avalanche Software | publisher=Disney Interactive Studios | releaseYear=2008-01-01 | criticScore=50 | userScore=5.8 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_35696|metacritic_19925|name=ATV: Quad Power Racing | platform=Playstation | genres=Racing video game | developer=Tantalus Interactive | releaseYear=2000-01-01||name=ATV: Quad Power Racing | platform=PlayStation | genres=Driving,Racing,Rally / Offroad | developer=Climax Group | releaseYear=2000-01-01 | criticScore=42.0 | userScore=4.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ATV: Quad Power Racing | platform=Playstation | genres=Racing video game | developer=Tantalus Interactive | releaseYear=2000-01-01\nRecord B: name=ATV: Quad Power Racing | platform=PlayStation | genres=Driving,Racing,Rally / Offroad | developer=Climax Group | releaseYear=2000-01-01 | criticScore=42.0 | userScore=4.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "AtlantaGeorgia (U.S. state)"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Roosendaal"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.62,
+    "operation": "normalization",
+    "reasoning": "The dbpedia candidate appears to be a malformed label for Atlanta in Georgia, so I normalized it to the standard city form.",
+    "value": "Atlanta, Georgia"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Atlanta, Georgia\",\"operation\":\"normalization\",\"confidence\":0.62,\"reasoning\":\"The dbpedia candidate appears to be a malformed label for Atlanta in Georgia, so I normalized it to the standard city form.\"}"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_4726|sales_2368|name=Mat Hoffman's Pro BMX | platform=PlayStation | genres=Sports,Alternative,Biking | developer=Shaba Games | releaseYear=2001-01-01 | criticScore=80.0 | userScore=8.3 | ESRB=E||name=Mat Hoffman's Pro BMX | platform=Playstation | genres=Sports | developer=Shaba Games | publisher=Activision | releaseYear=2001-01-01 | criticScore=80 | userScore=8.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mat Hoffman's Pro BMX | platform=PlayStation | genres=Sports,Alternative,Biking | developer=Shaba Games | releaseYear=2001-01-01 | criticScore=80.0 | userScore=8.3 | ESRB=E\nRecord B: name=Mat Hoffman's Pro BMX | platform=Playstation | genres=Sports | developer=Shaba Games | publisher=Activision | releaseYear=2001-01-01 | criticScore=80 | userScore=8.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

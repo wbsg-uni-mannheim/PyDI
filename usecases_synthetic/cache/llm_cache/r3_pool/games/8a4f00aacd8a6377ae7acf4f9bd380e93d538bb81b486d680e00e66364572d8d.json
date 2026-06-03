@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44041|metacritic_8447|name=Raiden V | genres=Shoot 'em up | developer=MOSS (company) | releaseYear=2016-01-01||name=Raiden V | platform=Xbox One | genres=Action,Shooter,Shoot-'Em-Up,Vertical | developer=Moss | releaseYear=2016-01-01 | criticScore=75.0 | userScore=7.8 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Raiden V | genres=Shoot 'em up | developer=MOSS (company) | releaseYear=2016-01-01\nRecord B: name=Raiden V | platform=Xbox One | genres=Action,Shooter,Shoot-'Em-Up,Vertical | developer=Moss | releaseYear=2016-01-01 | criticScore=75.0 | userScore=7.8 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

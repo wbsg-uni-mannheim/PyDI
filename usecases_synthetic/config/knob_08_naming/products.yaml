@@ -22,113 +22,201 @@ level_assignments:
     products_4: cryptic
 
 sm_mapping:
-  products_1: &products_sm_mapping
+  products_1:
     id: id
-    title: title
-    brand: brand
-    description: description
-    price: price
-    priceCurrency: priceCurrency
-    title_description: title_description
-    product_type: product_type
-    model: model
-    model_number: model_number
-    chipset_name: chipset_name
-    vram_gb: vram_gb
-    storage_gb: storage_gb
-    bus_type: bus_type
-    interface_type: interface_type
-    memory_type: memory_type
-    storage_connection_type: storage_connection_type
+    manufacturer: brand
+    product_name: title
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    cluster_id: cluster_id
+    product_url: url
+    name_and_description: title_description
+    model_name: model
+    manufacturer_part_number: model_number
+    category: product_type
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    bus_standard: bus_type
+    interface: interface_type
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+    connector: storage_connection_type
+    memory_technology: memory_type
+    colour: color
     form_factor: form_factor
-    read_speed_mb_s: read_speed_mb_s
-    write_speed_mb_s: write_speed_mb_s
-  products_2: *products_sm_mapping
-  products_3: *products_sm_mapping
-  products_4: *products_sm_mapping
+  products_2:
+    id: id
+    brandName: brand
+    name: title
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    cluster_id: cluster_id
+    productUrl: url
+    titleAndDescription: title_description
+    modelName: model
+    mpn: model_number
+    productCategory: product_type
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    busType: bus_type
+    interfaceType: interface_type
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+    connectionType: storage_connection_type
+    memoryType: memory_type
+    color: color
+    formFactor: form_factor
+  products_3:
+    id: id
+    Brand: brand
+    ProductTitle: title
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    cluster_id: cluster_id
+    Link: url
+    TitleDetails: title_description
+    Model: model
+    PartNo: model_number
+    Type: product_type
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Bus: bus_type
+    Interface: interface_type
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+    Connector: storage_connection_type
+    MemoryType: memory_type
+    Colour: color
+    FormFactor: form_factor
+  products_4:
+    id: id
+    mfr: brand
+    name: title
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cluster_id: cluster_id
+    link: url
+    name_desc: title_description
+    mdl: model
+    pn: model_number
+    cat: product_type
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    bus: bus_type
+    iface: interface_type
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
+    conn: storage_connection_type
+    mem: memory_type
+    clr: color
+    ff: form_factor
 
 # Common rename ladder reused per source (all 4 products sources share
 # the identical schema). Anonymized rung uses Attribute_<n> per the
 # canonical K8 convention; cryptic uses short tokens that share roots
 # across sources but break exact matching.
 rename_table:
-  products_1: &products_rename_table
-    title:
+  products_1:
+    product_name:
       descriptive: title
       abbreviated: prd_ttl
       cryptic: t
       anonymized: Attribute_2
-    brand:
+    manufacturer:
       descriptive: brand
       abbreviated: brnd
       cryptic: br
       anonymized: Attribute_3
-    description:
+    product_description:
       descriptive: description
       abbreviated: desc
       cryptic: dsc
       anonymized: Attribute_4
-    price:
+    list_price:
       descriptive: price
       abbreviated: prc
       cryptic: amt
       anonymized: Attribute_5
-    priceCurrency:
+    currency_code:
       descriptive: priceCurrency
       abbreviated: cur
       cryptic: ccy
       anonymized: Attribute_6
-    title_description:
+    name_and_description:
       descriptive: title_description
       abbreviated: t_desc
       cryptic: tdsc
       anonymized: Attribute_7
-    product_type:
+    category:
       descriptive: product_type
       abbreviated: prd_typ
       cryptic: ptyp
       anonymized: Attribute_8
-    model:
+    model_name:
       descriptive: model
       abbreviated: mdl
       cryptic: m
       anonymized: Attribute_9
-    model_number:
+    manufacturer_part_number:
       descriptive: model_number
       abbreviated: mdl_no
       cryptic: mno
       anonymized: Attribute_10
-    chipset_name:
+    gpu_chipset:
       descriptive: chipset_name
       abbreviated: chip
       cryptic: cn
       anonymized: Attribute_11
-    vram_gb:
+    video_memory_gb:
       descriptive: vram_gb
       abbreviated: vram
       cryptic: vrm
       anonymized: Attribute_12
-    storage_gb:
+    capacity_gb:
       descriptive: storage_gb
       abbreviated: stor
       cryptic: stg
       anonymized: Attribute_13
-    bus_type:
+    bus_standard:
       descriptive: bus_type
       abbreviated: bus_t
       cryptic: bt
       anonymized: Attribute_14
-    interface_type:
+    interface:
       descriptive: interface_type
       abbreviated: iface_t
       cryptic: it
       anonymized: Attribute_15
-    memory_type:
+    memory_technology:
       descriptive: memory_type
       abbreviated: mem_t
       cryptic: mt
       anonymized: Attribute_16
-    storage_connection_type:
+    connector:
       descriptive: storage_connection_type
       abbreviated: stor_conn
       cryptic: sc
@@ -138,16 +226,401 @@ rename_table:
       abbreviated: form_f
       cryptic: ff
       anonymized: Attribute_18
-    read_speed_mb_s:
+    sequential_read_mb_s:
       descriptive: read_speed_mb_s
       abbreviated: rd_speed_mbs
       cryptic: rs
       anonymized: Attribute_19
-    write_speed_mb_s:
+    sequential_write_mb_s:
       descriptive: write_speed_mb_s
       abbreviated: wr_speed_mbs
       cryptic: ws
       anonymized: Attribute_20
-  products_2: *products_rename_table
-  products_3: *products_rename_table
-  products_4: *products_rename_table
+    colour:
+      descriptive: color
+      abbreviated: clr
+      cryptic: col
+      anonymized: Attribute_21
+    width_millimeters:
+      descriptive: width_mm
+      abbreviated: w_mm
+      cryptic: wd
+      anonymized: Attribute_22
+    length_millimeters:
+      descriptive: length_mm
+      abbreviated: l_mm
+      cryptic: ln
+      anonymized: Attribute_23
+    height_millimeters:
+      descriptive: height_mm
+      abbreviated: h_mm
+      cryptic: ht
+      anonymized: Attribute_24
+    weight_grams:
+      descriptive: weight_g
+      abbreviated: wt_g
+      cryptic: wt
+      anonymized: Attribute_25
+  products_2:
+    name:
+      descriptive: title
+      abbreviated: prd_ttl
+      cryptic: t
+      anonymized: Attribute_2
+    brandName:
+      descriptive: brand
+      abbreviated: brnd
+      cryptic: br
+      anonymized: Attribute_3
+    descriptionText:
+      descriptive: description
+      abbreviated: desc
+      cryptic: dsc
+      anonymized: Attribute_4
+    priceAmount:
+      descriptive: price
+      abbreviated: prc
+      cryptic: amt
+      anonymized: Attribute_5
+    currency:
+      descriptive: priceCurrency
+      abbreviated: cur
+      cryptic: ccy
+      anonymized: Attribute_6
+    titleAndDescription:
+      descriptive: title_description
+      abbreviated: t_desc
+      cryptic: tdsc
+      anonymized: Attribute_7
+    productCategory:
+      descriptive: product_type
+      abbreviated: prd_typ
+      cryptic: ptyp
+      anonymized: Attribute_8
+    modelName:
+      descriptive: model
+      abbreviated: mdl
+      cryptic: m
+      anonymized: Attribute_9
+    mpn:
+      descriptive: model_number
+      abbreviated: mdl_no
+      cryptic: mno
+      anonymized: Attribute_10
+    chipset:
+      descriptive: chipset_name
+      abbreviated: chip
+      cryptic: cn
+      anonymized: Attribute_11
+    vramGb:
+      descriptive: vram_gb
+      abbreviated: vram
+      cryptic: vrm
+      anonymized: Attribute_12
+    capacityGb:
+      descriptive: storage_gb
+      abbreviated: stor
+      cryptic: stg
+      anonymized: Attribute_13
+    busType:
+      descriptive: bus_type
+      abbreviated: bus_t
+      cryptic: bt
+      anonymized: Attribute_14
+    interfaceType:
+      descriptive: interface_type
+      abbreviated: iface_t
+      cryptic: it
+      anonymized: Attribute_15
+    memoryType:
+      descriptive: memory_type
+      abbreviated: mem_t
+      cryptic: mt
+      anonymized: Attribute_16
+    connectionType:
+      descriptive: storage_connection_type
+      abbreviated: stor_conn
+      cryptic: sc
+      anonymized: Attribute_17
+    formFactor:
+      descriptive: form_factor
+      abbreviated: form_f
+      cryptic: ff
+      anonymized: Attribute_18
+    readSpeedMbps:
+      descriptive: read_speed_mb_s
+      abbreviated: rd_speed_mbs
+      cryptic: rs
+      anonymized: Attribute_19
+    writeSpeedMbps:
+      descriptive: write_speed_mb_s
+      abbreviated: wr_speed_mbs
+      cryptic: ws
+      anonymized: Attribute_20
+    color:
+      descriptive: color
+      abbreviated: clr
+      cryptic: col
+      anonymized: Attribute_21
+    widthMm:
+      descriptive: width_mm
+      abbreviated: w_mm
+      cryptic: wd
+      anonymized: Attribute_22
+    depthMm:
+      descriptive: length_mm
+      abbreviated: l_mm
+      cryptic: ln
+      anonymized: Attribute_23
+    heightMm:
+      descriptive: height_mm
+      abbreviated: h_mm
+      cryptic: ht
+      anonymized: Attribute_24
+    weightG:
+      descriptive: weight_g
+      abbreviated: wt_g
+      cryptic: wt
+      anonymized: Attribute_25
+  products_3:
+    ProductTitle:
+      descriptive: title
+      abbreviated: prd_ttl
+      cryptic: t
+      anonymized: Attribute_2
+    Brand:
+      descriptive: brand
+      abbreviated: brnd
+      cryptic: br
+      anonymized: Attribute_3
+    Details:
+      descriptive: description
+      abbreviated: desc
+      cryptic: dsc
+      anonymized: Attribute_4
+    Price:
+      descriptive: price
+      abbreviated: prc
+      cryptic: amt
+      anonymized: Attribute_5
+    Currency:
+      descriptive: priceCurrency
+      abbreviated: cur
+      cryptic: ccy
+      anonymized: Attribute_6
+    TitleDetails:
+      descriptive: title_description
+      abbreviated: t_desc
+      cryptic: tdsc
+      anonymized: Attribute_7
+    Type:
+      descriptive: product_type
+      abbreviated: prd_typ
+      cryptic: ptyp
+      anonymized: Attribute_8
+    Model:
+      descriptive: model
+      abbreviated: mdl
+      cryptic: m
+      anonymized: Attribute_9
+    PartNo:
+      descriptive: model_number
+      abbreviated: mdl_no
+      cryptic: mno
+      anonymized: Attribute_10
+    Chipset:
+      descriptive: chipset_name
+      abbreviated: chip
+      cryptic: cn
+      anonymized: Attribute_11
+    MemorySizeGB:
+      descriptive: vram_gb
+      abbreviated: vram
+      cryptic: vrm
+      anonymized: Attribute_12
+    CapacityGB:
+      descriptive: storage_gb
+      abbreviated: stor
+      cryptic: stg
+      anonymized: Attribute_13
+    Bus:
+      descriptive: bus_type
+      abbreviated: bus_t
+      cryptic: bt
+      anonymized: Attribute_14
+    Interface:
+      descriptive: interface_type
+      abbreviated: iface_t
+      cryptic: it
+      anonymized: Attribute_15
+    MemoryType:
+      descriptive: memory_type
+      abbreviated: mem_t
+      cryptic: mt
+      anonymized: Attribute_16
+    Connector:
+      descriptive: storage_connection_type
+      abbreviated: stor_conn
+      cryptic: sc
+      anonymized: Attribute_17
+    FormFactor:
+      descriptive: form_factor
+      abbreviated: form_f
+      cryptic: ff
+      anonymized: Attribute_18
+    ReadMBs:
+      descriptive: read_speed_mb_s
+      abbreviated: rd_speed_mbs
+      cryptic: rs
+      anonymized: Attribute_19
+    WriteMBs:
+      descriptive: write_speed_mb_s
+      abbreviated: wr_speed_mbs
+      cryptic: ws
+      anonymized: Attribute_20
+    Colour:
+      descriptive: color
+      abbreviated: clr
+      cryptic: col
+      anonymized: Attribute_21
+    WidthMM:
+      descriptive: width_mm
+      abbreviated: w_mm
+      cryptic: wd
+      anonymized: Attribute_22
+    LengthMM:
+      descriptive: length_mm
+      abbreviated: l_mm
+      cryptic: ln
+      anonymized: Attribute_23
+    HeightMM:
+      descriptive: height_mm
+      abbreviated: h_mm
+      cryptic: ht
+      anonymized: Attribute_24
+    WeightG:
+      descriptive: weight_g
+      abbreviated: wt_g
+      cryptic: wt
+      anonymized: Attribute_25
+  products_4:
+    name:
+      descriptive: title
+      abbreviated: prd_ttl
+      cryptic: t
+      anonymized: Attribute_2
+    mfr:
+      descriptive: brand
+      abbreviated: brnd
+      cryptic: br
+      anonymized: Attribute_3
+    desc:
+      descriptive: description
+      abbreviated: desc
+      cryptic: dsc
+      anonymized: Attribute_4
+    amt:
+      descriptive: price
+      abbreviated: prc
+      cryptic: amt
+      anonymized: Attribute_5
+    cur:
+      descriptive: priceCurrency
+      abbreviated: cur
+      cryptic: ccy
+      anonymized: Attribute_6
+    name_desc:
+      descriptive: title_description
+      abbreviated: t_desc
+      cryptic: tdsc
+      anonymized: Attribute_7
+    cat:
+      descriptive: product_type
+      abbreviated: prd_typ
+      cryptic: ptyp
+      anonymized: Attribute_8
+    mdl:
+      descriptive: model
+      abbreviated: mdl
+      cryptic: m
+      anonymized: Attribute_9
+    pn:
+      descriptive: model_number
+      abbreviated: mdl_no
+      cryptic: mno
+      anonymized: Attribute_10
+    chip:
+      descriptive: chipset_name
+      abbreviated: chip
+      cryptic: cn
+      anonymized: Attribute_11
+    vram:
+      descriptive: vram_gb
+      abbreviated: vram
+      cryptic: vrm
+      anonymized: Attribute_12
+    cap_gb:
+      descriptive: storage_gb
+      abbreviated: stor
+      cryptic: stg
+      anonymized: Attribute_13
+    bus:
+      descriptive: bus_type
+      abbreviated: bus_t
+      cryptic: bt
+      anonymized: Attribute_14
+    iface:
+      descriptive: interface_type
+      abbreviated: iface_t
+      cryptic: it
+      anonymized: Attribute_15
+    mem:
+      descriptive: memory_type
+      abbreviated: mem_t
+      cryptic: mt
+      anonymized: Attribute_16
+    conn:
+      descriptive: storage_connection_type
+      abbreviated: stor_conn
+      cryptic: sc
+      anonymized: Attribute_17
+    ff:
+      descriptive: form_factor
+      abbreviated: form_f
+      cryptic: ff
+      anonymized: Attribute_18
+    rd_mbs:
+      descriptive: read_speed_mb_s
+      abbreviated: rd_speed_mbs
+      cryptic: rs
+      anonymized: Attribute_19
+    wr_mbs:
+      descriptive: write_speed_mb_s
+      abbreviated: wr_speed_mbs
+      cryptic: ws
+      anonymized: Attribute_20
+    clr:
+      descriptive: color
+      abbreviated: clr
+      cryptic: col
+      anonymized: Attribute_21
+    w_mm:
+      descriptive: width_mm
+      abbreviated: w_mm
+      cryptic: wd
+      anonymized: Attribute_22
+    l_mm:
+      descriptive: length_mm
+      abbreviated: l_mm
+      cryptic: ln
+      anonymized: Attribute_23
+    h_mm:
+      descriptive: height_mm
+      abbreviated: h_mm
+      cryptic: ht
+      anonymized: Attribute_24
+    wt_g:
+      descriptive: weight_g
+      abbreviated: wt_g
+      cryptic: wt
+      anonymized: Attribute_25

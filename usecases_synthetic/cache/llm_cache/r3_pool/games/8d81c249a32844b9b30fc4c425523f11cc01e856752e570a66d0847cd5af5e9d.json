@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_10440|sales_3752|name=EyePet | platform=PlayStation Portable | genres=Virtual pet | developer=London Studio | releaseYear=2010-01-01||name=EyePet | platform=Playstation Portable | genres=Simulation | developer=SCEE London Studio | publisher=Sony Computer Entertainment | releaseYear=2010-01-01 | criticScore=57 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=EyePet | platform=PlayStation Portable | genres=Virtual pet | developer=London Studio | releaseYear=2010-01-01\nRecord B: name=EyePet | platform=Playstation Portable | genres=Simulation | developer=SCEE London Studio | publisher=Sony Computer Entertainment | releaseYear=2010-01-01 | criticScore=57 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_40892|sales_7212|name=Railroad Tycoon 3 | platform=Microsoft Windows | genres=Business simulation game | developer=PopTop Software | releaseYear=2003-01-01||name=Railroad Tycoon 3 | platform=PC | genres=Strategy | developer=PopTop Software | publisher=Gathering of Developers | releaseYear=2003-01-01 | criticScore=80 | userScore=7.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Railroad Tycoon 3 | platform=Microsoft Windows | genres=Business simulation game | developer=PopTop Software | releaseYear=2003-01-01\nRecord B: name=Railroad Tycoon 3 | platform=PC | genres=Strategy | developer=PopTop Software | publisher=Gathering of Developers | releaseYear=2003-01-01 | criticScore=80 | userScore=7.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

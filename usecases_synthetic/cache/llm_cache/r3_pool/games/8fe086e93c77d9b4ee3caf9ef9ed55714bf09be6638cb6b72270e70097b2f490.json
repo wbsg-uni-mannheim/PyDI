@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_23062|sales_4768|name=Captain America: Super Soldier | platform=Xbox 360 | genres=Action game | developer=Next Level Games | releaseYear=2011-01-01||name=Captain America: Super Soldier | platform=Xbox 360 | genres=Action | developer=Next Level Games | publisher=Sega | releaseYear=2011-01-01 | criticScore=60 | userScore=6.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Captain America: Super Soldier | platform=Xbox 360 | genres=Action game | developer=Next Level Games | releaseYear=2011-01-01\nRecord B: name=Captain America: Super Soldier | platform=Xbox 360 | genres=Action | developer=Next Level Games | publisher=Sega | releaseYear=2011-01-01 | criticScore=60 | userScore=6.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

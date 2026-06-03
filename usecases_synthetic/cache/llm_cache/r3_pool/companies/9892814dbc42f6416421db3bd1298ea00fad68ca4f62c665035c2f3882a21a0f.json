@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Design_Worldwide_Partnership|http://www.forbes.com/companies/ch-robinson-worldwide/|name=Design Worldwide Partnership | country=Thailand | city=Bangkok | founded=1994-01-01||name=CH Robinson Worldwide | country=United States of America | industry=Other Transportation",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Design Worldwide Partnership | country=Thailand | city=Bangkok | founded=1994-01-01\nRecord B: name=CH Robinson Worldwide | country=United States of America | industry=Other Transportation\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_23284|sales_7279|name=Song of the Deep | platform=Microsoft Windows | genres=Metroidvania | developer=Insomniac Games | releaseYear=2016-01-01||name=Song of the Deep | platform=PC | genres=Action | developer=Insomniac Games | publisher=Insomniac Games | releaseYear=2016-01-01 | criticScore=73 | userScore=6.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Song of the Deep | platform=Microsoft Windows | genres=Metroidvania | developer=Insomniac Games | releaseYear=2016-01-01\nRecord B: name=Song of the Deep | platform=PC | genres=Action | developer=Insomniac Games | publisher=Insomniac Games | releaseYear=2016-01-01 | criticScore=73 | userScore=6.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

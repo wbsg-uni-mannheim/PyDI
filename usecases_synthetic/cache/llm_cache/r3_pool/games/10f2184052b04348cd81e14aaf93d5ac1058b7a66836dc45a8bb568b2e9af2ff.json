@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1458|sales_843|name=Fight Night Round 3 | platform=Xbox 360 | genres=Sports,Traditional,Individual,Boxing,Boxing,Combat,Boxing / Martial Arts | developer=EA Chicago | releaseYear=2006-01-01 | criticScore=86.0 | userScore=8.8 | ESRB=T||name=Fight Night Round 3 | platform=Xbox 360 | genres=Fighting | developer=EA Chicago | publisher=Electronic Arts | releaseYear=2006-01-01 | criticScore=86 | userScore=8.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fight Night Round 3 | platform=Xbox 360 | genres=Sports,Traditional,Individual,Boxing,Boxing,Combat,Boxing / Martial Arts | developer=EA Chicago | releaseYear=2006-01-01 | criticScore=86.0 | userScore=8.8 | ESRB=T\nRecord B: name=Fight Night Round 3 | platform=Xbox 360 | genres=Fighting | developer=EA Chicago | publisher=Electronic Arts | releaseYear=2006-01-01 | criticScore=86 | userScore=8.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

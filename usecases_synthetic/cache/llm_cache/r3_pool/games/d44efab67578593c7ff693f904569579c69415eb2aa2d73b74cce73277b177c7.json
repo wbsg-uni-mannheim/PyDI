@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_57264|metacritic_8791|name=Real World Golf | platform=Xbox | genres=Sports game | developer=Gametrak | releaseYear=2005-01-01||name=Real World Golf | platform=Xbox | genres=Sports,Traditional,Golf,Sim | developer=Aqua Pacific,In2Games | releaseYear=2006-01-01 | criticScore=74.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Real World Golf | platform=Xbox | genres=Sports game | developer=Gametrak | releaseYear=2005-01-01\nRecord B: name=Real World Golf | platform=Xbox | genres=Sports,Traditional,Golf,Sim | developer=Aqua Pacific,In2Games | releaseYear=2006-01-01 | criticScore=74.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

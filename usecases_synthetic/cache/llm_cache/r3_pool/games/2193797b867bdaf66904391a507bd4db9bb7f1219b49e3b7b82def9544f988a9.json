@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_412|sales_5997|name=The Revenge of Shinobi (2002 video game) | platform=Game Boy Advance | genres=Platform game | developer=3d6 Games | releaseYear=2002-01-01||name=The Revenge of Shinobi | platform=Game Boy Advance | genres=Platform | developer=3d6 Games | publisher=Atari | releaseYear=2002-01-01 | criticScore=51 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Revenge of Shinobi (2002 video game) | platform=Game Boy Advance | genres=Platform game | developer=3d6 Games | releaseYear=2002-01-01\nRecord B: name=The Revenge of Shinobi | platform=Game Boy Advance | genres=Platform | developer=3d6 Games | publisher=Atari | releaseYear=2002-01-01 | criticScore=51 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

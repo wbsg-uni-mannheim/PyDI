@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_64849|metacritic_4329|name=Call of Duty: Modern Warfare (2019 video game) | genres=First-person shooter | developer=Infinity Ward | releaseYear=2019-01-01||name=Call of Duty: Modern Warfare | platform=Xbox One | genres=Action,Shooter,First-Person,Arcade | developer=Infinity Ward | releaseYear=2019-01-01 | criticScore=80.0 | userScore=4.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty: Modern Warfare (2019 video game) | genres=First-person shooter | developer=Infinity Ward | releaseYear=2019-01-01\nRecord B: name=Call of Duty: Modern Warfare | platform=Xbox One | genres=Action,Shooter,First-Person,Arcade | developer=Infinity Ward | releaseYear=2019-01-01 | criticScore=80.0 | userScore=4.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_3006|metacritic_17042|name=Final Fantasy Crystal Chronicles (video game) | platform=PS4 | genres=Action role-playing game | developer=Square (video game company) | releaseYear=2020-01-01||name=Final Fantasy Crystal Chronicles: Remastered Edition | platform=PS4 | genres=Role-Playing,Action RPG | developer=Square Enix | releaseYear=2020-01-01 | criticScore=59.0 | userScore=5.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Final Fantasy Crystal Chronicles (video game) | platform=PS4 | genres=Action role-playing game | developer=Square (video game company) | releaseYear=2020-01-01\nRecord B: name=Final Fantasy Crystal Chronicles: Remastered Edition | platform=PS4 | genres=Role-Playing,Action RPG | developer=Square Enix | releaseYear=2020-01-01 | criticScore=59.0 | userScore=5.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

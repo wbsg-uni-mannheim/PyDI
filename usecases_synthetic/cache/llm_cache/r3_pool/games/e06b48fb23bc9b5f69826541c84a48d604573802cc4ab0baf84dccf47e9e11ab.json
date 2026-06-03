@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9038|sales_1819|name=Naruto Shippuden: Ultimate Ninja Storm Generations | platform=PS3 | genres=Action,Fighting,Fighting,3D,3D | developer=CyberConnect2,Racjin | releaseYear=2012-01-01 | criticScore=74.0 | userScore=7.0 | ESRB=T||name=Naruto Shippuden: Ultimate Ninja Storm Generations | platform=PS3 | genres=Fighting | developer=CyberConnect2, Racjin | publisher=Namco Bandai Games | releaseYear=2012-01-01 | criticScore=74 | userScore=7.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Naruto Shippuden: Ultimate Ninja Storm Generations | platform=PS3 | genres=Action,Fighting,Fighting,3D,3D | developer=CyberConnect2,Racjin | releaseYear=2012-01-01 | criticScore=74.0 | userScore=7.0 | ESRB=T\nRecord B: name=Naruto Shippuden: Ultimate Ninja Storm Generations | platform=PS3 | genres=Fighting | developer=CyberConnect2, Racjin | publisher=Namco Bandai Games | releaseYear=2012-01-01 | criticScore=74 | userScore=7.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

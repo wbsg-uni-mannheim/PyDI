@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_18655|sales_3100|name=Skylanders: Giants | platform=Wii U | genres=Platform game | developer=Vicarious Visions | releaseYear=2012-01-01||name=Skylanders Giants | platform=WiiU | genres=Action | developer=Vicarious Visions | publisher=Activision | releaseYear=2012-01-01 | criticScore=80 | userScore=6.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Skylanders: Giants | platform=Wii U | genres=Platform game | developer=Vicarious Visions | releaseYear=2012-01-01\nRecord B: name=Skylanders Giants | platform=WiiU | genres=Action | developer=Vicarious Visions | publisher=Activision | releaseYear=2012-01-01 | criticScore=80 | userScore=6.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

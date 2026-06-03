@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_31248|metacritic_7904|name=Hyrule Warriors | platform=Wii U | genres=Hack and slash | developer=Omega Force | releaseYear=2016-01-01||name=Hyrule Warriors | platform=Wii U | genres=Action,Beat-'Em-Up,3D | developer=Omega Force | releaseYear=2014-01-01 | criticScore=76.0 | userScore=8.3 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hyrule Warriors | platform=Wii U | genres=Hack and slash | developer=Omega Force | releaseYear=2016-01-01\nRecord B: name=Hyrule Warriors | platform=Wii U | genres=Action,Beat-'Em-Up,3D | developer=Omega Force | releaseYear=2014-01-01 | criticScore=76.0 | userScore=8.3 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

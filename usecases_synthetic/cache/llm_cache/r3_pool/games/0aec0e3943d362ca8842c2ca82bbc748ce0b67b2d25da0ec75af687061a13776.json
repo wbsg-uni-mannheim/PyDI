@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16114|metacritic_10939|name=Deus Ex Machina (video game) | platform=Microsoft Windows | genres=Art game | developer=Automata UK | releaseYear=2015-01-01||name=Daemon X Machina | platform=PC | genres=Simulation,Vehicle,Combat | developer=Marvelous First Studio | releaseYear=2020-01-01 | criticScore=72.0 | userScore=7.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Deus Ex Machina (video game) | platform=Microsoft Windows | genres=Art game | developer=Automata UK | releaseYear=2015-01-01\nRecord B: name=Daemon X Machina | platform=PC | genres=Simulation,Vehicle,Combat | developer=Marvelous First Studio | releaseYear=2020-01-01 | criticScore=72.0 | userScore=7.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21264|sales_2442|name=Lego Jurassic World | platform=Wii U | genres=Action-adventure game | developer=TT Fusion | releaseYear=2019-01-01||name=LEGO Jurassic World | platform=WiiU | genres=Action | developer=TT Games | publisher=Warner Bros. Interactive Entertainment | releaseYear=2015-01-01 | criticScore=71 | userScore=8.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lego Jurassic World | platform=Wii U | genres=Action-adventure game | developer=TT Fusion | releaseYear=2019-01-01\nRecord B: name=LEGO Jurassic World | platform=WiiU | genres=Action | developer=TT Games | publisher=Warner Bros. Interactive Entertainment | releaseYear=2015-01-01 | criticScore=71 | userScore=8.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

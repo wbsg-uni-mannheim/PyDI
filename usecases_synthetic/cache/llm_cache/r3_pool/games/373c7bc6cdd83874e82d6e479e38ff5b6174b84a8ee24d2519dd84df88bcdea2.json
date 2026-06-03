@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_7943|sales_1121|name=LEGO Star Wars III: The Clone Wars | platform=PS3 | genres=Action Adventure,Sci-Fi,Sci-Fi,General | developer=Traveller's Tales | releaseYear=2011-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E10+||name=LEGO Star Wars III: The Clone Wars | platform=PS3 | genres=Action | developer=Traveller's Tales | publisher=LucasArts | releaseYear=2011-01-01 | criticScore=76 | userScore=7.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=LEGO Star Wars III: The Clone Wars | platform=PS3 | genres=Action Adventure,Sci-Fi,Sci-Fi,General | developer=Traveller's Tales | releaseYear=2011-01-01 | criticScore=76.0 | userScore=7.5 | ESRB=E10+\nRecord B: name=LEGO Star Wars III: The Clone Wars | platform=PS3 | genres=Action | developer=Traveller's Tales | publisher=LucasArts | releaseYear=2011-01-01 | criticScore=76 | userScore=7.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

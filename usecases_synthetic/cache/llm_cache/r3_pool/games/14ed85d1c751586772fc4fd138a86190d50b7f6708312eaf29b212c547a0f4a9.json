@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16865|metacritic_9243|name=TrackMania (2003 video game) | platform=Windows | genres=Racing video game | developer=Nadeo | releaseYear=2003-01-01||name=TrackMania (2003) | platform=PC | genres=Driving,Racing,Arcade,Arcade,Automobile | developer=Nadeo | releaseYear=2004-01-01 | criticScore=74.0 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=TrackMania (2003 video game) | platform=Windows | genres=Racing video game | developer=Nadeo | releaseYear=2003-01-01\nRecord B: name=TrackMania (2003) | platform=PC | genres=Driving,Racing,Arcade,Arcade,Automobile | developer=Nadeo | releaseYear=2004-01-01 | criticScore=74.0 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

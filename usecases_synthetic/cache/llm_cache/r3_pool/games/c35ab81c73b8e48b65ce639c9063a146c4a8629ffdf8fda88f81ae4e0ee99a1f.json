@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59316|sales_852|name=Homefront (video game) | platform=Xbox 360 | genres=First-person shooter | developer=Kaos Studios | releaseYear=2011-01-01||name=Homefront | platform=Xbox 360 | genres=Shooter | developer=Kaos Studios | publisher=THQ | releaseYear=2011-01-01 | criticScore=70 | userScore=6.0 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Homefront (video game) | platform=Xbox 360 | genres=First-person shooter | developer=Kaos Studios | releaseYear=2011-01-01\nRecord B: name=Homefront | platform=Xbox 360 | genres=Shooter | developer=Kaos Studios | publisher=THQ | releaseYear=2011-01-01 | criticScore=70 | userScore=6.0 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

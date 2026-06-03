@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/COSCO|http://www.forbes.com/companies/china-cosco-holdings/|name=COSCO | country=China | city=BeijingXicheng District | industry=Transport | founded=1961-01-01||name=China Cosco Holdings | country=China | industry=Other Transportation",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=COSCO | country=China | city=BeijingXicheng District | industry=Transport | founded=1961-01-01\nRecord B: name=China Cosco Holdings | country=China | industry=Other Transportation\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

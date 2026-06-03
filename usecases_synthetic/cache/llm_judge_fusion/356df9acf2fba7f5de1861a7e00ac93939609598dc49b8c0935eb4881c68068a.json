@@ -1,0 +1,22 @@
+{
+  "attribute": "country",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Scotland"
+    },
+    {
+      "source": "forbes",
+      "value": "United Kingdom of Great Britain and Northern Ireland"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Scotland is a constituent country of the UK, so the canonical country is the sovereign state name.",
+    "value": "United Kingdom of Great Britain and Northern Ireland"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"United Kingdom of Great Britain and Northern Ireland\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Scotland is a constituent country of the UK, so the canonical country is the sovereign state name.\"}"
+}

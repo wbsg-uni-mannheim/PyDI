@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_51515|metacritic_5554|name=Doom (1993 video game) | platform=Switch | genres=First-person shooter | developer=Id Software | releaseYear=1994-01-01||name=DOOM | platform=Switch | genres=Action,Shooter,First-Person,Arcade | developer=id Software,Panic Button | releaseYear=2017-01-01 | criticScore=79.0 | userScore=8.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Doom (1993 video game) | platform=Switch | genres=First-person shooter | developer=Id Software | releaseYear=1994-01-01\nRecord B: name=DOOM | platform=Switch | genres=Action,Shooter,First-Person,Arcade | developer=id Software,Panic Button | releaseYear=2017-01-01 | criticScore=79.0 | userScore=8.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_10013|sales_2253|name=Just Dance 2016 | platform=Wii U | genres=Action,Rhythm,Dancing | developer=Ubisoft | releaseYear=2015-01-01 | criticScore=73.0 | userScore=7.5 | ESRB=E10+||name=Just Dance 2016 | platform=WiiU | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2015-01-01 | criticScore=73 | userScore=6.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Just Dance 2016 | platform=Wii U | genres=Action,Rhythm,Dancing | developer=Ubisoft | releaseYear=2015-01-01 | criticScore=73.0 | userScore=7.5 | ESRB=E10+\nRecord B: name=Just Dance 2016 | platform=WiiU | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2015-01-01 | criticScore=73 | userScore=6.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

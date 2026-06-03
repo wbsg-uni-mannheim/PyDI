@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_22066|metacritic_13250|name=The Silver Case | platform=PS4 | genres=Visual novel | developer=Grasshopper Manufacture | releaseYear=2017-01-01||name=The 25th Ward: The Silver Case | platform=PS4 | genres=Adventure,Visual Novel | developer=Grasshopper Manufacture | releaseYear=2018-01-01 | criticScore=68.0 | userScore=8.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Silver Case | platform=PS4 | genres=Visual novel | developer=Grasshopper Manufacture | releaseYear=2017-01-01\nRecord B: name=The 25th Ward: The Silver Case | platform=PS4 | genres=Adventure,Visual Novel | developer=Grasshopper Manufacture | releaseYear=2018-01-01 | criticScore=68.0 | userScore=8.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

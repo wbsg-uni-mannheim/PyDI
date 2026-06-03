@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7001|sales_3443|name=Lord of Arcana | platform=PlayStation Portable | genres=Action role-playing game | developer=Access Games | releaseYear=2010-01-01||name=Lord of Arcana | platform=Playstation Portable | genres=Role-Playing | developer=Access Games | publisher=Square Enix | releaseYear=2010-01-01 | criticScore=53 | userScore=5.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lord of Arcana | platform=PlayStation Portable | genres=Action role-playing game | developer=Access Games | releaseYear=2010-01-01\nRecord B: name=Lord of Arcana | platform=Playstation Portable | genres=Role-Playing | developer=Access Games | publisher=Square Enix | releaseYear=2010-01-01 | criticScore=53 | userScore=5.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_61991|sales_7549|name=Dungeon Defenders | platform=Microsoft Windows | genres=Action role-playing game | developer=Trendy Entertainment | releaseYear=2010-01-01||name=Dungeon Defenders | platform=PC | genres=Role-Playing | developer=Trendy Entertainment | publisher=Unknown | releaseYear=2011-01-01 | criticScore=81 | userScore=7.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dungeon Defenders | platform=Microsoft Windows | genres=Action role-playing game | developer=Trendy Entertainment | releaseYear=2010-01-01\nRecord B: name=Dungeon Defenders | platform=PC | genres=Role-Playing | developer=Trendy Entertainment | publisher=Unknown | releaseYear=2011-01-01 | criticScore=81 | userScore=7.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

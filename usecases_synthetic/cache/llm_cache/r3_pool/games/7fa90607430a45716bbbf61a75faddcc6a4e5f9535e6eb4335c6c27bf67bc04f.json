@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_63666|sales_3097|name=Just Dance 2014 | platform=PS3 | genres=Music video game | developer=Ubisoft Milan | releaseYear=2013-01-01||name=Just Dance 2014 | platform=PS3 | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2013-01-01 | criticScore=77 | userScore=7.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Just Dance 2014 | platform=PS3 | genres=Music video game | developer=Ubisoft Milan | releaseYear=2013-01-01\nRecord B: name=Just Dance 2014 | platform=PS3 | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2013-01-01 | criticScore=77 | userScore=7.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

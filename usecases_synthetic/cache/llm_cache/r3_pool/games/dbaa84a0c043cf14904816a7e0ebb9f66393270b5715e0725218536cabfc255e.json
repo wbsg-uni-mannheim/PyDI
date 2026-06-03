@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_62059|metacritic_12459|name=Gratuitous Space Battles | platform=Microsoft Windows | genres=Strategy video game | developer=Positech Games | releaseYear=2009-01-01||name=Gratuitous Tank Battles | platform=PC | genres=Strategy,General,General | developer=Positech Games | releaseYear=2012-01-01 | criticScore=69.0 | userScore=6.4",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gratuitous Space Battles | platform=Microsoft Windows | genres=Strategy video game | developer=Positech Games | releaseYear=2009-01-01\nRecord B: name=Gratuitous Tank Battles | platform=PC | genres=Strategy,General,General | developer=Positech Games | releaseYear=2012-01-01 | criticScore=69.0 | userScore=6.4\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44576|metacritic_15205|name=Final Fantasy Crystal Chronicles: My Life as a Darklord | platform=Wii | genres=Tower defense | developer=Square Enix | releaseYear=2009-01-01||name=Final Fantasy Crystal Chronicles: Echoes of Time | platform=Wii | genres=Role-Playing,General,Action RPG | developer=Square Enix | releaseYear=2009-01-01 | criticScore=64.0 | userScore=6.5 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Final Fantasy Crystal Chronicles: My Life as a Darklord | platform=Wii | genres=Tower defense | developer=Square Enix | releaseYear=2009-01-01\nRecord B: name=Final Fantasy Crystal Chronicles: Echoes of Time | platform=Wii | genres=Role-Playing,General,Action RPG | developer=Square Enix | releaseYear=2009-01-01 | criticScore=64.0 | userScore=6.5 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

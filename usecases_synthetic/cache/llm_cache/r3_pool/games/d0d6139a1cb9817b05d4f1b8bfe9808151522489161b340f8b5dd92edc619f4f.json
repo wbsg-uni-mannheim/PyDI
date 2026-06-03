@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_1392|metacritic_20400|name=Deal or No Deal (video game) | platform=DS | genres=Trivia | developer=Cat Daddy Games | releaseYear=2007-01-01||name=Deal or No Deal | platform=DS | genres=Miscellaneous,Trivia / Game Show,Trivia / Game Show | developer=Artefacts Studio | releaseYear=2007-01-01 | criticScore=20.0 | userScore=2.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Deal or No Deal (video game) | platform=DS | genres=Trivia | developer=Cat Daddy Games | releaseYear=2007-01-01\nRecord B: name=Deal or No Deal | platform=DS | genres=Miscellaneous,Trivia / Game Show,Trivia / Game Show | developer=Artefacts Studio | releaseYear=2007-01-01 | criticScore=20.0 | userScore=2.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

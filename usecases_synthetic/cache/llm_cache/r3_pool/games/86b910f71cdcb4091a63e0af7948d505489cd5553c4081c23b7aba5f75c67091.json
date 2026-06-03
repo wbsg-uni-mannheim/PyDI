@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_811|metacritic_13885|name=The Walking Dead: Michonne | platform=Microsoft Windows | genres=Interactive movie | developer=Telltale Games | releaseYear=2016-01-01||name=The Walking Dead: Michonne - A Telltale Miniseries | platform=PC | genres=Adventure,3D,Third-Person | developer=Skybound LLC,Skybound Games | releaseYear=2016-01-01 | criticScore=67.0 | userScore=6.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Walking Dead: Michonne | platform=Microsoft Windows | genres=Interactive movie | developer=Telltale Games | releaseYear=2016-01-01\nRecord B: name=The Walking Dead: Michonne - A Telltale Miniseries | platform=PC | genres=Adventure,3D,Third-Person | developer=Skybound LLC,Skybound Games | releaseYear=2016-01-01 | criticScore=67.0 | userScore=6.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

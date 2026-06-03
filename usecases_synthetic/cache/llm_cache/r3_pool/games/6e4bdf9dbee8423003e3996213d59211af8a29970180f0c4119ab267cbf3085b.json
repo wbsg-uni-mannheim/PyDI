@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_20479|sales_105|name=The Last of Us | platform=PS3 | genres=Modern,Adventure,General,Action Adventure,General,Modern,Linear | developer=Naughty Dog | releaseYear=2013-01-01 | criticScore=95.0 | userScore=9.2 | ESRB=M||name=The Last of Us | platform=PS3 | genres=Action | developer=Naughty Dog | publisher=Sony Computer Entertainment Europe | releaseYear=2013-01-01 | criticScore=95 | userScore=9.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Last of Us | platform=PS3 | genres=Modern,Adventure,General,Action Adventure,General,Modern,Linear | developer=Naughty Dog | releaseYear=2013-01-01 | criticScore=95.0 | userScore=9.2 | ESRB=M\nRecord B: name=The Last of Us | platform=PS3 | genres=Action | developer=Naughty Dog | publisher=Sony Computer Entertainment Europe | releaseYear=2013-01-01 | criticScore=95 | userScore=9.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

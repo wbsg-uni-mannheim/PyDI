@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38762|metacritic_1382|name=Rayman Origins | platform=Microsoft Windows | genres=Platform game | developer=Ubisoft Casablanca | releaseYear=2012-01-01||name=Rayman Origins | platform=PC | genres=Action,Platformer,Platformer,2D,2D | developer=UBlart Montpellier | releaseYear=2012-01-01 | criticScore=86.0 | userScore=8.2 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Rayman Origins | platform=Microsoft Windows | genres=Platform game | developer=Ubisoft Casablanca | releaseYear=2012-01-01\nRecord B: name=Rayman Origins | platform=PC | genres=Action,Platformer,Platformer,2D,2D | developer=UBlart Montpellier | releaseYear=2012-01-01 | criticScore=86.0 | userScore=8.2 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

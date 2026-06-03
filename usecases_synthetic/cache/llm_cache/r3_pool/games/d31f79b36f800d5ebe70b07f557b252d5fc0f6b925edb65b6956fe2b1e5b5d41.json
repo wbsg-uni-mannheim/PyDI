@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9558|sales_2821|name=My Spanish Coach | platform=DS | genres=Miscellaneous,Edutainment,Edutainment | developer=Ubisoft,Sensory Sweep | releaseYear=2007-01-01 | criticScore=73.0 | ESRB=E||name=My Spanish Coach | platform=DS | genres=Misc | developer=Ubisoft, Sensory Sweep | publisher=Ubisoft | releaseYear=2007-01-01 | criticScore=73 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=My Spanish Coach | platform=DS | genres=Miscellaneous,Edutainment,Edutainment | developer=Ubisoft,Sensory Sweep | releaseYear=2007-01-01 | criticScore=73.0 | ESRB=E\nRecord B: name=My Spanish Coach | platform=DS | genres=Misc | developer=Ubisoft, Sensory Sweep | publisher=Ubisoft | releaseYear=2007-01-01 | criticScore=73 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

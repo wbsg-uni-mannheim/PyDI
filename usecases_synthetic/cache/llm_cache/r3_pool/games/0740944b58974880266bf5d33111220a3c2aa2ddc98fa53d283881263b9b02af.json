@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17305|sales_4688|name=Splatterhouse (2010 video game) | platform=Xbox 360 | genres=Survival horror | developer=Bottlerocket Entertainment | releaseYear=2010-01-01||name=Splatterhouse | platform=Xbox 360 | genres=Action | developer=Namco Bandai Games America, Namco Bandai Games | publisher=Namco Bandai Games | releaseYear=2010-01-01 | criticScore=62 | userScore=7.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Splatterhouse (2010 video game) | platform=Xbox 360 | genres=Survival horror | developer=Bottlerocket Entertainment | releaseYear=2010-01-01\nRecord B: name=Splatterhouse | platform=Xbox 360 | genres=Action | developer=Namco Bandai Games America, Namco Bandai Games | publisher=Namco Bandai Games | releaseYear=2010-01-01 | criticScore=62 | userScore=7.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

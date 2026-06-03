@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_47302|metacritic_4684|name=Black Desert Online | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Pearl Abyss | releaseYear=2015-01-01||name=Black Desert Online: Land of the Morning Light Edition | platform=PC | genres=Role-Playing,Massively Multiplayer | developer=Pearl Abyss | releaseYear=2023-01-01 | criticScore=80.0 | userScore=6.1",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Black Desert Online | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Pearl Abyss | releaseYear=2015-01-01\nRecord B: name=Black Desert Online: Land of the Morning Light Edition | platform=PC | genres=Role-Playing,Massively Multiplayer | developer=Pearl Abyss | releaseYear=2023-01-01 | criticScore=80.0 | userScore=6.1\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_45590|metacritic_5245|name=Shin-chan: Me and the Professor on Summer Vacation | platform=Switch | genres=Adventure game | releaseYear=2022-01-01||name=Shin-chan: Me and the Professor on Summer Vacation - The Endless Seven-Day Journey | platform=Switch | genres=Adventure,General,3D,Third-Person | developer=Millennium Kitchen | releaseYear=2022-01-01 | criticScore=79.0 | userScore=7.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shin-chan: Me and the Professor on Summer Vacation | platform=Switch | genres=Adventure game | releaseYear=2022-01-01\nRecord B: name=Shin-chan: Me and the Professor on Summer Vacation - The Endless Seven-Day Journey | platform=Switch | genres=Adventure,General,3D,Third-Person | developer=Millennium Kitchen | releaseYear=2022-01-01 | criticScore=79.0 | userScore=7.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

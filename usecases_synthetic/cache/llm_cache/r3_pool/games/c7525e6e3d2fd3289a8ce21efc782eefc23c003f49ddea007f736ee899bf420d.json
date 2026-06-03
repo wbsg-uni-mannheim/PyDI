@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_16546|metacritic_2101|name=80 Days (2014 video game) | platform=Switch | genres=Interactive fiction | developer=Inkle (company) | releaseYear=2014-01-01||name=80 DAYS | platform=Switch | genres=Adventure,Visual Novel | developer=inkle | releaseYear=2019-01-01 | criticScore=84.0 | userScore=7.8 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=80 Days (2014 video game) | platform=Switch | genres=Interactive fiction | developer=Inkle (company) | releaseYear=2014-01-01\nRecord B: name=80 DAYS | platform=Switch | genres=Adventure,Visual Novel | developer=inkle | releaseYear=2019-01-01 | criticScore=84.0 | userScore=7.8 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

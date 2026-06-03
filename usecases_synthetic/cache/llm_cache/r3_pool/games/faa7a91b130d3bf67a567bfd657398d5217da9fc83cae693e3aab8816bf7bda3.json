@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_64136|metacritic_16578|name=Dead Island | platform=Microsoft Windows | genres=Survival horror | developer=Techland | releaseYear=2011-01-01||name=Dead Island: Riptide | platform=PC | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Techland | releaseYear=2013-01-01 | criticScore=61.0 | userScore=6.1 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dead Island | platform=Microsoft Windows | genres=Survival horror | developer=Techland | releaseYear=2011-01-01\nRecord B: name=Dead Island: Riptide | platform=PC | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Techland | releaseYear=2013-01-01 | criticScore=61.0 | userScore=6.1 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

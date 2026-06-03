@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_22421|sales_83|name=Big Brain Academy (video game) | platform=DS | genres=Puzzle video game | developer=Nintendo Entertainment Analysis and Development | releaseYear=2005-01-01||name=Big Brain Academy | platform=DS | genres=Misc | developer=Nintendo | publisher=Nintendo | releaseYear=2005-01-01 | criticScore=74 | userScore=7.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Big Brain Academy (video game) | platform=DS | genres=Puzzle video game | developer=Nintendo Entertainment Analysis and Development | releaseYear=2005-01-01\nRecord B: name=Big Brain Academy | platform=DS | genres=Misc | developer=Nintendo | publisher=Nintendo | releaseYear=2005-01-01 | criticScore=74 | userScore=7.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

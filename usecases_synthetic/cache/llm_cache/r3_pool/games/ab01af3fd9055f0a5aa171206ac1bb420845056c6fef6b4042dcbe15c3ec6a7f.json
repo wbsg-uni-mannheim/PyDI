@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38511|metacritic_10403|name=Oddworld: Munch's Oddysee | platform=PlayStation Vita | genres=Platform game | developer=Oddworld Inhabitants | releaseYear=2001-01-01||name=Oddworld: Munch's Oddysee HD | platform=PlayStation Vita | genres=Action,Platformer,2D,Sci-Fi,3D,Platformer,2D,Action Adventure,General | developer=Just Add Water | releaseYear=2014-01-01 | criticScore=72.0 | userScore=8.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Oddworld: Munch's Oddysee | platform=PlayStation Vita | genres=Platform game | developer=Oddworld Inhabitants | releaseYear=2001-01-01\nRecord B: name=Oddworld: Munch's Oddysee HD | platform=PlayStation Vita | genres=Action,Platformer,2D,Sci-Fi,3D,Platformer,2D,Action Adventure,General | developer=Just Add Water | releaseYear=2014-01-01 | criticScore=72.0 | userScore=8.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

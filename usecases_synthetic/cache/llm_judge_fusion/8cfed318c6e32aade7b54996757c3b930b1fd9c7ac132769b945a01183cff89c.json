@@ -1,0 +1,26 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "New YorkBrooklyn"
+    },
+    {
+      "source": "dbpedia",
+      "value": "Stamford, Connecticut"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Brooklyn"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "Brooklyn is the canonical city/place name, and the other candidates are either a malformed concatenation or a different city.",
+    "value": "Brooklyn"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Brooklyn\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"Brooklyn is the canonical city/place name, and the other candidates are either a malformed concatenation or a different city.\"}"
+}

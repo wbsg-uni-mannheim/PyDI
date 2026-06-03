@@ -1,0 +1,218 @@
+# Knob 01 - Surface Augmentation Intensity - Papers
+#
+# Authored per knobs/knob_01_surface_augmentation.md, mirroring the
+# music K1 template.
+#
+# Seeded from music 2026-06-02; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run.
+#
+# Papers data is already TARGET-SHAPED: all three sources (dblp,
+# crossref, open_alex) carry the SAME 14 canonical columns on disk, so
+# every attribute_mapping is IDENTITY and per-source attribute_classes
+# are IDENTICAL across the three sources. dblp is the anchor source.
+# Column-name remap: none (sources already ship canonical names).
+#
+# K1 targets text/string attributes only:
+#   title (primary), journal + type (key), authors + keywords +
+#   publisher (secondary). publication_year, volume, issue, first_page,
+#   last_page, referenced_works_count, cited_by_count are NOT paraphrase
+#   targets (temporal / short-id-like / numeric). id and doi are NEVER
+#   targeted by value knobs (doi is the fusion-gold join key).
+#
+# Baseline easy -> medium for short fields. No `paraphrase_long`. Hard
+# LLM paraphrase keeps the tightest contamination check - paper titles
+# are highly web-memorable.
+
+domain: papers
+
+# ID columns: each source ships an `id` column ("<source>-NNNNN").
+# Loader pass-through.
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+# Per-source column -> attribute class. IDENTICAL across the three
+# sources (data is already target-shaped). Columns NOT listed here are
+# never touched by Knob 01 (publication_year, volume, issue, first_page,
+# last_page, referenced_works_count, cited_by_count, doi).
+attribute_classes:
+  dblp:
+    title: primary
+    journal: key
+    type: key
+    authors: secondary
+    keywords: secondary
+    publisher: secondary
+  crossref:
+    title: primary
+    journal: key
+    type: key
+    authors: secondary
+    keywords: secondary
+    publisher: secondary
+  open_alex:
+    title: primary
+    journal: key
+    type: key
+    authors: secondary
+    keywords: secondary
+    publisher: secondary
+
+# Source column -> canonical target attribute. IDENTITY mapping for all
+# three sources (data already carries canonical column names).
+attribute_mapping:
+  dblp:
+    title: title
+    journal: journal
+    type: type
+    authors: authors
+    keywords: keywords
+    publisher: publisher
+  crossref:
+    title: title
+    journal: journal
+    type: type
+    authors: authors
+    keywords: keywords
+    publisher: publisher
+  open_alex:
+    title: title
+    journal: journal
+    type: type
+    authors: authors
+    keywords: keywords
+    publisher: publisher
+
+paraphrase_rate_primary:
+  easy: 0.0
+  medium: 0.04
+  hard: 0.12
+paraphrase_rate_key:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+paraphrase_rate_secondary:
+  easy: 0.0
+  medium: 0.16
+  hard: 0.30
+# Dormant for papers: no attribute is assigned the `categorical` class
+# (type/journal route through `key`). Kept verbatim for schema parity
+# and any future categorical attribute.
+paraphrase_rate_categorical:
+  easy: 0.0
+  medium: 0.08
+  hard: 0.18
+
+operator_mix:
+  easy:
+    # Note: dormant under `paraphrase_rate_*.easy: 0.0` (the rate-based
+    # dispatcher short-circuits before reaching operator sampling at easy).
+    # The easy normalize-down work runs via `baseline_above_target_rules`
+    # at a separate code path. Kept as defensive placeholder for any future
+    # easy-rate bump.
+    normalize_to_canonical: 1.0
+  medium:
+    abbreviate: 2.0
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 1.0
+  hard:
+    abbreviate: 1.5
+    eda_random_swap: 1.0
+    eda_random_delete: 1.0
+    llm_paraphrase: 3.0
+
+# Easy-only normalize-down. No cross-source long/short divergence is
+# known for papers venue strings yet, so no rules are registered.
+# (Music harmonised country long/short forms here; papers has no
+# equivalent confirmed pair - revisit once the pool is built.)
+baseline_above_target_rules: []
+
+# Papers abbreviation table (bidirectional). Coverage: scholarly venue
+# words, publication-type words, common venue suffixes. Article drop is
+# handled by `article_drop_pattern` rather than enumerated entries.
+abbreviation_table:
+  # Venue / venue-component words
+  Proceedings: "Proc."
+  International: "Intl."
+  Conference: "Conf."
+  Journal: "J."
+  Transactions: "Trans."
+  Symposium: "Symp."
+  Workshop: "Wksp."
+  Association: "Assoc."
+  Society: "Soc."
+  Annual: "Ann."
+  Computer: "Comput."
+  Computing: "Comput."
+  Communications: "Commun."
+  Engineering: "Eng."
+  Science: "Sci."
+  Sciences: "Sci."
+  Research: "Res."
+  Review: "Rev."
+  Letters: "Lett."
+  Advances: "Adv."
+  Applications: "Appl."
+  Systems: "Syst."
+  Technology: "Technol."
+  Management: "Manag."
+  University: "Univ."
+
+# Categorical vocab map (publication-type / venue-type synonyms).
+# Read by the `abbreviate` operator in addition to `abbreviation_table`;
+# bidirectional. Maps long publication-type phrasings toward the
+# canonical Crossref/OpenAlex type tokens.
+categorical_vocab_map:
+  "Conference Paper": "inproceedings"
+  "Proceedings Article": "inproceedings"
+  "Journal Article": "article"
+  "Book Chapter": "book-chapter"
+  "Posted Content": "posted-content"
+  "Erratum": "erratum"
+
+# Article drop pattern: leading-article removal on titles
+# (e.g. "The Theory of Everything" -> "Theory of Everything").
+# Used by the medium table-driven operator path.
+article_drop_pattern: "^(The|A|An) "
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+  - on
+  - for
+  - in
+
+key_token_skiplist:
+  dblp:
+    title: []
+  crossref:
+    title: []
+  open_alex:
+    title: []
+
+key_token_skiplist_global: []
+
+# Hard-path LLM config. Default gpt-5.4-mini per the 2026-05-06
+# LLM-model-default policy; ask user before each K1 hard run whether
+# to bump to gpt-5.4. `llm_temperature=0` is non-negotiable - paper
+# titles are highly web-memorable, so the tightest contamination check
+# of any domain applies here too.
+# R10-D 2026-05-29: prompt_version bumped to v2 -- minimum-divergence
+# rule, <UNCHANGED> sentinel escape, per-attribute-class prompt
+# split (primary/key -> short_v2, secondary -> secondary_v2,
+# categorical -> categorical_v2). Cache key under
+# cache/knob_01_paraphrases/<domain>/<level>/ rotates on this bump.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+anchor_survivor_floor:
+  primary: true
+  key: false
+  secondary: false
+  categorical: false

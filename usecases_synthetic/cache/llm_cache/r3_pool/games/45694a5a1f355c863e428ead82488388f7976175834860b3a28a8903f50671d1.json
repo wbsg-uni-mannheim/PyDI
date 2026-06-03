@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_28713|metacritic_12328|name=Ready 2 Rumble Boxing: Round 2 | platform=Dreamcast | genres=Fighting game | developer=Crawfish Interactive | releaseYear=2001-01-01||name=Ready 2 Rumble Boxing: Round 2 | platform=Dreamcast | genres=Sports,Traditional,Boxing | developer=Midway | releaseYear=2000-01-01 | criticScore=70.0 | userScore=7.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Ready 2 Rumble Boxing: Round 2 | platform=Dreamcast | genres=Fighting game | developer=Crawfish Interactive | releaseYear=2001-01-01\nRecord B: name=Ready 2 Rumble Boxing: Round 2 | platform=Dreamcast | genres=Sports,Traditional,Boxing | developer=Midway | releaseYear=2000-01-01 | criticScore=70.0 | userScore=7.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -98,10 +98,15 @@ def test_companies_strategy_double_registers_assets() -> None:
     ]
 
 
-def test_companies_strategy_uses_set_equality_for_founders() -> None:
+def test_companies_strategy_uses_set_equality_for_keypeople() -> None:
+    """Companies' target_schema renamed founders -> keypeople in 2026;
+    the notebook_fusion_eval rule follows the schema authority."""
     spec = get_spec("companies")
     rules_by_attr = {a: (fn, kw) for a, fn, kw in spec.rules}
-    assert rules_by_attr["founders"][0] is set_equality_match
+    assert (
+        "founders" not in rules_by_attr
+    ), "Stale 'founders' rule — target_schema renamed it to 'keypeople'."
+    assert rules_by_attr["keypeople"][0] is set_equality_match
 
 
 def test_build_strategy_registers_all_rules() -> None:

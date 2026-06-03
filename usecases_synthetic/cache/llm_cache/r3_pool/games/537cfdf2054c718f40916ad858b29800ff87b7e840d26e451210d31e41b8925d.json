@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49884|metacritic_10348|name=Stubbs the Zombie in Rebel Without a Pulse | platform=Microsoft Windows | genres=Action game | developer=Wideload Games | releaseYear=2005-01-01||name=Stubbs the Zombie in Rebel Without a Pulse | platform=PC | genres=Action Adventure,Sci-Fi,Sci-Fi,General | developer=Wideload Games Inc. | releaseYear=2005-01-01 | criticScore=72.0 | userScore=7.8 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stubbs the Zombie in Rebel Without a Pulse | platform=Microsoft Windows | genres=Action game | developer=Wideload Games | releaseYear=2005-01-01\nRecord B: name=Stubbs the Zombie in Rebel Without a Pulse | platform=PC | genres=Action Adventure,Sci-Fi,Sci-Fi,General | developer=Wideload Games Inc. | releaseYear=2005-01-01 | criticScore=72.0 | userScore=7.8 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

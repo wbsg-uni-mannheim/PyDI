@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Japan_Post_Insurance|http://www.forbes.com/companies/msad-insurance/|name=Japan Post Insurance | country=Japan | city=Tokyo | industry=Insurance | founded=1916-01-01||name=MS&AD Insurance | country=Japan | industry=Property & Casualty Insurance",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Japan Post Insurance | country=Japan | city=Tokyo | industry=Insurance | founded=1916-01-01\nRecord B: name=MS&AD Insurance | country=Japan | industry=Property & Casualty Insurance\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

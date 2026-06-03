@@ -16,10 +16,10 @@ id_columns:
   products_4: id
 
 primary_column_per_source:
-  products_1: title
-  products_2: title
-  products_3: title
-  products_4: title
+  products_1: product_name
+  products_2: name
+  products_3: ProductTitle
+  products_4: name
 
 canonical_schema:
   - title
@@ -36,20 +36,58 @@ canonical_schema:
   - title_description
 
 attribute_mapping:
-  products_1: &products_attr_mapping
-    title: title
-    brand: brand
-    description: description
-    price: price
-    product_type: product_type
-    model: model
-    model_number: model_number
-    chipset_name: chipset_name
-    vram_gb: vram_gb
-    storage_gb: storage_gb
-  products_2: *products_attr_mapping
-  products_3: *products_attr_mapping
-  products_4: *products_attr_mapping
+  products_1:
+    product_name: title
+    manufacturer: brand
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    category: product_type
+    model_name: model
+    manufacturer_part_number: model_number
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    name_and_description: title_description
+  products_2:
+    name: title
+    brandName: brand
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    productCategory: product_type
+    modelName: model
+    mpn: model_number
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    titleAndDescription: title_description
+  products_3:
+    ProductTitle: title
+    Brand: brand
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    Type: product_type
+    Model: model
+    PartNo: model_number
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    TitleDetails: title_description
+  products_4:
+    name: title
+    mfr: brand
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cat: product_type
+    mdl: model
+    pn: model_number
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    name_desc: title_description
 
 source_priority:
   - products_1

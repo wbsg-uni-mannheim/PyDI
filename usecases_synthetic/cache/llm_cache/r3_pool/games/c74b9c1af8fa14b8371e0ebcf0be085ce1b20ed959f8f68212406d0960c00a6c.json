@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_35402|sales_690|name=Portal 2 | platform=PS3 | genres=Puzzle-platform | developer=Valve Corporation | releaseYear=2011-01-01||name=Portal 2 | platform=PS3 | genres=Shooter | developer=Valve Software | publisher=Valve | releaseYear=2011-01-01 | criticScore=95 | userScore=8.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Portal 2 | platform=PS3 | genres=Puzzle-platform | developer=Valve Corporation | releaseYear=2011-01-01\nRecord B: name=Portal 2 | platform=PS3 | genres=Shooter | developer=Valve Software | publisher=Valve | releaseYear=2011-01-01 | criticScore=95 | userScore=8.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

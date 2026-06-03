@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7813|metacritic_7234|name=The Book of Unwritten Tales 2 | platform=Switch | genres=Fantasy comedy | developer=The Adventure Company | releaseYear=2016-01-01||name=The Book of Unwritten Tales 2 | platform=Switch | genres=Adventure,Point-and-Click | developer=KING Art | releaseYear=2019-01-01 | criticScore=77.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Book of Unwritten Tales 2 | platform=Switch | genres=Fantasy comedy | developer=The Adventure Company | releaseYear=2016-01-01\nRecord B: name=The Book of Unwritten Tales 2 | platform=Switch | genres=Adventure,Point-and-Click | developer=KING Art | releaseYear=2019-01-01 | criticScore=77.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

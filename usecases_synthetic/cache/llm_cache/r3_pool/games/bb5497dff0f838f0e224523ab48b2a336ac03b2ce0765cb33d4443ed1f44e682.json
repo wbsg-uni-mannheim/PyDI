@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_26949|metacritic_3513|name=Command & Conquer: Red Alert 3 | genres=Real-time strategy | developer=EA Los Angeles | releaseYear=2008-01-01||name=Command & Conquer: Red Alert 3 | platform=PC | genres=Strategy,Real-Time,Sci-Fi,Sci-Fi,General | developer=EA LA | releaseYear=2008-01-01 | criticScore=82.0 | userScore=6.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Command & Conquer: Red Alert 3 | genres=Real-time strategy | developer=EA Los Angeles | releaseYear=2008-01-01\nRecord B: name=Command & Conquer: Red Alert 3 | platform=PC | genres=Strategy,Real-Time,Sci-Fi,Sci-Fi,General | developer=EA LA | releaseYear=2008-01-01 | criticScore=82.0 | userScore=6.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

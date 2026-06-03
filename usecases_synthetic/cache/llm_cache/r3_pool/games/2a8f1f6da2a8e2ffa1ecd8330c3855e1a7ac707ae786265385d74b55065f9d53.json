@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_33767|metacritic_3636|name=Broken Age | platform=Microsoft Windows | genres=Point-and-click adventure | developer=Double Fine Productions | releaseYear=2015-01-01||name=Broken Age: Act 1 | platform=PC | genres=General,Adventure,General,3D,Point-and-Click,Third-Person,Fantasy | developer=Double Fine Productions | releaseYear=2014-01-01 | criticScore=82.0 | userScore=7.7",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Broken Age | platform=Microsoft Windows | genres=Point-and-click adventure | developer=Double Fine Productions | releaseYear=2015-01-01\nRecord B: name=Broken Age: Act 1 | platform=PC | genres=General,Adventure,General,3D,Point-and-Click,Third-Person,Fantasy | developer=Double Fine Productions | releaseYear=2014-01-01 | criticScore=82.0 | userScore=7.7\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

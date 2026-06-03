@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_36054|sales_7150|name=Stoked (video game) | platform=Xbox 360 | genres=Snowboarding video game | developer=Bongfish | releaseYear=2009-01-01||name=Stoked: Big Air Edition | platform=Xbox 360 | genres=Sports | developer=Bongfish | publisher=Namco Bandai Games | releaseYear=2009-01-01 | criticScore=72 | userScore=7.7 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Stoked (video game) | platform=Xbox 360 | genres=Snowboarding video game | developer=Bongfish | releaseYear=2009-01-01\nRecord B: name=Stoked: Big Air Edition | platform=Xbox 360 | genres=Sports | developer=Bongfish | publisher=Namco Bandai Games | releaseYear=2009-01-01 | criticScore=72 | userScore=7.7 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

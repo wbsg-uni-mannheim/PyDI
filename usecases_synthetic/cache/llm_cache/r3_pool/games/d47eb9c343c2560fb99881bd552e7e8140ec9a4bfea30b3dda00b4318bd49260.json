@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_73|metacritic_15366|name=SpongeBob SquigglePants | platform=3DS | genres=Action video game | developer=WayForward | releaseYear=2011-01-01||name=SpongeBob Squigglepants 3D | platform=3DS | genres=Miscellaneous,General,General | developer=WayForward | releaseYear=2011-01-01 | criticScore=64.0 | userScore=6.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=SpongeBob SquigglePants | platform=3DS | genres=Action video game | developer=WayForward | releaseYear=2011-01-01\nRecord B: name=SpongeBob Squigglepants 3D | platform=3DS | genres=Miscellaneous,General,General | developer=WayForward | releaseYear=2011-01-01 | criticScore=64.0 | userScore=6.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Genius_Products|http://www.forbes.com/companies/avon-products/|name=Genius Products | country=United States | city=Santa Monica, California | industry=Outline of entertainment | founded=1996-01-01||name=Avon Products | country=United States of America | industry=Household/Personal Care",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Genius Products | country=United States | city=Santa Monica, California | industry=Outline of entertainment | founded=1996-01-01\nRecord B: name=Avon Products | country=United States of America | industry=Household/Personal Care\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

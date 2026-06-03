@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_53282|metacritic_13451|name=Allods Online | platform=Microsoft Windows | genres=Fantasy | developer=Allods Team | releaseYear=2010-01-01||name=MechWarrior Online | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Arcade | developer=Piranha Games | releaseYear=2013-01-01 | criticScore=68.0 | userScore=5.3",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Allods Online | platform=Microsoft Windows | genres=Fantasy | developer=Allods Team | releaseYear=2010-01-01\nRecord B: name=MechWarrior Online | platform=PC | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Arcade | developer=Piranha Games | releaseYear=2013-01-01 | criticScore=68.0 | userScore=5.3\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

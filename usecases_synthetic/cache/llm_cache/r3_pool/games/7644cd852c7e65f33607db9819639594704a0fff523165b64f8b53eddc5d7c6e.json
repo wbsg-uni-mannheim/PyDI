@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_30089|sales_7851|name=Alone in the Dark (2008 video game) | platform=Microsoft Windows | genres=Survival horror | developer=Eden Games | releaseYear=2008-01-01||name=Alone in the Dark | platform=PC | genres=Adventure | developer=Eden Studios | publisher=Atari | releaseYear=2008-01-01 | criticScore=55 | userScore=5.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Alone in the Dark (2008 video game) | platform=Microsoft Windows | genres=Survival horror | developer=Eden Games | releaseYear=2008-01-01\nRecord B: name=Alone in the Dark | platform=PC | genres=Adventure | developer=Eden Studios | publisher=Atari | releaseYear=2008-01-01 | criticScore=55 | userScore=5.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

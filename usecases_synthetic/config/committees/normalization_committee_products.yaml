@@ -3,15 +3,17 @@
 # C12 schema (plan_revision.md §C12, decided 2026-05-22). Three coherent
 # members: rule_per_attribute_optimal / llm_only / passthrough.
 #
-# Eligible canonical attributes for products (SM-resolved ∩ fusion-gold
-# ∩ kind taxonomy):
-#   title (long_string), brand (nominal), description (free_text),
-#   price (continuous), priceCurrency (nominal).
+# Eligible canonical attributes = SM-resolved ∩ schema-constrained ∩
+# kind taxonomy. Under the schema_constraints scoring surface
+# (measure_baseline default, 2026-06-02) the "gold" set is the
+# constrained attributes of usecases/products/input/schemamatching/
+# target_schema.json — the full 24-attr scope — intersected with the
+# protection.py products kind_map (also 24). Rule normalizers below are
+# the per-attribute candidates rule_per_attribute_optimal selects among.
 #
 # Intentionally OMITTED rule normalizers (no applicable attribute):
 #   - date_iso (no date attribute)
 #   - country_iso (no country attribute)
-#   - taxonomy_lookup (no products taxonomy shipped)
 
 seed: 42
 
@@ -21,7 +23,13 @@ rule_normalizers:
   - name: text_clean
     module: usecases_synthetic.lib.normalizer_members
     class: TextCleanNormalizer
-    applies_to: [title, brand, description, priceCurrency]
+    # All 15 string/categorical/free-text attrs (long_string + nominal +
+    # free_text in the kind map). Widened from the original 4 for the
+    # 24-attr scope (2026-06-02).
+    applies_to: [title, brand, description, priceCurrency, title_description,
+                 model, model_number, product_type, chipset_name, bus_type,
+                 interface_type, memory_type, storage_connection_type,
+                 form_factor, color]
     params:
       lowercase: false
       strip_whitespace: true
@@ -34,13 +42,49 @@ rule_normalizers:
   - name: number_locale
     module: usecases_synthetic.lib.normalizer_members
     class: NumberLocaleNormalizer
-    applies_to: [price]
+    # All 9 continuous numerics. Widened from [price] for the 24-attr
+    # scope (2026-06-02): price (currency), the hardware quantities
+    # (vram_gb/storage_gb/read_speed_mb_s/write_speed_mb_s) and the
+    # sparse physical dims (width_mm/length_mm/height_mm/weight_g).
+    applies_to: [price, vram_gb, storage_gb, read_speed_mb_s,
+                 write_speed_mb_s, width_mm, length_mm, height_mm, weight_g]
     params:
       babel_candidate_locales: [en_US, de_DE, en_GB]
       handle_currency: true
       handle_percentages: false
     # Babel locales picked to cover the dominant price formats in the
     # source data (USD '1,099.99' / EUR '1.099,99' / GBP '199.99').
+    # handle_currency is harmless for the bare hardware quantities (no
+    # symbol -> plain numeric extraction); the deferred norm sweep tunes
+    # the per-attribute winner.
+
+  - name: taxonomy_lookup
+    module: usecases_synthetic.lib.normalizer_members
+    class: TaxonomyLookupNormalizer
+    # Taxonomy-controlled categoricals. product_type -> the product
+    # taxonomy; bus_type/interface_type -> the storage-interface
+    # taxonomy (protocol families); memory_type -> the GPU/memory
+    # taxonomy. storage_connection_type + form_factor are left to
+    # text_clean (no clean single-taxonomy anchor — see target_schema
+    # open_taxonomy families). Paths resolve relative to USECASES_DIR
+    # (=repo usecases/), where the taxonomies already ship.
+    applies_to: [product_type, bus_type, interface_type, memory_type]
+    params:
+      case_insensitive: true
+      taxonomies:
+        products:
+          product_type:
+            path: products/input/schemamatching/Product_Type_Taxonomy.csv
+            columns: ['Category', 'Subcategory', 'Type']
+          bus_type:
+            path: products/input/schemamatching/Storage_Interface_Taxonomy.csv
+            columns: ['Interface Family', 'Generation', 'Variant']
+          interface_type:
+            path: products/input/schemamatching/Storage_Interface_Taxonomy.csv
+            columns: ['Interface Family', 'Generation', 'Variant']
+          memory_type:
+            path: products/input/schemamatching/GPU_Memory_Taxonomy.csv
+            columns: ['Memory Family', 'Generation', 'Variant']
 
 # LLM normalizer config (used by ``llm_only``).
 llm_normalizer:

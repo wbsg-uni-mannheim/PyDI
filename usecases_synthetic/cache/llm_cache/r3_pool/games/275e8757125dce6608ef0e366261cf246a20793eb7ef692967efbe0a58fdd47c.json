@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_16207|sales_7622|name=Hogs of War | platform=PlayStation | genres=Strategy,General | developer=Infogrames Sheffield | releaseYear=2000-01-01 | criticScore=62.0 | userScore=8.5 | ESRB=T||name=Hogs of War | platform=Playstation | genres=Strategy | developer=Infogrames Sheffield | publisher=Infogrames | releaseYear=2000-01-01 | criticScore=62 | userScore=8.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hogs of War | platform=PlayStation | genres=Strategy,General | developer=Infogrames Sheffield | releaseYear=2000-01-01 | criticScore=62.0 | userScore=8.5 | ESRB=T\nRecord B: name=Hogs of War | platform=Playstation | genres=Strategy | developer=Infogrames Sheffield | publisher=Infogrames | releaseYear=2000-01-01 | criticScore=62 | userScore=8.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

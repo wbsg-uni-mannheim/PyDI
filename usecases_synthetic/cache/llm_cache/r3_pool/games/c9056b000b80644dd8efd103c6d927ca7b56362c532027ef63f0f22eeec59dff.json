@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_5904|sales_2359|name=Hotel Dusk: Room 215 | platform=DS | genres=Adventure,General,General | developer=Cing | releaseYear=2007-01-01 | criticScore=78.0 | userScore=8.6 | ESRB=T||name=Hotel Dusk: Room 215 | platform=DS | genres=Adventure | developer=Cing | publisher=Nintendo | releaseYear=2007-01-01 | criticScore=78 | userScore=8.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hotel Dusk: Room 215 | platform=DS | genres=Adventure,General,General | developer=Cing | releaseYear=2007-01-01 | criticScore=78.0 | userScore=8.6 | ESRB=T\nRecord B: name=Hotel Dusk: Room 215 | platform=DS | genres=Adventure | developer=Cing | publisher=Nintendo | releaseYear=2007-01-01 | criticScore=78 | userScore=8.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

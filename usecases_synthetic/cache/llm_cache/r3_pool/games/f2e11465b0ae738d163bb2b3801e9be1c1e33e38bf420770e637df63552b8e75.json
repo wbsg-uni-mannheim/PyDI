@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_19169|metacritic_18156|name=Zapper: One Wicked Cricket | platform=Xbox | genres=Platform game | developer=Blitz Games | releaseYear=2002-01-01||name=Zapper | platform=Xbox | genres=Action,Platformer,3D | developer=Blitz Games | releaseYear=2002-01-01 | criticScore=55.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Zapper: One Wicked Cricket | platform=Xbox | genres=Platform game | developer=Blitz Games | releaseYear=2002-01-01\nRecord B: name=Zapper | platform=Xbox | genres=Action,Platformer,3D | developer=Blitz Games | releaseYear=2002-01-01 | criticScore=55.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

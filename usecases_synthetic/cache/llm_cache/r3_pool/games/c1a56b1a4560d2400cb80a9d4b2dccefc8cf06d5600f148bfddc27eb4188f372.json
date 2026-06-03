@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9601|sales_412|name=Pokemon Colosseum | platform=GameCube | genres=Role-Playing,Console-style RPG | developer=Genius Sonority Inc. | releaseYear=2004-01-01 | criticScore=73.0 | userScore=8.0 | ESRB=E||name=Pokémon Colosseum | platform=GameCube | genres=Role-Playing | developer=Genius Sonority Inc. | publisher=Nintendo | releaseYear=2003-01-01 | criticScore=73 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pokemon Colosseum | platform=GameCube | genres=Role-Playing,Console-style RPG | developer=Genius Sonority Inc. | releaseYear=2004-01-01 | criticScore=73.0 | userScore=8.0 | ESRB=E\nRecord B: name=Pokémon Colosseum | platform=GameCube | genres=Role-Playing | developer=Genius Sonority Inc. | publisher=Nintendo | releaseYear=2003-01-01 | criticScore=73 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

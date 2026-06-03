@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "fullcontact_437|http://dbpedia.org/resource/J._C._Penney|name=JCPenney | country=United States | city=Plano | founded=1902-01-01||name=J. C. Penney | country=United States | city=Plano, Texas | industry=Retail | founded=1902-01-01",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=JCPenney | country=United States | city=Plano | founded=1902-01-01\nRecord B: name=J. C. Penney | country=United States | city=Plano, Texas | industry=Retail | founded=1902-01-01\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

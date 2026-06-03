@@ -231,15 +231,12 @@ def _load_fusion_gold_ids(domain_config: DomainConfig) -> set[str]:
     Mirrors the ``protection._load_fusion_gold_ids`` semantics shared
     with K2.
     """
-    ids: set[str] = set()
-    for path in domain_config.fusion_paths():
-        if not path.exists():
-            continue
-        tree = ET.parse(path)
-        for id_elem in tree.getroot().iter("id"):
-            if id_elem.text:
-                ids.add(id_elem.text.strip())
-    return ids
+    # Delegate to the shared protection loader so XML (pre-2026 domains)
+    # and JSONL-by-DOI fusion gold (papers; mapped to per-DOI anchor source
+    # ids) are handled identically and in one place.
+    from usecases_synthetic.lib.protection import _load_fusion_protected_ids
+
+    return _load_fusion_protected_ids(domain_config.domain)
 
 
 def _load_pool_pairs(

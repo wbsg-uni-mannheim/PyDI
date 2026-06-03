@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Cholderton_and_District_Water_Company|http://www.forbes.com/companies/lincoln-national/|name=Cholderton and District Water Company | country=England | city=Cholderton | industry=Water supply | founded=1904-01-01||name=Lincoln National | country=United States of America | industry=Life & Health Insurance",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Cholderton and District Water Company | country=England | city=Cholderton | industry=Water supply | founded=1904-01-01\nRecord B: name=Lincoln National | country=United States of America | industry=Life & Health Insurance\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

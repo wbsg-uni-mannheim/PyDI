@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42049|sales_6427|name=Record of Agarest War | platform=PS3 | genres=Tactical role-playing game | developer=Laughing Jackal | releaseYear=2014-01-01||name=Record of Agarest War | platform=PS3 | genres=Role-Playing | developer=Compile Heart | publisher=Ghostlight | releaseYear=2007-01-01 | criticScore=67 | userScore=6.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Record of Agarest War | platform=PS3 | genres=Tactical role-playing game | developer=Laughing Jackal | releaseYear=2014-01-01\nRecord B: name=Record of Agarest War | platform=PS3 | genres=Role-Playing | developer=Compile Heart | publisher=Ghostlight | releaseYear=2007-01-01 | criticScore=67 | userScore=6.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

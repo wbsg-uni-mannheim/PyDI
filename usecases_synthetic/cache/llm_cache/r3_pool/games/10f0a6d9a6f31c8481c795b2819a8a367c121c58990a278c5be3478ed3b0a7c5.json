@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_60243|sales_7092|name=Company of Heroes: Tales of Valor | platform=Microsoft Windows | genres=Real-time strategy | developer=Relic Entertainment | releaseYear=2009-01-01||name=Company of Heroes: Tales of Valor | platform=PC | genres=Strategy | developer=Relic | publisher=THQ | releaseYear=2009-01-01 | criticScore=70 | userScore=7.2 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Company of Heroes: Tales of Valor | platform=Microsoft Windows | genres=Real-time strategy | developer=Relic Entertainment | releaseYear=2009-01-01\nRecord B: name=Company of Heroes: Tales of Valor | platform=PC | genres=Strategy | developer=Relic | publisher=THQ | releaseYear=2009-01-01 | criticScore=70 | userScore=7.2 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

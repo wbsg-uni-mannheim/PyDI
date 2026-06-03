@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_39456|metacritic_16094|name=Wings Over Europe | platform=Microsoft Windows | genres=Flight simulation | developer=Third Wire | releaseYear=2006-01-01||name=Wings Over Europe: Cold War Gone Hot | platform=PC | genres=Simulation,Flight,Modern Jet,Combat | developer=Third Wire | releaseYear=2006-01-01 | criticScore=62.0 | userScore=7.9 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wings Over Europe | platform=Microsoft Windows | genres=Flight simulation | developer=Third Wire | releaseYear=2006-01-01\nRecord B: name=Wings Over Europe: Cold War Gone Hot | platform=PC | genres=Simulation,Flight,Modern Jet,Combat | developer=Third Wire | releaseYear=2006-01-01 | criticScore=62.0 | userScore=7.9 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

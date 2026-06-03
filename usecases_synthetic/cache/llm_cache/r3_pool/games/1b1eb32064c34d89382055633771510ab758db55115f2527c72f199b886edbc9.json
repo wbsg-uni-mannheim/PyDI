@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_34476|metacritic_5310|name=Valiant Hearts: The Great War | platform=Microsoft Windows | genres=Adventure game | developer=Ubisoft Montpellier | releaseYear=2022-01-01||name=Valiant Hearts: The Great War | platform=PC | genres=Platformer,2D,Action,Platformer,2D | developer=Ubisoft Montpellier | releaseYear=2014-01-01 | criticScore=79.0 | userScore=8.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Valiant Hearts: The Great War | platform=Microsoft Windows | genres=Adventure game | developer=Ubisoft Montpellier | releaseYear=2022-01-01\nRecord B: name=Valiant Hearts: The Great War | platform=PC | genres=Platformer,2D,Action,Platformer,2D | developer=Ubisoft Montpellier | releaseYear=2014-01-01 | criticScore=79.0 | userScore=8.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

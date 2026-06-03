@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_18645|sales_3304|name=Banjo-Kazooie: Grunty's Revenge | platform=Mobile phone | genres=Adventure game | developer=Rare (company) | releaseYear=2003-01-01||name=Banjo-Kazooie: Grunty's Revenge | platform=Game Boy Advance | genres=Platform | developer=Rare Ltd. | publisher=THQ | releaseYear=2003-01-01 | criticScore=72 | userScore=8.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Banjo-Kazooie: Grunty's Revenge | platform=Mobile phone | genres=Adventure game | developer=Rare (company) | releaseYear=2003-01-01\nRecord B: name=Banjo-Kazooie: Grunty's Revenge | platform=Game Boy Advance | genres=Platform | developer=Rare Ltd. | publisher=THQ | releaseYear=2003-01-01 | criticScore=72 | userScore=8.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

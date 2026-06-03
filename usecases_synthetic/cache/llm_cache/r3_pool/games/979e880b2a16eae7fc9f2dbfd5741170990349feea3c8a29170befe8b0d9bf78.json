@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_6864|metacritic_6347|name=A World of Keflings | platform=Xbox 360 | genres=City-building game | developer=NinjaBee | releaseYear=2013-01-01||name=A Kingdom for Keflings | platform=Xbox 360 | genres=Strategy,Breeding/Constructing,General,Breeding/Constructing | developer=NinjaBee | releaseYear=2008-01-01 | criticScore=78.0 | userScore=7.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=A World of Keflings | platform=Xbox 360 | genres=City-building game | developer=NinjaBee | releaseYear=2013-01-01\nRecord B: name=A Kingdom for Keflings | platform=Xbox 360 | genres=Strategy,Breeding/Constructing,General,Breeding/Constructing | developer=NinjaBee | releaseYear=2008-01-01 | criticScore=78.0 | userScore=7.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

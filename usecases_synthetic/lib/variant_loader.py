@@ -35,7 +35,11 @@ from .domain_config import (
     data_root_for_domain,
     load_domain_config,
 )
-from .loaders import load_source, read_em_gold_csv
+from .loaders import (
+    em_gold_candidates,
+    load_source,
+    read_em_gold_pair,
+)
 
 VALID_BUNDLE_LEVELS: list[str] = ["baseline", *VALID_LEVELS]
 
@@ -348,24 +352,19 @@ def _load_em_gold(
     """
     out: dict[tuple[str, str], pd.DataFrame] = {}
     for pair in source_pairs:
-        src1, src2 = pair
         for split in ("all", "test"):
-            fwd_path = em_dir / f"{src1}_2_{src2}_{split}.csv"
-            rev_path = em_dir / f"{src2}_2_{src1}_{split}.csv"
-            if fwd_path.exists():
-                out[pair] = read_em_gold_csv(fwd_path)
-                break
-            if rev_path.exists():
-                df = read_em_gold_csv(rev_path)
-                # Swap id1<->id2 so id1 belongs to src1 (matches the
-                # declared pair direction downstream consumers expect).
-                out[pair] = pd.DataFrame(
-                    {
-                        "id1": df["id2"].values,
-                        "id2": df["id1"].values,
-                        "label": df["label"].values,
-                    }
-                )
+            match = next(
+                (
+                    (path, swap)
+                    for path, swap in em_gold_candidates(em_dir, pair, split)
+                    if path.exists()
+                ),
+                None,
+            )
+            if match is not None:
+                # read_em_gold_pair swaps id1<->id2 for reverse-direction
+                # files so id1 always belongs to the pair's src1.
+                out[pair] = read_em_gold_pair(*match)
                 break
     return out
 
@@ -465,9 +464,16 @@ def _load_em_splits(
     for pair in source_pairs:
         per_split: dict[str, pd.DataFrame] = {}
         for split in EM_SPLITS:
-            path = _em_file(em_dir, pair, split)
-            if path.exists():
-                per_split[split] = read_em_gold_csv(path)
+            match = next(
+                (
+                    (path, swap)
+                    for path, swap in em_gold_candidates(em_dir, pair, split)
+                    if path.exists()
+                ),
+                None,
+            )
+            if match is not None:
+                per_split[split] = read_em_gold_pair(*match)
         if per_split:
             out[pair] = per_split
     return out
@@ -485,29 +491,55 @@ def _load_fusion_xml(path: Path, name: str) -> pd.DataFrame:
     return df
 
 
+def _load_fusion_file(path: Path, name: str) -> pd.DataFrame:
+    """Load a fusion gold file, dispatching on file extension.
+
+    ``.xml`` (every pre-2026 domain) loads through PyDI's XML reader with
+    the aggregate flag, exactly as before. The 2026 papers domain ships
+    its fusion gold as JSON-lines (``fusion_test.jsonl`` /
+    ``fusion_val.jsonl``: one flat fused record per line, joined to fused
+    output on ``doi``), read with ``lines=True``; a plain ``.json`` array
+    is also accepted. Non-XML gold carries no per-attribute
+    ``provenance`` (the papers notebook reconstructs cluster membership
+    from the EM correspondences at eval time), so source-attribution
+    fusion metrics are unavailable for such domains — value-correctness
+    by the configured ``gold_id_column`` join still works.
+    """
+    suffix = path.suffix.lower()
+    if suffix == ".jsonl":
+        df = load_json(path, name=name, lines=True)
+    elif suffix == ".json":
+        df = load_json(path, name=name)
+    else:
+        return _load_fusion_xml(path, name)
+    df.attrs["dataset_name"] = name
+    return df
+
+
 def _load_fusion(
     fusion_dir: Path,
     test_filename: str = "test_set.xml",
     validation_filename: str = "validation_set.xml",
 ) -> tuple[pd.DataFrame, pd.DataFrame | None]:
-    """Load the fusion test (gold) + validation (optional) XML files.
+    """Load the fusion test (gold) + validation (optional) files.
 
     ``test_filename`` / ``validation_filename`` default to the canonical
     variant-directory names. ``load_variant`` overrides them with the
     domain config's ``fusion_files`` block when ``level == "baseline"``
-    so the source-side ``*_set_final.xml`` for games + music is picked
-    up; packaged variants always carry the canonical names per
-    ``package_variant.copy_fusion``.
+    so the source-side ``*_set_final.xml`` for games + music (or the
+    papers ``fusion_{test,val}.jsonl``) is picked up; packaged variants
+    always carry the canonical names per ``package_variant.copy_fusion``.
+    Format is chosen per file extension (see :func:`_load_fusion_file`).
     """
     test_path = fusion_dir / test_filename
     if not test_path.exists():
         raise FileNotFoundError(f"Fusion gold missing: {test_path}")
-    gold = _load_fusion_xml(test_path, "fusion_test_set")
+    gold = _load_fusion_file(test_path, "fusion_test_set")
 
     val_path = fusion_dir / validation_filename
     val: pd.DataFrame | None = None
     if val_path.exists():
-        val = _load_fusion_xml(val_path, "fusion_validation_set")
+        val = _load_fusion_file(val_path, "fusion_validation_set")
     return gold, val
 
 

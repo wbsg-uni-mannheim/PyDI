@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Brunswick_Boat_Group|http://www.forbes.com/companies/brunswick/|name=Brunswick Boat Group | country=United States | city=Knoxville, Tennessee | founded=2000-01-01||name=Brunswick | country=United States of America | industry=Recreational Products",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Brunswick Boat Group | country=United States | city=Knoxville, Tennessee | founded=2000-01-01\nRecord B: name=Brunswick | country=United States of America | industry=Recreational Products\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

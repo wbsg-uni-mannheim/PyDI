@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Waltham_International|http://www.forbes.com/companies/tyco-international/|name=Waltham International | country=Switzerland | city=Marin-Epagnier | industry=List of watch manufacturers | founded=1850-01-01||name=Tyco International | country=Switzerland | industry=Security Systems",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Waltham International | country=Switzerland | city=Marin-Epagnier | industry=List of watch manufacturers | founded=1850-01-01\nRecord B: name=Tyco International | country=Switzerland | industry=Security Systems\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42385|sales_7181|name=Harry Potter and the Order of the Phoenix (video game) | platform=Microsoft Windows | genres=Action-adventure game | developer=EA UK | releaseYear=2007-01-01||name=Harry Potter and the Order of the Phoenix | platform=PC | genres=Action | developer=EA Games | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=63 | userScore=7.1 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Harry Potter and the Order of the Phoenix (video game) | platform=Microsoft Windows | genres=Action-adventure game | developer=EA UK | releaseYear=2007-01-01\nRecord B: name=Harry Potter and the Order of the Phoenix | platform=PC | genres=Action | developer=EA Games | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=63 | userScore=7.1 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

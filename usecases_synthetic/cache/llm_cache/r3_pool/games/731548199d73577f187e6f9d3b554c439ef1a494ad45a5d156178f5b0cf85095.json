@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49491|metacritic_5043|name=Nancy Drew: Last Train to Blue Moon Canyon | platform=Microsoft Windows | genres=Adventure game | developer=Her Interactive | releaseYear=2005-01-01||name=Nancy Drew: Secret of the Old Clock | platform=PC | genres=Adventure,First-Person,Point-and-Click,Modern,Modern | developer=Her Interactive | releaseYear=2005-01-01 | criticScore=80.0 | userScore=7.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Nancy Drew: Last Train to Blue Moon Canyon | platform=Microsoft Windows | genres=Adventure game | developer=Her Interactive | releaseYear=2005-01-01\nRecord B: name=Nancy Drew: Secret of the Old Clock | platform=PC | genres=Adventure,First-Person,Point-and-Click,Modern,Modern | developer=Her Interactive | releaseYear=2005-01-01 | criticScore=80.0 | userScore=7.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

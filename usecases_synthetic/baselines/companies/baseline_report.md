@@ -1,23 +1,25 @@
 # Baseline report - companies
 
-_Generated at 2026-05-12T21:17:35.432781+00:00_
+_Generated at 2026-06-02T15:28:49.052198+00:00_
 
 ## Stage: fusion
 
 ### FUSION - aggregated
 | metric | value |
 |---|---|
-| overall_accuracy | 0.8810 |
-| overall_mean_accuracy | 0.7205 |
-| overall_spread | 0.2857 |
+| best_member_macro_accuracy | 0.4577 |
+| macro_accuracy | 0.4037 |
+| max_accuracy | 0.4577 |
+| min_accuracy | 0.3534 |
+| overall_accuracy | 0.4577 |
 
 ### FUSION - per attribute
-| attribute | accusim | best_strategy_accuracy | casefusion | earliest | favour_forbes | fusionquery | huber_m_estimator | intersection | intersection_k_sources | llm_judge | longest_string | ltm | maximum | mean_strategy_accuracy | median | median_of_means | most_complete | prefer_higher_trust | shortest_string | spread | trimmed_mean | truthfinder | union | voting |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| assets |  | 0.9444 |  |  |  | 0.9444 | 0.6111 |  |  |  |  |  | 0.7222 | 0.6825 | 0.6111 | 0.6111 |  | 0.6667 |  | 0.3333 | 0.6111 |  |  |  |
-| city |  | 0.8333 |  |  |  |  |  |  |  | 0.6111 |  |  |  | 0.6889 |  |  |  | 0.7222 | 0.8333 | 0.2778 |  | 0.7222 |  | 0.5556 |
-| country |  | 1.0000 |  |  | 0.9444 |  |  |  |  | 0.6111 |  |  |  | 0.8222 |  |  |  | 0.6111 |  | 0.3889 |  | 1.0000 |  | 0.9444 |
-| founded |  | 0.9444 |  | 0.9444 |  |  |  |  |  |  |  |  |  | 0.9444 |  |  |  | 0.9444 |  | 0.0000 |  |  |  | 0.9444 |
-| keypeople |  | 0.6667 |  |  |  |  |  | 0.2222 | 0.2222 |  |  | 0.5556 |  | 0.4815 |  |  |  | 0.6667 |  | 0.4444 |  |  | 0.6667 | 0.5556 |
-| name | 1.0000 | 1.0000 | 0.8333 |  |  | 0.7778 |  |  |  | 0.8333 | 0.8333 |  |  | 0.8681 |  |  | 0.8333 | 0.8333 |  | 0.2222 |  |  |  | 1.0000 |
-| revenue |  | 0.7778 |  |  |  | 0.7778 | 0.4444 |  |  |  |  |  | 0.7222 | 0.5556 | 0.4444 | 0.4444 |  | 0.6111 |  | 0.3333 | 0.4444 |  |  |  |
+| attribute | accusim_only | best_member_accuracy | casefusion_only | fusionquery_only | llm_only | ltm_only | mean_member_accuracy | prefer_higher_trust_only | pydi_per_attribute_optimal | truthfinder_only | voting_only |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| assets | 0.1900 | 0.1900 | 0.1500 | 0.1500 | 0.1400 | 0.1500 | 0.1578 | 0.1500 | 0.1500 | 0.1500 | 0.1900 |
+| city | 0.4100 | 0.5000 | 0.4100 | 0.4500 | 0.4800 | 0.4600 | 0.4478 | 0.4700 | 0.5000 | 0.4400 | 0.4100 |
+| country | 0.5800 | 0.8400 | 0.6800 | 0.6000 | 0.6600 | 0.6200 | 0.6544 | 0.8400 | 0.6900 | 0.5300 | 0.6900 |
+| founded | 0.5700 | 0.5900 | 0.5900 | 0.5400 | 0.5800 | 0.5500 | 0.5722 | 0.5500 | 0.5900 | 0.5900 | 0.5900 |
+| keypeople | 0.1429 | 0.1538 | 0.1538 | 0.1538 | 0.1429 | 0.1429 | 0.1490 | 0.1538 | 0.1538 | 0.1538 | 0.1429 |
+| name | 0.8500 | 0.8600 | 0.6200 | 0.4000 | 0.6300 | 0.6800 | 0.6711 | 0.8600 | 0.8600 | 0.4500 | 0.6900 |
+| revenue | 0.1700 | 0.1800 | 0.1800 | 0.1800 | 0.1400 | 0.1800 | 0.1733 | 0.1800 | 0.1800 | 0.1800 | 0.1700 |

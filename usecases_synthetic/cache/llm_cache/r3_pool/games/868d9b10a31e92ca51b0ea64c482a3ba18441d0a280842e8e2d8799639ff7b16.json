@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_5806|sales_3859|name=Oddworld: Stranger's Wrath | platform=Xbox | genres=Action-adventure game | developer=Just Add Water (company) | releaseYear=2022-01-01||name=Oddworld: Stranger's Wrath | platform=Xbox | genres=Adventure | developer=Oddworld Inhabitants | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=88 | userScore=9.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Oddworld: Stranger's Wrath | platform=Xbox | genres=Action-adventure game | developer=Just Add Water (company) | releaseYear=2022-01-01\nRecord B: name=Oddworld: Stranger's Wrath | platform=Xbox | genres=Adventure | developer=Oddworld Inhabitants | publisher=Electronic Arts | releaseYear=2005-01-01 | criticScore=88 | userScore=9.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

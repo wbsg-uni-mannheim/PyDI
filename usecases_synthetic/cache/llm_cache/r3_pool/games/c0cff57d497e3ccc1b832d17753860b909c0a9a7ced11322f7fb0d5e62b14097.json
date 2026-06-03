@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21455|metacritic_542|name=Castlevania: Symphony of the Night | platform=Xbox 360 | genres=Action role-playing | developer=Konami Computer Entertainment Tokyo | releaseYear=2007-01-01||name=Castlevania: Symphony of the Night | platform=Xbox 360 | genres=Action,Role-Playing,Platformer,Platformer,Action RPG,2D,2D,,Metroidvania | developer=Digital Eclipse | releaseYear=2007-01-01 | criticScore=89.0 | userScore=8.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Castlevania: Symphony of the Night | platform=Xbox 360 | genres=Action role-playing | developer=Konami Computer Entertainment Tokyo | releaseYear=2007-01-01\nRecord B: name=Castlevania: Symphony of the Night | platform=Xbox 360 | genres=Action,Role-Playing,Platformer,Platformer,Action RPG,2D,2D,,Metroidvania | developer=Digital Eclipse | releaseYear=2007-01-01 | criticScore=89.0 | userScore=8.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

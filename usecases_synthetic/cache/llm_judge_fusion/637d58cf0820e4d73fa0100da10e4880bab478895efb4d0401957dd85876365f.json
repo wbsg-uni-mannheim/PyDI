@@ -1,0 +1,26 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Athens"
+    },
+    {
+      "source": "dbpedia",
+      "value": "Skopje"
+    },
+    {
+      "source": "fullcontact",
+      "value": "ATHENS"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "normalization",
+    "reasoning": "Two candidates normalize to the same city name, so Athens is the canonical form.",
+    "value": "Athens"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Athens\",\"operation\":\"normalization\",\"confidence\":0.86,\"reasoning\":\"Two candidates normalize to the same city name, so Athens is the canonical form.\"}"
+}

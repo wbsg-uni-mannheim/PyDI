@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46243|sales_7375|name=Spectral Souls: Resurrection of the Ethereal Empires | platform=Android (operating system) | genres=Tactical role playing game | developer=Idea Factory | releaseYear=2005-01-01||name=Spectral Souls: Resurrection of the Ethereal Empires | platform=Playstation Portable | genres=Role-Playing | developer=Neverland, Idea Factory | publisher=Idea Factory | releaseYear=2005-01-01 | criticScore=47 | userScore=8.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Spectral Souls: Resurrection of the Ethereal Empires | platform=Android (operating system) | genres=Tactical role playing game | developer=Idea Factory | releaseYear=2005-01-01\nRecord B: name=Spectral Souls: Resurrection of the Ethereal Empires | platform=Playstation Portable | genres=Role-Playing | developer=Neverland, Idea Factory | publisher=Idea Factory | releaseYear=2005-01-01 | criticScore=47 | userScore=8.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

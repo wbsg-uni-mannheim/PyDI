@@ -1,31 +1,31 @@
 {
   "cluster_size_distribution": {
     "available": true,
-    "max_size": 11,
-    "n_components": 1088,
-    "p95_size": 3,
-    "p99_size": 4,
+    "max_size": 14,
+    "n_components": 1186,
+    "p95_size": 4,
+    "p99_size": 5,
     "top_sizes": [
-      11,
-      5,
-      4,
-      4,
-      4,
-      4,
-      4,
-      4,
-      4,
-      4
+      14,
+      7,
+      7,
+      7,
+      7,
+      6,
+      6,
+      6,
+      6,
+      6
     ]
   },
   "delta_estimation": {
     "cap": 0.2,
     "delta_used": 0.2,
     "floor": 0.05,
-    "n_misclassified": 26,
+    "n_misclassified": 46,
     "n_predictions": 599,
     "percentile": 90.0,
-    "raw_percentile": 0.4955871507991106
+    "raw_percentile": 0.4998567700386047
   },
   "ditto_checkpoint": "/Users/ralph/Dev/PyDI/cache/ditto_checkpoints/companies/best",
   "ditto_threshold": 0.5,
@@ -39,28 +39,28 @@
       },
       "buckets": {
         "a_gold": 0,
-        "b_agreement": 109,
-        "c_dropped_confident": 582,
-        "c_dropped_llm": 16,
-        "c_kept_confident": 1,
-        "c_kept_llm": 54,
-        "c_total": 653
+        "b_agreement": 260,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 8907,
+        "c_kept_confident": 0,
+        "c_kept_llm": 72,
+        "c_total": 8979
       },
       "closure": {
         "closure_only_pair": true,
-        "ditto_added": 82,
+        "ditto_added": 113641,
         "human_added": 758,
         "n_ditto_pos_pre_closure": 0,
         "n_human_pre_closure": 0
       },
       "delta_used": 0.2,
       "n_candidates": 0,
-      "n_ditto_positive_at_theta": 113,
+      "n_ditto_positive_at_theta": 8741,
       "n_gold_positives": 0,
       "n_human_pairs_expanded": 758,
       "n_left": 10085,
       "n_right": 1931,
-      "pool_size": 164,
+      "pool_size": 332,
       "sources": [
         "dbpedia",
         "fullcontact"
@@ -110,28 +110,28 @@
       },
       "buckets": {
         "a_gold": 393,
-        "b_agreement": 28,
-        "c_dropped_confident": 907,
-        "c_dropped_llm": 67,
+        "b_agreement": 191,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 8306,
         "c_kept_confident": 0,
-        "c_kept_llm": 55,
-        "c_total": 1029
+        "c_kept_llm": 61,
+        "c_total": 8367
       },
       "closure": {
         "closure_only_pair": false,
-        "ditto_added": 0,
+        "ditto_added": 240706,
         "human_added": 0,
-        "n_ditto_pos_pre_closure": 240,
+        "n_ditto_pos_pre_closure": 1847,
         "n_human_pre_closure": 1400
       },
       "delta_used": 0.2,
       "n_candidates": 129870,
-      "n_ditto_positive_at_theta": 240,
+      "n_ditto_positive_at_theta": 8083,
       "n_gold_positives": 393,
       "n_human_pairs_expanded": 1400,
       "n_left": 2000,
       "n_right": 10085,
-      "pool_size": 476,
+      "pool_size": 645,
       "sources": [
         "forbes",
         "dbpedia"
@@ -181,42 +181,42 @@
       },
       "buckets": {
         "a_gold": 819,
-        "b_agreement": 13,
-        "c_dropped_confident": 328,
-        "c_dropped_llm": 34,
+        "b_agreement": 80,
+        "c_dropped_confident": 0,
+        "c_dropped_llm": 6173,
         "c_kept_confident": 0,
-        "c_kept_llm": 28,
-        "c_total": 390
+        "c_kept_llm": 34,
+        "c_total": 6207
       },
       "closure": {
         "closure_only_pair": false,
-        "ditto_added": 1,
+        "ditto_added": 103904,
         "human_added": 0,
-        "n_ditto_pos_pre_closure": 424,
+        "n_ditto_pos_pre_closure": 1420,
         "n_human_pre_closure": 1094
       },
       "delta_used": 0.2,
       "n_candidates": 20106,
-      "n_ditto_positive_at_theta": 424,
+      "n_ditto_positive_at_theta": 6771,
       "n_gold_positives": 819,
       "n_human_pairs_expanded": 1094,
       "n_left": 2000,
       "n_right": 1931,
-      "pool_size": 860,
+      "pool_size": 933,
       "sources": [
         "forbes",
         "fullcontact"
       ]
     }
   },
-  "pool_size": 1500,
+  "pool_size": 1910,
   "transitive_closure": {
     "ditto_added_per_pair": {
-      "dbpedia__forbes": 0,
-      "dbpedia__fullcontact": 82,
-      "forbes__fullcontact": 1
+      "dbpedia__forbes": 240706,
+      "dbpedia__fullcontact": 113641,
+      "forbes__fullcontact": 103904
     },
-    "extra_ditto_calls": 769,
+    "extra_ditto_calls": 447330,
     "human_added_per_pair": {
       "dbpedia__forbes": 0,
       "dbpedia__fullcontact": 758,

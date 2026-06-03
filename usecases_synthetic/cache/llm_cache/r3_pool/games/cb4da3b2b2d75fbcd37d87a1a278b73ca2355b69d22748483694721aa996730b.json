@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21732|sales_130|name=New Super Mario Bros. U | platform=Wii U | genres=Platform game | developer=Nintendo EAD | releaseYear=2012-01-01||name=New Super Mario Bros. U | platform=WiiU | genres=Platform | developer=Nintendo | publisher=Nintendo | releaseYear=2012-01-01 | criticScore=84 | userScore=8.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=New Super Mario Bros. U | platform=Wii U | genres=Platform game | developer=Nintendo EAD | releaseYear=2012-01-01\nRecord B: name=New Super Mario Bros. U | platform=WiiU | genres=Platform | developer=Nintendo | publisher=Nintendo | releaseYear=2012-01-01 | criticScore=84 | userScore=8.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

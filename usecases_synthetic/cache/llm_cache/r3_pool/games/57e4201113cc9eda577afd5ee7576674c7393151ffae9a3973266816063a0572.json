@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_37241|metacritic_565|name=Bowser's Fury | platform=Switch | genres=Action-adventure | developer=Nintendo EPD | releaseYear=2021-01-01||name=Super Mario 3D World + Bowser's Fury | platform=Switch | genres=Action,Platformer,3D | developer=Nintendo | releaseYear=2021-01-01 | criticScore=89.0 | userScore=8.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bowser's Fury | platform=Switch | genres=Action-adventure | developer=Nintendo EPD | releaseYear=2021-01-01\nRecord B: name=Super Mario 3D World + Bowser's Fury | platform=Switch | genres=Action,Platformer,3D | developer=Nintendo | releaseYear=2021-01-01 | criticScore=89.0 | userScore=8.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

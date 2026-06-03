@@ -1,0 +1,26 @@
+{
+  "attribute": "name",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "Georgia-Pacific"
+    },
+    {
+      "source": "forbes",
+      "value": "MeadWestvaco"
+    },
+    {
+      "source": "fullcontact",
+      "value": "MWV Netherlands B.V."
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.78,
+    "operation": "verbatim_pick",
+    "reasoning": "DBpedia provides a plausible canonical company name, while the other candidates appear to be alternate or subsidiary-related names.",
+    "value": "Georgia-Pacific"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Georgia-Pacific\",\"operation\":\"verbatim_pick\",\"confidence\":0.78,\"reasoning\":\"DBpedia provides a plausible canonical company name, while the other candidates appear to be alternate or subsidiary-related names.\"}"
+}

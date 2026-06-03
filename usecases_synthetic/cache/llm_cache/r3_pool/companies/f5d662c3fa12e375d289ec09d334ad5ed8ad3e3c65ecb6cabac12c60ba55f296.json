@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Winklevoss_Capital_Management|http://www.forbes.com/companies/annaly-capital-management/|name=Winklevoss Capital Management | country=United States | city=New YorkFlatiron District | industry=Venture capital | founded=2012-01-01||name=Annaly Capital Management | country=United States of America | industry=Real Estate",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Winklevoss Capital Management | country=United States | city=New YorkFlatiron District | industry=Venture capital | founded=2012-01-01\nRecord B: name=Annaly Capital Management | country=United States of America | industry=Real Estate\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

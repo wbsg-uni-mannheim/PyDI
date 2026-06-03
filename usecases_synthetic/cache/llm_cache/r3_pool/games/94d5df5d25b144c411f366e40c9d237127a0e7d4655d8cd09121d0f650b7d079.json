@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_17345|sales_5220|name=Shining Soul | platform=Game Boy Advance | genres=Role-Playing,Action RPG | developer=Next Entertainment | releaseYear=2003-01-01 | criticScore=58.0 | userScore=8.0 | ESRB=E||name=Shining Soul | platform=Game Boy Advance | genres=Role-Playing | developer=Next Entertainment | publisher=Atari | releaseYear=2002-01-01 | criticScore=58 | userScore=8.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shining Soul | platform=Game Boy Advance | genres=Role-Playing,Action RPG | developer=Next Entertainment | releaseYear=2003-01-01 | criticScore=58.0 | userScore=8.0 | ESRB=E\nRecord B: name=Shining Soul | platform=Game Boy Advance | genres=Role-Playing | developer=Next Entertainment | publisher=Atari | releaseYear=2002-01-01 | criticScore=58 | userScore=8.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -195,11 +195,48 @@ _PRODUCTS_STACK = _DomainStack(
 )
 
 
+_PAPERS_STACK = _DomainStack(
+    domain="papers",
+    # papers_workflow_minimal.ipynb "Version_5" global trust: dblp=1,
+    # crossref=3, open_alex=1. crossref is therefore the canonical
+    # cluster representative (highest trust); per-attribute trust maps
+    # (e.g. keywords prefers open_alex) are applied in the fusion
+    # strategy, not here.
+    trust_scores={"dblp": 1, "crossref": 3, "open_alex": 1},
+    # The 11 attributes the notebook's Version_5 strategy fuses. doi /
+    # id are the join key + record id (never fused/perturbed); publisher
+    # and cited_by_count are intentionally omitted -- the notebook drops
+    # them before fusion (no per-attribute fuser), so silver does not
+    # protect those cells and K1/K6 noise on them stays unconstrained.
+    attributes=(
+        "type",
+        "title",
+        "authors",
+        "publication_year",
+        "journal",
+        "keywords",
+        "volume",
+        "issue",
+        "first_page",
+        "last_page",
+        "referenced_works_count",
+    ),
+    # Source ids are minted as "<source>-NNNNN" (dash); the prefix carries
+    # the trailing dash so startswith() is unambiguous across sources.
+    id_prefix_to_source={
+        "dblp-": "dblp",
+        "crossref-": "crossref",
+        "open_alex-": "open_alex",
+    },
+)
+
+
 _STACKS: dict[str, _DomainStack] = {
     "music": _MUSIC_STACK,
     "games": _GAMES_STACK,
     "companies": _COMPANIES_STACK,
     "products": _PRODUCTS_STACK,
+    "papers": _PAPERS_STACK,
 }
 
 
@@ -542,12 +579,13 @@ def _normalize_companies_sources(
     Note on the ``founders`` vs ``keypeople`` divergence: the notebook
     runs an LLM-based schema match that retargets ``keypeople_name``
     to the schema's ``founders`` column; ``sm_mapping_gold.csv``
-    instead targets ``keypeople`` (and treats fullcontact ``Attribute_5``
-    as ``industry``, not as a founders source). The silver uses the
-    synthetic-pipeline gold mapping so the per-attribute names line up
-    with :data:`protection._DEFAULT_KIND_BY_DOMAIN_ATTR` — keypeople
-    is therefore dbpedia-only in this silver, not a multi-source
-    fusion of dbpedia + fullcontact as in the notebook.
+    instead targets ``keypeople``. As of R10-N (2026-06-02) the SM gold
+    correctly maps fullcontact ``Attribute_5`` to ``keypeople`` (the
+    column holds people-names, not industry), so the silver's
+    ``keypeople`` is a multi-source union of dbpedia ``keypeople_name``
+    + fullcontact ``Attribute_5``, matching the notebook. The silver
+    uses the synthetic-pipeline gold mapping so the per-attribute names
+    line up with :data:`protection._DEFAULT_KIND_BY_DOMAIN_ATTR`.
     """
     out = {name: df.copy() for name, df in sources.items()}
 
@@ -587,15 +625,46 @@ def _normalize_companies_sources(
 def _normalize_products_sources(
     sources: dict[str, pd.DataFrame],
 ) -> dict[str, pd.DataFrame]:
-    """Pass-through for products.
+    """Canonicalize the per-source-native products schemas via sm_mapping.
 
-    The notebook
-    (``products_workflow_minimal.ipynb`` cell 42abf5c3) loads sources
-    directly from ``data_cleaned_final/dataset_<n>_normalized.json``
-    with no further schema translation or normalization step — the data
-    is already in canonical form. Mirror that behaviour: copy each
-    frame, stamp ``dataset_name`` so the fusion engine can identify the
-    source, and return.
+    Pre-2026-06-02 the synthetic products sources shipped already-canonical
+    column names (the notebook loads pre-normalized
+    ``dataset_<n>_normalized.json``), so this was a pass-through. After the
+    source-native schema adoption (2026-06-02) the four sources each carry
+    a distinct native vocabulary (products_1 ``manufacturer/product_name/
+    list_price``; products_2 ``brandName/name/priceAmount``; etc.), so the
+    "already canonical" assumption no longer holds. Mirror the games/
+    companies pattern: rename each source's native columns to the canonical
+    schema via the per-source ``sm_mapping_gold.csv`` slice.
+
+    Per C9 the silver must replicate exactly the notebook's pre-fusion
+    normalization. The products notebook applies NONE (it loads canonical
+    data directly), and the native data is a pure rename of that same data
+    (identical values), so the faithful replication is a column rename with
+    no further value normalization.
+    """
+    out: dict[str, pd.DataFrame] = {}
+    for name, df in sources.items():
+        mapping = _load_sm_mapping("products", name)
+        rename = dict(zip(mapping["source_column"], mapping["target_column"]))
+        copy = df.rename(columns=rename)
+        copy.attrs = dict(df.attrs)
+        copy.attrs["dataset_name"] = name
+        out[name] = copy
+    return out
+
+
+def _normalize_papers_sources(
+    sources: dict[str, pd.DataFrame],
+) -> dict[str, pd.DataFrame]:
+    """Pass-through normalization for papers (data already target-shaped).
+
+    Unlike the pre-2026 domains, the papers sources ship in the canonical
+    target schema with native Python types already in place after load:
+    ``authors`` is a list, ``publication_year`` is an integer, and the
+    count/page columns are numeric. The Version_5 notebook applies no
+    pre-fusion value normalization on top of that, so the faithful C9
+    replication is an identity copy that only re-stamps ``dataset_name``.
     """
     out: dict[str, pd.DataFrame] = {}
     for name, df in sources.items():
@@ -613,6 +682,7 @@ _NORMALIZERS: dict[
     "games": _normalize_games_sources,
     "companies": _normalize_companies_sources,
     "products": _normalize_products_sources,
+    "papers": _normalize_papers_sources,
 }
 
 
@@ -763,11 +833,67 @@ def _build_products_strategy() -> DataFusionStrategy:
     return strategy
 
 
+def _build_papers_strategy() -> DataFusionStrategy:
+    """Mirror the papers ``Version_5`` fusion strategy from
+    ``papers_workflow_minimal.ipynb``.
+
+    Per-attribute fusers (notebook authoritative):
+
+    - **Identity / categorical** (``voting``): type, journal, volume,
+      issue, first_page.
+    - **Title** (``longest_string``): the disambiguating free-text field.
+    - **publication_year** (``maximum``): the notebook uses
+      ``most_recent``; on a bare 4-digit integer year that is numerically
+      identical to ``maximum`` and avoids date-parsing fragility, so the
+      silver target matches the notebook's fused value.
+    - **Trust-routed** (``prefer_higher_trust`` with an explicit
+      per-attribute ``trust_map``): authors / last_page /
+      referenced_works_count prefer crossref (global trust); keywords
+      prefer open_alex (the notebook's keyword authority).
+
+    ``publisher`` and ``cited_by_count`` are intentionally absent -- the
+    notebook drops them before fusion.
+    """
+    from PyDI.fusion import (
+        DataFusionStrategy as _Strategy,
+        longest_string,
+        maximum,
+        prefer_higher_trust,
+        voting,
+    )
+
+    # Global trust (Version_5): crossref is the authority; keywords are
+    # the one attribute where open_alex wins.
+    global_trust = {"dblp": 1, "crossref": 3, "open_alex": 1}
+    keywords_trust = {"dblp": 1, "crossref": 1, "open_alex": 3}
+
+    strategy = _Strategy("papers_silver_strategy")
+    strategy.add_attribute_fuser("type", voting)
+    strategy.add_attribute_fuser("title", longest_string)
+    strategy.add_attribute_fuser("authors", prefer_higher_trust, trust_map=global_trust)
+    strategy.add_attribute_fuser("publication_year", maximum)
+    strategy.add_attribute_fuser("journal", voting)
+    strategy.add_attribute_fuser(
+        "keywords", prefer_higher_trust, trust_map=keywords_trust
+    )
+    strategy.add_attribute_fuser("volume", voting)
+    strategy.add_attribute_fuser("issue", voting)
+    strategy.add_attribute_fuser("first_page", voting)
+    strategy.add_attribute_fuser(
+        "last_page", prefer_higher_trust, trust_map=global_trust
+    )
+    strategy.add_attribute_fuser(
+        "referenced_works_count", prefer_higher_trust, trust_map=global_trust
+    )
+    return strategy
+
+
 _STRATEGY_BUILDERS: dict[str, Callable[[], DataFusionStrategy]] = {
     "music": _build_music_strategy,
     "games": _build_games_strategy,
     "companies": _build_companies_strategy,
     "products": _build_products_strategy,
+    "papers": _build_papers_strategy,
 }
 
 

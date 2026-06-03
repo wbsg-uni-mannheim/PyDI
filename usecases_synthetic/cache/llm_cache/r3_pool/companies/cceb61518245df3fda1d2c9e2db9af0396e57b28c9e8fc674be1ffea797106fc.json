@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Dana_Gas|http://www.forbes.com/companies/osaka-gas/|name=Dana Gas | country=United Arab Emirates | city=Sharjah (city) | industry=Petroleum industry | founded=2005-01-01||name=Osaka Gas | country=Japan | industry=Natural Gas Utilities",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dana Gas | country=United Arab Emirates | city=Sharjah (city) | industry=Petroleum industry | founded=2005-01-01\nRecord B: name=Osaka Gas | country=Japan | industry=Natural Gas Utilities\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

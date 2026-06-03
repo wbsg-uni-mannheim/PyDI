@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_29750|metacritic_11885|name=Shrek 2 (video game) | platform=GameCube | genres=Platform game | developer=Luxoflux | releaseYear=2004-01-01||name=Shrek 2 | platform=GameCube | genres=Action,Platformer,3D | developer=Luxoflux, Inc. | releaseYear=2004-01-01 | criticScore=70.0 | userScore=5.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Shrek 2 (video game) | platform=GameCube | genres=Platform game | developer=Luxoflux | releaseYear=2004-01-01\nRecord B: name=Shrek 2 | platform=GameCube | genres=Action,Platformer,3D | developer=Luxoflux, Inc. | releaseYear=2004-01-01 | criticScore=70.0 | userScore=5.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

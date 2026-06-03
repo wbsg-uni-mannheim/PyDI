@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_62005|metacritic_7211|name=De Blob 2 | platform=Xbox 360 | genres=Puzzle video game | developer=Blue Tongue Entertainment | releaseYear=2018-01-01||name=de Blob 2 | platform=Xbox 360 | genres=Action,Adventure,General,Platformer,Platformer,3D,3D | developer=Blue Tongue Entertainment | releaseYear=2011-01-01 | criticScore=77.0 | userScore=7.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=De Blob 2 | platform=Xbox 360 | genres=Puzzle video game | developer=Blue Tongue Entertainment | releaseYear=2018-01-01\nRecord B: name=de Blob 2 | platform=Xbox 360 | genres=Action,Adventure,General,Platformer,Platformer,3D,3D | developer=Blue Tongue Entertainment | releaseYear=2011-01-01 | criticScore=77.0 | userScore=7.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

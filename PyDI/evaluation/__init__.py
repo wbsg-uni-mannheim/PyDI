@@ -28,7 +28,7 @@ the human-readable reference and
 from __future__ import annotations
 
 from .cell_provenance import build_cell_provenance_from_fused
-from .panel import E2EPanel, compute_e2e_panel
+from .panel import E2EPanel, compute_e2e_panel, write_usecase_metrics
 from .silver_standard import (
     SilverStandard,
     load_synthetic_silver,
@@ -38,6 +38,7 @@ from .schema_consistency import (
     evaluate_column_schema_consistency,
     evaluate_schema_consistency,
     schema_consistency_per_column_frame,
+    write_metric_report,
     write_schema_consistency_report,
 )
 
@@ -46,10 +47,12 @@ __all__ = [
     "load_synthetic_silver",
     "load_workflow_silver",
     "compute_e2e_panel",
+    "write_usecase_metrics",
     "E2EPanel",
     "build_cell_provenance_from_fused",
     "evaluate_schema_consistency",
     "evaluate_column_schema_consistency",
     "schema_consistency_per_column_frame",
+    "write_metric_report",
     "write_schema_consistency_report",
 ]

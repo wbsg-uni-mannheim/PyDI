@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46894|metacritic_20404|name=The Elder Scrolls V: Skyrim – Hearthfire | platform=Microsoft Windows | genres=Action role-playing | developer=Bethesda Game Studios | releaseYear=2012-01-01||name=The Elder Scrolls V: Skyrim | platform=PC | genres=Role-Playing,First-Person,First-Person,Western-Style | developer=Bethesda Game Studios | releaseYear=2011-01-01 | criticScore=94.0 | userScore=8.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Elder Scrolls V: Skyrim – Hearthfire | platform=Microsoft Windows | genres=Action role-playing | developer=Bethesda Game Studios | releaseYear=2012-01-01\nRecord B: name=The Elder Scrolls V: Skyrim | platform=PC | genres=Role-Playing,First-Person,First-Person,Western-Style | developer=Bethesda Game Studios | releaseYear=2011-01-01 | criticScore=94.0 | userScore=8.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

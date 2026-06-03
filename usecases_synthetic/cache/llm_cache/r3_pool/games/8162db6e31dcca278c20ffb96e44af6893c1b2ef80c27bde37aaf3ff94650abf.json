@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_13265|sales_4347|name=Gallop Racer 2003: A New Breed | platform=PS2 | genres=Sports,Alternative,Horse Racing | developer=Tecmo | releaseYear=2003-01-01 | criticScore=68.0 | userScore=8.5 | ESRB=E||name=Gallop Racer 2003: A New Breed | platform=PS2 | genres=Sports | developer=Tecmo | publisher=Zoo Digital Publishing | releaseYear=2002-01-01 | criticScore=68 | userScore=8.5 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Gallop Racer 2003: A New Breed | platform=PS2 | genres=Sports,Alternative,Horse Racing | developer=Tecmo | releaseYear=2003-01-01 | criticScore=68.0 | userScore=8.5 | ESRB=E\nRecord B: name=Gallop Racer 2003: A New Breed | platform=PS2 | genres=Sports | developer=Tecmo | publisher=Zoo Digital Publishing | releaseYear=2002-01-01 | criticScore=68 | userScore=8.5 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

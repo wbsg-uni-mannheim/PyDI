@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_11847|sales_4991|name=Enthusia Professional Racing | platform=PS2 | genres=Driving,Racing,GT / Street | developer=Konami | releaseYear=2005-01-01 | criticScore=70.0 | userScore=7.4 | ESRB=E||name=Enthusia Professional Racing | platform=PS2 | genres=Racing | developer=Konami | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=70 | userScore=7.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Enthusia Professional Racing | platform=PS2 | genres=Driving,Racing,GT / Street | developer=Konami | releaseYear=2005-01-01 | criticScore=70.0 | userScore=7.4 | ESRB=E\nRecord B: name=Enthusia Professional Racing | platform=PS2 | genres=Racing | developer=Konami | publisher=Konami Digital Entertainment | releaseYear=2005-01-01 | criticScore=70 | userScore=7.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

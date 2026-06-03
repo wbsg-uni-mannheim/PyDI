@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_36271|metacritic_20410|name=Call of Duty: Modern Warfare 2 | genres=First-person shooter | developer=Infinity Ward | releaseYear=2009-01-01||name=Call of Duty: Modern Warfare 2 | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Infinity Ward | releaseYear=2009-01-01 | criticScore=94.0 | userScore=6.8 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty: Modern Warfare 2 | genres=First-person shooter | developer=Infinity Ward | releaseYear=2009-01-01\nRecord B: name=Call of Duty: Modern Warfare 2 | platform=PS3 | genres=Action,Shooter,Shooter,First-Person,Modern,Modern,Arcade | developer=Infinity Ward | releaseYear=2009-01-01 | criticScore=94.0 | userScore=6.8 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

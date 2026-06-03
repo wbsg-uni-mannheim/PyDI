@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Scotland_Manufacturing|http://www.forbes.com/companies/murata-manufacturing/|name=Scotland Manufacturing | country=United States | city=Laurinburg, North Carolina | industry=Aerospace | founded=1979-01-01||name=Murata Manufacturing | country=Japan | industry=Electronics",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Scotland Manufacturing | country=United States | city=Laurinburg, North Carolina | industry=Aerospace | founded=1979-01-01\nRecord B: name=Murata Manufacturing | country=Japan | industry=Electronics\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_62644|metacritic_7845|name=Naruto Shippuden: Ultimate Ninja Storm 3 | platform=PS3 | genres=Action game | developer=CyberConnect2 | releaseYear=2013-01-01||name=Naruto Shippuden: Ultimate Ninja Storm 2 | platform=PS3 | genres=Action,Fighting,Fighting,3D,3D | developer=CyberConnect2 | releaseYear=2010-01-01 | criticScore=76.0 | userScore=8.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Naruto Shippuden: Ultimate Ninja Storm 3 | platform=PS3 | genres=Action game | developer=CyberConnect2 | releaseYear=2013-01-01\nRecord B: name=Naruto Shippuden: Ultimate Ninja Storm 2 | platform=PS3 | genres=Action,Fighting,Fighting,3D,3D | developer=CyberConnect2 | releaseYear=2010-01-01 | criticScore=76.0 | userScore=8.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59728|sales_4076|name=NASCAR Thunder 2004 | platform=Xbox | genres=Racing video game | developer=Budcat Creations | releaseYear=2003-01-01||name=NASCAR Thunder 2004 | platform=Xbox | genres=Racing | developer=EA Games | publisher=Electronic Arts | releaseYear=2003-01-01 | criticScore=85 | userScore=9.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=NASCAR Thunder 2004 | platform=Xbox | genres=Racing video game | developer=Budcat Creations | releaseYear=2003-01-01\nRecord B: name=NASCAR Thunder 2004 | platform=Xbox | genres=Racing | developer=EA Games | publisher=Electronic Arts | releaseYear=2003-01-01 | criticScore=85 | userScore=9.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

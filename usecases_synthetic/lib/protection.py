@@ -21,12 +21,14 @@ implemented below via :func:`is_close_enough` + :class:`ToleranceSpec`.
 
 from __future__ import annotations
 
+import json
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 import pandas as pd
 
@@ -38,6 +40,108 @@ from .domain_config import (
 )
 from .loaders import read_em_gold_csv
 from .niche_metrics import _levenshtein_ratio, lexical_extended_jaccard
+
+# ---------------------------------------------------------------------------
+# JSONL-fusion-gold support (2026 papers domain)
+# ---------------------------------------------------------------------------
+#
+# Pre-2026 domains ship fusion gold as XML keyed by a cluster-anchor source
+# record id (e.g. ``mbrainz_974``) with per-attribute provenance. The papers
+# domain ships fusion gold as JSON-lines keyed by ``doi`` with no source ids.
+# The protection + closeness machinery needs a real source record id per
+# fusion entity (the consumer finds it as a cluster member via
+# ``next(mid for _, mid in members if mid in fusion_gold_ids)``). We therefore
+# map each fusion-gold ``doi`` to a single, stable anchor source record id --
+# the record carrying that DOI in the first source present, by priority --
+# and use that anchor consistently as BOTH the protected id and the
+# ``load_fusion_target_values`` key. DOI + id are never perturbed, so the
+# anchor is stable across variant levels.
+
+# Anchor priority: dblp is the EM hub (present in every multi-source cluster);
+# crossref / open_alex back it up for DOIs absent from dblp.
+_FUSION_ANCHOR_PRIORITY: tuple[str, ...] = ("dblp", "crossref", "open_alex")
+# doi is the join key; publisher + cited_by_count are not fused (no fusion
+# target), so they carry no closeness contract.
+_PAPERS_NON_TARGET_ATTRS: frozenset[str] = frozenset(
+    {"doi", "publisher", "cited_by_count"}
+)
+_DOI_PREFIX_RE = re.compile(r"^(https?://)?(dx\.)?doi\.org/", re.IGNORECASE)
+
+
+def _normalize_doi(value: Any) -> str | None:
+    """Return a normalized DOI (lowercased, prefix-stripped) or None."""
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in {"none", "nan"}:
+        return None
+    return _DOI_PREFIX_RE.sub("", text).lower() or None
+
+
+def _read_fusion_records(path: Path) -> list[dict[str, Any]]:
+    """Read a JSON-lines (``.jsonl``) or JSON-array (``.json``) fusion file."""
+    if path.suffix.lower() == ".jsonl":
+        records: list[dict[str, Any]] = []
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    records.append(json.loads(line))
+        return records
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return data if isinstance(data, list) else [data]
+
+
+@lru_cache(maxsize=None)
+def _doi_to_anchor_id(domain: str) -> dict[str, str]:
+    """Return ``{normalized_doi: anchor_source_record_id}`` for *domain*.
+
+    The anchor is the record carrying the DOI in the first source listed in
+    :data:`_FUSION_ANCHOR_PRIORITY` that has it -- a real cluster member,
+    stable across variant levels (DOI + id are never perturbed). Cached
+    because the source DataFrames are large and the mapping is invariant.
+    """
+    from .loaders import load_domain_sources
+
+    sources = load_domain_sources(domain)
+    by_source: dict[str, dict[str, str]] = {}
+    for name, df in sources.items():
+        if "doi" not in df.columns or "id" not in df.columns:
+            continue
+        mapping: dict[str, str] = {}
+        for rid, doi in zip(df["id"].astype(str), df["doi"], strict=True):
+            ndoi = _normalize_doi(doi)
+            if ndoi is not None and ndoi not in mapping:
+                mapping[ndoi] = rid
+        by_source[name] = mapping
+
+    anchors: dict[str, str] = {}
+    all_dois: set[str] = set()
+    for mapping in by_source.values():
+        all_dois.update(mapping)
+    for ndoi in all_dois:
+        for src in _FUSION_ANCHOR_PRIORITY:
+            if src in by_source and ndoi in by_source[src]:
+                anchors[ndoi] = by_source[src][ndoi]
+                break
+    return anchors
+
+
+def _coerce_target_values(value: Any) -> list[str]:
+    """Coerce a fusion-gold cell to a list of non-empty string target values."""
+    if value is None:
+        return []
+    if isinstance(value, (list, tuple)):
+        out = [str(v).strip() for v in value if v is not None and str(v).strip()]
+        return out
+    if isinstance(value, float) and pd.isna(value):
+        return []
+    text = str(value).strip()
+    if not text or text.lower() in {"none", "nan"}:
+        return []
+    return [text]
+
 
 # ---------------------------------------------------------------------------
 # Entity-ID protection sets
@@ -72,6 +176,14 @@ def _load_fusion_protected_ids(domain: str) -> set[str]:
 
     for path in cfg.fusion_paths():
         if not path.exists():
+            continue
+        if path.suffix.lower() in (".jsonl", ".json"):
+            # Papers: map each fusion-gold DOI to its anchor source id.
+            anchors = _doi_to_anchor_id(domain)
+            for record in _read_fusion_records(path):
+                ndoi = _normalize_doi(record.get("doi"))
+                if ndoi is not None and ndoi in anchors:
+                    ids.add(anchors[ndoi])
             continue
         tree = ET.parse(path)
         root = tree.getroot()
@@ -255,12 +367,37 @@ _DEFAULT_KIND_BY_DOMAIN_ATTR: dict[str, dict[str, str]] = {
         "duration": "continuous",
         "label": "nominal",
     },
+    # Products widened 5 -> 24 attrs (2026-06-02 scope decision: score/perturb
+    # the FULL target_schema, incl. the 5 sparse dims color/width_mm/length_mm/
+    # height_mm/weight_g). url + id excluded. Kinds mirror the target_schema
+    # JSON types (number -> continuous; enum/open_taxonomy/short string ->
+    # nominal; long identifier strings -> long_string; description/title_desc
+    # -> free_text).
     "products": {
         "title": "long_string",
         "brand": "nominal",
         "description": "free_text",
         "price": "continuous",
         "priceCurrency": "nominal",
+        "title_description": "free_text",
+        "model": "long_string",
+        "model_number": "long_string",
+        "product_type": "nominal",
+        "chipset_name": "long_string",
+        "vram_gb": "continuous",
+        "storage_gb": "continuous",
+        "read_speed_mb_s": "continuous",
+        "write_speed_mb_s": "continuous",
+        "bus_type": "nominal",
+        "interface_type": "nominal",
+        "memory_type": "nominal",
+        "storage_connection_type": "nominal",
+        "form_factor": "nominal",
+        "width_mm": "continuous",
+        "length_mm": "continuous",
+        "height_mm": "continuous",
+        "weight_g": "continuous",
+        "color": "nominal",
     },
 }
 
@@ -560,6 +697,27 @@ def load_fusion_target_values(domain: str) -> dict[str, dict[str, list[str]]]:
 
     for path in cfg.fusion_paths():
         if not path.exists():
+            continue
+        if path.suffix.lower() in (".jsonl", ".json"):
+            # Papers: key targets by the same per-DOI anchor source id used
+            # by _load_fusion_protected_ids so the closeness consumer's
+            # member lookup resolves. doi / publisher / cited_by_count carry
+            # no fusion target (join key / not fused).
+            anchors = _doi_to_anchor_id(domain)
+            for record in _read_fusion_records(path):
+                ndoi = _normalize_doi(record.get("doi"))
+                if ndoi is None or ndoi not in anchors:
+                    continue
+                eid = anchors[ndoi]
+                attrs: dict[str, list[str]] = {}
+                for key, value in record.items():
+                    if key in _PAPERS_NON_TARGET_ATTRS:
+                        continue
+                    vals = _coerce_target_values(value)
+                    if vals:
+                        attrs[key] = vals
+                if attrs:
+                    out[eid] = attrs
             continue
         tree = ET.parse(path)
         root = tree.getroot()

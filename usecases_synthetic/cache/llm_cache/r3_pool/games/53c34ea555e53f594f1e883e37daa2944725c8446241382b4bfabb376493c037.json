@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_48473|metacritic_3936|name=Defense Grid 2 | platform=Microsoft Windows | genres=Tower defense | developer=Hidden Path Entertainment | releaseYear=2014-01-01||name=DG2: Defense Grid 2 | platform=PC | genres=General,Strategy,Real-Time,General,Defense | developer=Hidden Path Entertainment | releaseYear=2014-01-01 | criticScore=81.0 | userScore=6.8",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Defense Grid 2 | platform=Microsoft Windows | genres=Tower defense | developer=Hidden Path Entertainment | releaseYear=2014-01-01\nRecord B: name=DG2: Defense Grid 2 | platform=PC | genres=General,Strategy,Real-Time,General,Defense | developer=Hidden Path Entertainment | releaseYear=2014-01-01 | criticScore=81.0 | userScore=6.8\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

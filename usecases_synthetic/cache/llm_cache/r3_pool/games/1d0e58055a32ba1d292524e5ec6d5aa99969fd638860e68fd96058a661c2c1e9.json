@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_30937|sales_7413|name=Age of Conan: Rise of the Godslayer | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Funcom | releaseYear=2010-01-01||name=Age of Conan: Rise of the Godslayer | platform=PC | genres=Role-Playing | developer=Funcom | publisher=Funcom | releaseYear=2010-01-01 | criticScore=83 | userScore=8.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Age of Conan: Rise of the Godslayer | platform=Microsoft Windows | genres=Massively multiplayer online role-playing game | developer=Funcom | releaseYear=2010-01-01\nRecord B: name=Age of Conan: Rise of the Godslayer | platform=PC | genres=Role-Playing | developer=Funcom | publisher=Funcom | releaseYear=2010-01-01 | criticScore=83 | userScore=8.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

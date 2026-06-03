@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_2640|sales_2926|name=Call of Duty: Black Ops II | platform=Wii U | genres=First-person shooter | developer=Treyarch | releaseYear=2012-01-01||name=Call of Duty: Black Ops II | platform=WiiU | genres=Shooter | developer=Treyarch | publisher=Activision | releaseYear=2012-01-01 | criticScore=81 | userScore=6.9 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty: Black Ops II | platform=Wii U | genres=First-person shooter | developer=Treyarch | releaseYear=2012-01-01\nRecord B: name=Call of Duty: Black Ops II | platform=WiiU | genres=Shooter | developer=Treyarch | publisher=Activision | releaseYear=2012-01-01 | criticScore=81 | userScore=6.9 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

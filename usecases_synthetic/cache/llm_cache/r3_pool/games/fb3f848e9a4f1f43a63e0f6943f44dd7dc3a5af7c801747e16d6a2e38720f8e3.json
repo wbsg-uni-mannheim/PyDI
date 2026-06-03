@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_13226|sales_5545|name=Lost in Shadow | platform=Wii | genres=Action,Platformer,Platformer,3D,2D,3D | developer=Hudson Soft | releaseYear=2011-01-01 | criticScore=68.0 | userScore=8.7 | ESRB=E10+||name=Lost in Shadow | platform=Wii | genres=Platform | developer=Hudson Soft | publisher=Konami Digital Entertainment | releaseYear=2010-01-01 | criticScore=68 | userScore=8.7 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lost in Shadow | platform=Wii | genres=Action,Platformer,Platformer,3D,2D,3D | developer=Hudson Soft | releaseYear=2011-01-01 | criticScore=68.0 | userScore=8.7 | ESRB=E10+\nRecord B: name=Lost in Shadow | platform=Wii | genres=Platform | developer=Hudson Soft | publisher=Konami Digital Entertainment | releaseYear=2010-01-01 | criticScore=68 | userScore=8.7 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

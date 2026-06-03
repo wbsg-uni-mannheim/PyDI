@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_53534|sales_2062|name=Sega Rally Revo | platform=PS3 | genres=Racing video game | developer=Xbox 360 | releaseYear=2007-01-01||name=Sega Rally Revo | platform=PS3 | genres=Racing | developer=SEGA Racing Studio | publisher=Sega | releaseYear=2007-01-01 | criticScore=75 | userScore=7.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sega Rally Revo | platform=PS3 | genres=Racing video game | developer=Xbox 360 | releaseYear=2007-01-01\nRecord B: name=Sega Rally Revo | platform=PS3 | genres=Racing | developer=SEGA Racing Studio | publisher=Sega | releaseYear=2007-01-01 | criticScore=75 | userScore=7.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

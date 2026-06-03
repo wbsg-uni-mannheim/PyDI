@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44769|sales_3289|name=Kameo | platform=Xbox 360 | genres=Action-adventure game | developer=Rare (company) | releaseYear=2005-01-01||name=Kameo: Elements of Power | platform=Xbox 360 | genres=Action | developer=Rare Ltd. | publisher=Microsoft Game Studios | releaseYear=2005-01-01 | criticScore=79 | userScore=8.1 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Kameo | platform=Xbox 360 | genres=Action-adventure game | developer=Rare (company) | releaseYear=2005-01-01\nRecord B: name=Kameo: Elements of Power | platform=Xbox 360 | genres=Action | developer=Rare Ltd. | publisher=Microsoft Game Studios | releaseYear=2005-01-01 | criticScore=79 | userScore=8.1 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

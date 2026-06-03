@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_50058|metacritic_6583|name=Mighty No. 9 | platform=PS3 | genres=Action video game | developer=Level-5 Comcept | releaseYear=2016-01-01||name=Mega Man 9 | platform=PS3 | genres=Action,Platformer,Platformer,2D,2D | developer=Inti Creates | releaseYear=2008-01-01 | criticScore=77.0 | userScore=5.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mighty No. 9 | platform=PS3 | genres=Action video game | developer=Level-5 Comcept | releaseYear=2016-01-01\nRecord B: name=Mega Man 9 | platform=PS3 | genres=Action,Platformer,Platformer,2D,2D | developer=Inti Creates | releaseYear=2008-01-01 | criticScore=77.0 | userScore=5.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

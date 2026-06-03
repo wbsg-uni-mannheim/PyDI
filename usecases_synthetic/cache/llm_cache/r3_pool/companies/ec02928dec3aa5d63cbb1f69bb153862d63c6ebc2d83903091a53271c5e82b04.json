@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Hyundai_Motor_America|http://www.forbes.com/companies/vf/|name=Hyundai Motor America | country=United States | city=Fountain Valley, California | industry=Automotive industry | founded=1986-01-01||name=VF | country=United States of America | industry=Apparel/Accessories",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Hyundai Motor America | country=United States | city=Fountain Valley, California | industry=Automotive industry | founded=1986-01-01\nRecord B: name=VF | country=United States of America | industry=Apparel/Accessories\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

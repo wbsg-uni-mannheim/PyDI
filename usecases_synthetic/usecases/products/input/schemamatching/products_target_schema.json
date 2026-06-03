@@ -5,38 +5,277 @@
   "description": "Trimmed schema including only relevant fields with units.",
   "type": "object",
   "properties": {
-    "id": { "type": "string", "title": "ID", "description": "Unique record identifier." },
-    "brand": { "type": "string", "title": "Brand" },
-    "title": { "type": "string", "title": "Title" },
-    "description": { "type": "string", "title": "Description" },
-    "price": { "type": "number", "title": "Price", "minimum": 0 },
-    "priceCurrency": { "type": "string", "title": "Currency" },
-    "cluster_id": { "type": "string", "title": "Cluster ID" },
-    "url": { "type": "string", "title": "URL", "format": "uri" },
-    "title_description": { "type": "string", "title": "Title & Description Combined" },
-    "model": { "type": "string", "title": "Model Name" },
-    "model_number": { "type": "string", "title": "Model Number" },
-    "product_type": { 
-      "type": "string", 
-      "title": "Product Type", 
-      "enum": ["GPU", "SSD", "HDD", "USB_STICK"] 
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "description": "Unique record identifier.",
+      "minLength": 1,
+      "maxLength": 128
     },
-    "chipset_name": { "type": "string", "title": "Chipset Name" },
-    "vram_gb": { "type": "number", "title": "VRAM (GB)" },
-    "storage_gb": { "type": "number", "title": "Storage (GB)" },
-    "read_speed_mb_s": { "type": "number", "title": "Read Speed (MB/s)" },
-    "write_speed_mb_s": { "type": "number", "title": "Write Speed (MB/s)" },
-    "bus_type": { "type": "string", "title": "Bus Type" },
-    "interface_type": { "type": "string", "title": "Interface Type" },
-    "width_mm": { "type": "number", "title": "Width (mm)" },
-    "length_mm": { "type": "number", "title": "Length (mm)" },
-    "height_mm": { "type": "number", "title": "Height (mm)" },
-    "weight_g": { "type": "number", "title": "Weight (g)" },
-    "storage_connection_type": { "type": "string", "title": "Storage Connection Type" },
-    "memory_type": { "type": "string", "title": "Memory Type" },
-    "color": { "type": "string", "title": "Color" },
-    "form_factor": { "type": "string", "title": "Form Factor" }
+    "brand": {
+      "type": "string",
+      "title": "Brand",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "minLength": 1,
+      "maxLength": 10000
+    },
+    "price": {
+      "type": "number",
+      "title": "Price",
+      "minimum": 0
+    },
+    "priceCurrency": {
+      "type": "string",
+      "title": "Currency",
+      "pattern": "^[A-Z]{3}$",
+      "x-pydi-consistency": {
+        "rule": "currency_code",
+        "standard": "ISO 4217",
+        "description": "Currency should normalize to an ISO 4217 alpha-3 code; the JSON Schema pattern only checks the three-letter shape."
+      }
+    },
+    "url": {
+      "type": "string",
+      "title": "URL",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^(https?://)?[A-Za-z0-9.-]+\\.[A-Za-z]{2,}(:[0-9]+)?([/?#].*)?$"
+    },
+    "title_description": {
+      "type": "string",
+      "title": "Title & Description Combined",
+      "minLength": 1,
+      "maxLength": 12000
+    },
+    "model": {
+      "type": "string",
+      "title": "Model Name",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "model_number": {
+      "type": "string",
+      "title": "Model Number",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._\\-/()]*$"
+    },
+    "product_type": {
+      "type": "string",
+      "title": "Product Type",
+      "enum": [
+        "GPU",
+        "SSD",
+        "HDD",
+        "USB_STICK"
+      ]
+    },
+    "chipset_name": {
+      "type": "string",
+      "title": "Chipset Name",
+      "minLength": 1,
+      "maxLength": 80,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "GPU"
+        ]
+      }
+    },
+    "vram_gb": {
+      "type": "number",
+      "title": "VRAM (GB)",
+      "minimum": 1,
+      "maximum": 128,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "GPU"
+        ]
+      }
+    },
+    "storage_gb": {
+      "type": "number",
+      "title": "Storage (GB)",
+      "minimum": 1,
+      "maximum": 100000,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "SSD",
+          "HDD",
+          "USB_STICK"
+        ]
+      }
+    },
+    "read_speed_mb_s": {
+      "type": "number",
+      "title": "Read Speed (MB/s)",
+      "minimum": 1,
+      "maximum": 20000,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "SSD",
+          "HDD",
+          "USB_STICK"
+        ]
+      }
+    },
+    "write_speed_mb_s": {
+      "type": "number",
+      "title": "Write Speed (MB/s)",
+      "minimum": 1,
+      "maximum": 20000,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "SSD",
+          "HDD",
+          "USB_STICK"
+        ]
+      }
+    },
+    "bus_type": {
+      "type": "string",
+      "title": "Bus Type",
+      "minLength": 1,
+      "maxLength": 64,
+      "x-pydi-consistency": {
+        "rule": "open_taxonomy",
+        "exhaustive": false,
+        "expectedFamilies": [
+          "PCIe",
+          "PCI Express",
+          "SATA",
+          "SAS",
+          "USB",
+          "Thunderbolt",
+          "FireWire"
+        ]
+      }
+    },
+    "interface_type": {
+      "type": "string",
+      "title": "Interface Type",
+      "minLength": 1,
+      "maxLength": 64,
+      "x-pydi-consistency": {
+        "rule": "open_taxonomy",
+        "exhaustive": false,
+        "expectedFamilies": [
+          "SATA",
+          "NVMe",
+          "SAS",
+          "USB",
+          "Lightning",
+          "Micro USB"
+        ]
+      }
+    },
+    "width_mm": {
+      "type": "number",
+      "title": "Width (mm)",
+      "minimum": 0.1,
+      "maximum": 1000
+    },
+    "length_mm": {
+      "type": "number",
+      "title": "Length (mm)",
+      "minimum": 0.1,
+      "maximum": 1000
+    },
+    "height_mm": {
+      "type": "number",
+      "title": "Height (mm)",
+      "minimum": 0.1,
+      "maximum": 300
+    },
+    "weight_g": {
+      "type": "number",
+      "title": "Weight (g)",
+      "minimum": 0.5,
+      "maximum": 10000
+    },
+    "storage_connection_type": {
+      "type": "string",
+      "title": "Storage Connection Type",
+      "minLength": 1,
+      "maxLength": 100,
+      "x-pydi-consistency": {
+        "rule": "field_applicability",
+        "appliesToProductTypes": [
+          "SSD",
+          "HDD",
+          "USB_STICK"
+        ]
+      }
+    },
+    "memory_type": {
+      "type": "string",
+      "title": "Memory Type",
+      "minLength": 1,
+      "maxLength": 64,
+      "x-pydi-consistency": {
+        "rule": "open_taxonomy",
+        "exhaustive": false,
+        "appliesToProductTypes": [
+          "GPU",
+          "SSD"
+        ],
+        "expectedFamilies": [
+          "GDDR",
+          "HBM",
+          "DDR",
+          "LPDDR",
+          "NAND",
+          "TLC",
+          "MLC"
+        ]
+      }
+    },
+    "color": {
+      "type": "string",
+      "title": "Color",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "form_factor": {
+      "type": "string",
+      "title": "Form Factor",
+      "minLength": 1,
+      "maxLength": 100,
+      "x-pydi-consistency": {
+        "rule": "open_taxonomy",
+        "exhaustive": false,
+        "expectedFamilies": [
+          "2.5-inch",
+          "3.5-inch",
+          "M.2",
+          "mSATA",
+          "Low Profile",
+          "ATX",
+          "External"
+        ]
+      }
+    }
   },
-  "required": ["id", "product_type", "brand", "title"],
+  "required": [
+    "id",
+    "product_type",
+    "brand",
+    "title"
+  ],
   "additionalProperties": false
 }

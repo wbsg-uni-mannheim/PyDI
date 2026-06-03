@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_14919|metacritic_8697|name=The Walking Dead: The Final Season | platform=PS4 | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2018-01-01||name=The Walking Dead: The Telltale Series - The Final Season Episode 4: Take Us Back | platform=PS4 | genres=Adventure,Point-and-Click | developer=Telltale Games,Skybound Games | releaseYear=2019-01-01 | criticScore=75.0 | userScore=7.4",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Walking Dead: The Final Season | platform=PS4 | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2018-01-01\nRecord B: name=The Walking Dead: The Telltale Series - The Final Season Episode 4: Take Us Back | platform=PS4 | genres=Adventure,Point-and-Click | developer=Telltale Games,Skybound Games | releaseYear=2019-01-01 | criticScore=75.0 | userScore=7.4\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

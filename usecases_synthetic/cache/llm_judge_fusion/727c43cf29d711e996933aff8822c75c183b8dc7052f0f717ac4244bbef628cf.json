@@ -1,0 +1,22 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "8.57"
+    },
+    {
+      "source": "forbes",
+      "value": "12500000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.94,
+    "operation": "aggregation",
+    "reasoning": "The Forbes figure is a likely authoritative absolute revenue value, while the DBpedia value appears truncated or differently scaled, so I selected the more plausible canonical amount.",
+    "value": 12500000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":12500000000,\"operation\":\"aggregation\",\"confidence\":0.94,\"reasoning\":\"The Forbes figure is a likely authoritative absolute revenue value, while the DBpedia value appears truncated or differently scaled, so I selected the more plausible canonical amount.\"}"
+}

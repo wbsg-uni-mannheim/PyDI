@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_21506|metacritic_1413|name=Mass Effect 2: Overlord | platform=Microsoft Windows | genres=Action role-playing game | developer=BioWare | releaseYear=2010-01-01||name=Mass Effect 2: Lair of the Shadow Broker | platform=PC | genres=Role-Playing,Action RPG,Action RPG | developer=BioWare | releaseYear=2010-01-01 | criticScore=86.0 | userScore=8.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mass Effect 2: Overlord | platform=Microsoft Windows | genres=Action role-playing game | developer=BioWare | releaseYear=2010-01-01\nRecord B: name=Mass Effect 2: Lair of the Shadow Broker | platform=PC | genres=Role-Playing,Action RPG,Action RPG | developer=BioWare | releaseYear=2010-01-01 | criticScore=86.0 | userScore=8.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

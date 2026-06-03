@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_38289|metacritic_6730|name=The Shrouded Isle | platform=Microsoft Windows | genres=Management simulation | developer=Kitfox Games | releaseYear=2017-01-01||name=Islets | platform=PC | genres=Action,Action Adventure,Platformer,Open-World,Metroidvania | developer=Kyle Thompson | releaseYear=2022-01-01 | criticScore=77.0 | userScore=8.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Shrouded Isle | platform=Microsoft Windows | genres=Management simulation | developer=Kitfox Games | releaseYear=2017-01-01\nRecord B: name=Islets | platform=PC | genres=Action,Action Adventure,Platformer,Open-World,Metroidvania | developer=Kyle Thompson | releaseYear=2022-01-01 | criticScore=77.0 | userScore=8.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

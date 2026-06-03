@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_56954|metacritic_6653|name=DeathSpank: Thongs of Virtue | platform=Microsoft Windows | genres=Action role-playing game | developer=Hothead Games | releaseYear=2010-01-01||name=DeathSpank | platform=PC | genres=Action,Role-Playing,General,Action RPG | developer=Hothead Games | releaseYear=2010-01-01 | criticScore=77.0 | userScore=7.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DeathSpank: Thongs of Virtue | platform=Microsoft Windows | genres=Action role-playing game | developer=Hothead Games | releaseYear=2010-01-01\nRecord B: name=DeathSpank | platform=PC | genres=Action,Role-Playing,General,Action RPG | developer=Hothead Games | releaseYear=2010-01-01 | criticScore=77.0 | userScore=7.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

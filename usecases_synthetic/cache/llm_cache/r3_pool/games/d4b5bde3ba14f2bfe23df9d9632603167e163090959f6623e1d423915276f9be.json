@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_59721|metacritic_6866|name=MotoGP: Ultimate Racing Technology | platform=Microsoft Windows | genres=Racing video game | developer=Black Rock Studio | releaseYear=2003-01-01||name=MotoGP 3: Ultimate Racing Technology | platform=PC | genres=Driving,Racing,Simulation,Motorcycle,Automobile,Street,Street | developer=Climax Group,Climax Studios | releaseYear=2005-01-01 | criticScore=77.0 | userScore=7.4 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=MotoGP: Ultimate Racing Technology | platform=Microsoft Windows | genres=Racing video game | developer=Black Rock Studio | releaseYear=2003-01-01\nRecord B: name=MotoGP 3: Ultimate Racing Technology | platform=PC | genres=Driving,Racing,Simulation,Motorcycle,Automobile,Street,Street | developer=Climax Group,Climax Studios | releaseYear=2005-01-01 | criticScore=77.0 | userScore=7.4 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

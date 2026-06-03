@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_61165|sales_2705|name=Just Dance 2014 | platform=Xbox One | genres=Rhythm game | developer=Ubisoft Bucharest | releaseYear=2013-01-01||name=Just Dance 2014 | platform=XOne | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2013-01-01 | criticScore=71 | userScore=7.0 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Just Dance 2014 | platform=Xbox One | genres=Rhythm game | developer=Ubisoft Bucharest | releaseYear=2013-01-01\nRecord B: name=Just Dance 2014 | platform=XOne | genres=Misc | developer=Ubisoft | publisher=Ubisoft | releaseYear=2013-01-01 | criticScore=71 | userScore=7.0 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

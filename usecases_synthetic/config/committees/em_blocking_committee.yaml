@@ -143,22 +143,24 @@ members:
       (τ=0.07) over EM-gold cluster graph with in-batch random
       negatives. text_cols match the per-domain Ditto field set so
       train ↔ inference share the [COL]/[VAL] serialisation shape.
-      Companies val_pair_recall at top_k=50 + threshold=0.3 = 0.9904
-      (R5 EM blocking sub-D sign-off, 2026-05-10).
+      Companies sc_block training best_val_pair_recall = 0.9904 (R10-H
+      retrain 2026-06-02 over the wide-9 text_cols; reproduces the prior
+      R5 figure). Blocking top_k/threshold set by the R9 sweep below.
     blocker:
       class: SCBlockBlocker
       module: usecases_synthetic.lib.sc_block_blocker
       params:
-        # Post-2026-05-04 schema refresh dropped city + founded from
-        # forbes (forbes columns: name, country, industry, assets,
-        # revenue, website). Strict intersection across all 3 companies
-        # sources after column_mapping is now [name, country]; the
-        # checkpoint at usecases_synthetic/cache/sc_block_checkpoints/
-        # companies/best was retrained 2026-05-15 with this thinner
-        # text_cols (F12).
+        # text_cols = the wide-9 companies committee field set (matches the
+        # Ditto field set + the sc_block checkpoint, which R10-H retrained
+        # 2026-06-02 over these 9 cols; best_val_pair_recall=0.9904). The
+        # earlier [name, country] thin-schema note was stale.
         text_cols: [name, country, city, industry, sector, founded, keypeople, assets, revenue]
-        top_k: 50
-        threshold: 0.3
+        # R9 sweep (2026-06-02): top_k 50->100, threshold 0.3->0.0 — blocking
+        # pair_recall 0.9698->0.9772 (+0.74pp) at reduction_ratio 0.9846->0.9691.
+        # Mirrors music's R9 sc_block change; top_k=100/thr=0.0 ties
+        # top_k=100/thr=0.3 on recall (threshold non-binding), 0.0 chosen.
+        top_k: 100
+        threshold: 0.0
         checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/companies/best
     blocking_type: hybrid
     enabled_by_default: true

@@ -703,6 +703,40 @@ class TestValidateVariantJson:
             _exit_all(patches)
         assert payload["meta"]["fusion_input_member"] == "token_rule"
 
+    def test_norm_scoring_surface_read_from_baseline(self, tmp_path: Path) -> None:
+        # The variant must be scored with the same surface the baseline
+        # was measured with — read straight from baseline meta.
+        baseline = _baseline_metrics()
+        baseline.meta["scoring_surface"] = "schema_constraints"
+        patches = _make_patches(baseline=baseline, variant_level="easy")
+        entered = _enter_all(patches)
+        try:
+            payload = validate_variant("companies", "easy", out_dir=tmp_path)
+        finally:
+            _exit_all(patches)
+
+        norm_cls = entered[1]  # SM=0, Norm=1, ... (see _make_patches order)
+        assert norm_cls.call_args.kwargs["scoring_surface"] == "schema_constraints"
+        assert payload["meta"]["scoring_surface"] == "schema_constraints"
+
+    def test_norm_scoring_surface_defaults_xml_targets_for_legacy_baseline(
+        self, tmp_path: Path
+    ) -> None:
+        # A baseline predating the surface knob carries no key; the variant
+        # falls back to xml_targets so it matches the baseline's norm block.
+        baseline = _baseline_metrics()
+        baseline.meta.pop("scoring_surface", None)
+        patches = _make_patches(baseline=baseline, variant_level="easy")
+        entered = _enter_all(patches)
+        try:
+            payload = validate_variant("companies", "easy", out_dir=tmp_path)
+        finally:
+            _exit_all(patches)
+
+        norm_cls = entered[1]
+        assert norm_cls.call_args.kwargs["scoring_surface"] == "xml_targets"
+        assert payload["meta"]["scoring_surface"] == "xml_targets"
+
 
 # ---------------------------------------------------------------------------
 # Tests: committee version pinning

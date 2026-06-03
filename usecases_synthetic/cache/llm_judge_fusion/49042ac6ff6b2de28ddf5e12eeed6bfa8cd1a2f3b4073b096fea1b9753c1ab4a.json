@@ -1,0 +1,22 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "7800000000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "10500000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "verbatim_pick",
+    "reasoning": "The Forbes figure is a plausible revenue value while the DBpedia value is an extreme outlier likely due to a data error.",
+    "value": 10500000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":10500000000,\"operation\":\"verbatim_pick\",\"confidence\":0.97,\"reasoning\":\"The Forbes figure is a plausible revenue value while the DBpedia value is an extreme outlier likely due to a data error.\"}"
+}

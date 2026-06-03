@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Matsui_Securities|http://www.forbes.com/companies/daiwa-securities/|name=Matsui Securities | country=Japan | city=Tokyo | founded=1931-01-01||name=Daiwa Securities | country=Japan | industry=Investment Services",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Matsui Securities | country=Japan | city=Tokyo | founded=1931-01-01\nRecord B: name=Daiwa Securities | country=Japan | industry=Investment Services\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

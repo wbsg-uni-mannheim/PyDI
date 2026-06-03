@@ -1,0 +1,22 @@
+{
+  "attribute": "assets",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "13240000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "40700000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.92,
+    "operation": "aggregation",
+    "reasoning": "The candidates are numeric asset estimates from different sources, so I used a robust aggregate (median/mean midpoint) to produce a single canonical value.",
+    "value": 26970000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":26970000000,\"operation\":\"aggregation\",\"confidence\":0.92,\"reasoning\":\"The candidates are numeric asset estimates from different sources, so I used a robust aggregate (median/mean midpoint) to produce a single canonical value.\"}"
+}

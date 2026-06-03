@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_9235|sales_6681|name=Zoo Tycoon 2 | platform=Microsoft Windows | genres=Business simulation game | developer=MacSoft | releaseYear=2004-01-01||name=Zoo Tycoon 2 | platform=PC | genres=Strategy | developer=Blue Fang Games | publisher=Microsoft Game Studios | releaseYear=2004-01-01 | criticScore=72 | userScore=8.1 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Zoo Tycoon 2 | platform=Microsoft Windows | genres=Business simulation game | developer=MacSoft | releaseYear=2004-01-01\nRecord B: name=Zoo Tycoon 2 | platform=PC | genres=Strategy | developer=Blue Fang Games | publisher=Microsoft Game Studios | releaseYear=2004-01-01 | criticScore=72 | userScore=8.1 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,254 @@
+# Knob 02 - Entity Niche Density - Papers
+#
+# Per-level configuration carries only the target_corner_case_ratio;
+# the dispatcher derives operator counts from the data — see
+# companies.yaml header for the full description.
+#
+# Seeded from music 2026-06-01; rate tables (pair_miner_thresholds,
+# numeric_overlap tolerances, interp/placement factors) are UNTUNED
+# starting points, to be validated/tuned before a real papers run.
+
+domain: papers
+
+# All three sources are already target-shaped: they carry the SAME 14
+# canonical columns. The synthetic loader renames each source primary id
+# column to `id` (minted at load time as <source>-NNNNN; see
+# config/domains/papers.yaml). `id` and `doi` are NEVER targeted by value
+# knobs (doi is the fusion-gold join key).
+id_columns:
+  dblp: id
+  crossref: id
+  open_alex: id
+
+primary_column_per_source:
+  dblp: title
+  crossref: title
+  open_alex: title
+
+# The 14 canonical attributes (data is already target-shaped; all three
+# sources ship every column). `id` + `doi` are excluded from value-knob
+# targeting and are not listed here.
+canonical_schema:
+  - title
+  - type
+  - publication_year
+  - journal
+  - authors
+  - publisher
+  - keywords
+  - volume
+  - issue
+  - first_page
+  - last_page
+  - referenced_works_count
+  - cited_by_count
+
+# Data is already target-shaped, so every attribute_mapping is the
+# identity map and is identical across the three sources (shared anchor).
+attribute_mapping:
+  dblp: &papers_attr_mapping
+    title: title
+    type: type
+    publication_year: publication_year
+    journal: journal
+    authors: authors
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  crossref: *papers_attr_mapping
+  open_alex: *papers_attr_mapping
+
+# dblp is the anchor (EM left / id1 in both pairs; fusion trust anchor).
+source_priority:
+  - dblp
+  - crossref
+  - open_alex
+
+text_concat_order:
+  - title
+  - authors
+  - journal
+  - publication_year
+  - type
+
+# Keep music's embedding model so the on-disk embedding cache convention
+# is shared across domains (the .meta.json carries model_id; switching it
+# forces a deterministic rebuild on next K2 run).
+embedding_model_id: BAAI/bge-base-en-v1.5
+
+metrics:
+  ext_jaccard: true
+  tfidf: true
+  embedding: true
+  attribute_overlap: true
+  label_collision: true
+
+# Papers' canonical set is mid-sized; mirror music's moderately wide
+# top-K.
+metric_top_k: 30
+
+rrf_k0: 60
+c_min: 2
+boost_label_collision: 5.0
+inner_token_threshold: 0.8
+
+# Seeded from music (UNTUNED). Validate against papers metric
+# distributions before a real run.
+pair_miner_thresholds:
+  t_match:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.6
+  t_nonmatch:
+    ext_jaccard: 0.5
+    tfidf: 0.4
+    embedding: 0.7
+
+# Attribute-overlap weights — papers. title carries the dominant
+# disambiguating signal; venue (journal), publication type, year, and
+# author set are coarser partitions of the bibliographic space.
+attribute_overlap_weights:
+  title: 0.5
+  journal: 0.2
+  type: 0.1
+  publication_year: 0.1
+  authors: 0.1
+
+# Numeric overlap tolerances (UNTUNED seeds).
+#   publication_year is temporal but spans 2018-2020 only (very low
+#     cardinality), so require an exact year match (absolute tolerance 0).
+#   first_page / last_page are page locators (mostly small integers) —
+#     allow a ±1-page absolute slack for off-by-one front-matter offsets.
+#   referenced_works_count (0-5000) and cited_by_count (0-100000) are
+#     wide-range counts — use a relative ±5% tolerance.
+numeric_overlap:
+  publication_year:
+    kind: absolute
+    tolerance: 0
+  first_page:
+    kind: absolute
+    tolerance: 1
+  last_page:
+    kind: absolute
+    tolerance: 1
+  referenced_works_count:
+    kind: relative
+    tolerance: 0.05
+  cited_by_count:
+    kind: relative
+    tolerance: 0.05
+
+stopword_list:
+  - the
+  - a
+  - an
+  - of
+  - and
+  - for
+  - on
+
+# target_corner_case_ratio levels carried over verbatim from music
+# (UNTUNED for papers). Easy stays at the drop-path baseline; medium/hard
+# are modest monotone bumps. Calibrate at S.5a if the dispatcher
+# under-/over-shoots on papers.
+levels:
+  easy:
+    target_corner_case_ratio: 0.20
+  medium:
+    target_corner_case_ratio: 0.30
+  hard:
+    target_corner_case_ratio: 0.35
+
+max_interp_fraction: 0.60
+# 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.
+# Was 0.6 (60% test / 40% train); user signed off equal distribution so the
+# regen splits have the same corner-case shape on both sides.
+placement_split: 0.5
+# Calibrated 2026-05-14 from music-small smoke (carried over as an UNTUNED
+# seed for papers). The 0.5 default assumed ~15 corner-pair adds per
+# interpolation (metric_top_k * 0.5); realised contribution after RRF
+# agreement filtering is ~1-2 pairs per interpolation, so the gap-driven
+# budget under-shot the target ratio 7-15x. 0.05 (per_interp_corner=1.5)
+# lets the budget actually close the gap. Ceiling at
+# max_interp_fraction * n_entities still binds.
+interp_pair_factor: 0.05
+
+em_test_regeneration:
+  candidate_pool_cap: 2000
+
+# Default model gpt-5.4-mini for cost. Ask user before each K2 run
+# whether to bump to gpt-5.4 (invalidates cache).
+# 2026-05-27 (step 4h): prompt v1 -> v2 — interpolate_v2.txt broadens
+# the lead-sentence domain enumeration to include products (GPUs / SSDs /
+# HDDs / etc.) and carries a domain-extension maintenance note.
+# Invalidates the existing K2 LLM cache by construction.
+llm_prompt_version: v2
+llm_model_id: gpt-5.4-mini
+llm_temperature: 0.0
+
+# Step 4i (2026-05-27): drop-corner-touching operator + non-corner
+# refill. New K2 dispatch branch at baseline_ratio > target_ratio
+# replaces the legacy noop_baseline_above_target path — K2 now actually
+# moves the ratio downward when configured. Each drop pairs with a
+# 1-for-1 LLM-synthesized non-corner entity refill so canonical set
+# size stays stable.
+non_corner_refill:
+  enabled: true
+  reference_count: 5            # K reference entities for the dissimilarity anchor
+  contamination_check:
+    label_collision_block: true # synthesised primary label must not exist in current canonical set
+non_corner_prompt_version: v1
+
+# Pool quality / pair-miner structure carried over from music, but the
+# papers pool has NOT been built yet (no pools/papers/). Until a pool is
+# minted (e.g. via a build_pool_papers.py analogous to the
+# products/companies/games builders) K2 degrades gracefully and this
+# setting is structural only.
+pool_quality: two_system
+
+# Hard-negative score-margin gate (S3). No trained Ditto/SC-block
+# checkpoint exists for papers yet — the path below is a papers-namespaced
+# PLACEHOLDER and MUST be (re)trained for papers (do NOT reuse music's
+# checkpoint). The runtime loudly disables the gate if the checkpoint is
+# missing. plm_fields mirror text_concat_order — the strongest matching
+# signals (id/doi are never gate fields). theta/threshold seeds carried
+# over from music (UNTUNED).
+hard_negative_gate:
+  enabled: true
+  # must be (re)trained for papers; runtime loudly disables a missing checkpoint
+  plm_checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/papers/best
+  plm_fields:
+    - title
+    - authors
+    - journal
+    - publication_year
+    - type
+  plm_threshold_theta: 0.5
+  plm_max_len: 256
+  plm_max_field_len: 350
+  plm_batch_size: 32
+  plm_margin_delta: 0.08
+  # 2026-05-27 (step 4h option a): full LLM adjudication on every
+  # gate decision via new gate_mode field. Mirrors bucket-C policy:
+  # PLM score becomes audit telemetry, not a decision shortcut.
+  # Insurance against transitional-state Ditto calibration on
+  # music / companies / products (pre-R7 padding fix).
+  gate_mode: full_llm
+  per_level:
+    easy:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    medium:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm
+    hard:
+      enabled: true
+      plm_margin_delta: 0.08
+      gate_mode: full_llm

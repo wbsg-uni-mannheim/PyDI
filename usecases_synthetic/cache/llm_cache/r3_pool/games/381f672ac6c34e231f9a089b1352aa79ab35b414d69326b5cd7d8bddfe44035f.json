@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24482|sales_4685|name=Trinity Universe (video game) | platform=PS3 | genres=Role-playing video game | developer=Gust Corporation | releaseYear=2009-01-01||name=Trinity Universe | platform=PS3 | genres=Role-Playing | developer=Gust, Idea Factory | publisher=Nippon Ichi Software | releaseYear=2009-01-01 | criticScore=62 | userScore=7.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Trinity Universe (video game) | platform=PS3 | genres=Role-playing video game | developer=Gust Corporation | releaseYear=2009-01-01\nRecord B: name=Trinity Universe | platform=PS3 | genres=Role-Playing | developer=Gust, Idea Factory | publisher=Nippon Ichi Software | releaseYear=2009-01-01 | criticScore=62 | userScore=7.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_47523|sales_5293|name=Fatal Inertia | platform=Xbox 360 | genres=Racing video game | developer=Koei | releaseYear=2007-01-01||name=Fatal Inertia | platform=Xbox 360 | genres=Racing | developer=Koei | publisher=Tecmo Koei | releaseYear=2007-01-01 | criticScore=61 | userScore=4.2 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Fatal Inertia | platform=Xbox 360 | genres=Racing video game | developer=Koei | releaseYear=2007-01-01\nRecord B: name=Fatal Inertia | platform=Xbox 360 | genres=Racing | developer=Koei | publisher=Tecmo Koei | releaseYear=2007-01-01 | criticScore=61 | userScore=4.2 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

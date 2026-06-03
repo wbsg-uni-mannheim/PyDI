@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_13322|metacritic_333|name=Call of Duty (video game) | platform=Microsoft Windows | genres=First-person shooter | developer=Aspyr | releaseYear=2003-01-01||name=Call of Duty | platform=PC | genres=Action,Shooter,Shooter,First-Person,Third-Person,Historic,Tactical,Historic,Arcade | developer=Infinity Ward | releaseYear=2003-01-01 | criticScore=91.0 | userScore=8.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Call of Duty (video game) | platform=Microsoft Windows | genres=First-person shooter | developer=Aspyr | releaseYear=2003-01-01\nRecord B: name=Call of Duty | platform=PC | genres=Action,Shooter,Shooter,First-Person,Third-Person,Historic,Tactical,Historic,Arcade | developer=Infinity Ward | releaseYear=2003-01-01 | criticScore=91.0 | userScore=8.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

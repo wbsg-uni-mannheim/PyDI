@@ -1,0 +1,22 @@
+{
+  "attribute": "city",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "KarnatakaBangaloreElectronics City"
+    },
+    {
+      "source": "fullcontact",
+      "value": "Bangalore"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.97,
+    "operation": "normalization",
+    "reasoning": "The DBpedia string appears to be a concatenated location name referring to Bangalore/Electronics City, so the clean canonical city is Bangalore.",
+    "value": "Bangalore"
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":\"Bangalore\",\"operation\":\"normalization\",\"confidence\":0.97,\"reasoning\":\"The DBpedia string appears to be a concatenated location name referring to Bangalore/Electronics City, so the clean canonical city is Bangalore.\"}"
+}

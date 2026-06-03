@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_9227|sales_7480|name=Worms (2007 video game) | platform=PS3 | genres=Strategy game | developer=Team17 | releaseYear=2007-01-01||name=Worms | platform=PS3 | genres=Strategy | developer=Team 17 | publisher=Sony Computer Entertainment | releaseYear=2009-01-01 | criticScore=76 | userScore=6.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Worms (2007 video game) | platform=PS3 | genres=Strategy game | developer=Team17 | releaseYear=2007-01-01\nRecord B: name=Worms | platform=PS3 | genres=Strategy | developer=Team 17 | publisher=Sony Computer Entertainment | releaseYear=2009-01-01 | criticScore=76 | userScore=6.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

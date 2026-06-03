@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_17621|sales_6854|name=DreamWorks Over the Hedge: Hammy Goes Nuts | platform=Playstation Portable | genres=Action,Platformer,Platformer,3D,3D | developer=Amaze Entertainment | releaseYear=2006-01-01 | criticScore=58.0 | userScore=8.0 | ESRB=E||name=Over the Hedge: Hammy Goes Nuts! | platform=Playstation Portable | genres=Platform | developer=Amaze Entertainment | publisher=Activision | releaseYear=2006-01-01 | criticScore=58 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DreamWorks Over the Hedge: Hammy Goes Nuts | platform=Playstation Portable | genres=Action,Platformer,Platformer,3D,3D | developer=Amaze Entertainment | releaseYear=2006-01-01 | criticScore=58.0 | userScore=8.0 | ESRB=E\nRecord B: name=Over the Hedge: Hammy Goes Nuts! | platform=Playstation Portable | genres=Platform | developer=Amaze Entertainment | publisher=Activision | releaseYear=2006-01-01 | criticScore=58 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

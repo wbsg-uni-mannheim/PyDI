@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_36897|metacritic_19704|name=Teenage Mutant Ninja Turtles: Mutants in Manhattan | genres=Action game | developer=PlatinumGames | releaseYear=2016-01-01||name=Teenage Mutant Ninja Turtles: Mutants in Manhattan | platform=PS4 | genres=Action,Beat-'Em-Up,3D | developer=PlatinumGames | releaseYear=2016-01-01 | criticScore=44.0 | userScore=5.5 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Teenage Mutant Ninja Turtles: Mutants in Manhattan | genres=Action game | developer=PlatinumGames | releaseYear=2016-01-01\nRecord B: name=Teenage Mutant Ninja Turtles: Mutants in Manhattan | platform=PS4 | genres=Action,Beat-'Em-Up,3D | developer=PlatinumGames | releaseYear=2016-01-01 | criticScore=44.0 | userScore=5.5 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

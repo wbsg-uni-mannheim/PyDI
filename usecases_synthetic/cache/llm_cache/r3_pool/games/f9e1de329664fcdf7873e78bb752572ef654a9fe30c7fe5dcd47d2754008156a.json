@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_48791|sales_1737|name=Need for Speed: Undercover | platform=PlayStation Portable | genres=Racing game | developer=Firebrand Games | releaseYear=2008-01-01||name=Need For Speed: Undercover | platform=Playstation Portable | genres=Racing | developer=Piranha Games | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=52 | userScore=6.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Need for Speed: Undercover | platform=PlayStation Portable | genres=Racing game | developer=Firebrand Games | releaseYear=2008-01-01\nRecord B: name=Need For Speed: Undercover | platform=Playstation Portable | genres=Racing | developer=Piranha Games | publisher=Electronic Arts | releaseYear=2008-01-01 | criticScore=52 | userScore=6.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -48,16 +48,44 @@ from .domain_config import (
 _XML_NAMESPACE_RE = re.compile(r"\{[^}]+\}")
 
 
+def _em_gold_has_header(csv_path: Path) -> bool:
+    """Return ``True`` when the EM gold CSV's first line is a header row.
+
+    The canonical synthetic EM gold (companies / games / music /
+    products) is header-less: the first line is already a data row whose
+    third field is a label value (``True`` / ``False``). The 2026 papers
+    domain instead ships header-bearing EM gold whose third column is the
+    literal token ``label`` (header ``id_dblp,id_crossref,label`` with
+    integer 0/1 labels). Detection keys on that literal token so a real
+    label value can never be mistaken for a header.
+    """
+    with open(csv_path, encoding="utf-8") as f:
+        first = f.readline().rstrip("\r\n")
+    if not first:
+        return False
+    parts = first.rsplit(",", 2)
+    return len(parts) == 3 and parts[2].strip().lower() == "label"
+
+
 def read_em_gold_csv(csv_path: Path) -> pd.DataFrame:
     """Read an EM gold correspondence CSV robustly.
 
-    The EM gold files are header-less CSVs with columns
-    ``id1, id2, label`` but both ``id1`` and ``id2`` are URLs that may
-    contain unquoted commas (e.g. ``Workday,_Inc.`` in DBpedia IRIs).
-    The default ``pandas`` C tokenizer trips on such lines. This helper
-    parses each line manually by right-splitting on the last two commas
-    so the label and the second URL are isolated before any embedded
-    commas in the first URL.
+    The canonical synthetic EM gold files are header-less CSVs with
+    columns ``id1, id2, label`` but both ``id1`` and ``id2`` are URLs
+    that may contain unquoted commas (e.g. ``Workday,_Inc.`` in DBpedia
+    IRIs). The default ``pandas`` C tokenizer trips on such lines. This
+    helper parses each line manually by right-splitting on the last two
+    commas so the label and the second URL are isolated before any
+    embedded commas in the first URL.
+
+    Header-bearing EM gold (the 2026 papers domain:
+    ``id_dblp,id_crossref,label`` with integer 0/1 labels and
+    comma-free ``<source>-NNNNN`` ids) is auto-detected and read with
+    pandas; the first three columns become ``id1``, ``id2``, ``label``
+    positionally and the integer label dtype is preserved so the
+    downstream ``astype(bool)`` positive-pair extraction works. The
+    header-less branch is byte-for-byte unchanged for every existing
+    domain.
 
     Parameters
     ----------
@@ -69,6 +97,12 @@ def read_em_gold_csv(csv_path: Path) -> pd.DataFrame:
     pandas.DataFrame
         DataFrame with columns ``id1``, ``id2``, ``label``.
     """
+    if _em_gold_has_header(csv_path):
+        df = pd.read_csv(csv_path)
+        out = df.iloc[:, :3].copy()
+        out.columns = ["id1", "id2", "label"]
+        return out.reset_index(drop=True)
+
     rows: list[tuple[str, str, str]] = []
     with open(csv_path, encoding="utf-8") as f:
         for raw_line in f:
@@ -84,10 +118,102 @@ def read_em_gold_csv(csv_path: Path) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["id1", "id2", "label"])
 
 
+def _source_filename_tokens(src: str) -> list[str]:
+    """Return filename tokens to try for a source name.
+
+    Most domains use the source name verbatim in EM gold filenames. The
+    2026 papers domain condenses ``open_alex`` to ``openalex`` in its EM
+    gold filenames + id columns, so the underscore-stripped variant is
+    offered as a fallback token.
+    """
+    tokens = [src]
+    condensed = src.replace("_", "")
+    if condensed != src:
+        tokens.append(condensed)
+    return tokens
+
+
+def em_gold_candidates(
+    em_dir: Path,
+    pair: tuple[str, str],
+    split: str,
+) -> list[tuple[Path, bool]]:
+    """Return ordered ``(path, needs_swap)`` candidates for one EM split.
+
+    The canonical synthetic naming ``<src1>_2_<src2>_<split>.csv`` (and
+    its reverse) is offered first, so every existing domain resolves to
+    exactly the file it always did. The condensed ``<src1>_<src2>``
+    forms (with the underscore-stripped token variants) follow as a
+    fallback for the 2026 papers domain, whose EM gold ships as
+    ``dblp_crossref_<split>.csv`` / ``dblp_openalex_<split>.csv`` with no
+    ``_2_`` separator. ``needs_swap`` is ``True`` for reverse-direction
+    files so the caller can swap ``id1``/``id2`` to match the declared
+    pair direction.
+
+    Parameters
+    ----------
+    em_dir : Path
+        Entity-matching directory.
+    pair : tuple of str
+        ``(src1, src2)`` source pair in the domain's canonical order.
+    split : str
+        Split name (``"train"`` / ``"val"`` / ``"test"`` / ``"all"``).
+
+    Returns
+    -------
+    list of tuple
+        ``(path, needs_swap)`` in priority order, de-duplicated.
+    """
+    src1, src2 = pair
+    candidates: list[tuple[Path, bool]] = [
+        (em_dir / f"{src1}_2_{src2}_{split}.csv", False),
+        (em_dir / f"{src2}_2_{src1}_{split}.csv", True),
+    ]
+    seen = {p for p, _ in candidates}
+    for token1 in _source_filename_tokens(src1):
+        for token2 in _source_filename_tokens(src2):
+            forward = em_dir / f"{token1}_{token2}_{split}.csv"
+            if forward not in seen:
+                candidates.append((forward, False))
+                seen.add(forward)
+            reverse = em_dir / f"{token2}_{token1}_{split}.csv"
+            if reverse not in seen:
+                candidates.append((reverse, True))
+                seen.add(reverse)
+    return candidates
+
+
+def read_em_gold_pair(path: Path, needs_swap: bool) -> pd.DataFrame:
+    """Read an EM gold CSV and orient it to the declared pair direction.
+
+    Wraps :func:`read_em_gold_csv` and swaps ``id1``/``id2`` when the
+    file was found under the reverse source ordering, so the returned
+    frame always carries ``id1`` belonging to the pair's ``src1``.
+    """
+    df = read_em_gold_csv(path)
+    if not needs_swap:
+        return df
+    return pd.DataFrame(
+        {
+            "id1": df["id2"].values,
+            "id2": df["id1"].values,
+            "label": df["label"].values,
+        }
+    )
+
+
 _FORMAT_LOADERS = {
     "xml": load_xml,
     "csv": load_csv,
     "json": load_json,
+    # JSON-lines (one record per line). Dispatches to the same
+    # ``load_json`` reader; the domain source spec opts in via
+    # ``reader_kwargs: {lines: true, add_index: true, index_column_name:
+    # id, id_prefix: <source>}`` so PyDI mints the ``<source>-NNNNN``
+    # dash ids that the papers EM + fusion gold reference. Added for the
+    # 2026 papers domain whose sources ship as ``.jsonl`` with no
+    # on-disk id column.
+    "jsonl": load_json,
 }
 
 

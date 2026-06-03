@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_55079|metacritic_3051|name=BioShock 2 | platform=Xbox 360 | genres=First-person shooter | developer=2K Marin | releaseYear=2010-01-01||name=BioShock 2: Minerva's Den | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=2K Marin | releaseYear=2010-01-01 | criticScore=82.0 | userScore=8.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=BioShock 2 | platform=Xbox 360 | genres=First-person shooter | developer=2K Marin | releaseYear=2010-01-01\nRecord B: name=BioShock 2: Minerva's Den | platform=Xbox 360 | genres=Action,Shooter,Shooter,First-Person,Sci-Fi,Sci-Fi,Arcade | developer=2K Marin | releaseYear=2010-01-01 | criticScore=82.0 | userScore=8.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

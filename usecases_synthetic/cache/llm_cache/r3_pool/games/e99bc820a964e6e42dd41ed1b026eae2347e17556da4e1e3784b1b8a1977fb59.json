@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_42818|metacritic_13188|name=Master of Orion: Conquer the Stars | platform=Microsoft Windows | genres=Turn-based strategy | developer=NGD Studios | releaseYear=2016-01-01||name=Sword of the Stars | platform=PC | genres=Strategy,Turn-Based,General,Sci-Fi,Sci-Fi | developer=Kerberos Productions | releaseYear=2006-01-01 | criticScore=68.0 | userScore=7.2 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Master of Orion: Conquer the Stars | platform=Microsoft Windows | genres=Turn-based strategy | developer=NGD Studios | releaseYear=2016-01-01\nRecord B: name=Sword of the Stars | platform=PC | genres=Strategy,Turn-Based,General,Sci-Fi,Sci-Fi | developer=Kerberos Productions | releaseYear=2006-01-01 | criticScore=68.0 | userScore=7.2 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

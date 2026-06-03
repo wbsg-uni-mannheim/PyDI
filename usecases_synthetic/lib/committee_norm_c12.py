@@ -367,6 +367,32 @@ def _load_val_and_test_targets(
     return val, test
 
 
+def _load_canonical_schema_constraints(domain: str, bundle: Any) -> dict:
+    """Load the canonical target-schema constraint map for ``domain``.
+
+    Reads ``usecases/<domain>/input/schemamatching/<domain>_target_schema.json``
+    (preferred) or ``target_schema.json`` and parses JSON Schema +
+    ``x-pydi-consistency`` extensions into per-attribute constraints.
+    """
+    from pathlib import Path as _Path
+
+    from pipelines.lib.schema_constraint_scorer import parse_target_schema
+
+    repo_root = _Path(__file__).resolve().parents[2]
+    domain_root = repo_root / "usecases" / domain / "input" / "schemamatching"
+    candidates = [
+        domain_root / f"{domain}_target_schema.json",
+        domain_root / "target_schema.json",
+    ]
+    for p in candidates:
+        if p.exists():
+            return parse_target_schema(p)
+    raise FileNotFoundError(
+        f"No target schema for {domain} under {domain_root}; expected one of "
+        f"{[c.name for c in candidates]}."
+    )
+
+
 # ---------------------------------------------------------------------------
 # Coherent member objects
 # ---------------------------------------------------------------------------
@@ -667,12 +693,19 @@ class C12NormCommitteeRunner(CommitteeRunner):
         roster_path: Path,
         *,
         with_llm: bool = False,
+        scoring_surface: str = "xml_targets",
     ) -> None:
         with open(roster_path, encoding="utf-8") as f:
             raw = yaml.safe_load(f)
         self._roster = _parse_roster(raw)
         self._roster_path = roster_path
         self._with_llm = with_llm
+        if scoring_surface not in {"xml_targets", "schema_constraints"}:
+            raise ValueError(
+                f"Unknown scoring_surface {scoring_surface!r}; expected "
+                "'xml_targets' or 'schema_constraints'."
+            )
+        self._scoring_surface = scoring_surface
 
         # Active members = the roster minus llm_only when with_llm=False.
         self._active_members: list[_MemberSpec] = [
@@ -680,7 +713,11 @@ class C12NormCommitteeRunner(CommitteeRunner):
         ]
         super().__init__(
             roster=list(self._active_members),
-            config={"seed": self._roster.seed, "with_llm": with_llm},
+            config={
+                "seed": self._roster.seed,
+                "with_llm": with_llm,
+                "scoring_surface": scoring_surface,
+            },
         )
 
     @property
@@ -706,7 +743,14 @@ class C12NormCommitteeRunner(CommitteeRunner):
             )
 
         val_targets, test_targets = _load_val_and_test_targets(domain)
-        if not test_targets:
+        # Load schema constraints once when the schema_constraints
+        # scoring surface is active; XML targets are still loaded
+        # because the val-set rule sweep at lines ~750-784 uses them.
+        schema_constraints = None
+        if self._scoring_surface == "schema_constraints":
+            schema_constraints = _load_canonical_schema_constraints(domain, bundle)
+
+        if not test_targets and self._scoring_surface == "xml_targets":
             raise ValueError(
                 f"Fusion test reference values empty for {domain}; the "
                 "Normalization committee has no signal to score."
@@ -715,18 +759,27 @@ class C12NormCommitteeRunner(CommitteeRunner):
         # Eligible attributes: intersection of SM-resolved attrs, gold-attrs,
         # and per-domain kind map.
         sm_attributes = {ca for (_, ca) in attr_index.keys()}
-        gold_attributes: set[str] = set()
-        for entity_attrs in test_targets.values():
-            gold_attributes.update(entity_attrs.keys())
         kind_map = kind_map_for_domain(domain)
         kind_attributes = set(kind_map.keys())
+        if self._scoring_surface == "schema_constraints":
+            # Constrained attributes come from the JSON Schema, not from
+            # the fusion XML — the latter only covers 6 attributes for
+            # products which is too narrow.
+            gold_attributes = {
+                a for a, c in (schema_constraints or {}).items() if c.has_any_constraint
+            }
+        else:
+            gold_attributes = set()
+            for entity_attrs in test_targets.values():
+                gold_attributes.update(entity_attrs.keys())
         eligible_attributes = sorted(sm_attributes & gold_attributes & kind_attributes)
 
         if not eligible_attributes:
             raise ValueError(
-                f"No eligible attributes for {domain}: SM∩fusion∩kind is "
-                f"empty (sm={sorted(sm_attributes)}, "
-                f"fusion={sorted(gold_attributes)}, "
+                f"No eligible attributes for {domain}: SM∩"
+                f"{'schema' if self._scoring_surface == 'schema_constraints' else 'fusion'}"
+                f"∩kind is empty (sm={sorted(sm_attributes)}, "
+                f"gold={sorted(gold_attributes)}, "
                 f"kind={sorted(kind_attributes)})."
             )
 
@@ -861,24 +914,44 @@ class C12NormCommitteeRunner(CommitteeRunner):
         for spec in self._active_members:
             t0 = time.monotonic()
             normalizer = member_instances[spec.name]
-            scores = MemberPerAttributeScores(member=spec.name)
-            self._score_member_on_targets(
-                normalizer=normalizer,
-                eligible_attributes=eligible_attributes,
-                kind_map=kind_map,
-                domain=domain,
-                test_targets=test_targets,
-                bundle=bundle,
-                attr_index=attr_index,
-                source_id_index=source_id_index,
-                linkage=linkage,
-                scores=scores,
-            )
+            if self._scoring_surface == "schema_constraints":
+                from pipelines.lib.schema_constraint_scorer import (
+                    SchemaConstraintScores,
+                )
+
+                schema_scores = SchemaConstraintScores(member=spec.name)
+                self._score_member_against_schema(
+                    normalizer=normalizer,
+                    eligible_attributes=eligible_attributes,
+                    kind_map=kind_map,
+                    domain=domain,
+                    bundle=bundle,
+                    attr_index=attr_index,
+                    schema_constraints=schema_constraints or {},
+                    scores=schema_scores,
+                )
+                scores_obj: Any = schema_scores
+            else:
+                scores_obj = MemberPerAttributeScores(member=spec.name)
+                self._score_member_on_targets(
+                    normalizer=normalizer,
+                    eligible_attributes=eligible_attributes,
+                    kind_map=kind_map,
+                    domain=domain,
+                    test_targets=test_targets,
+                    bundle=bundle,
+                    attr_index=attr_index,
+                    source_id_index=source_id_index,
+                    linkage=linkage,
+                    scores=scores_obj,
+                )
+            scores = scores_obj
             elapsed = time.monotonic() - t0
             metrics = scores.macro_metrics()
             metrics["f1"] = metrics["macro_f1"]
             metrics["precision"] = metrics["macro_precision"]
             metrics["recall"] = metrics["macro_recall"]
+            metrics["scoring_surface"] = self._scoring_surface
 
             per_member[spec.name] = MemberResult(
                 name=spec.name,
@@ -1015,6 +1088,89 @@ class C12NormCommitteeRunner(CommitteeRunner):
                             )
                             normalized = None
                         scores.record(attribute, normalized, target_values, tolerance)
+
+    def _score_member_against_schema(
+        self,
+        *,
+        normalizer: Any,
+        eligible_attributes: list[str],
+        kind_map: dict[str, str],
+        domain: str,
+        bundle: VariantBundle,
+        attr_index: dict[tuple[str, str], list[str]],
+        schema_constraints: dict[str, Any],
+        scores: Any,
+    ) -> None:
+        """Score a member by running its normalizer on every (source,
+        canonical_attribute, row) cell and asking whether the output
+        satisfies the target-schema constraints. Unlike
+        :meth:`_score_member_on_targets`, this surface does not need
+        per-entity gold values — the constraint set IS the gold.
+        """
+        for attribute in eligible_attributes:
+            constraints = schema_constraints.get(attribute)
+            if constraints is None or not constraints.has_any_constraint:
+                continue
+            kind = kind_map.get(attribute, "long_string")
+            for source_name, source_df in bundle.sources.items():
+                source_cols = attr_index.get((source_name, attribute), [])
+                if not source_cols:
+                    continue
+                # Pre-resolve column locations for fast iat() access.
+                col_locs: dict[str, int] = {}
+                for c in source_cols:
+                    if c in source_df.columns:
+                        col_locs[c] = source_df.columns.get_loc(c)
+                if not col_locs:
+                    continue
+                # field_applicability needs the row's product_type
+                # (or analogue) — pre-resolve that column once. The
+                # source DataFrame may carry RAW per-source column
+                # vocabularies (e.g. ``category`` in products_1,
+                # ``productCategory`` in products_2, ``Type`` in
+                # products_3, ``cat`` in products_4) rather than the
+                # canonical attribute name. Map canonical -> raw via
+                # ``attr_index`` (built from sm_mapping) so the gate
+                # finds the right column regardless of source schema.
+                ctx_col_locs: dict[str, int] = {}
+                for ctx_col in ("product_type",):
+                    # Direct hit: source already uses canonical name.
+                    if ctx_col in source_df.columns:
+                        ctx_col_locs[ctx_col] = source_df.columns.get_loc(ctx_col)
+                        continue
+                    # Otherwise look up the raw column for this
+                    # canonical attribute via the SM gold-derived
+                    # attr_index.
+                    for raw_col in attr_index.get((source_name, ctx_col), []):
+                        if raw_col in source_df.columns:
+                            ctx_col_locs[ctx_col] = source_df.columns.get_loc(raw_col)
+                            break
+                # Iterate rows once per (source, attribute, source_col).
+                for source_col, col_loc in col_locs.items():
+                    for row_idx in range(len(source_df)):
+                        raw_value = source_df.iat[row_idx, col_loc]
+                        try:
+                            normalized = normalizer.normalize(
+                                raw_value,
+                                attribute=attribute,
+                                kind=kind,
+                                domain=domain,
+                            )
+                        except Exception:
+                            logger.exception(
+                                "C12 schema-norm member %s raised on (%s, %s, %s, %r)",
+                                getattr(normalizer, "name", "?"),
+                                domain,
+                                source_name,
+                                attribute,
+                                raw_value,
+                            )
+                            normalized = None
+                        row_ctx = {
+                            c: source_df.iat[row_idx, ctx_col_locs[c]]
+                            for c in ctx_col_locs
+                        }
+                        scores.record(attribute, normalized, constraints, row_ctx)
 
     def _per_source_rollup(
         self,

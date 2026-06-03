@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_48014|sales_5356|name=Deception IV: Blood Ties | platform=PlayStation Vita | genres=Tactical role-playing game | developer=Tecmo Koei | releaseYear=2014-01-01||name=Deception IV: Blood Ties | platform=Playstation Vita | genres=Action | developer=Koei Tecmo Games | publisher=Tecmo Koei | releaseYear=2014-01-01 | criticScore=67 | userScore=7.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Deception IV: Blood Ties | platform=PlayStation Vita | genres=Tactical role-playing game | developer=Tecmo Koei | releaseYear=2014-01-01\nRecord B: name=Deception IV: Blood Ties | platform=Playstation Vita | genres=Action | developer=Koei Tecmo Games | publisher=Tecmo Koei | releaseYear=2014-01-01 | criticScore=67 | userScore=7.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

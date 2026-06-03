@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_41626|metacritic_16700|name=Wii Play: Motion | platform=Wii | genres=Party game | developer=Skip Ltd. | releaseYear=2011-01-01||name=Wii Play: Motion | platform=Wii | genres=Miscellaneous,Party,Party,Party / Minigame | developer=Nintendo,Good-Feel | releaseYear=2011-01-01 | criticScore=60.0 | userScore=6.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wii Play: Motion | platform=Wii | genres=Party game | developer=Skip Ltd. | releaseYear=2011-01-01\nRecord B: name=Wii Play: Motion | platform=Wii | genres=Miscellaneous,Party,Party,Party / Minigame | developer=Nintendo,Good-Feel | releaseYear=2011-01-01 | criticScore=60.0 | userScore=6.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_45345|metacritic_1102|name=Rocket League | platform=Xbox One | genres=Sports game | developer=Psyonix | releaseYear=2016-01-01||name=Rocket League | platform=Xbox One | genres=Sports,Team,Soccer,Arcade | developer=Psyonix,Panic Button | releaseYear=2016-01-01 | criticScore=87.0 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Rocket League | platform=Xbox One | genres=Sports game | developer=Psyonix | releaseYear=2016-01-01\nRecord B: name=Rocket League | platform=Xbox One | genres=Sports,Team,Soccer,Arcade | developer=Psyonix,Panic Button | releaseYear=2016-01-01 | criticScore=87.0 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

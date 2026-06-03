@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_50304|metacritic_13214|name=Dear Esther | platform=Xbox One | genres=Adventure game | developer=The Chinese Room | releaseYear=2016-01-01||name=Dear Esther: Landmark Edition | platform=Xbox One | genres=Adventure,3D,First-Person | developer=The Chinese Room | releaseYear=2016-01-01 | criticScore=68.0 | userScore=5.4 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Dear Esther | platform=Xbox One | genres=Adventure game | developer=The Chinese Room | releaseYear=2016-01-01\nRecord B: name=Dear Esther: Landmark Edition | platform=Xbox One | genres=Adventure,3D,First-Person | developer=The Chinese Room | releaseYear=2016-01-01 | criticScore=68.0 | userScore=5.4 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

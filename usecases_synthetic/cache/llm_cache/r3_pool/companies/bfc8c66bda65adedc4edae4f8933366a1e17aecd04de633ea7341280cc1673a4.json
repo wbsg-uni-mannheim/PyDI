@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/99_Cents_Only_Stores|http://www.forbes.com/companies/wal-mart-stores/|name=99 Cents Only Stores | country=United States | industry=Discount store | founded=1982-01-01||name=Wal-Mart Stores | country=United States of America | industry=Discount Stores",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=99 Cents Only Stores | country=United States | industry=Discount store | founded=1982-01-01\nRecord B: name=Wal-Mart Stores | country=United States of America | industry=Discount Stores\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

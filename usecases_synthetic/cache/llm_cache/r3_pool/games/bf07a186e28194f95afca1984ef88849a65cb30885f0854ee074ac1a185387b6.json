@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_24378|sales_3584|name=Glory of Heracles (video game) | platform=DS | genres=Role-playing video game | developer=Paon | releaseYear=2008-01-01||name=Glory of Heracles | platform=DS | genres=Role-Playing | developer=Paon Corporation | publisher=Nintendo | releaseYear=2008-01-01 | criticScore=69 | userScore=7.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Glory of Heracles (video game) | platform=DS | genres=Role-playing video game | developer=Paon | releaseYear=2008-01-01\nRecord B: name=Glory of Heracles | platform=DS | genres=Role-Playing | developer=Paon Corporation | publisher=Nintendo | releaseYear=2008-01-01 | criticScore=69 | userScore=7.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

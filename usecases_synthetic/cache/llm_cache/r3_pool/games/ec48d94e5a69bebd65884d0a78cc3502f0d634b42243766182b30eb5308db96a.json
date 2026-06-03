@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9320|sales_2335|name=Red Dead Revolver | platform=Xbox | genres=Action,Shooter,Third-Person,Historic | developer=Rockstar San Diego | releaseYear=2004-01-01 | criticScore=74.0 | userScore=8.1 | ESRB=M||name=Red Dead Revolver | platform=Xbox | genres=Shooter | developer=Rockstar San Diego | publisher=Take-Two Interactive | releaseYear=2004-01-01 | criticScore=74 | userScore=8.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Red Dead Revolver | platform=Xbox | genres=Action,Shooter,Third-Person,Historic | developer=Rockstar San Diego | releaseYear=2004-01-01 | criticScore=74.0 | userScore=8.1 | ESRB=M\nRecord B: name=Red Dead Revolver | platform=Xbox | genres=Shooter | developer=Rockstar San Diego | publisher=Take-Two Interactive | releaseYear=2004-01-01 | criticScore=74 | userScore=8.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

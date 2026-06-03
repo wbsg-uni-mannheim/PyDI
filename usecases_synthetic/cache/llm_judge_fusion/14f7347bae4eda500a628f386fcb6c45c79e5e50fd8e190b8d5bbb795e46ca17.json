@@ -1,0 +1,22 @@
+{
+  "attribute": "revenue",
+  "candidates": [
+    {
+      "source": "dbpedia",
+      "value": "3750000000.0"
+    },
+    {
+      "source": "forbes",
+      "value": "4800000000"
+    }
+  ],
+  "model_id": "gpt-5.4-mini",
+  "parsed": {
+    "confidence": 0.86,
+    "operation": "aggregation",
+    "reasoning": "A robust aggregate of the two numeric revenue estimates best reconciles the conflicting sources.",
+    "value": 4275000000
+  },
+  "prompt_version": "v2",
+  "raw_response": "{\"value\":4275000000,\"operation\":\"aggregation\",\"confidence\":0.86,\"reasoning\":\"A robust aggregate of the two numeric revenue estimates best reconciles the conflicting sources.\"}"
+}

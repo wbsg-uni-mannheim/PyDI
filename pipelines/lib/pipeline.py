@@ -218,6 +218,7 @@ class BestOfBreedPipeline:
         with_llm_fusion: bool = False,
         with_llm: bool | None = None,
         mode: str = "replay",
+        level: str = "baseline",
         ditto_checkpoint_override: Path | None = None,
         sc_block_checkpoint_override: Path | None = None,
         out_dir: Path | None = None,
@@ -237,6 +238,12 @@ class BestOfBreedPipeline:
         self.with_llm_em = with_llm_em
         self.with_llm_fusion = with_llm_fusion
         self.mode = mode
+        if level not in {"baseline", "easy", "medium", "hard"}:
+            raise ValueError(
+                f"Unknown level {level!r}; expected one of "
+                "{baseline, easy, medium, hard}."
+            )
+        self.level = level
         self.ditto_checkpoint_override = ditto_checkpoint_override
         self.sc_block_checkpoint_override = sc_block_checkpoint_override
         self.out_dir = out_dir
@@ -252,7 +259,9 @@ class BestOfBreedPipeline:
         t0_total = time.monotonic()
 
         bundle = load_pipeline_bundle(
-            self.config.domain, bundle_source=self.config.bundle_source
+            self.config.domain,
+            level=self.level,
+            bundle_source=self.config.bundle_source,
         )
         state = PipelineState(bundle=bundle)
         stage_selections: list[StageSelection] = []
@@ -298,6 +307,23 @@ class BestOfBreedPipeline:
                 sel = run_sm(state, sm_yaml=sm_yaml, with_llm=self.with_llm_sm)
             stage_selections.append(sel)
 
+            # NOTE: post-SM source translation is intentionally NOT
+            # applied here anymore (2026-06-02). The canonical_loader
+            # returns sources with their RAW per-source column names
+            # (manufacturer / brandName / Brand / mfr ...). Downstream
+            # committees translate via their own YAML ``column_mapping:``
+            # blocks (em_blocking_committee_products.yaml +
+            # em_matching_committee_products.yaml +
+            # fusion_committee_products.yaml). Norm reads source columns
+            # via the SM gold's ``source_column`` (raw name) directly.
+            # Running an extra translation here would double-rename and
+            # trip ``apply_column_mapping``'s collision-drop logic,
+            # leaving downstream stages with only an ``id`` column.
+            # The ``_apply_sm_gold_translation_if_needed`` method stays
+            # in place as a no-op fallback for any future canonical
+            # loader that emits the ``needs_sm_column_translation``
+            # attr AND has no YAML column_mapping downstream.
+
         # Stage 2: Norm
         if self._stage_enabled("norm"):
             norm_yaml = resolve_committee_path(
@@ -325,6 +351,9 @@ class BestOfBreedPipeline:
                     norm_yaml=norm_yaml,
                     vacuous_epsilon=float(stage_cfg.get("vacuous_epsilon", 0.005)),
                     apply_winner=bool(stage_cfg.get("apply_winner", False)),
+                    scoring_surface=str(
+                        stage_cfg.get("scoring_surface", "xml_targets")
+                    ),
                 )
             stage_selections.append(sel)
 
@@ -476,6 +505,93 @@ class BestOfBreedPipeline:
         if self.out_dir is None:
             return None
         return self.out_dir / "sweeps" / stage
+
+    def _apply_sm_gold_translation_if_needed(self, state: PipelineState) -> None:
+        """Translate sources to canonical-target-schema column names
+        using the SM gold mapping, for sources tagged by the canonical
+        loader with ``needs_sm_column_translation``.
+
+        Sources start with raw per-source column names
+        (e.g. ``manufacturer`` / ``brandName`` / ``Brand`` / ``mfr``)
+        so the SM committee scores its members against varied real
+        column names. After SM scoring, downstream stages (Norm, EM,
+        Fusion) expect canonical column names — we apply the GOLD
+        mapping here. Using the gold (not the winner's predicted
+        mapping) is deterministic and keeps downstream input clean
+        even when SM under-performs.
+        """
+        gold = state.bundle.sm_mapping
+        if gold is None or gold.empty:
+            return
+        if not any(
+            (df.attrs.get("needs_sm_column_translation") is True)
+            for df in state.bundle.sources.values()
+        ):
+            return
+
+        gold_by_source: dict[str, dict[str, str]] = {}
+        for _, row in gold.iterrows():
+            src = str(row["source_dataset"])
+            src_col = str(row["source_column"])
+            tgt_col = str(row["target_column"])
+            gold_by_source.setdefault(src, {})[src_col] = tgt_col
+
+        translated: dict[str, "pd.DataFrame"] = {}
+        for name, df in state.bundle.sources.items():
+            if not df.attrs.get("needs_sm_column_translation"):
+                translated[name] = df
+                continue
+            rename = gold_by_source.get(name, {})
+            if not rename:
+                logger.warning(
+                    "SM gold has no entries for source %s; leaving columns raw.",
+                    name,
+                )
+                translated[name] = df
+                continue
+            keep_cols = [c for c in df.columns if c in rename]
+            new_df = df[keep_cols].rename(columns=rename)
+            # Preserve attrs.
+            new_df.attrs = dict(df.attrs)
+            new_df.attrs["needs_sm_column_translation"] = False
+            translated[name] = new_df
+            logger.info(
+                "Translated %s columns via SM gold "
+                "(%d cols renamed; %d cols dropped).",
+                name,
+                len(rename),
+                len(df.columns) - len(keep_cols),
+            )
+        state.bundle.sources = translated
+
+        # Rewrite the in-memory SM gold so source_column == target_column
+        # (identity). Downstream committees (NormCommitteeRunner builds
+        # an ``{(source, canonical_attribute): [source_col]}`` index from
+        # the gold and reads bundle.sources[source][source_col]); after
+        # the translation above, the source DataFrames hold canonical
+        # column names, so the gold must point at canonical names too.
+        # The original raw-to-canonical gold lives on disk and is the
+        # surface the SM committee scored against — that scoring is
+        # already complete.
+        gold_identity = state.bundle.sm_mapping.copy()
+        gold_identity["source_column"] = gold_identity["target_column"]
+        # De-duplicate: when the original gold had multiple raw columns
+        # mapping to the same canonical attribute (rare), the identity
+        # form would have duplicate rows.
+        gold_identity = gold_identity.drop_duplicates(
+            subset=[
+                "source_dataset",
+                "source_column",
+                "target_dataset",
+                "target_column",
+            ]
+        )
+        state.bundle.sm_mapping = gold_identity
+        logger.info(
+            "Rewrote in-memory SM gold to identity form for downstream "
+            "committee scoring (%d rows).",
+            len(gold_identity),
+        )
 
     def _maybe_filter_matching_yaml(self, matching_yaml: Path) -> Path:
         """Rewrite ditto_plm's checkpoint_path to the pipeline-isolated
@@ -661,11 +777,22 @@ class BestOfBreedPipeline:
         # products tree uses (products_1_/products_2_/...) so we pass
         # the explicit map from config.
         prefix_map = self.config.source_prefix_map or None
-        gold = load_workflow_silver(
-            state.bundle.variant_root,
-            domain=self.config.domain,
-            prefix_map=prefix_map,
-        )
+        # Products canonical: tree has fusion CSVs (no test_set.xml).
+        # Use the canonical-CSV silver builder; other domains keep the
+        # XML loader.
+        if (
+            self.config.domain == "products"
+            and self.config.bundle_source == "canonical"
+        ):
+            from .canonical_loader import load_canonical_products_workflow_silver
+
+            gold = load_canonical_products_workflow_silver()
+        else:
+            gold = load_workflow_silver(
+                state.bundle.variant_root,
+                domain=self.config.domain,
+                prefix_map=prefix_map,
+            )
 
         sources_pipe = [df for df in state.bundle.sources.values()]
 

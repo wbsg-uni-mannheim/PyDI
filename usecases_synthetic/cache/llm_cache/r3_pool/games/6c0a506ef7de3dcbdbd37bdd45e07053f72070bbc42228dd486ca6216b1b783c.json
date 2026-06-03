@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_25104|sales_4303|name=Bionicle (video game) | platform=GameCube | genres=Platform game | developer=Möbius Entertainment | releaseYear=2003-01-01||name=Bionicle | platform=GameCube | genres=Action | developer=Argonaut Games | publisher=Electronic Arts | releaseYear=2003-01-01 | criticScore=47 | userScore=4.2 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Bionicle (video game) | platform=GameCube | genres=Platform game | developer=Möbius Entertainment | releaseYear=2003-01-01\nRecord B: name=Bionicle | platform=GameCube | genres=Action | developer=Argonaut Games | publisher=Electronic Arts | releaseYear=2003-01-01 | criticScore=47 | userScore=4.2 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

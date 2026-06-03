@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_18232|metacritic_10668|name=Wallace & Gromit's Grand Adventures | platform=Xbox 360 | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2009-01-01||name=Wallace & Gromit's Grand Adventures, Episode 3: Muzzled! | platform=Xbox 360 | genres=Action,Miscellaneous,General,Compilation | developer=Telltale Games | releaseYear=2009-01-01 | criticScore=72.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wallace & Gromit's Grand Adventures | platform=Xbox 360 | genres=Graphic adventure game | developer=Telltale Games | releaseYear=2009-01-01\nRecord B: name=Wallace & Gromit's Grand Adventures, Episode 3: Muzzled! | platform=Xbox 360 | genres=Action,Miscellaneous,General,Compilation | developer=Telltale Games | releaseYear=2009-01-01 | criticScore=72.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

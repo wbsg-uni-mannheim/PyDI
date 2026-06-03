@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_56759|sales_5444|name=Everybody Dance (video game) | platform=PS3 | genres=Music video game | developer=London Studio | releaseYear=2011-01-01||name=Everybody Dance | platform=PS3 | genres=Misc | developer=SCEE | publisher=Sony Computer Entertainment | releaseYear=2011-01-01 | criticScore=66 | userScore=6.8 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Everybody Dance (video game) | platform=PS3 | genres=Music video game | developer=London Studio | releaseYear=2011-01-01\nRecord B: name=Everybody Dance | platform=PS3 | genres=Misc | developer=SCEE | publisher=Sony Computer Entertainment | releaseYear=2011-01-01 | criticScore=66 | userScore=6.8 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

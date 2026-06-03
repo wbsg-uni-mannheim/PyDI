@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_6298|metacritic_19005|name=Magical Diary | platform=Microsoft Windows | genres=Visual novels | developer=Hanako Games | releaseYear=2011-01-01||name=YUMENIKKI -DREAM DIARY- | platform=PC | genres=Action Adventure,Adventure,3D,Linear,First-Person | developer=Kadokawa,KADOKAWA CORPORATION | releaseYear=2018-01-01 | criticScore=51.0 | userScore=6.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Magical Diary | platform=Microsoft Windows | genres=Visual novels | developer=Hanako Games | releaseYear=2011-01-01\nRecord B: name=YUMENIKKI -DREAM DIARY- | platform=PC | genres=Action Adventure,Adventure,3D,Linear,First-Person | developer=Kadokawa,KADOKAWA CORPORATION | releaseYear=2018-01-01 | criticScore=51.0 | userScore=6.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

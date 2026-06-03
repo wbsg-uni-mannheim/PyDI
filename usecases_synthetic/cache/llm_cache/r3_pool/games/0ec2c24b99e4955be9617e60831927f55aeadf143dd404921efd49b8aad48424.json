@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_9815|metacritic_2128|name=Toki Tori 2 | platform=Switch | genres=Platform game | developer=Two Tribes B.V. | releaseYear=2013-01-01||name=Toki Tori 2 + | platform=Switch | genres=Puzzle,Action | developer=Two Tribes | releaseYear=2018-01-01 | criticScore=84.0 | userScore=7.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Toki Tori 2 | platform=Switch | genres=Platform game | developer=Two Tribes B.V. | releaseYear=2013-01-01\nRecord B: name=Toki Tori 2 + | platform=Switch | genres=Puzzle,Action | developer=Two Tribes | releaseYear=2018-01-01 | criticScore=84.0 | userScore=7.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

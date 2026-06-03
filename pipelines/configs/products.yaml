@@ -39,6 +39,12 @@ stages:
     selection_metric: macro_f1
     apply_winner: false             # v1: scoring-only; see plan §8.4
     vacuous_epsilon: 0.005          # max_f1 - min_f1 below this => "vacuous"
+    # Score normalized outputs against the target_schema's
+    # JSON-Schema constraints + x-pydi-consistency rules (units,
+    # ranges, enums, open taxonomies, field applicability) rather
+    # than the narrow fusion-XML target list. See
+    # pipelines/lib/schema_constraint_scorer.py.
+    scoring_surface: schema_constraints
   em:
     enabled: true
     blocking_selection_metric: reduction_ratio   # handled by composition block in YAML

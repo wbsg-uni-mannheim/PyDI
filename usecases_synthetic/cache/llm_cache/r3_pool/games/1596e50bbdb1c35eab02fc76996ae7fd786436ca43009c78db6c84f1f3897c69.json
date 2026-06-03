@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_15685|sales_1366|name=Madden NFL 08 | platform=PS3 | genres=Sports game | developer=Exient Entertainment | releaseYear=2007-01-01||name=Madden NFL 08 | platform=PS3 | genres=Sports | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=81 | userScore=5.3 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Madden NFL 08 | platform=PS3 | genres=Sports game | developer=Exient Entertainment | releaseYear=2007-01-01\nRecord B: name=Madden NFL 08 | platform=PS3 | genres=Sports | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=81 | userScore=5.3 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

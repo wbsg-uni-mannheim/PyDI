@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Empresa_Nacional_de_Energ%C3%ADa_El%C3%A9ctrica|http://www.forbes.com/companies/red-electrica/|name=Empresa Nacional de Energía Eléctrica | country=Honduras | city=Tegucigalpa | founded=1957-01-01||name=Red Eléctrica | country=Spain | industry=Electric Utilities",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Empresa Nacional de Energía Eléctrica | country=Honduras | city=Tegucigalpa | founded=1957-01-01\nRecord B: name=Red Eléctrica | country=Spain | industry=Electric Utilities\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

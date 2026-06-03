@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_40183|sales_3445|name=Tekken 6 | genres=Beat 'em up | developer=Bandai Namco Entertainment | releaseYear=2009-01-01||name=Tekken 6 | platform=Playstation Portable | genres=Fighting | developer=Namco Bandai Games America, Namco Bandai Games | publisher=Namco Bandai Games | releaseYear=2009-01-01 | criticScore=82 | userScore=8.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tekken 6 | genres=Beat 'em up | developer=Bandai Namco Entertainment | releaseYear=2009-01-01\nRecord B: name=Tekken 6 | platform=Playstation Portable | genres=Fighting | developer=Namco Bandai Games America, Namco Bandai Games | publisher=Namco Bandai Games | releaseYear=2009-01-01 | criticScore=82 | userScore=8.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

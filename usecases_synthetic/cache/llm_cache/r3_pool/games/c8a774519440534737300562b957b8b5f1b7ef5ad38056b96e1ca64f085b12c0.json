@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1090|sales_87|name=Donkey Kong Country Returns | platform=Wii | genres=Action,Adventure,General,Platformer,Platformer,2D,2D | developer=Retro Studios | releaseYear=2010-01-01 | criticScore=87.0 | userScore=8.6 | ESRB=E||name=Donkey Kong Country Returns | platform=Wii | genres=Platform | developer=Retro Studios | publisher=Nintendo | releaseYear=2010-01-01 | criticScore=87 | userScore=8.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Donkey Kong Country Returns | platform=Wii | genres=Action,Adventure,General,Platformer,Platformer,2D,2D | developer=Retro Studios | releaseYear=2010-01-01 | criticScore=87.0 | userScore=8.6 | ESRB=E\nRecord B: name=Donkey Kong Country Returns | platform=Wii | genres=Platform | developer=Retro Studios | publisher=Nintendo | releaseYear=2010-01-01 | criticScore=87 | userScore=8.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

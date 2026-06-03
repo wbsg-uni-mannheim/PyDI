@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/United_States_Federation_of_Worker_Cooperatives|http://www.forbes.com/companies/cognizant-technology/|name=United States Federation of Worker Cooperatives | country=United States | city=CaliforniaSan Francisco | industry=Worker cooperative | founded=2004-01-01||name=Cognizant Technology | country=United States of America | industry=Computer Services",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=United States Federation of Worker Cooperatives | country=United States | city=CaliforniaSan Francisco | industry=Worker cooperative | founded=2004-01-01\nRecord B: name=Cognizant Technology | country=United States of America | industry=Computer Services\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

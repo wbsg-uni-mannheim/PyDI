@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_55287|metacritic_14902|name=Band Hero | platform=DS | genres=Rhythm game | developer=Neversoft | releaseYear=2009-01-01||name=Band Hero | platform=DS | genres=Action,Miscellaneous,Rhythm,Music,Music | developer=Vicarious Visions | releaseYear=2009-01-01 | criticScore=65.0 | userScore=6.3 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Band Hero | platform=DS | genres=Rhythm game | developer=Neversoft | releaseYear=2009-01-01\nRecord B: name=Band Hero | platform=DS | genres=Action,Miscellaneous,Rhythm,Music,Music | developer=Vicarious Visions | releaseYear=2009-01-01 | criticScore=65.0 | userScore=6.3 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

@@ -204,6 +204,7 @@ def measure_baseline(
     with_llm: bool = False,
     out_dir: Path | None = None,
     fusion_input_member: str | None = None,
+    norm_scoring_surface: str = "schema_constraints",
 ) -> dict[str, Any]:
     """Run committee measurement on the original (baseline) data.
 
@@ -222,6 +223,15 @@ def measure_baseline(
     fusion_input_member : str, optional
         Override auto-selection of EM member for fusion input
         recording. Default: highest-F1 EM member.
+    norm_scoring_surface : str
+        Scoring surface for the Normalization stage. ``"schema_constraints"``
+        (default) scores each normalized cell against the JSON-Schema +
+        ``x-pydi-consistency`` constraints declared in the canonical
+        ``target_schema.json`` for the domain; ``"xml_targets"`` is the
+        legacy surface that compares to per-entity fusion val/test
+        values. Recorded in ``meta["scoring_surface"]`` so
+        ``validate_variant`` scores every variant with the same surface
+        the baseline was measured with.
 
     Returns
     -------
@@ -263,6 +273,7 @@ def measure_baseline(
                 "normalization_committee", domain, committee_dir=COMMITTEE_DIR
             ),
             with_llm=with_llm,
+            scoring_surface=norm_scoring_surface,
         )
         norm_result = norm_runner.run(bundle)
         per_stage["norm"] = norm_result.as_dict()
@@ -378,6 +389,7 @@ def measure_baseline(
     json_path = out_dir / "baseline_metrics.json"
     merged_per_stage: dict[str, Any] = {}
     merged_versions: dict[str, str] = {}
+    prior_scoring_surface: str | None = None
     if json_path.exists():
         try:
             with open(json_path, encoding="utf-8") as f:
@@ -385,6 +397,7 @@ def measure_baseline(
             merged_per_stage = dict(prior.get("per_stage") or {})
             prior_meta = prior.get("meta") or {}
             merged_versions = dict(prior_meta.get("committee_versions") or {})
+            prior_scoring_surface = prior_meta.get("scoring_surface")
         except (OSError, json.JSONDecodeError):
             logger.warning(
                 "Could not read existing %s for merge; overwriting.", json_path
@@ -394,6 +407,15 @@ def measure_baseline(
     merged_per_stage.update(per_stage)
     merged_versions.update(meta["committee_versions"])
     meta["committee_versions"] = merged_versions
+
+    # Record the Norm scoring surface so validate_variant uses the same
+    # one. Only stamp it when this run actually measured norm; otherwise
+    # preserve the prior value so a fusion-only re-run can't relabel the
+    # surface of an unchanged norm block.
+    if "norm" in stages:
+        meta["scoring_surface"] = norm_scoring_surface
+    elif prior_scoring_surface is not None:
+        meta["scoring_surface"] = prior_scoring_surface
 
     # Write JSON.
     write_metrics_json(json_path, domain=domain, per_stage=merged_per_stage, meta=meta)
@@ -505,6 +527,19 @@ def main(argv: list[str] | None = None) -> None:
             "input. Default: highest-F1 EM member."
         ),
     )
+    parser.add_argument(
+        "--norm-scoring-surface",
+        type=str,
+        choices=["schema_constraints", "xml_targets"],
+        default="schema_constraints",
+        help=(
+            "Norm scoring surface. 'schema_constraints' (default) scores "
+            "normalized cells against the canonical target_schema.json "
+            "constraints; 'xml_targets' is the legacy fusion val/test "
+            "comparison. Recorded in baseline meta and reused by "
+            "validate_variant."
+        ),
+    )
 
     args = parser.parse_args(argv)
 
@@ -523,6 +558,7 @@ def main(argv: list[str] | None = None) -> None:
         with_llm=args.with_llm,
         out_dir=args.out_dir,
         fusion_input_member=args.fusion_input_member,
+        norm_scoring_surface=args.norm_scoring_surface,
     )
 
 

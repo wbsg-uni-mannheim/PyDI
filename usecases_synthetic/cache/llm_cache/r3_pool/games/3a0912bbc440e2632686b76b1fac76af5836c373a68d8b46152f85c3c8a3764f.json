@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_10829|metacritic_5672|name=Wonder Boy: The Dragon's Trap | platform=Switch | genres=Action-adventure | releaseYear=2017-01-01||name=Wonder Boy: The Dragon's Trap | platform=Switch | genres=Action,Action Adventure,General,Platformer,Metroidvania | developer=Lizardcube | releaseYear=2017-01-01 | criticScore=79.0 | userScore=7.9 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Wonder Boy: The Dragon's Trap | platform=Switch | genres=Action-adventure | releaseYear=2017-01-01\nRecord B: name=Wonder Boy: The Dragon's Trap | platform=Switch | genres=Action,Action Adventure,General,Platformer,Metroidvania | developer=Lizardcube | releaseYear=2017-01-01 | criticScore=79.0 | userScore=7.9 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

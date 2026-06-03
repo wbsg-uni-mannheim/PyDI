@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_34810|metacritic_16865|name=Test Drive: Off-Road | platform=Microsoft Windows | genres=Racing video game | developer=Elite Systems | releaseYear=1997-01-01||name=Off-Road Drive | platform=PC | genres=Driving,Racing,Simulation,Rally / Offroad,Automobile | developer=Avalon Style | releaseYear=2011-01-01 | criticScore=60.0 | userScore=6.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Test Drive: Off-Road | platform=Microsoft Windows | genres=Racing video game | developer=Elite Systems | releaseYear=1997-01-01\nRecord B: name=Off-Road Drive | platform=PC | genres=Driving,Racing,Simulation,Rally / Offroad,Automobile | developer=Avalon Style | releaseYear=2011-01-01 | criticScore=60.0 | userScore=6.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

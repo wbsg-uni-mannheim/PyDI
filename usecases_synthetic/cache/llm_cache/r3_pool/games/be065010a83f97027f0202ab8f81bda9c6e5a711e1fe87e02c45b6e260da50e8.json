@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9169|sales_4308|name=UFC Undisputed 2010 | platform=Playstation Portable | genres=Action,Sports,Fighting,Fighting,Individual,Wrestling,Combat,Wrestling | developer=Yuke's | releaseYear=2010-01-01 | criticScore=74.0 | userScore=7.0 | ESRB=T||name=UFC Undisputed 2010 | platform=Playstation Portable | genres=Fighting | developer=Yuke's | publisher=THQ | releaseYear=2010-01-01 | criticScore=74 | userScore=7.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=UFC Undisputed 2010 | platform=Playstation Portable | genres=Action,Sports,Fighting,Fighting,Individual,Wrestling,Combat,Wrestling | developer=Yuke's | releaseYear=2010-01-01 | criticScore=74.0 | userScore=7.0 | ESRB=T\nRecord B: name=UFC Undisputed 2010 | platform=Playstation Portable | genres=Fighting | developer=Yuke's | publisher=THQ | releaseYear=2010-01-01 | criticScore=74 | userScore=7.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

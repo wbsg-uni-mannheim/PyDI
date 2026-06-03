@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_32102|metacritic_10549|name=Max: The Curse of Brotherhood | platform=Xbox One | genres=Platform game | developer=Press Play (company) | releaseYear=2014-01-01||name=Max: The Curse of Brotherhood | platform=Xbox One | genres=Fantasy,Action Adventure,General,Fantasy | developer=Press Play | releaseYear=2013-01-01 | criticScore=72.0 | userScore=7.4 | ESRB=E10+",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Max: The Curse of Brotherhood | platform=Xbox One | genres=Platform game | developer=Press Play (company) | releaseYear=2014-01-01\nRecord B: name=Max: The Curse of Brotherhood | platform=Xbox One | genres=Fantasy,Action Adventure,General,Fantasy | developer=Press Play | releaseYear=2013-01-01 | criticScore=72.0 | userScore=7.4 | ESRB=E10+\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

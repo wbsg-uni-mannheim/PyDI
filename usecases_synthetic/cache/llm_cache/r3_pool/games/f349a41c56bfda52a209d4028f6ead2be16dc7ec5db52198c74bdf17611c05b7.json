@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_27237|sales_576|name=Devil May Cry 2 | genres=Hack and slash | developer=Capcom | releaseYear=2003-01-01||name=Devil May Cry 2 | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2003-01-01 | criticScore=68 | userScore=6.6 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Devil May Cry 2 | genres=Hack and slash | developer=Capcom | releaseYear=2003-01-01\nRecord B: name=Devil May Cry 2 | platform=PS2 | genres=Action | developer=Capcom | publisher=Capcom | releaseYear=2003-01-01 | criticScore=68 | userScore=6.6 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

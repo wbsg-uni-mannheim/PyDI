@@ -17,15 +17,30 @@ domain: products
 # map form (below) — the list form would apply implicit_currency
 # to every managed column on the source.
 attribute_classes:
-  products_1: &products_attr_classes
-    price: money
-    vram_gb: file_size
-    storage_gb: file_size
-    read_speed_mb_s: rate
-    write_speed_mb_s: rate
-  products_2: *products_attr_classes
-  products_3: *products_attr_classes
-  products_4: *products_attr_classes
+  products_1:
+    list_price: money
+    video_memory_gb: file_size
+    capacity_gb: file_size
+    sequential_read_mb_s: rate
+    sequential_write_mb_s: rate
+  products_2:
+    priceAmount: money
+    vramGb: file_size
+    capacityGb: file_size
+    readSpeedMbps: rate
+    writeSpeedMbps: rate
+  products_3:
+    Price: money
+    MemorySizeGB: file_size
+    CapacityGB: file_size
+    ReadMBs: rate
+    WriteMBs: rate
+  products_4:
+    amt: money
+    vram: file_size
+    cap_gb: file_size
+    rd_mbs: rate
+    wr_mbs: rate
 
 id_columns:
   products_1: id
@@ -129,19 +144,55 @@ normalize_down_threshold: 0.85
 # would apply ``implicit_currency: GBP`` to every managed column on
 # the source, conflating GBP with GB.
 source_magnitude_context:
-  products_1: &products_mag_ctx
+  products_1:
     columns:
-      price:
+      list_price:
         implicit_magnitude: raw
         implicit_currency: GBP
-      vram_gb:
+      video_memory_gb:
         implicit_unit: GB
-      storage_gb:
+      capacity_gb:
         implicit_unit: GB
-      read_speed_mb_s:
+      sequential_read_mb_s:
         implicit_unit: MB/s
-      write_speed_mb_s:
+      sequential_write_mb_s:
         implicit_unit: MB/s
-  products_2: *products_mag_ctx
-  products_3: *products_mag_ctx
-  products_4: *products_mag_ctx
+  products_2:
+    columns:
+      priceAmount:
+        implicit_magnitude: raw
+        implicit_currency: GBP
+      vramGb:
+        implicit_unit: GB
+      capacityGb:
+        implicit_unit: GB
+      readSpeedMbps:
+        implicit_unit: MB/s
+      writeSpeedMbps:
+        implicit_unit: MB/s
+  products_3:
+    columns:
+      Price:
+        implicit_magnitude: raw
+        implicit_currency: GBP
+      MemorySizeGB:
+        implicit_unit: GB
+      CapacityGB:
+        implicit_unit: GB
+      ReadMBs:
+        implicit_unit: MB/s
+      WriteMBs:
+        implicit_unit: MB/s
+  products_4:
+    columns:
+      amt:
+        implicit_magnitude: raw
+        implicit_currency: GBP
+      vram:
+        implicit_unit: GB
+      cap_gb:
+        implicit_unit: GB
+      rd_mbs:
+        implicit_unit: MB/s
+      wr_mbs:
+        implicit_unit: MB/s

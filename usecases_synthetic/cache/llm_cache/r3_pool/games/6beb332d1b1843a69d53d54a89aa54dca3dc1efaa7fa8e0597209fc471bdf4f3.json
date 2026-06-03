@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44242|metacritic_9190|name=Power Stone (video game) | platform=PlayStation Portable | genres=Fighting game | developer=Capcom | releaseYear=2006-01-01||name=Power Stone Collection | platform=Playstation Portable | genres=Miscellaneous,Compilation,Compilation | developer=Capcom | releaseYear=2006-01-01 | criticScore=74.0 | userScore=7.7 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Power Stone (video game) | platform=PlayStation Portable | genres=Fighting game | developer=Capcom | releaseYear=2006-01-01\nRecord B: name=Power Stone Collection | platform=Playstation Portable | genres=Miscellaneous,Compilation,Compilation | developer=Capcom | releaseYear=2006-01-01 | criticScore=74.0 | userScore=7.7 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

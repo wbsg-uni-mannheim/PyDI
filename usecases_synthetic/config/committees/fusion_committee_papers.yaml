@@ -1,0 +1,306 @@
+# Fusion committee roster — papers domain.
+#
+# Seeded from music 2026-06-01; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run. (This file carries no
+# per-attribute rate tables itself — the seeding note is kept for parity
+# with the per-knob YAMLs in this domain fork and flags that every
+# numeric below is a transplanted seed, not a papers-tuned value.)
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member is
+# a coherent end-to-end fusion approach producing a complete fused
+# DataFrame across all attributes; per-member macro_accuracy is the
+# headline metric. The per-(attribute, strategy) split of the pre-C12
+# layout is retired — see baselines/papers/fusion_committee_selection.json
+# (written on first run) for the val-best PyDI choices each member
+# locks in.
+#
+# Per-domain fork rather than a single canonical file because
+# attribute_types + pydi_candidates depend on the schema.
+#
+# Papers fusion gold is JSON-lines (fusion_val.jsonl / fusion_test.jsonl),
+# one flat fused gold record per line, joined to the fused output on
+# ``doi`` — NOT on the synthetic record ``id``. Hence gold_id_column is
+# ``doi`` here (see config/domains/papers.yaml). The gold carries no
+# per-attribute provenance/cluster structure, so source-attribution
+# fusion metrics are unavailable for papers; only value-correctness by
+# the ``doi`` join is scored.
+
+seed: 42
+
+fused_id_column: id
+gold_id_column: doi
+
+# Papers ships ``authors`` as a list of display-name strings. The runner
+# literal_eval's these columns before evaluation (same mechanism music
+# uses for its ``tracks`` element).
+gold_list_columns:
+  - authors
+
+# Global trust scores (CANONICAL papers spec): dblp=1, crossref=3,
+# open_alex=1. crossref is the most reliable bibliographic source overall.
+# NOTE: two per-attribute fusers in the papers notebook ("Version_5")
+# override this global ordering with their own trust maps — keywords and
+# last_page/referenced_works_count prefer open_alex / crossref
+# respectively. Those overrides are expressed per-attribute by the K10
+# fuser choices (prefer_higher_trust with an attribute-local trust_map),
+# not here; this single global table is what the trust-based committee
+# members (prefer_higher_trust_only, the TD members' trust priors) use.
+trust_scores:
+  dblp: 1
+  crossref: 3
+  open_alex: 1
+
+# Column mapping - empty per source (data is already target-shaped: all
+# three sources carry the same 14 canonical columns, so every mapping is
+# identity). Keep in sync with em_blocking / em_matching papers yamls.
+column_mapping:
+  dblp: {}
+  crossref: {}
+  open_alex: {}
+
+# Per-attribute EVALUATION (match) function. These name comparison
+# functions in PyDI.fusion.evaluation (exact_match / tokenized_match /
+# year_only_match / numeric_tolerance_match), NOT fusion conflict-
+# resolution functions. Committee convention (mirrors music/products):
+# tokenized_match for string/categorical/list/text attrs,
+# year_only_match for the temporal attr, numeric_tolerance_match for
+# numerics.
+#
+# For reference, the papers notebook "Version_5" fuser choices (the
+# authoritative K10 attribute_targets + the strategy each committee
+# member's val-selection sweeps over) are, per attribute:
+#   type=voting; title=longest_string; authors=prefer_higher_trust;
+#   publication_year=most_recent; journal=voting;
+#   keywords=prefer_higher_trust (trust_map {crossref:1, open_alex:3, dblp:1});
+#   volume=voting; issue=voting; first_page=voting;
+#   last_page=prefer_higher_trust (trust_map {crossref:3, open_alex:1, dblp:1});
+#   referenced_works_count=prefer_higher_trust (trust_map {crossref:3, open_alex:1, dblp:1})
+# Those are fuser names and live in K10, not in this match-function map.
+# publisher and cited_by_count are NOT fused by the notebook, so they are
+# deliberately absent from evaluation_functions below (not scored).
+evaluation_functions:
+  type: tokenized_match
+  title: tokenized_match
+  authors: tokenized_match
+  publication_year: year_only_match
+  journal: tokenized_match
+  keywords: tokenized_match
+  volume: tokenized_match
+  issue: tokenized_match
+  first_page: numeric_tolerance_match
+  last_page: numeric_tolerance_match
+  referenced_works_count: numeric_tolerance_match
+
+evaluation_params:
+  # Numeric tolerances. numeric_tolerance_match applies the value as an
+  # ABSOLUTE band (abs(a-b) <= tolerance). UNTUNED seeds transplanted
+  # from the music convention — validate before a real papers run.
+  #
+  # referenced_works_count / cited_by_count carry a 0.10 tolerance per
+  # the canonical papers spec. On integer counts this is effectively
+  # near-exact (the band is <1). cited_by_count is NOT in
+  # evaluation_functions above (the notebook does not fuse it), so this
+  # entry is presently inert — kept for spec completeness and so the
+  # tolerance is already in place if cited_by_count is ever fused.
+  referenced_works_count:
+    tolerance: 0.10
+  cited_by_count:
+    tolerance: 0.10
+  # first_page / last_page are page locators (mostly numeric). Left at
+  # the numeric_tolerance_match default (no explicit tolerance) so the
+  # default near-exact band applies.
+
+# Per-attribute semantic type. Drives member dispatch:
+# string/categorical/date attributes route to a TD member's native
+# method (or PyDI for cell_local members); numeric + list attributes
+# route to val-best PyDI for non-native TD members. Mirrors the scored
+# attribute set in evaluation_functions (publisher + cited_by_count are
+# not fused, so they are absent here too).
+attribute_types:
+  type: categorical
+  title: string
+  authors: list
+  publication_year: date
+  journal: categorical
+  keywords: string
+  volume: string
+  issue: string
+  first_page: numeric
+  last_page: numeric
+  referenced_works_count: numeric
+
+# PyDI candidate registry for val-selection sweeps. Used by
+# pydi_per_attribute_optimal (across every attribute) and by the TD
+# members on attributes whose type is not in their native set.
+pydi_candidates:
+  string:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: longest_string
+      function: longest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: shortest_string
+      function: shortest_string
+      module: PyDI.fusion.conflict_resolution.string
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  categorical:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: most_complete
+      function: most_complete
+      module: PyDI.fusion.conflict_resolution.string
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  date:
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: earliest
+      function: earliest
+      module: PyDI.fusion.conflict_resolution.date
+    - name: most_recent
+      function: most_recent
+      module: PyDI.fusion.conflict_resolution.date
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  numeric:
+    - name: median
+      function: median
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: average
+      function: average
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: maximum
+      function: maximum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: minimum
+      function: minimum
+      module: PyDI.fusion.conflict_resolution.numeric
+    - name: trimmed_mean
+      function: trimmed_mean
+      module: usecases_synthetic.lib.robust_aggregators
+      params:
+        trim: 0.1
+    - name: huber_m_estimator
+      function: huber_m_estimator
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: median_of_means
+      function: median_of_means
+      module: usecases_synthetic.lib.robust_aggregators
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+  list:
+    - name: union
+      function: union
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection
+      function: intersection
+      module: PyDI.fusion.conflict_resolution.list
+    - name: intersection_k_sources
+      function: intersection_k_sources
+      module: PyDI.fusion.conflict_resolution.list
+      params:
+        k: 2
+    - name: voting
+      function: voting
+      module: PyDI.fusion.conflict_resolution.general
+    - name: prefer_higher_trust
+      function: prefer_higher_trust
+      module: PyDI.fusion.conflict_resolution.general
+
+# C12 member roster. Each member produces a single fused DataFrame via
+# one DataFusionEngine.run() call. Per-member macro_accuracy is the
+# headline; best-member macro is the user-attainable ceiling per stage.
+members:
+  - name: pydi_per_attribute_optimal
+    params: {}
+
+  - name: llm_only
+    params:
+      llm_callable: openai
+      llm_model: gpt-5.4-mini
+      model_id: gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      cache_dir: usecases_synthetic/cache/llm_judge_fusion
+      prompt_version: v2
+
+  - name: fusionquery_only
+    # Params transplanted from music (R5 Fusion sub-H, temperature=0.7).
+    # UNTUNED for papers — re-sweep before a real run. Native on string/
+    # categorical/date; val-best PyDI on numeric (first_page, last_page,
+    # referenced_works_count) + list (authors).
+    params:
+      max_iters: 5
+      theta: 3.0e-5
+      init_trust: 0.95
+      history_size: 50.0
+      temperature: 0.7
+      threshold: 0.7
+
+  - name: truthfinder_only
+    # Params transplanted from music (R5 Fusion sub-E, gamma=0.1).
+    # UNTUNED for papers — re-sweep before a real run. Native on string/
+    # categorical/date; val-best PyDI on numeric + list.
+    params:
+      init_trust: 0.9
+      gamma: 0.1
+      rho: 0.5
+      max_iters: 10
+      early_stop: 1.0e-3
+
+  - name: ltm_only
+    # Params transplanted from music (R5 Fusion sub-I, alpha_0=[20, 5]
+    # lifts multi-truth list attrs). UNTUNED for papers — re-sweep before
+    # a real run. Native on string/categorical/date + list (authors,
+    # multi-truth); val-best PyDI on numeric only.
+    params:
+      alpha_0: [20.0, 5.0]
+      alpha_1: [10.0, 10.0]
+      beta: [10.0, 10.0]
+      max_iters: 50
+      burnin: 10
+      thin: 2
+
+  - name: casefusion_only
+    # Params transplanted from music (R5 Fusion sub-G). UNTUNED for
+    # papers — re-sweep before a real run. Native on string/categorical/
+    # date; val-best PyDI on numeric + list.
+    params:
+      dimension: 10
+      alpha: 1.05
+      beta: 1.1
+      lr: 0.05
+      converge_rate: 1.0e-5
+      max_iters: 50
+
+  - name: accusim_only
+    # Native on every attribute via the type-aware _accusim_default_sim
+    # (dice on strings, Jaccard on lists, numeric-tolerance on numerics).
+    # Params transplanted from music — UNTUNED for papers.
+    params:
+      accuracy_prior: 0.8
+      n_competing_values: 10
+      epsilon: 1.0e-3
+      max_iter: 20
+      sim_threshold: 0.7
+
+  - name: voting_only
+    params: {}
+
+  - name: prefer_higher_trust_only
+    params: {}

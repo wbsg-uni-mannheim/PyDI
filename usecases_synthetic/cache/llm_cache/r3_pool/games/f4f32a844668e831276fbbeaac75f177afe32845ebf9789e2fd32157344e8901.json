@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_7684|metacritic_13205|name=Pokémon Ranger: Shadows of Almia | platform=DS | genres=Action role-playing game | developer=Creatures Inc. | releaseYear=2008-01-01||name=Pokemon Ranger: Shadows of Almia | platform=DS | genres=Role-Playing,General,General | developer=HAL Labs,Creatures Inc. | releaseYear=2008-01-01 | criticScore=68.0 | userScore=7.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Pokémon Ranger: Shadows of Almia | platform=DS | genres=Action role-playing game | developer=Creatures Inc. | releaseYear=2008-01-01\nRecord B: name=Pokemon Ranger: Shadows of Almia | platform=DS | genres=Role-Playing,General,General | developer=HAL Labs,Creatures Inc. | releaseYear=2008-01-01 | criticScore=68.0 | userScore=7.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

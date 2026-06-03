@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_27123|sales_1963|name=Tony Hawk's Proving Ground | genres=Sports game | developer=Vicarious Visions | releaseYear=2007-01-01||name=Tony Hawk's Proving Ground | platform=PS2 | genres=Sports | developer=Page 44 Studios | publisher=Activision | releaseYear=2007-01-01 | criticScore=65 | userScore=6.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Tony Hawk's Proving Ground | genres=Sports game | developer=Vicarious Visions | releaseYear=2007-01-01\nRecord B: name=Tony Hawk's Proving Ground | platform=PS2 | genres=Sports | developer=Page 44 Studios | publisher=Activision | releaseYear=2007-01-01 | criticScore=65 | userScore=6.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

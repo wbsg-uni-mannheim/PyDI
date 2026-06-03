@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_16327|sales_2444|name=Rory McIlroy PGA Tour | platform=PS4 | genres=Traditional,Sports,Individual,Golf,Sim | developer=EA Tiburon | releaseYear=2015-01-01 | criticScore=61.0 | userScore=3.8 | ESRB=E||name=Rory McIlroy PGA Tour | platform=PS4 | genres=Action | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2015-01-01 | criticScore=61 | userScore=3.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Rory McIlroy PGA Tour | platform=PS4 | genres=Traditional,Sports,Individual,Golf,Sim | developer=EA Tiburon | releaseYear=2015-01-01 | criticScore=61.0 | userScore=3.8 | ESRB=E\nRecord B: name=Rory McIlroy PGA Tour | platform=PS4 | genres=Action | developer=EA Tiburon | publisher=Electronic Arts | releaseYear=2015-01-01 | criticScore=61 | userScore=3.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

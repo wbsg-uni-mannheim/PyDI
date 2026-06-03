@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_46738|metacritic_18205|name=Run Like Hell (video game) | platform=Xbox | genres=Third-person shooter | developer=Interplay Entertainment | releaseYear=2003-01-01||name=RLH: Run Like Hell | platform=Xbox | genres=Action,Shooter,Third-Person,Sci-Fi | developer=Digital Mayhem | releaseYear=2003-01-01 | criticScore=55.0 | userScore=7.5 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Run Like Hell (video game) | platform=Xbox | genres=Third-person shooter | developer=Interplay Entertainment | releaseYear=2003-01-01\nRecord B: name=RLH: Run Like Hell | platform=Xbox | genres=Action,Shooter,Third-Person,Sci-Fi | developer=Digital Mayhem | releaseYear=2003-01-01 | criticScore=55.0 | userScore=7.5 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

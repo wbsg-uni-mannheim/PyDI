@@ -161,6 +161,17 @@ class TruthFinder:
         return B
 
     def dice_dist(self, str1, str2):
+        # Sørensen–Dice on token multisets. Vendored upstream formula
+        # divides by ``len(str1) + len(str2)`` which raises
+        # ZeroDivisionError when both inputs are empty (observed in
+        # the BoB products run: an empty candidate answer paired with
+        # itself). By the standard set-similarity convention, two
+        # empty sets are identical → similarity = 1.0; an empty paired
+        # with a non-empty has no shared tokens → 0.0.
+        if len(str1) == 0 and len(str2) == 0:
+            return 1.0
+        if len(str1) == 0 or len(str2) == 0:
+            return 0.0
         cnt1 = Counter(str1)
         cnt2 = Counter(str2)
         unions = cnt1 & cnt2

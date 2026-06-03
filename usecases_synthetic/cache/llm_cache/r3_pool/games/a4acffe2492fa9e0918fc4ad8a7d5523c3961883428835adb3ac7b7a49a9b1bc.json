@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_17782|sales_7649|name=ESPN NFL PrimeTime 2002 | platform=Xbox | genres=Sports,Traditional,Football,Sim | developer=Farsight Technologies | releaseYear=2002-01-01 | criticScore=57.0 | ESRB=E||name=ESPN NFL Primetime 2002 | platform=Xbox | genres=Sports | developer=Farsight Technologies | publisher=Konami Digital Entertainment | releaseYear=2002-01-01 | criticScore=57 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=ESPN NFL PrimeTime 2002 | platform=Xbox | genres=Sports,Traditional,Football,Sim | developer=Farsight Technologies | releaseYear=2002-01-01 | criticScore=57.0 | ESRB=E\nRecord B: name=ESPN NFL Primetime 2002 | platform=Xbox | genres=Sports | developer=Farsight Technologies | publisher=Konami Digital Entertainment | releaseYear=2002-01-01 | criticScore=57 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

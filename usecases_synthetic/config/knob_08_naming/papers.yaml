@@ -1,0 +1,303 @@
+# Knob 08 — Schema Naming Divergence: Papers
+#
+# Seeded from music 2026-05-04; K8 carries NO numeric rate tables
+# (schema naming only renames headers), so there is nothing rate-like to
+# tune here -- but per the shared papers spec this file is still a seeded,
+# UNTUNED starting point and the name variants below should be reviewed
+# before a real papers run.
+#
+# All three sources (dblp, crossref, open_alex) are already target-shaped:
+# each ships the SAME 14 canonical columns
+# (`doi, type, title, authors, publication_year, journal, publisher,
+# keywords, volume, issue, first_page, last_page, referenced_works_count,
+# cited_by_count`) plus the load-time-minted `id`. Baseline naming is
+# uniformly descriptive (matches spec call "papers @ easy"). K8 only
+# renames headers, so even rarely-populated columns cost nothing to
+# author. dblp is the anchor source.
+
+level_assignments:
+  easy:
+    dblp: descriptive
+    crossref: descriptive
+    open_alex: descriptive
+  medium:
+    dblp: abbreviated
+    crossref: descriptive
+    open_alex: cryptic
+  hard:
+    dblp: cryptic
+    crossref: abbreviated
+    open_alex: anonymized
+
+# Ground-truth schema mapping: source_col -> target_col.
+# Data is already canonical, so every mapping is identity (src_col == target_col).
+# Canonical target names match input/schemamatching/target_schema.json and the
+# K10 sign-off attribute_mapping. `id` is included (load-time-minted record id).
+# `doi` is included here as a real schema column -- K8 only renames the HEADER;
+# value knobs still never perturb doi (it is the fusion-gold join key).
+sm_mapping:
+  dblp:
+    id: id
+    doi: doi
+    type: type
+    title: title
+    authors: authors
+    publication_year: publication_year
+    journal: journal
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  crossref:
+    id: id
+    doi: doi
+    type: type
+    title: title
+    authors: authors
+    publication_year: publication_year
+    journal: journal
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+  open_alex:
+    id: id
+    doi: doi
+    type: type
+    title: title
+    authors: authors
+    publication_year: publication_year
+    journal: journal
+    publisher: publisher
+    keywords: keywords
+    volume: volume
+    issue: issue
+    first_page: first_page
+    last_page: last_page
+    referenced_works_count: referenced_works_count
+    cited_by_count: cited_by_count
+
+rename_table:
+  dblp:
+    doi:
+      descriptive: doi
+      abbreviated: doi_id
+      cryptic: dx
+      anonymized: Attribute_2
+    type:
+      descriptive: type
+      abbreviated: typ
+      cryptic: ty
+      anonymized: Attribute_3
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: t
+      anonymized: Attribute_4
+    authors:
+      descriptive: authors
+      abbreviated: auth
+      cryptic: au
+      anonymized: Attribute_5
+    publication_year:
+      descriptive: publication_year
+      abbreviated: pub_yr
+      cryptic: py
+      anonymized: Attribute_6
+    journal:
+      descriptive: journal
+      abbreviated: jrnl
+      cryptic: j
+      anonymized: Attribute_7
+    publisher:
+      descriptive: publisher
+      abbreviated: pub
+      cryptic: pb
+      anonymized: Attribute_8
+    keywords:
+      descriptive: keywords
+      abbreviated: kwds
+      cryptic: kw
+      anonymized: Attribute_9
+    volume:
+      descriptive: volume
+      abbreviated: vol
+      cryptic: v
+      anonymized: Attribute_10
+    issue:
+      descriptive: issue
+      abbreviated: iss
+      cryptic: i
+      anonymized: Attribute_11
+    first_page:
+      descriptive: first_page
+      abbreviated: fpage
+      cryptic: fp
+      anonymized: Attribute_12
+    last_page:
+      descriptive: last_page
+      abbreviated: lpage
+      cryptic: lp
+      anonymized: Attribute_13
+    referenced_works_count:
+      descriptive: referenced_works_count
+      abbreviated: ref_cnt
+      cryptic: rc
+      anonymized: Attribute_14
+    cited_by_count:
+      descriptive: cited_by_count
+      abbreviated: cite_cnt
+      cryptic: cc
+      anonymized: Attribute_15
+
+  crossref:
+    doi:
+      descriptive: doi
+      abbreviated: DOI
+      cryptic: di
+      anonymized: Attribute_2
+    type:
+      descriptive: type
+      abbreviated: typ
+      cryptic: tp
+      anonymized: Attribute_3
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: ti
+      anonymized: Attribute_4
+    authors:
+      descriptive: authors
+      abbreviated: auth_list
+      cryptic: aut
+      anonymized: Attribute_5
+    publication_year:
+      descriptive: publication_year
+      abbreviated: pub_year
+      cryptic: yr
+      anonymized: Attribute_6
+    journal:
+      descriptive: journal
+      abbreviated: venue
+      cryptic: jn
+      anonymized: Attribute_7
+    publisher:
+      descriptive: publisher
+      abbreviated: publ
+      cryptic: pub_id
+      anonymized: Attribute_8
+    keywords:
+      descriptive: keywords
+      abbreviated: kw_list
+      cryptic: kws
+      anonymized: Attribute_9
+    volume:
+      descriptive: volume
+      abbreviated: vol
+      cryptic: vl
+      anonymized: Attribute_10
+    issue:
+      descriptive: issue
+      abbreviated: iss_no
+      cryptic: is
+      anonymized: Attribute_11
+    first_page:
+      descriptive: first_page
+      abbreviated: pg_first
+      cryptic: fpg
+      anonymized: Attribute_12
+    last_page:
+      descriptive: last_page
+      abbreviated: pg_last
+      cryptic: lpg
+      anonymized: Attribute_13
+    referenced_works_count:
+      descriptive: referenced_works_count
+      abbreviated: ref_count
+      cryptic: rwc
+      anonymized: Attribute_14
+    cited_by_count:
+      descriptive: cited_by_count
+      abbreviated: cited_count
+      cryptic: cbc
+      anonymized: Attribute_15
+
+  open_alex:
+    doi:
+      descriptive: doi
+      abbreviated: doi_url
+      cryptic: do
+      anonymized: Attribute_2
+    type:
+      descriptive: type
+      abbreviated: work_type
+      cryptic: wt
+      anonymized: Attribute_3
+    title:
+      descriptive: title
+      abbreviated: ttl
+      cryptic: tt
+      anonymized: Attribute_4
+    authors:
+      descriptive: authors
+      abbreviated: authorships
+      cryptic: aus
+      anonymized: Attribute_5
+    publication_year:
+      descriptive: publication_year
+      abbreviated: pubyear
+      cryptic: pyr
+      anonymized: Attribute_6
+    journal:
+      descriptive: journal
+      abbreviated: source_name
+      cryptic: jrn
+      anonymized: Attribute_7
+    publisher:
+      descriptive: publisher
+      abbreviated: host_org
+      cryptic: pbl
+      anonymized: Attribute_8
+    keywords:
+      descriptive: keywords
+      abbreviated: concepts
+      cryptic: kwd
+      anonymized: Attribute_9
+    volume:
+      descriptive: volume
+      abbreviated: vol_no
+      cryptic: vol
+      anonymized: Attribute_10
+    issue:
+      descriptive: issue
+      abbreviated: issue_no
+      cryptic: isu
+      anonymized: Attribute_11
+    first_page:
+      descriptive: first_page
+      abbreviated: first_pg
+      cryptic: fpa
+      anonymized: Attribute_12
+    last_page:
+      descriptive: last_page
+      abbreviated: last_pg
+      cryptic: lpa
+      anonymized: Attribute_13
+    referenced_works_count:
+      descriptive: referenced_works_count
+      abbreviated: refs_count
+      cryptic: rwn
+      anonymized: Attribute_14
+    cited_by_count:
+      descriptive: cited_by_count
+      abbreviated: citations
+      cryptic: cby
+      anonymized: Attribute_15

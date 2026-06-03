@@ -1,0 +1,108 @@
+# Normalization committee roster — papers domain.
+#
+# Seeded from music 2026-06-02; rate tables are UNTUNED starting points,
+# to be validated/tuned before a real papers run. (This file carries no
+# numeric rate tables itself, but the music model/prompt knobs below and
+# the per-attribute candidate roster are copied verbatim from music and
+# have NOT been re-swept on papers data — treat every choice as a seed.)
+#
+# C12 schema (plan_revision.md §C12, decided 2026-05-22). Each member
+# is a coherent end-to-end normalization approach producing a complete
+# per-cell normalized output across every eligible attribute; per-
+# member macro_f1 is the headline metric. Three coherent members:
+#
+# * ``rule_per_attribute_optimal`` — val-best rule normalizer per
+#   attribute, locked from the candidates declared below.
+# * ``llm_only`` — :class:`LLMCanonicalizer` (prompt v2) everywhere.
+# * ``passthrough`` — identity baseline (raw value unchanged).
+#
+# Eligible attributes for papers (SM ∩ fusion ∩ kind):
+#   title, journal, keywords, publication_year, first_page, last_page,
+#   referenced_works_count, cited_by_count.
+# (id + doi are NEVER normalized — id is the synthetic record id and doi
+# is the fusion-gold join key. type/authors/publisher/volume/issue carry
+# no rule-normalizer candidate below and are covered by llm_only /
+# passthrough only; publisher + cited_by_count are dropped by the fusion
+# notebook but cited_by_count keeps a numeric candidate for forward-compat.)
+
+seed: 42
+
+fusion_protection_tolerance: {}
+
+# Rule normalizer candidates available to the val-selection sweep. Each
+# declares which attributes it can natively handle; the runner inverts
+# this to a per-attribute candidate list and picks the best on val.
+rule_normalizers:
+  - name: text_clean
+    module: usecases_synthetic.lib.normalizer_members
+    class: TextCleanNormalizer
+    # Free-text / venue / open-term attrs: the disambiguating title, the
+    # venue free text (journal), and the comma-separated open terms
+    # (keywords).
+    applies_to: [title, journal, keywords]
+    params:
+      # lowercase: true mirrors the music R9 norm re-sweep winner; the
+      # closeness contract is case-insensitive so lowercasing title/
+      # journal/keywords normalises cleanly. UNTUNED on papers — re-sweep
+      # before a real run (paper titles/venues use mixed case + acronyms,
+      # so this may regress relative to case-preserving).
+      lowercase: true
+      strip_whitespace: true
+      normalize_unicode: true
+      remove_html: true
+
+  - name: date_iso
+    module: usecases_synthetic.lib.normalizer_members
+    class: DateIsoNormalizer
+    # publication_year is a bare 4-digit year (2018-2020 only); the
+    # year-only kind path returns the canonical "%Y" form.
+    applies_to: [publication_year]
+    params:
+      date_format: '%Y-%m-%d'
+      year_only_format: '%Y'
+      handle_timezone: true
+
+  - name: number_locale
+    module: usecases_synthetic.lib.normalizer_members
+    class: NumberLocaleNormalizer
+    # Numeric locators + counts: the page locators (first_page/last_page,
+    # mostly numeric) and the integer counts (referenced_works_count,
+    # cited_by_count). cited_by_count is dropped by the fusion notebook
+    # but keeps a candidate for forward-compat.
+    applies_to: [first_page, last_page, referenced_works_count,
+                 cited_by_count]
+    params:
+      babel_candidate_locales: [en_US]
+      handle_currency: false
+      handle_percentages: false
+
+  # taxonomy_lookup intentionally OMITTED: papers has no controlled-vocab
+  # taxonomy CSV yet (must be built before a taxonomy candidate is added).
+  # country_iso intentionally OMITTED: papers has no country attribute.
+
+# LLM normalizer config (used by the ``llm_only`` member; cache + prompt
+# v2 invalidate existing entries by construction, see plan_revision §C12).
+llm_normalizer:
+  module: usecases_synthetic.lib.llm_normalizer
+  class: LLMCanonicalizer
+  params:
+    model_name: gpt-5.4-mini
+    # num_examples=0 (zero-shot) is the music R9 norm re-sweep winner;
+    # UNTUNED on papers (no re-sweep yet) — kept as the music seed.
+    num_examples: 0
+    temperature: 0.0
+    max_tokens: 2048
+    prompt_version: v2
+    cache_dir: usecases_synthetic/cache/llm_normalizer/papers
+
+# C12 member roster. Always three coherent members under C12; per-member
+# macro_f1 is directly comparable because every member covers every
+# eligible attribute (rule_per_attribute_optimal via its locked map,
+# llm_only natively, passthrough as identity).
+members:
+  - name: rule_per_attribute_optimal
+    params: {}
+  - name: llm_only
+    params: {}
+  - name: passthrough
+    params: {}

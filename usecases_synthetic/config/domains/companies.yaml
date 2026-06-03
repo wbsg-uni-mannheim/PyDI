@@ -37,14 +37,17 @@ fusion_files:
   validation: validation_set_final.xml
   test: test_set_final.xml
 
-# Target_schema scope = 8 data attrs (R10-N 2026-06-02). `industry` added
-# (was missing); fusion gold widened to carry it (industry <- forbes
-# business_segment; dbpedia.sector is matching-only). `website` DROPPED from
-# the target_schema scope 2026-06-02: forbes.url == forbes_url (= the id) in
-# all 2000 rows and no other source has a website, so it is a degenerate
-# (id-equal) attr that would inflate fusion accuracy. `keypeople` = the
-# target_schema attr formerly named `founders` (renamed 2026-06-02: source +
-# gold agree on keypeople).
+# Target_schema scope = 8 data attrs (R10-N 2026-06-02). `industry` is a
+# target_schema attr that flows through SM (matched: dbpedia.sector +
+# forbes.business_segment) / normalization (GICS) / EM (a matching field),
+# but it is NOT fusion-scored: the GIVEN fusion gold (test_set_final.xml /
+# validation_set_final.xml) has no <industry> column, so there is nothing
+# to evaluate it against (user 2026-06-02). The given gold was reverted to
+# its as-shipped state; fusion macro_accuracy is reported over the 7
+# given-gold attrs (name, country, city, assets, revenue, founded,
+# keypeople). `website` DROPPED 2026-06-02: forbes.url == the id in all
+# rows, degenerate. `keypeople` = the target_schema attr formerly named
+# `founders` (renamed 2026-06-02: source + given gold agree on keypeople).
 attribute_classes:
   name: primary
   country: key

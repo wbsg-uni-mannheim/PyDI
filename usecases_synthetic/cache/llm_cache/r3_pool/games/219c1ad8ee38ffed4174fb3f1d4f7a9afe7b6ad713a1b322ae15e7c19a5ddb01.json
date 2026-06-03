@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_2782|metacritic_19291|name=Iron Man 2 (video game) | platform=PlayStation Portable | genres=Action-adventure game | developer=Griptonite Games | releaseYear=2010-01-01||name=Iron Man 2 | platform=Playstation Portable | genres=Action,Action Adventure,General,General | developer=High Voltage Software | releaseYear=2010-01-01 | criticScore=49.0 | userScore=6.0 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Iron Man 2 (video game) | platform=PlayStation Portable | genres=Action-adventure game | developer=Griptonite Games | releaseYear=2010-01-01\nRecord B: name=Iron Man 2 | platform=Playstation Portable | genres=Action,Action Adventure,General,General | developer=High Voltage Software | releaseYear=2010-01-01 | criticScore=49.0 | userScore=6.0 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

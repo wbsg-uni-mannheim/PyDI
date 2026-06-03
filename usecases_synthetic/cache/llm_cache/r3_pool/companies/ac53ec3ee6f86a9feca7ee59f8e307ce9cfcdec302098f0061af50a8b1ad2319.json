@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Yue_Yuen_Industrial_Holdings|http://www.forbes.com/companies/belle-international-holdings/|name=Yue Yuen Industrial Holdings | country=Hong Kong | city=Hong Kong | industry=Casual | founded=1991-01-01||name=Belle International Holdings | country=Hong Kong | industry=Apparel/Footwear Retail",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Yue Yuen Industrial Holdings | country=Hong Kong | city=Hong Kong | industry=Casual | founded=1991-01-01\nRecord B: name=Belle International Holdings | country=Hong Kong | industry=Apparel/Footwear Retail\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

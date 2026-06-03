@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_44972|metacritic_13062|name=Sherlock Holmes: The Case of the Silver Earring | platform=Microsoft Windows | genres=Adventure game | developer=Frogwares | releaseYear=2004-01-01||name=Sherlock Holmes: The Silver Earring | platform=PC | genres=Adventure,General,General | developer=Frogwares | releaseYear=2004-01-01 | criticScore=68.0 | userScore=6.7 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Sherlock Holmes: The Case of the Silver Earring | platform=Microsoft Windows | genres=Adventure game | developer=Frogwares | releaseYear=2004-01-01\nRecord B: name=Sherlock Holmes: The Silver Earring | platform=PC | genres=Adventure,General,General | developer=Frogwares | releaseYear=2004-01-01 | criticScore=68.0 | userScore=6.7 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

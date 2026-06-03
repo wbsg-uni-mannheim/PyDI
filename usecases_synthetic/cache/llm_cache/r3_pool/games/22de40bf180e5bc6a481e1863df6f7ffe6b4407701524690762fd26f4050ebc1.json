@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_9547|sales_1082|name=The Sims 2: Castaway | platform=Wii | genres=Simulation,Miscellaneous,General,Virtual,Virtual Life | developer=Maxis | releaseYear=2007-01-01 | criticScore=73.0 | userScore=7.8 | ESRB=T||name=The Sims 2: Castaway | platform=Wii | genres=Simulation | developer=Maxis | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=73 | userScore=8.2 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=The Sims 2: Castaway | platform=Wii | genres=Simulation,Miscellaneous,General,Virtual,Virtual Life | developer=Maxis | releaseYear=2007-01-01 | criticScore=73.0 | userScore=7.8 | ESRB=T\nRecord B: name=The Sims 2: Castaway | platform=Wii | genres=Simulation | developer=Maxis | publisher=Electronic Arts | releaseYear=2007-01-01 | criticScore=73 | userScore=8.2 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

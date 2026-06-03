@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/Mitsubishi_Electric_United_States|http://www.forbes.com/companies/mitsubishi-electric/|name=Mitsubishi Electric United States | country=United States | city=Cypress, CaliforniaCalifornia | founded=2002-01-01||name=Mitsubishi Electric | country=Japan | industry=Electrical Equipment",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mitsubishi Electric United States | country=United States | city=Cypress, CaliforniaCalifornia | founded=2002-01-01\nRecord B: name=Mitsubishi Electric | country=Japan | industry=Electrical Equipment\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

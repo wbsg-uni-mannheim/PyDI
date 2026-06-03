@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/P&M_Aviation|http://www.forbes.com/companies/china-aviation-oil/|name=P&M Aviation | country=United Kingdom | city=RochdaleMarlborough, Wiltshire | industry=Aerospace | founded=2003-01-01||name=China Aviation Oil | country=Singapore | industry=Trading Companies",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=P&M Aviation | country=United Kingdom | city=RochdaleMarlborough, Wiltshire | industry=Aerospace | founded=2003-01-01\nRecord B: name=China Aviation Oil | country=Singapore | industry=Trading Companies\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

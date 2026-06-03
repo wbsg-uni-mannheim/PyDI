@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_17906|metacritic_9029|name=War of the Vikings | platform=Microsoft Windows | genres=Hack and slash | developer=Fatshark | releaseYear=2014-01-01||name=Expeditions: Viking | platform=PC | genres=Role-Playing,Strategy,Turn-Based,General,Tactics | developer=Logic Artists | releaseYear=2017-01-01 | criticScore=74.0 | userScore=8.0",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=War of the Vikings | platform=Microsoft Windows | genres=Hack and slash | developer=Fatshark | releaseYear=2014-01-01\nRecord B: name=Expeditions: Viking | platform=PC | genres=Role-Playing,Strategy,Turn-Based,General,Tactics | developer=Logic Artists | releaseYear=2017-01-01 | criticScore=74.0 | userScore=8.0\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

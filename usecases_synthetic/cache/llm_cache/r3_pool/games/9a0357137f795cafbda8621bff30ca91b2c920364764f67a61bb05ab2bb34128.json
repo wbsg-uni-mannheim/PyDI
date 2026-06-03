@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_36162|metacritic_19160|name=Atlantis The Lost Empire: Search for the Journal | platform=Microsoft Windows | genres=First-person shooter | developer=Zombie Studios | releaseYear=2001-01-01||name=Disney's Atlantis: The Lost Empire - Trial By Fire | platform=PC | genres=Action,Action Adventure,Adventure,General,General | developer=Zombie Studios | releaseYear=2001-01-01 | criticScore=50.0 | userScore=3.7 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Atlantis The Lost Empire: Search for the Journal | platform=Microsoft Windows | genres=First-person shooter | developer=Zombie Studios | releaseYear=2001-01-01\nRecord B: name=Disney's Atlantis: The Lost Empire - Trial By Fire | platform=PC | genres=Action,Action Adventure,Adventure,General,General | developer=Zombie Studios | releaseYear=2001-01-01 | criticScore=50.0 | userScore=3.7 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::games"
+}

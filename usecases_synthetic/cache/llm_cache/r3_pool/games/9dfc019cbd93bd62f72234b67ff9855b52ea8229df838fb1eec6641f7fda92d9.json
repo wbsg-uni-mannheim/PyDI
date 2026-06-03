@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_6863|sales_2745|name=Watch Dogs | platform=PC | genres=Miscellaneous,General,Action Adventure,Modern,General,Modern,Open-World | developer=Ubisoft Montreal | releaseYear=2014-01-01 | criticScore=77.0 | userScore=6.4 | ESRB=M||name=Watch Dogs | platform=PC | genres=Action | developer=Ubisoft Montreal | publisher=Ubisoft | releaseYear=2014-01-01 | criticScore=77 | userScore=4.7 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Watch Dogs | platform=PC | genres=Miscellaneous,General,Action Adventure,Modern,General,Modern,Open-World | developer=Ubisoft Montreal | releaseYear=2014-01-01 | criticScore=77.0 | userScore=6.4 | ESRB=M\nRecord B: name=Watch Dogs | platform=PC | genres=Action | developer=Ubisoft Montreal | publisher=Ubisoft | releaseYear=2014-01-01 | criticScore=77 | userScore=4.7 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

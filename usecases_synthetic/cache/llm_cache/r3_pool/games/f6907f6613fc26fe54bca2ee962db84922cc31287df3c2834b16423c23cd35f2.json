@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "metacritic_1852|sales_2210|name=Prince of Persia: The Two Thrones | platform=Xbox | genres=Action Adventure,Fantasy | developer=Ubisoft | releaseYear=2005-01-01 | criticScore=85.0 | userScore=8.1 | ESRB=M||name=Prince of Persia: The Two Thrones | platform=Xbox | genres=Action | developer=Ubisoft | publisher=Ubisoft | releaseYear=2005-01-01 | criticScore=85 | userScore=8.4 | ESRB=M",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Prince of Persia: The Two Thrones | platform=Xbox | genres=Action Adventure,Fantasy | developer=Ubisoft | releaseYear=2005-01-01 | criticScore=85.0 | userScore=8.1 | ESRB=M\nRecord B: name=Prince of Persia: The Two Thrones | platform=Xbox | genres=Action | developer=Ubisoft | publisher=Ubisoft | releaseYear=2005-01-01 | criticScore=85 | userScore=8.4 | ESRB=M\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

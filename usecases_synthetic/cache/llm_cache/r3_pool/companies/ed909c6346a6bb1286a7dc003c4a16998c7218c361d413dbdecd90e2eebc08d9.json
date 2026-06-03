@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "http://dbpedia.org/resource/DCC_Doppelmayr_Cable_Car|http://www.forbes.com/companies/dcc/|name=DCC Doppelmayr Cable Car | country=Austria | city=Wolfurt | industry=Transport | founded=1996-01-01||name=DCC | country=Ireland | industry=Conglomerates",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=DCC Doppelmayr Cable Car | country=Austria | city=Wolfurt | industry=Transport | founded=1996-01-01\nRecord B: name=DCC | country=Ireland | industry=Conglomerates\n\nAnswer with a single token: yes or no.",
+    "reply": "no",
+    "says_match": false
+  },
+  "source": "r3_pool_adjudicator::companies"
+}

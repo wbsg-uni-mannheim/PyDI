@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_41979|metacritic_7011|name=Mega Man Zero 4 | platform=Game Boy Advance | genres=Run and gun (video game) | developer=Inti Creates | releaseYear=2005-01-01||name=Mega Man Zero 4 | platform=Game Boy Advance | genres=Action,Platformer,2D | developer=Inti | releaseYear=2005-01-01 | criticScore=77.0 | userScore=8.0 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Mega Man Zero 4 | platform=Game Boy Advance | genres=Run and gun (video game) | developer=Inti Creates | releaseYear=2005-01-01\nRecord B: name=Mega Man Zero 4 | platform=Game Boy Advance | genres=Action,Platformer,2D | developer=Inti | releaseYear=2005-01-01 | criticScore=77.0 | userScore=8.0 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

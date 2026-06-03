@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_25662|sales_2841|name=Microsoft Flight Simulator X | platform=Microsoft Windows | genres=Amateur flight simulation | developer=Aces Game Studio | releaseYear=2006-01-01||name=Microsoft Flight Simulator X | platform=PC | genres=Simulation | developer=Microsoft Game Studios | publisher=Microsoft Game Studios | releaseYear=2006-01-01 | criticScore=80 | userScore=7.6 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Microsoft Flight Simulator X | platform=Microsoft Windows | genres=Amateur flight simulation | developer=Aces Game Studio | releaseYear=2006-01-01\nRecord B: name=Microsoft Flight Simulator X | platform=PC | genres=Simulation | developer=Microsoft Game Studios | publisher=Microsoft Game Studios | releaseYear=2006-01-01 | criticScore=80 | userScore=7.6 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

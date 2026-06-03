@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_53614|sales_1575|name=Lemmings (2006 video game) | platform=PlayStation Portable | genres=Puzzle video game | developer=Team17||name=Lemmings | platform=Playstation Portable | genres=Puzzle | developer=Team 17 | publisher=Sony Computer Entertainment | releaseYear=2006-01-01 | criticScore=76 | userScore=7.9 | ESRB=E",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Lemmings (2006 video game) | platform=PlayStation Portable | genres=Puzzle video game | developer=Team17\nRecord B: name=Lemmings | platform=Playstation Portable | genres=Puzzle | developer=Team 17 | publisher=Sony Computer Entertainment | releaseYear=2006-01-01 | criticScore=76 | userScore=7.9 | ESRB=E\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}

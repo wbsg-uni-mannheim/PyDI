@@ -1705,6 +1705,7 @@ _DOMAIN_ANCHOR_PREFIX: dict[str, str] = {
     "music": "mbrainz_",
     "games": "metacritic_",
     "companies": "http://www.forbes.com/",
+    "papers": "dblp-",
 }
 
 
@@ -1821,7 +1822,11 @@ def _load_notebook_fusion_gold(domain: str) -> tuple[pd.DataFrame, dict[str, Any
         )
         gold = load_xml(gold_path, name="fusion_test_set", nested_handling="aggregate")
         if "keypeople_name" in gold.columns:
-            gold["founders"] = gold["keypeople_name"].apply(
+            # Schema authority is target_schema.json's ``keypeople``.
+            # The notebook still renames keypeople_name -> founders;
+            # we align with the schema and the notebook_fusion_eval
+            # rule's attribute name.
+            gold["keypeople"] = gold["keypeople_name"].apply(
                 lambda x: [x] if isinstance(x, str) else x
             )
 
@@ -1860,6 +1865,19 @@ def _load_notebook_fusion_gold(domain: str) -> tuple[pd.DataFrame, dict[str, Any
                 "release-country / tracks scores are pessimistic on both "
                 "sides equally."
             ),
+            "rows": int(len(gold)),
+        }
+
+    if domain == "papers":
+        gold_path = (
+            REPO_ROOT / "usecases" / "papers" / "input" / "fusion" / "fusion_test.jsonl"
+        )
+        if not gold_path.exists():
+            raise FileNotFoundError(gold_path)
+        gold = pd.read_json(gold_path, lines=True)
+        return gold, {
+            "path": str(gold_path.relative_to(REPO_ROOT)),
+            "preprocessing": "none (jsonl loaded verbatim; join key is doi)",
             "rows": int(len(gold)),
         }
 

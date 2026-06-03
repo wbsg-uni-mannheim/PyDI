@@ -1,0 +1,12 @@
+{
+  "attribute": "pair",
+  "model_id": "gpt-5.4",
+  "original_value": "dbpedia_49525|metacritic_8413|name=Haegemonia: Legions of Iron | platform=Microsoft Windows | genres=Real-time strategy | developer=Digital Reality | releaseYear=2003-01-01||name=Hegemonia: Legions of Iron | platform=PC | genres=Strategy,Real-Time,Sci-Fi,Sci-Fi,General | developer=Digital Reality | releaseYear=2002-01-01 | criticScore=75.0 | userScore=7.6 | ESRB=T",
+  "prompt_version": "r3_pool_v1",
+  "result": {
+    "prompt": "You are deduplicating two records from different data sources. Decide whether they describe the same real-world entity.\n\nRecord A: name=Haegemonia: Legions of Iron | platform=Microsoft Windows | genres=Real-time strategy | developer=Digital Reality | releaseYear=2003-01-01\nRecord B: name=Hegemonia: Legions of Iron | platform=PC | genres=Strategy,Real-Time,Sci-Fi,Sci-Fi,General | developer=Digital Reality | releaseYear=2002-01-01 | criticScore=75.0 | userScore=7.6 | ESRB=T\n\nAnswer with a single token: yes or no.",
+    "reply": "yes",
+    "says_match": true
+  },
+  "source": "r3_pool_adjudicator::games"
+}
