@@ -42,92 +42,62 @@
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "_type",
-      "description": "Original DBLP XML publication element name, such as article or inproceedings",
+      "name": "doi_ref",
+      "description": "DOI extracted from DBLP records for benchmark alignment",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "_attributes",
-      "description": "Attributes from the original DBLP XML element",
-      "unitText": "object"
+      "name": "entry_type",
+      "description": "DBLP publication type, such as article or inproceedings",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "_doi_list",
-      "description": "DOIs extracted from DBLP doi, ee, or url fields for benchmark alignment",
+      "name": "publication_title",
+      "description": "DBLP publication title",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "author_list",
+      "description": "DBLP author display names",
       "unitText": "array"
     },
     {
       "@type": "PropertyValue",
-      "name": "author",
-      "description": "DBLP author value or list of author values",
-      "unitText": "string/array"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "title",
-      "description": "DBLP title value",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "year",
+      "name": "pub_year",
       "description": "DBLP publication year",
-      "unitText": "year/string"
+      "unitText": "year/integer"
     },
     {
       "@type": "PropertyValue",
-      "name": "journal",
-      "description": "DBLP journal field where available",
+      "name": "venue_name",
+      "description": "DBLP journal, conference, or proceedings venue where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "booktitle",
-      "description": "DBLP booktitle or conference field where available",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "publisher",
-      "description": "DBLP publisher field where available",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "volume",
+      "name": "volume_no",
       "description": "DBLP volume field where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "number",
-      "description": "DBLP number or issue field where available",
+      "name": "issue_no",
+      "description": "DBLP issue or number field where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "pages",
-      "description": "DBLP page range field where available",
+      "name": "page_start",
+      "description": "First page parsed from the DBLP page range where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "ee",
-      "description": "DBLP electronic edition link or list of links",
-      "unitText": "URI/string/array"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "url",
-      "description": "DBLP URL path",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "crossref",
-      "description": "DBLP crossref key where available",
+      "name": "page_finish",
+      "description": "Last page parsed from the DBLP page range where available",
       "unitText": "string"
     }
   ]

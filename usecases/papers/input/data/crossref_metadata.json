@@ -42,87 +42,87 @@
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "DOI",
+      "name": "doi_code",
       "description": "Crossref DOI value",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "type",
+      "name": "work_type",
       "description": "Crossref publication type",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "title",
-      "description": "Crossref title list",
+      "name": "title_text",
+      "description": "Crossref work title",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "contributor_names",
+      "description": "Crossref author display names",
       "unitText": "array"
     },
     {
       "@type": "PropertyValue",
-      "name": "author",
-      "description": "Crossref author objects with given and family names where available",
-      "unitText": "array"
+      "name": "issued_year",
+      "description": "Publication year reported by Crossref",
+      "unitText": "year/integer"
     },
     {
       "@type": "PropertyValue",
-      "name": "published",
-      "description": "Crossref publication date object",
-      "unitText": "object"
+      "name": "container_title",
+      "description": "Crossref container, venue, journal, or proceedings title",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "container-title",
-      "description": "Crossref container or venue title list",
-      "unitText": "array"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "publisher",
+      "name": "publisher_name",
       "description": "Publisher name reported by Crossref",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "abstract",
-      "description": "Crossref abstract text where available",
+      "name": "abstract_text",
+      "description": "Crossref abstract or descriptive subject text where available",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "volume",
+      "name": "volume_id",
       "description": "Crossref volume",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "issue",
+      "name": "issue_id",
       "description": "Crossref issue",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "page",
-      "description": "Crossref page range",
+      "name": "page_first",
+      "description": "First page or first page locator reported by Crossref",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "reference-count",
+      "name": "page_last",
+      "description": "Last page or last page locator reported by Crossref",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "reference_total",
       "description": "Number of references reported by Crossref",
       "unitText": "count"
     },
     {
       "@type": "PropertyValue",
-      "name": "is-referenced-by-count",
+      "name": "cited_total",
       "description": "Number of citing works reported by Crossref",
       "unitText": "count"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "subject",
-      "description": "Crossref subject labels",
-      "unitText": "array"
     }
   ]
 }
