@@ -1,0 +1,191 @@
+seed: 42
+fused_id_column: id
+gold_id_column: id
+gold_column_aliases:
+  keypeople_name: keypeople
+trust_scores:
+  forbes: 3
+  fullcontact: 2
+  dbpedia: 1
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded
+evaluation_functions:
+  name: tokenized_match
+  assets: numeric_tolerance_match
+  revenue: numeric_tolerance_match
+  founded: year_only_match
+  country: tokenized_match
+  city: tokenized_match
+  keypeople: tokenized_match
+evaluation_params:
+  assets:
+    tolerance: 0.1
+  revenue:
+    tolerance: 0.1
+  keypeople:
+    threshold: 0.1
+attribute_types:
+  name: string
+  assets: numeric
+  revenue: numeric
+  founded: date
+  country: categorical
+  city: string
+  keypeople: list
+pydi_candidates:
+  string:
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: longest_string
+    function: longest_string
+    module: PyDI.fusion.conflict_resolution.string
+  - name: shortest_string
+    function: shortest_string
+    module: PyDI.fusion.conflict_resolution.string
+  - name: most_complete
+    function: most_complete
+    module: PyDI.fusion.conflict_resolution.string
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  categorical:
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: most_complete
+    function: most_complete
+    module: PyDI.fusion.conflict_resolution.string
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  date:
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: earliest
+    function: earliest
+    module: PyDI.fusion.conflict_resolution.date
+  - name: most_recent
+    function: most_recent
+    module: PyDI.fusion.conflict_resolution.date
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  numeric:
+  - name: median
+    function: median
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: average
+    function: average
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: maximum
+    function: maximum
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: minimum
+    function: minimum
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: trimmed_mean
+    function: trimmed_mean
+    module: usecases_synthetic.lib.robust_aggregators
+    params:
+      trim: 0.1
+  - name: huber_m_estimator
+    function: huber_m_estimator
+    module: usecases_synthetic.lib.robust_aggregators
+  - name: median_of_means
+    function: median_of_means
+    module: usecases_synthetic.lib.robust_aggregators
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  list:
+  - name: union
+    function: union
+    module: PyDI.fusion.conflict_resolution.list
+  - name: intersection
+    function: intersection
+    module: PyDI.fusion.conflict_resolution.list
+  - name: intersection_k_sources
+    function: intersection_k_sources
+    module: PyDI.fusion.conflict_resolution.list
+    params:
+      k: 2
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+members:
+- name: pydi_per_attribute_optimal
+  params: {}
+- name: fusionquery_only
+  params:
+    max_iters: 5
+    theta: 3.0e-05
+    init_trust: 0.95
+    history_size: 50.0
+    temperature: 0.5
+    threshold: 0.7
+- name: truthfinder_only
+  params:
+    init_trust: 0.9
+    gamma: 0.3
+    rho: 0.5
+    max_iters: 10
+    early_stop: 0.001
+- name: ltm_only
+  params:
+    alpha_0:
+    - 50.0
+    - 10.0
+    alpha_1:
+    - 10.0
+    - 10.0
+    beta:
+    - 10.0
+    - 10.0
+    max_iters: 50
+    burnin: 10
+    thin: 2
+- name: casefusion_only
+  params:
+    dimension: 10
+    alpha: 1.1
+    beta: 1.1
+    lr: 0.05
+    converge_rate: 1.0e-05
+    max_iters: 50
+- name: accusim_only
+  params:
+    accuracy_prior: 0.8
+    n_competing_values: 10
+    epsilon: 0.001
+    max_iter: 20
+    sim_threshold: 0.85
+- name: voting_only
+  params: {}
+- name: prefer_higher_trust_only
+  params: {}

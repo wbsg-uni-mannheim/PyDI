@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Music Release",
+  "description": "Schema representing a single music release (album, single, EP).",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Release ID",
+      "description": "Unique release identifier",
+      "examples": [
+        "discogs_3",
+        "lastfm_123",
+        "musicbrainz_456"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "title": "Release Name",
+      "description": "Title of the release (album, single, or EP name)",
+      "examples": [
+        "Unreasonable Behaviour",
+        "The Sign's Alive"
+      ]
+    },
+    "artist": {
+      "type": "string",
+      "title": "Artist",
+      "description": "Name of the artist or band",
+      "examples": [
+        "Laurent Garnier",
+        "John B"
+      ]
+    },
+    "release-date": {
+      "type": "string",
+      "title": "Release Date",
+      "format": "date",
+      "description": "Release date in ISO 8601 format (YYYY-MM-DD)",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "examples": [
+        "2000-06-01",
+        "1996-01-01"
+      ]
+    },
+    "release-country": {
+      "type": "string",
+      "title": "Release Country",
+      "description": "Country where the release was published",
+      "examples": [
+        "UK",
+        "United States of America",
+        "France"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Record Label",
+      "description": "Record label that published the release",
+      "examples": [
+        "F Communications",
+        "Peacefrog Records"
+      ]
+    },
+    "genre": {
+      "type": "string",
+      "title": "Genre",
+      "description": "Primary genre of the music",
+      "x-pydi-taxonomy": "input/schemamatching/Music_Genres_Taxonomy.csv",
+      "x-pydi-taxonomy-column": "Genre Name",
+      "examples": [
+        "Electronic",
+        "House",
+        "Techno"
+      ]
+    },
+    "tracks": {
+      "type": "array",
+      "title": "Tracks",
+      "description": "List of track names on the release",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        [
+          "The Man With The Red Face",
+          "City Sphere",
+          "Dangerous Drive"
+        ],
+        [
+          "Fermats Theorem",
+          "Sight Beyond"
+        ]
+      ]
+    },
+    "duration": {
+      "type": "integer",
+      "title": "Duration",
+      "description": "Total duration of the release in seconds",
+      "examples": [
+        1671,
+        903,
+        637
+      ],
+      "x-pydi-target-unit": "s"
+    }
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}

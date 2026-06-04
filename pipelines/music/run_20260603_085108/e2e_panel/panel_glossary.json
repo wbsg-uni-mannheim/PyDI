@@ -1,0 +1,368 @@
+{
+  "_about": "This file accompanies panel.json. Every leaf value here is a human-readable description of the metric at the same path in panel.json. See docs/tutorial/e2e_evaluation/metrics.md for the full design doc and recipes.",
+  "_legend": "Wildcard placeholders: <column> = column name in the fused output, <attribute> = attribute name (same idea as <column>, used for fact-level metrics), <source> = source dataset name (e.g. products_1, products_2), <source_combo> = pipe-delimited combination of source names (e.g. 'products_1|products_2'), <pair> = source pair identifier (e.g. 'products_1__products_2'), <stage> = pipeline stage name (one of sm, norm, em_blocking, em_matching, refinement, fusion), <member> = ensemble member / strategy name. Reference levels: RF = Reference-Free (pipeline output evaluated on its own), SR = Silver Reference (pipeline output compared to a silver / baseline fused table), GR = Gold Reference (pipeline output compared to the human-curated gold fusion set). [0,1] means closed interval. 'higher is better' or 'lower is better' indicates the desired direction.",
+  "usecase": "Use-case identifier (string). E.g. 'products', 'music', 'movies'.",
+  "run_id": "Caller-supplied identifier for this pipeline run (string). Used to disambiguate panels written for different configurations.",
+  "silver_source": "Filesystem path to the silver-reference fused CSV that powers SR-level metrics (string). Null/absent if SR comparison was not performed.",
+  "gold_source": "Filesystem path to the gold-reference fused CSV that powers GR-level metrics (string). Null/absent if GR comparison was not performed.",
+  "headline": {
+    "RF": {
+      "composite_score": "Single-number summary of pipeline quality at the Reference-Free level, combining coverage, consistency, and structural signals that do not require a reference table. Float in [0, 1], higher is better. See composite_score.json for the recipe and weights."
+    },
+    "SR": {
+      "bcubed_f1": "Shorthand for correctness.cluster.SR.bcubed.f1: BCubed F1 of pipeline clusters against silver-reference clusters. Float in [0, 1], higher is better.",
+      "macro_accuracy": "Shorthand for correctness.fact.SR.macro_accuracy: unweighted mean of per-attribute accuracy against silver. Float in [0, 1], higher is better.",
+      "composite_score": "Single-number summary of pipeline quality at the Silver-Reference level. Float in [0, 1], higher is better. See composite_score.json for the recipe and weights."
+    },
+    "GR": {
+      "bcubed_f1": "Shorthand for correctness.cluster.GR.bcubed.f1: BCubed F1 of pipeline clusters against gold-reference clusters. Float in [0, 1], higher is better.",
+      "macro_accuracy": "Shorthand for correctness.fact.GR.macro_accuracy: unweighted mean of per-attribute accuracy against gold. Float in [0, 1], higher is better.",
+      "composite_score": "Single-number summary of pipeline quality at the Gold-Reference level. Float in [0, 1], higher is better. See composite_score.json for the recipe and weights."
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": "Number of rows in the fused pipeline output. Non-negative integer.",
+        "n_rows_largest_input": "Row count of the largest input source feeding fusion. Non-negative integer. Reference point for assessing whether fusion produced consolidation or inflation.",
+        "row_gain_vs_largest_input": "(n_rows_output - n_rows_largest_input) / n_rows_largest_input. Float; positive means the fused table has more rows than the largest input (possible over-splitting or unmatched additions), negative means consolidation."
+      },
+      "SR": {
+        "n_reference": "Number of rows in the silver-reference fused table. Non-negative integer.",
+        "row_count_abs_diff": "Absolute difference between pipeline row count and reference row count: |n_pipe - n_reference|. Non-negative integer.",
+        "row_count_rel_diff": "Relative row-count difference: row_count_abs_diff / n_reference. Non-negative float; lower is closer to reference cardinality.",
+        "n_recovered": "Number of reference clusters fully recovered by the pipeline (every member of the reference cluster ends up in a single pipeline cluster that contains no other reference members). Non-negative integer, higher is better.",
+        "n_partial": "Number of reference clusters partially recovered (some but not all members mapped to a single pipeline cluster, or mapped across multiple pipeline clusters). Non-negative integer.",
+        "n_lost": "Number of reference clusters with no overlap into any pipeline cluster. Non-negative integer, lower is better.",
+        "n_fabricated": "Number of pipeline clusters that do not align with any reference cluster (introduced by the pipeline beyond what the reference represents). Non-negative integer.",
+        "recovery_rate": "n_recovered / n_reference. Float in [0, 1], higher is better."
+      },
+      "GR": {
+        "n_reference": "Number of rows in the gold-reference fused table. Non-negative integer.",
+        "row_count_abs_diff": "Absolute difference between pipeline row count and gold row count. Non-negative integer.",
+        "row_count_rel_diff": "row_count_abs_diff / n_reference at the GR level. Non-negative float; lower is closer to gold cardinality. Often large because gold tables typically cover only a fraction of the input universe.",
+        "n_recovered": "Number of gold clusters fully recovered by the pipeline. Non-negative integer, higher is better.",
+        "n_partial": "Number of gold clusters partially recovered. Non-negative integer.",
+        "n_lost": "Number of gold clusters with no overlap into any pipeline cluster. Non-negative integer, lower is better.",
+        "n_fabricated": "Number of pipeline clusters that do not align with any gold cluster. Non-negative integer; commonly large because gold covers only a small slice of the population.",
+        "recovery_rate": "n_recovered / n_reference at the GR level. Float in [0, 1], higher is better."
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": "Fraction of non-null cells in the fused output across all evaluated attributes: non_null_cells / (n_rows * n_attrs). Float in [0, 1], higher means denser table.",
+        "density_largest_input": "Same density measure computed on the largest input source. Float in [0, 1].",
+        "density_gain": "density_output - density_largest_input. Float in [-1, 1]; positive means fusion filled in more cells than the largest input had on its own."
+      },
+      "SR": {
+        "per_column_drift_normalized": {
+          "<column>": "Normalized drift of the pipeline's distribution for this column vs the silver-reference distribution (e.g., Jensen-Shannon for categoricals, normalized 1D Wasserstein-like distance for numerics). Float in [0, 1], lower is better (0 = identical distributions)."
+        },
+        "overall_drift": "Mean of per-column normalized drift values across all evaluated columns. Float in [0, 1], lower is better.",
+        "density_delta_per_attribute": {
+          "<column>": {
+            "reference_density": "Fraction of non-null cells for this column in the silver reference. Float in [0, 1].",
+            "pipe_density": "Fraction of non-null cells for this column in the pipeline output. Float in [0, 1].",
+            "delta": "pipe_density - reference_density. Float in [-1, 1]; positive means the pipeline fills this column more often than silver does."
+          }
+        }
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "<column>": "Normalized distributional drift of the pipeline vs the gold reference for this column. Float in [0, 1], lower is better."
+        },
+        "overall_drift": "Mean of per-column normalized drift values vs gold. Float in [0, 1], lower is better.",
+        "density_delta_per_attribute": {
+          "<column>": {
+            "reference_density": "Fraction of non-null cells for this column in the gold reference. Float in [0, 1].",
+            "pipe_density": "Fraction of non-null cells for this column in the pipeline output. Float in [0, 1].",
+            "delta": "pipe_density - reference_density. Float in [-1, 1]."
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": "Source-based coverage requires cell-level provenance; empty dict when no provenance is available at the Reference-Free level (currently always empty by design).",
+      "SR": {
+        "same_source_collision_rate": {
+          "reference": "Fraction of silver-reference clusters that contain two or more rows from the same source. Float in [0, 1]; high values indicate the reference itself permits same-source duplicates within an entity cluster.",
+          "pipe": "Same metric computed on pipeline clusters. Float in [0, 1].",
+          "delta": "pipe - reference. Float in [-1, 1]; positive means the pipeline produces more same-source collisions than silver.",
+          "by_source": {
+            "<source>": {
+              "reference": "Same-source collision rate restricted to this source in the silver reference. Float in [0, 1].",
+              "pipe": "Same-source collision rate restricted to this source in the pipeline output. Float in [0, 1].",
+              "delta": "pipe - reference for this source. Float in [-1, 1]."
+            }
+          }
+        },
+        "source_mix_distribution_js": "Jensen-Shannon divergence between the pipeline's distribution over source-mix combinations and silver's distribution. Float in [0, 1], lower is better.",
+        "per_source_coverage_rate": {
+          "<source>": {
+            "reference": "Fraction of silver clusters that contain at least one row from this source. Float in [0, 1].",
+            "pipe": "Fraction of pipeline clusters that contain at least one row from this source. Float in [0, 1].",
+            "delta": "pipe - reference. Float in [-1, 1]."
+          }
+        },
+        "source_mix_distribution_reference": {
+          "<source_combo>": "Proportion of silver clusters whose constituent rows come from this exact pipe-delimited source combination. Float in [0, 1]; proportions across all keys sum to 1."
+        },
+        "source_mix_distribution_pipe": {
+          "<source_combo>": "Proportion of pipeline clusters whose constituent rows come from this exact pipe-delimited source combination. Float in [0, 1]; proportions across all keys sum to 1."
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": "Fraction of gold clusters that contain two or more rows from the same source. Float in [0, 1].",
+          "pipe": "Same metric on pipeline clusters. Float in [0, 1].",
+          "delta": "pipe - reference. Float in [-1, 1].",
+          "by_source": {
+            "<source>": {
+              "reference": "Same-source collision rate restricted to this source in the gold reference. Float in [0, 1].",
+              "pipe": "Same-source collision rate restricted to this source in the pipeline output. Float in [0, 1].",
+              "delta": "pipe - reference for this source. Float in [-1, 1]."
+            }
+          }
+        },
+        "source_mix_distribution_js": "Jensen-Shannon divergence between the pipeline's source-mix distribution and gold's. Float in [0, 1], lower is better.",
+        "per_source_coverage_rate": {
+          "<source>": {
+            "reference": "Fraction of gold clusters that contain at least one row from this source. Float in [0, 1].",
+            "pipe": "Fraction of pipeline clusters that contain at least one row from this source. Float in [0, 1].",
+            "delta": "pipe - reference. Float in [-1, 1]."
+          }
+        },
+        "source_mix_distribution_reference": {
+          "<source_combo>": "Proportion of gold clusters whose constituent rows come from this exact pipe-delimited source combination. Float in [0, 1]."
+        },
+        "source_mix_distribution_pipe": {
+          "<source_combo>": "Proportion of pipeline clusters whose constituent rows come from this exact pipe-delimited source combination. Float in [0, 1]."
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "<column>": {
+          "validity_rate_pipe": "Fraction of non-null cells in this column of the pipeline output that pass type-parse and declared constraints. Float in [0, 1], higher is better.",
+          "parse_failures_pipe": "Count of non-null cells in the pipeline output that failed type parsing for this column. Non-negative integer, lower is better.",
+          "constraint_failures_pipe": "Count of non-null cells that parsed but violated a declared constraint (e.g., range, enum). Non-negative integer, lower is better.",
+          "n_evaluated_pipe": "Number of non-null cells evaluated for validity in this column. Non-negative integer."
+        }
+      }
+    },
+    "_design_extensions_pending": "Free-text design note explaining that broader consistency checks (ontology-style disjointness, cross-attribute constraints) are still pending; validity_per_column is currently the only first-class consistency signal. String.",
+    "SR": {
+      "validity_per_column": {
+        "<column>": {
+          "validity_rate_pipe": "Fraction of non-null pipeline cells in this column that pass validity checks. Float in [0, 1], higher is better.",
+          "validity_rate_reference": "Same fraction computed on the silver reference. Float in [0, 1].",
+          "delta": "validity_rate_pipe - validity_rate_reference. Float in [-1, 1]; positive means the pipeline is more valid than silver on this column.",
+          "parse_failures_pipe": "Count of parse failures in the pipeline output for this column. Non-negative integer.",
+          "parse_failures_reference": "Count of parse failures in the silver reference for this column. Non-negative integer.",
+          "constraint_failures_pipe": "Count of constraint violations in the pipeline output for this column. Non-negative integer.",
+          "constraint_failures_reference": "Count of constraint violations in the silver reference for this column. Non-negative integer.",
+          "n_evaluated_pipe": "Number of non-null pipeline cells evaluated. Non-negative integer.",
+          "n_evaluated_reference": "Number of non-null silver cells evaluated. Non-negative integer."
+        }
+      },
+      "mean_validity_delta": "Unweighted mean over columns of (validity_rate_pipe - validity_rate_reference). Float in [-1, 1]; positive means the pipeline is on average more valid than silver."
+    },
+    "GR": {
+      "validity_per_column": {
+        "<column>": {
+          "validity_rate_pipe": "Fraction of non-null pipeline cells in this column that pass validity checks. Float in [0, 1], higher is better.",
+          "validity_rate_reference": "Same fraction computed on the gold reference. Float in [0, 1].",
+          "delta": "validity_rate_pipe - validity_rate_reference. Float in [-1, 1].",
+          "parse_failures_pipe": "Count of parse failures in the pipeline output for this column. Non-negative integer.",
+          "parse_failures_reference": "Count of parse failures in the gold reference for this column. Non-negative integer.",
+          "constraint_failures_pipe": "Count of constraint violations in the pipeline output for this column. Non-negative integer.",
+          "constraint_failures_reference": "Count of constraint violations in the gold reference for this column. Non-negative integer.",
+          "n_evaluated_pipe": "Number of non-null pipeline cells evaluated. Non-negative integer.",
+          "n_evaluated_reference": "Number of non-null gold cells evaluated. Non-negative integer."
+        }
+      },
+      "mean_validity_delta": "Unweighted mean over columns of (validity_rate_pipe - validity_rate_reference) vs gold. Float in [-1, 1]."
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "SR": {
+        "bcubed": {
+          "precision": "BCubed precision of pipeline clusters against silver clusters: for each pipeline-clustered row, the fraction of its cluster-mates that share its silver cluster, averaged over rows. Float in [0, 1], higher is better.",
+          "recall": "BCubed recall against silver: for each row, the fraction of its silver cluster-mates that also share its pipeline cluster, averaged over rows. Float in [0, 1], higher is better.",
+          "f1": "Harmonic mean of bcubed.precision and bcubed.recall against silver. Float in [0, 1], higher is better."
+        },
+        "alignment": {
+          "mean_jaccard": "Mean Jaccard similarity between each silver cluster and its best-matching pipeline cluster (matched 1:1). Float in [0, 1], higher is better.",
+          "matched_cluster_rate_at_threshold": "Fraction of silver clusters whose best-matching pipeline cluster exceeds the Jaccard threshold given by matched_threshold. Float in [0, 1], higher is better.",
+          "matched_threshold": "Jaccard threshold used by matched_cluster_rate_at_threshold (typically 0.5). Float in [0, 1].",
+          "size_match_rate": "Fraction of silver clusters whose best-matching pipeline cluster has the same size. Float in [0, 1], higher is better.",
+          "mean_size_delta": "Mean of (pipeline_cluster_size - silver_cluster_size) across matched silver clusters. Float; negative means pipeline clusters are on average smaller than silver, positive means larger.",
+          "max_size_overshoot": "Maximum value of (pipeline_cluster_size - silver_cluster_size) across matched clusters. Integer; positive values indicate at least one pipeline cluster substantially larger than its silver counterpart, negative values indicate the worst undershoot."
+        }
+      },
+      "GR": {
+        "bcubed": {
+          "precision": "BCubed precision of pipeline clusters against gold clusters. Float in [0, 1], higher is better.",
+          "recall": "BCubed recall of pipeline clusters against gold clusters. Float in [0, 1], higher is better.",
+          "f1": "Harmonic mean of bcubed.precision and bcubed.recall against gold. Float in [0, 1], higher is better."
+        },
+        "alignment": {
+          "mean_jaccard": "Mean Jaccard similarity between each gold cluster and its best-matching pipeline cluster. Float in [0, 1], higher is better.",
+          "matched_cluster_rate_at_threshold": "Fraction of gold clusters whose best-matching pipeline cluster exceeds the matched_threshold Jaccard. Float in [0, 1], higher is better.",
+          "matched_threshold": "Jaccard threshold used by matched_cluster_rate_at_threshold for the GR level. Float in [0, 1].",
+          "size_match_rate": "Fraction of gold clusters whose best-matching pipeline cluster has the same size. Float in [0, 1], higher is better.",
+          "mean_size_delta": "Mean of (pipeline_cluster_size - gold_cluster_size) across matched gold clusters. Float.",
+          "max_size_overshoot": "Maximum value of (pipeline_cluster_size - gold_cluster_size) across matched gold clusters. Integer."
+        }
+      }
+    },
+    "fact": {
+      "SR": {
+        "per_attribute": {
+          "<attribute>": {
+            "accuracy": "Fraction of paired (pipeline, silver) cells for this attribute that match exactly (after normalization). Float in [0, 1], higher is better.",
+            "count": "Number of paired cells used to compute accuracy for this attribute. Non-negative integer.",
+            "similarity_mean": "Mean string/value similarity between paired pipeline and silver cells for this attribute. Float in [0, 1], higher is better. Useful for text fields where exact match is too strict.",
+            "mae": "Mean absolute error between paired numeric cells (numeric attributes only). Non-negative float, lower is better. Units are the attribute's native units.",
+            "medae": "Median absolute error between paired numeric cells (numeric attributes only). Non-negative float, lower is better.",
+            "pct_within_tolerance": "Fraction of paired cells whose value is within the declared tolerance band (numeric attributes, or categoricals with a tolerance). Float in [0, 1], higher is better.",
+            "accuracy_similarity_gap": "similarity_mean - accuracy (text attributes only, emitted when this gap is notably large). Float; large positive values suggest the pipeline values are semantically close but not exact, often due to normalization differences.",
+            "mismatch_fingerprint": "Short categorical tag describing the dominant kind of mismatch (text attributes only, emitted when accuracy_similarity_gap is large). String, e.g. 'normalization_difference_suspected'."
+          }
+        },
+        "macro_accuracy": "Unweighted mean across attributes of per_attribute.accuracy. Float in [0, 1], higher is better.",
+        "micro_accuracy": "Cell-weighted mean of per-attribute accuracy: sum of matching cells over sum of paired cells across attributes. Float in [0, 1], higher is better.",
+        "conflict_only_accuracy": "Macro-accuracy restricted to attributes where the source rows disagreed (i.e., fusion actually had to choose among conflicting values). Float in [0, 1], higher is better.",
+        "conflict_only_micro_accuracy": "Cell-weighted accuracy restricted to conflict cells. Float in [0, 1], higher is better.",
+        "conflict_only_per_attribute": {
+          "<attribute>": {
+            "accuracy": "Accuracy on conflict-only cells for this attribute. Float in [0, 1], higher is better.",
+            "count": "Number of conflict-only paired cells for this attribute. Non-negative integer."
+          }
+        },
+        "conflict_rate_pipe": "Fraction of paired cells across all attributes where the underlying source rows disagreed, computed on the pipeline-side cluster groupings. Float in [0, 1].",
+        "conflict_rate_reference": "Same conflict rate computed on the silver-side cluster groupings. Float in [0, 1].",
+        "conflict_rate_delta": "conflict_rate_pipe - conflict_rate_reference. Float in [-1, 1].",
+        "fully_correct_cluster_rate": "Fraction of pipeline clusters whose fused row matches the corresponding silver row on every evaluated attribute. Float in [0, 1], higher is better.",
+        "list_attribute_set_metrics": "Dict of set-based metrics (precision/recall/F1 over set-valued attributes); empty when no list/set attributes are evaluated."
+      },
+      "GR": {
+        "per_attribute": {
+          "<attribute>": {
+            "accuracy": "Fraction of paired (pipeline, gold) cells for this attribute that match exactly. Float in [0, 1], higher is better.",
+            "count": "Number of paired cells used to compute accuracy for this attribute. Non-negative integer.",
+            "similarity_mean": "Mean string/value similarity between paired pipeline and gold cells for this attribute. Float in [0, 1], higher is better.",
+            "mae": "Mean absolute error between paired numeric cells (numeric attributes only). Non-negative float, lower is better.",
+            "medae": "Median absolute error between paired numeric cells (numeric attributes only). Non-negative float, lower is better.",
+            "pct_within_tolerance": "Fraction of paired cells whose value is within the declared tolerance band. Float in [0, 1], higher is better.",
+            "accuracy_similarity_gap": "similarity_mean - accuracy (text attributes, when the gap is large). Float; flags normalization-style mismatches against gold.",
+            "mismatch_fingerprint": "Short categorical tag describing the dominant kind of text mismatch. String."
+          }
+        },
+        "macro_accuracy": "Unweighted mean across attributes of per_attribute.accuracy against gold. Float in [0, 1], higher is better.",
+        "micro_accuracy": "Cell-weighted mean of per-attribute accuracy against gold. Float in [0, 1], higher is better.",
+        "conflict_only_accuracy": "Macro-accuracy restricted to attributes where the source rows disagreed at the gold-aligned clusters. Float in [0, 1], higher is better.",
+        "conflict_only_micro_accuracy": "Cell-weighted accuracy on conflict-only cells, evaluated against gold. Float in [0, 1], higher is better.",
+        "conflict_only_per_attribute": {
+          "<attribute>": {
+            "accuracy": "Accuracy on conflict-only cells for this attribute, evaluated against gold. Float in [0, 1], higher is better.",
+            "count": "Number of conflict-only paired cells for this attribute. Non-negative integer."
+          }
+        },
+        "conflict_rate_pipe": "Fraction of paired cells with disagreeing source values on the pipeline side. Float in [0, 1].",
+        "conflict_rate_reference": "Same conflict rate on the gold side. Float in [0, 1].",
+        "conflict_rate_delta": "conflict_rate_pipe - conflict_rate_reference. Float in [-1, 1].",
+        "fully_correct_cluster_rate": "Fraction of pipeline clusters whose fused row matches the corresponding gold row on every evaluated attribute. Float in [0, 1], higher is better.",
+        "list_attribute_set_metrics": "Dict of set-based metrics for list/set-valued attributes; empty when none are evaluated."
+      }
+    }
+  },
+  "task_step": {
+    "<stage>": {
+      "stage": "Canonical name of this pipeline stage. String, one of: sm | norm | em_blocking | em_matching | refinement | fusion.",
+      "winner": "Name of the strategy / member selected for this stage by the orchestrator. String.",
+      "metric_key": "Name of the metric used to choose the winner at this stage (e.g., 'f1', 'recall', 'macro_accuracy'). String.",
+      "val_score": "Score of the winning strategy on the validation surface for this stage, using metric_key. Float; range/direction depend on metric_key.",
+      "test_score": "Score of the winning strategy on the held-out test surface for this stage, using metric_key. Float; range/direction depend on metric_key.",
+      "per_member_val": {
+        "<member>": "Validation-surface score for this committee member / candidate strategy at this stage. Float; range/direction depend on metric_key."
+      },
+      "per_member_test": {
+        "<member>": "Test-surface score for this committee member / candidate strategy at this stage. Float; range/direction depend on metric_key."
+      },
+      "runtime_s": "Wall-clock seconds spent on this stage. Non-negative float, seconds."
+    },
+    "sm": {
+      "notes": {
+        "test_eq_val": "True iff the SM stage reused the validation surface as its test surface (no held-out SM test split). Boolean.",
+        "test_eq_val_reason": "Free-text explanation for why test_eq_val is true (e.g., 'no held-out SM test split for baseline'). String."
+      }
+    },
+    "norm": {
+      "notes": {
+        "applied_to_downstream": "True iff the chosen normalization was actually propagated to downstream stages (EM, fusion). Boolean.",
+        "spread": "Spread (max - min) of normalization-candidate scores across members on the validation surface. Float; near-zero spread indicates the choice was vacuous.",
+        "vacuous": "True iff the normalization choice is considered vacuous (spread < vacuous_epsilon). Boolean.",
+        "vacuous_epsilon": "Epsilon used to flag a vacuous normalization choice. Float, non-negative."
+      }
+    },
+    "em_blocking": {
+      "_metric_key_note": "For em_blocking, metric_key / val_score / test_score now report pair_completeness (recall — fraction of true gold pairs the blocker preserves). reduction_ratio remains the per-pair tiebreaker inside the composition selection strategy and is surfaced as a secondary side metric under notes.per_member_reduction_ratio_{val,test}.",
+      "notes": {
+        "per_pair_winner": {
+          "<pair>": "Winning blocker for this source pair. String (blocker name)."
+        },
+        "selection_strategy": "Description of how the blocker was chosen per source pair (e.g., 'composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)'). String.",
+        "val_split_available": "True iff a validation split was available for blocker selection. Boolean.",
+        "test_split_available": "True iff a held-out test split was available for blocker evaluation. Boolean.",
+        "recall_floor": "Minimum pair_completeness (recall) a blocker must clear to be eligible at this stage; below the floor the candidate is rejected. Float in [0, 1].",
+        "per_member_reduction_ratio_val": {
+          "<member>": "Validation-surface reduction_ratio for this blocker, exposed as a secondary side metric (fraction of all possible pairs the blocker prunes). Float in [0, 1]."
+        },
+        "per_member_reduction_ratio_test": {
+          "<member>": "Test-surface reduction_ratio for this blocker (mirrors val when there is no separate test pass; see notes.test_split_available). Float in [0, 1]."
+        }
+      }
+    },
+    "em_matching": {
+      "notes": {
+        "val_split_available": "True iff a validation split was available for matcher selection. Boolean.",
+        "test_split_available": "True iff a held-out test split was available for matcher evaluation. Boolean.",
+        "clustering_applied_within_em": "Name of the clustering / link-resolution strategy applied inside the EM stage (e.g., 'greedy', 'mbm', 'none'). String."
+      }
+    },
+    "refinement": {
+      "notes": {
+        "methods_competed": "Names of the refinement methods that competed at this stage. List of strings (e.g., ['baseline', 'greedy', 'mbm']).",
+        "n_correspondences": "Number of pairwise correspondences considered by the refinement step. Non-negative integer."
+      }
+    },
+    "fusion": {
+      "notes": {
+        "val_surface_available": "True iff a validation fusion surface was available to score fusion strategies. Boolean.",
+        "n_fused_rows": "Number of rows produced by the fusion stage. Non-negative integer.",
+        "n_correspondences_used": "Number of pairwise correspondences fed into fusion (after refinement). Non-negative integer."
+      }
+    }
+  },
+  "aggregated": {
+    "_placeholder": "Flag indicating that the aggregated section is a placeholder pending the two-dimensional (Quality x Reference) weighting design. Boolean.",
+    "_design_intent": "Free-text note describing the planned design: a 2D weighted aggregate (Quality x Reference). Until then, headline.<level>.composite_score carries a per-reference-level single-axis composite. String."
+  },
+  "warnings": [
+    "List of free-form diagnostic strings emitted during panel construction. Each entry flags a situation that may affect interpretation, for example: a metric block was skipped because a required input (such as cell_provenance) was not supplied; a reference comparison was disabled because the reference file was missing; a stage's test surface fell back to its validation surface; a column failed to parse for validity checks; or a committee had only one viable member. Treat each entry as a hint to inspect that specific area before trusting downstream numbers."
+  ],
+  "resource_usage": {
+    "duration_seconds": "Total wall-clock duration of the pipeline run that produced this panel. Non-negative float, seconds.",
+    "api_tokens": {
+      "input_tokens": "Total input tokens consumed across all counted LLM calls in this run. Non-negative integer.",
+      "output_tokens": "Total output tokens generated across all counted LLM calls in this run. Non-negative integer.",
+      "total_tokens": "input_tokens + output_tokens across all counted LLM calls. Non-negative integer.",
+      "n_calls": "Total number of counted LLM API calls in this run. Non-negative integer."
+    },
+    "api_notes": "Free-text summary of which stages contributed to the api_tokens totals and which were skipped (e.g., non-LLM winners), with the per-stage token/call counts noted in parentheses. String."
+  }
+}
