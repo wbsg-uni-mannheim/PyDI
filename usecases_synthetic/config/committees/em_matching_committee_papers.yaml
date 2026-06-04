@@ -131,9 +131,46 @@ required_axes:
   missing_value_tolerant: [true]
 
 # Column mapping — must stay identical to em_blocking_committee_papers.yaml
-# and fusion_committee_papers.yaml. All three sources already use canonical
-# column names, so no per-source rename is needed.
+# and fusion_committee_papers.yaml. Sources now ship with varied raw column
+# names (per the 2026-06-04 papers data refresh); these mappings translate
+# raw -> canonical so EM matchers see the canonical schema.
 column_mapping:
-  dblp: {}
-  crossref: {}
-  open_alex: {}
+  dblp:
+    doi_ref: doi
+    entry_type: type
+    publication_title: title
+    author_list: authors
+    pub_year: publication_year
+    venue_name: journal
+    volume_no: volume
+    issue_no: issue
+    page_start: first_page
+    page_finish: last_page
+  crossref:
+    doi_code: doi
+    work_type: type
+    title_text: title
+    contributor_names: authors
+    issued_year: publication_year
+    container_title: journal
+    abstract_text: keywords
+    volume_id: volume
+    issue_id: issue
+    page_first: first_page
+    page_last: last_page
+    reference_total: referenced_works_count
+    cited_total: cited_by_count
+  open_alex:
+    doi_value: doi
+    work_kind: type
+    display_title: title
+    authors_list: authors
+    year_published: publication_year
+    source_name: journal
+    topic_terms: keywords
+    volume_tag: volume
+    issue_tag: issue
+    start_page: first_page
+    end_page: last_page
+    refs_count: referenced_works_count
+    citations_count: cited_by_count

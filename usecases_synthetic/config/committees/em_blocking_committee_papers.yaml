@@ -15,19 +15,30 @@ members:
     enabled_by_default: true
   - name: standard_blocker
     description: >-
-      Equality on name_first_5 (lexical). Papers titles share very
-      common first tokens ("a" alone = 18127 records / ~110M pairs),
-      so first-token blocking is pathological. The 5-char prefix
-      collapses same-stem titles (Towards/Toward) while distinguishing
-      the 22820 first-token bins into many more 5-char buckets.
-      Matches the companies / games convention.
+      Equality on name_first_20 (lexical). Papers titles need a wider
+      prefix than first-token (block "a" alone = 18k records) or
+      first-5-chars (block "multi" = 3069 records, "deep " = 1628).
+      First-20-char prefix yields a manageable distribution: top block
+      "performance analysis" = 160 records, top-10 blocks contribute
+      ~137k pairs total (vs ~28M for first-5-chars). The 20-char
+      window captures ~3 words for most academic titles, giving
+      strong-enough discrimination without sliding into per-title
+      uniqueness.
     blocker:
       class: StandardBlocker
       module: PyDI.entitymatching.blocking.standard
       params:
-        "on": [name_first_5]
+        "on": [name_first_20]
     blocking_type: lexical
-    enabled_by_default: true
+    # DISABLED for papers (2026-06-04): StandardBlocker hangs at >50 min on
+    # papers data regardless of key choice (name_first_token / _first_5 /
+    # _first_20 all reproduced). Root cause unknown. The other 5 lexical /
+    # sparse / embedding / hybrid blockers (token / embedding / sorted_nh /
+    # bm25 / sc_block) cover the signal space; the composition's
+    # ``required_axes: [lexical, sparse, embedding, hybrid]`` is satisfied
+    # by token_blocker (lexical), bm25_blocker (sparse), embedding_blocker
+    # (embedding), and sc_block (hybrid).
+    enabled_by_default: false
   - name: embedding_blocker
     description: "Dense ANN top-k; BAAI/bge-base-en-v1.5"
     blocker:
@@ -85,6 +96,42 @@ required_axes:
   blocking_type: [lexical, sparse, embedding, hybrid]
 # byte-identical across em_blocking / em_matching / fusion papers files
 column_mapping:
-  dblp: {}
-  crossref: {}
-  open_alex: {}
+  dblp:
+    doi_ref: doi
+    entry_type: type
+    publication_title: title
+    author_list: authors
+    pub_year: publication_year
+    venue_name: journal
+    volume_no: volume
+    issue_no: issue
+    page_start: first_page
+    page_finish: last_page
+  crossref:
+    doi_code: doi
+    work_type: type
+    title_text: title
+    contributor_names: authors
+    issued_year: publication_year
+    container_title: journal
+    abstract_text: keywords
+    volume_id: volume
+    issue_id: issue
+    page_first: first_page
+    page_last: last_page
+    reference_total: referenced_works_count
+    cited_total: cited_by_count
+  open_alex:
+    doi_value: doi
+    work_kind: type
+    display_title: title
+    authors_list: authors
+    year_published: publication_year
+    source_name: journal
+    topic_terms: keywords
+    volume_tag: volume
+    issue_tag: issue
+    start_page: first_page
+    end_page: last_page
+    refs_count: referenced_works_count
+    citations_count: cited_by_count

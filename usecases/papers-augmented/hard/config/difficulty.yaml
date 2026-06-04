@@ -1,0 +1,118 @@
+domain: papers
+level: hard
+label: hard
+master_seed: 42
+generated_at: '2026-06-04T12:06:50.481863+00:00'
+knob_order:
+- knob_02
+- knob_04
+- knob_01
+- knob_05
+- knob_06
+- knob_03
+- knob_10
+- knob_08
+knob_levels:
+  knob_01: hard
+  knob_02: hard
+  knob_03: hard
+  knob_04: hard
+  knob_05: hard
+  knob_06: hard
+  knob_08: hard
+  knob_10: hard
+ablation_mode: false
+knobs:
+  knob_02:
+    domain: papers
+    canonical_grouping: pool
+    embedding_model_id: BAAI/bge-base-en-v1.5
+    metric_top_k: 30
+    rrf_k0: 60
+    c_min: 2
+    boost_label_collision: 5.0
+    inner_token_threshold: 0.8
+    levels:
+      target_corner_case_ratio: 0.8
+    max_interp_fraction: 0.6
+    placement_split: 0.5
+    interp_pair_factor: 0.05
+    llm_prompt_version: v2
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+    non_corner_prompt_version: v1
+    pool_quality: two_system
+    _realised:
+      level: hard
+      baseline_ratio: 0.555
+      target_ratio: 0.8
+      final_ratio: 0.5544303797468354
+      operator: interpolate_paired_drop
+      removed: 490
+      interpolated: 490
+      interp_attempted: 490
+      drop_corner_planned: 0
+      drop_corner_simulated_final_ratio: 0.0
+      drop_corner_cap_bound: false
+      non_corner_refill_attempts: 0
+      non_corner_refill_committed: 0
+      drop_corner_skip_protected: 0
+      drop_corner_skip_collision_last: 0
+      drop_corner_skip_isolated: 0
+      drop_corner_skip_empty_pool: 0
+      drop_corner_skip_counterproductive: 0
+  knob_04:
+    domain: papers
+    source_count: 3
+    within_source_duplicate_rate: 0.02
+    singleton_cap_hard: 0.6
+    per_source_demotion_cap: 0.4
+    delta_softening_step: 0.05
+    fabrication_mode: paraphrase_only
+    llm_prompt_version: v1
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+  knob_01:
+    domain: papers
+    paraphrase_rate_primary: 0.12
+    paraphrase_rate_key: 0.18
+    paraphrase_rate_secondary: 0.3
+    paraphrase_rate_categorical: 0.18
+    article_drop_pattern: '^(The|A|An) '
+    llm_prompt_version: v2
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+  knob_05:
+    domain: papers
+    locale_pool_per_level:
+    - en_US
+    - de_DE
+    - fr_FR
+    normalize_down_threshold: 0.85
+  knob_06:
+    domain: papers
+    transform_per_level: stretch
+    max_edits_per_cell: 3
+    max_ocr_per_cell: 2
+    max_truncate_chars: 3
+    soft_global_primary_cap_hard: 0.35
+    compression_factor: 0.5
+    stretch_factor: 1.5
+    numeric_jitter_max_relative: 0.02
+  joint_collision_audit_pass: true
+  knob_03:
+    domain: papers
+    rates_per_level:
+      primary: 0.03
+      key: 0.25
+      secondary: 0.35
+    transform_per_level: stretch
+    compression_factor: 0.7
+    stretch_factor: 1.5
+    single_source_survivor_cap_hard: 0.05
+    per_cell_ceiling_delta: 0.1
+  knob_10:
+    domain: papers
+    concentration_cap: 0.99
+  knob_08:
+    sm_mapping_rows: 45

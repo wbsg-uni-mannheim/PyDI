@@ -1,0 +1,10 @@
+{
+  "attribute": "keywords",
+  "model_id": "gpt-5.4-mini",
+  "original_value": "We study a decentralized learning problem in which a population of agents repeatedly solves a shared stochastic multi-armed bandit task while exchanging sparse, asynchronous messages over a local communication graph. Each agent chooses an arm, decides whether to communicate, and updates its policy using only its own history together with limited peer observations. We propose a collaborative exploration protocol that shares compact arm summaries rather than raw rewards, enabling reduced regret under constrained bandwidth. The analysis characterizes per-agent regret as a function of the number of agents, the number of arms, the horizon, and the communication sparsity, and compares the method against both fully independent learning and fully connected information sharing. Empirical results on synthetic networked bandit instances show that minimal collaboration can substantially improve sample efficiency without incurring the cost of global synchronization.",
+  "prompt_version": "v2",
+  "result": {
+    "paraphrase": "We consider a decentralized learning setting where a group of agents repeatedly tackles a common stochastic multi-armed bandit problem and exchanges sparse, asynchronous messages through a local communication graph. Each agent selects an arm, decides if and when to communicate, and updates its policy using only its own past experience plus limited observations from peers. We introduce a collaborative exploration protocol that transmits compact summaries of arms instead of raw rewards, reducing regret under bandwidth limits. The analysis expresses per-agent regret in terms of the number of agents, number of arms, horizon, and communication sparsity, and benchmarks the approach against both fully independent learning and fully connected information sharing. Experiments on synthetic networked bandit instances indicate that even minimal collaboration can greatly improve sample efficiency without requiring global synchronization."
+  },
+  "source": "open_alex"
+}

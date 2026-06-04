@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "title": "Scholarly Paper",
+  "description": "Target schema for scholarly paper metadata integrated from DBLP, Crossref, and OpenAlex.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Record ID",
+      "description": "Stable source-prefixed record identifier used by entity matching and fusion.",
+      "minLength": 1,
+      "maxLength": 128,
+      "examples": [
+        "dblp-00000",
+        "crossref-00000",
+        "open_alex-00000"
+      ]
+    },
+    "doi": {
+      "type": "string",
+      "title": "DOI",
+      "description": "Digital Object Identifier normalized without the https://doi.org/ prefix.",
+      "minLength": 6,
+      "maxLength": 255,
+      "pattern": "^10\\.\\d{4,9}/\\S+$",
+      "examples": [
+        "10.1145/3316781.3317924",
+        "10.1093/nar/gky1131"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Publication Type",
+      "description": "Publication type reported by the source, such as article, inproceedings, or journal-article.",
+      "enum": [
+        "article",
+        "inproceedings",
+        "incollection",
+        "posted-content",
+        "review",
+        "editorial",
+        "letter",
+        "preprint",
+        "erratum",
+        "book-chapter",
+        "paratext"
+      ],
+      "examples": [
+        "article",
+        "inproceedings",
+        "review"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "Title of the scholarly work.",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "authors": {
+      "type": "array",
+      "title": "Authors",
+      "description": "Ordered list of author display names.",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "examples": [
+        [
+          "Hsuan Hsiao",
+          "Jason Helge Anderson"
+        ]
+      ]
+    },
+    "publication_year": {
+      "type": "integer",
+      "title": "Publication Year",
+      "description": "Year in which the scholarly work was published.",
+      "minimum": 2018,
+      "maximum": 2020,
+      "examples": [
+        2018,
+        2019,
+        2020
+      ]
+    },
+    "journal": {
+      "type": "string",
+      "title": "Venue",
+      "description": "Journal, conference, proceedings, or source display name.",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "keywords": {
+      "type": "string",
+      "title": "Keywords",
+      "description": "Comma-separated keywords, concepts, or subject labels associated with the paper.",
+      "minLength": 1,
+      "maxLength": 1000,
+      "x-pydi-consistency": {
+        "rule": "delimited_open_text",
+        "separator": ",",
+        "description": "Keywords are open-world terms; only approximate item count is custom; length is handled by JSON Schema.",
+        "maxTerms": 50
+      }
+    },
+    "volume": {
+      "type": "string",
+      "title": "Volume",
+      "description": "Publication volume.",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._/-]*$"
+    },
+    "issue": {
+      "type": "string",
+      "title": "Issue",
+      "description": "Publication issue or number.",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._/-]*$"
+    },
+    "first_page": {
+      "type": "string",
+      "title": "First Page",
+      "description": "First page of the publication page range.",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "x-pydi-consistency": {
+        "rule": "page_locator",
+        "numericMinimum": 1,
+        "numericMaximum": 100000,
+        "description": "Numeric pages should be between 1 and 100000; article locators such as e1008483 are allowed."
+      }
+    },
+    "last_page": {
+      "type": "string",
+      "title": "Last Page",
+      "description": "Last page of the publication page range.",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "x-pydi-consistency": {
+        "rule": "page_locator",
+        "numericMinimum": 1,
+        "numericMaximum": 100000,
+        "numericComparison": {
+          "operator": ">=",
+          "field": "first_page"
+        },
+        "description": "Numeric pages should be between 1 and 100000, and last_page should be greater than or equal to first_page when both are numeric."
+      }
+    },
+    "referenced_works_count": {
+      "type": "integer",
+      "title": "Referenced Works Count",
+      "description": "Number of referenced works reported by the source.",
+      "minimum": 0,
+      "maximum": 5000
+    },
+    "cited_by_count": {
+      "type": "integer",
+      "title": "Cited By Count",
+      "description": "Number of citing works reported by the source.",
+      "minimum": 0,
+      "maximum": 100000
+    }
+  },
+  "required": [
+    "id",
+    "doi",
+    "title"
+  ],
+  "additionalProperties": false
+}

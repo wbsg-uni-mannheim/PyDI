@@ -27,6 +27,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable
 
@@ -64,6 +66,13 @@ class LLMCache:
         self.prompt_version = prompt_version
         self.model_id = model_id
         self._memory: dict[str, dict[str, Any]] = {}
+        # Thread-safety for concurrent prewarm (flush_concurrent).
+        self._lock = threading.Lock()
+        # Collect mode: when active, ``call_or_cache`` records cache-miss
+        # api_fns instead of calling them, then ``flush_concurrent`` runs
+        # them through a thread pool. ``None`` means collect mode is off.
+        self._collect: list[tuple[str, str, str, str, Callable[[], Any]]] | None = None
+        self._collect_seen: set[str] | None = None
 
     # ---- Key derivation ----------------------------------------------------
 
@@ -138,11 +147,12 @@ class LLMCache:
             ``source``, ``attribute``, ``original_value``,
             ``prompt_version``, ``model_id`` for audit.
         """
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-        path = self._path(cell_hash)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2, sort_keys=True)
-        self._memory[cell_hash] = payload
+        with self._lock:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+            path = self._path(cell_hash)
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2, sort_keys=True)
+            self._memory[cell_hash] = payload
 
     # ---- Orchestration -----------------------------------------------------
 
@@ -184,6 +194,24 @@ class LLMCache:
         if cached is not None:
             return cached
 
+        # Collect mode (concurrent prewarm): record the cache-miss api_fn for
+        # later concurrent execution and return a ``result=None`` sentinel so
+        # the caller degrades gracefully (the K1 paraphrase caller treats a
+        # null result as "no paraphrase" -> deterministic fallback). A second
+        # real pass over the (now warm) cache produces the genuine result.
+        if self._collect is not None and not strict and api_fn is not None:
+            if self._collect_seen is not None and cell_hash not in self._collect_seen:
+                self._collect_seen.add(cell_hash)
+                self._collect.append((cell_hash, source, attribute, value, api_fn))
+            return {
+                "source": source,
+                "attribute": attribute,
+                "original_value": value,
+                "prompt_version": self.prompt_version,
+                "model_id": self.model_id,
+                "result": None,
+            }
+
         if strict:
             raise LLMCacheMiss(
                 f"Strict-mode cache miss for ({source!r}, {attribute!r}, "
@@ -192,9 +220,7 @@ class LLMCache:
             )
 
         if api_fn is None:
-            raise ValueError(
-                "api_fn is required when strict=False and cache misses"
-            )
+            raise ValueError("api_fn is required when strict=False and cache misses")
 
         result = api_fn()
         payload: dict[str, Any] = {
@@ -207,6 +233,89 @@ class LLMCache:
         }
         self.put(cell_hash, payload)
         return payload
+
+    # ---- Concurrent prewarm ------------------------------------------------
+
+    def begin_collect(self) -> None:
+        """Enter collect mode: cache-miss ``call_or_cache`` calls are recorded
+        (returning a ``result=None`` sentinel) instead of invoking the LLM."""
+        self._collect = []
+        self._collect_seen = set()
+
+    def end_collect(self) -> None:
+        """Leave collect mode (discards any un-flushed recorded requests)."""
+        self._collect = None
+        self._collect_seen = None
+
+    def flush_concurrent(
+        self,
+        max_workers: int = 30,
+        result_ok: Callable[[Any], bool] | None = None,
+    ) -> tuple[int, int]:
+        """Execute all recorded collect-mode api_fns through a thread pool.
+
+        Each request is de-duplicated by cache key (done at record time), so
+        every prompt is issued exactly once; results are persisted via the
+        thread-safe :meth:`put`. Determinism is preserved because the model is
+        pinned at ``temperature=0`` — concurrent execution yields the same
+        cache entries a sequential run would, only the write order differs.
+
+        Parameters
+        ----------
+        max_workers : int, default 30
+            Thread-pool width.
+        result_ok : Callable[[Any], bool] or None, default None
+            Optional predicate over the raw ``api_fn`` result. When it
+            returns ``False`` the result is treated as a transient failure
+            and is **not** cached, so the warm-cache assumption never gets
+            poisoned by e.g. a rate-limit-induced empty response — the real
+            (sequential) pass simply re-issues that one cell at its slower
+            rate, where 429s do not recur. ``None`` caches every result.
+
+        Returns
+        -------
+        tuple[int, int]
+            ``(filled, skipped)`` — entries written to cache, and results
+            rejected by *result_ok* (left uncached for the real pass).
+            Safe to call with an empty queue (returns ``(0, 0)``).
+        """
+        pending = list(self._collect or [])
+        if not pending:
+            return 0, 0
+
+        skipped_lock = threading.Lock()
+        skipped = 0
+
+        def _run(item: tuple[str, str, str, str, Callable[[], Any]]) -> None:
+            nonlocal skipped
+            cell_hash, source, attribute, value, api_fn = item
+            if self.get(cell_hash) is not None:
+                return
+            result = api_fn()
+            if result_ok is not None and not result_ok(result):
+                with skipped_lock:
+                    skipped += 1
+                return
+            self.put(
+                cell_hash,
+                {
+                    "source": source,
+                    "attribute": attribute,
+                    "original_value": value,
+                    "prompt_version": self.prompt_version,
+                    "model_id": self.model_id,
+                    "result": result,
+                },
+            )
+
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            list(pool.map(_run, pending))
+
+        if self._collect is not None:
+            self._collect = []
+        if self._collect_seen is not None:
+            self._collect_seen = set()
+        return len(pending) - skipped, skipped
 
     # ---- Diagnostics -------------------------------------------------------
 

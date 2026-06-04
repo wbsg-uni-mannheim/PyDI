@@ -228,8 +228,10 @@ scripts/output
 # research scratch (per-method dirs + search logs)
 /literature-search-generation/
 
-# Pipeline run artifacts (large CSVs / JSON / model checkpoints — regeneratable from configs)
-pipelines/*/run_*/
+# Pipeline run artifacts (large CSVs / JSON / model checkpoints — regeneratable from configs).
+# ``pipelines/*/run_*/`` was previously gitignored but is now tracked so per-domain
+# run results land in commits (2026-06-04 directive). Checkpoints + cached
+# notebook baselines stay ignored — they're huge and re-derivable.
 pipelines/*/baselines/
 pipelines/*/checkpoints/
 
@@ -294,3 +296,9 @@ usecases/papers/SchemaMapping/dblp.dtd
 usecases/papers/SchemaMapping/dblp_2018_2020_articles_inproceedings.xml.gz
 
 usecases/papers/input/fusion/goldstandard
+
+# Augmented variant ablation runs (dev/debug artifacts from --only-knob ablations;
+# ~127 MB of LFS CSVs). The easy/medium/hard variants are tracked like every other
+# domain's <domain>-augmented/; only the ablation dir is excluded (no other domain
+# tracks one).
+usecases/papers-augmented/ablation_knob_02/

@@ -217,6 +217,90 @@ _FORMAT_LOADERS = {
 }
 
 
+# Papers (2026): the source ``.jsonl`` files were regenerated with realistic
+# source-specific raw column names (DBLP / Crossref / OpenAlex each use their
+# own field vocabulary), so the data is no longer literally target-shaped. The
+# fusion + EM gold remain on the canonical schema (``target_schema.json``:
+# doi / type / title / authors / publication_year / journal / keywords /
+# volume / issue / first_page / last_page / referenced_works_count /
+# cited_by_count), so we rename each source's raw columns to those canonical
+# names at load time. This restores the "already target-shaped" invariant that
+# every papers knob YAML encodes via identity ``attribute_mapping`` — no per-
+# knob config changes are needed. ``id`` is minted at load (reader_kwargs) and
+# never appears here; crossref's ``abstract_text`` has no canonical home and is
+# intentionally left unmapped (dropped downstream). Renames are idempotent: the
+# augmented variant CSVs already carry canonical names, so none of the raw keys
+# below match and the frame passes through unchanged.
+_PAPERS_SOURCE_COLUMN_MAP: dict[str, dict[str, str]] = {
+    "dblp": {
+        "doi_ref": "doi",
+        "entry_type": "type",
+        "publication_title": "title",
+        "author_list": "authors",
+        "pub_year": "publication_year",
+        "venue_name": "journal",
+        "volume_no": "volume",
+        "issue_no": "issue",
+        "page_start": "first_page",
+        "page_finish": "last_page",
+    },
+    "crossref": {
+        "doi_code": "doi",
+        "work_type": "type",
+        "title_text": "title",
+        "contributor_names": "authors",
+        "issued_year": "publication_year",
+        "container_title": "journal",
+        "publisher_name": "publisher",
+        "volume_id": "volume",
+        "issue_id": "issue",
+        "page_first": "first_page",
+        "page_last": "last_page",
+        "reference_total": "referenced_works_count",
+        "cited_total": "cited_by_count",
+    },
+    "open_alex": {
+        "doi_value": "doi",
+        "work_kind": "type",
+        "display_title": "title",
+        "authors_list": "authors",
+        "year_published": "publication_year",
+        "source_name": "journal",
+        "topic_terms": "keywords",
+        "volume_tag": "volume",
+        "issue_tag": "issue",
+        "start_page": "first_page",
+        "end_page": "last_page",
+        "refs_count": "referenced_works_count",
+        "citations_count": "cited_by_count",
+    },
+}
+
+# Full target-shaped value-attribute schema every papers source must expose
+# (matches the pre-regen target-shaped data / ablation canonical view). Sources
+# that genuinely lack an attribute (dblp has no keywords/publisher/ref+cite
+# counts; crossref no keywords; open_alex no publisher) get it as an all-NA
+# column so the identity ``attribute_mapping`` / ``attribute_classes`` in every
+# papers knob YAML resolve to real columns. ``id`` is minted at load; ``doi`` is
+# in the rename map above and present for all three sources.
+_PAPERS_CANONICAL_COLUMNS: tuple[str, ...] = (
+    "doi",
+    "type",
+    "title",
+    "authors",
+    "publication_year",
+    "journal",
+    "publisher",
+    "keywords",
+    "volume",
+    "issue",
+    "first_page",
+    "last_page",
+    "referenced_works_count",
+    "cited_by_count",
+)
+
+
 def _strip_xml_namespaces(df: pd.DataFrame) -> pd.DataFrame:
     """Strip every ``{namespace}`` segment from every column name.
 
@@ -385,6 +469,29 @@ def normalize_loaded_source(
     # fusion runner (``committee_fusion._parse_source_list_columns``)
     # so SM / EM / Norm see plain string cells. See the docstring
     # above for the rationale.
+    if canonical_domain == "papers":
+        # Map the source-specific raw columns to the canonical schema so the
+        # rest of the pipeline (build_canonical_view, value knobs, pool/silver
+        # builders, text corpus) sees target-shaped data. Idempotent on already-
+        # canonical (augmented variant) frames. Must precede the authors
+        # stringify below, which keys on the canonical ``authors`` name.
+        rename_map = _PAPERS_SOURCE_COLUMN_MAP.get(source_name)
+        if rename_map:
+            present = {
+                raw: canon for raw, canon in rename_map.items() if raw in df.columns
+            }
+            if present:
+                df = df.rename(columns=present)
+        # Restore the full target-shaped canonical schema: a source that does
+        # not carry a given canonical attribute gets it as an all-NA column,
+        # matching the pre-regen data so the identity attribute_mapping /
+        # attribute_classes in every papers knob YAML resolve. No-op on already-
+        # canonical (augmented variant) frames.
+        missing = [c for c in _PAPERS_CANONICAL_COLUMNS if c not in df.columns]
+        if missing:
+            df = df.copy()
+            for col in missing:
+                df[col] = pd.NA
     if canonical_domain == "papers" and "authors" in df.columns:
         # ``authors`` ships as a JSON array, so ``PyDI.io.load_json`` loads it
         # as a Python list. List-valued cells break every scalar-assuming code

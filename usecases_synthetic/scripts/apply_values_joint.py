@@ -53,7 +53,9 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Callable
 
@@ -307,6 +309,68 @@ def apply_values_joint(
 
     collision_k1 = CollisionIndex(prov_dir)
     collision_k1.reload()
+
+    # Concurrent LLM prewarm (opt-in via env ``K1_LLM_CONCURRENCY`` > 1).
+    # K1's paraphrase cache-miss calls are the dominant LLM cost at scale and
+    # are otherwise issued sequentially (~1/sec). Run a throwaway *collect*
+    # pass on isolated copies of the sources + collision provenance — cell
+    # selection is fixed by the seed + config, so it is identical to the real
+    # pass — to enumerate every cache-miss prompt, fill them through a thread
+    # pool, then let the real pass below run fully cache-hit. ``temperature=0``
+    # keeps the warmed cache byte-identical to a sequential run.
+    _k1_concurrency = int(os.environ.get("K1_LLM_CONCURRENCY", "0") or "0")
+    if _k1_concurrency > 1 and api_client_k1 is not None and not strict_cache_k1:
+        _collect_root = Path(tempfile.mkdtemp(prefix="k1_prewarm_"))
+        try:
+            _collect_prov = _collect_root / "prov"
+            shutil.copytree(prov_dir, _collect_prov)
+            _collect_collision = CollisionIndex(_collect_prov)
+            _collect_collision.reload()
+            _src_copy = {k: v.copy(deep=True) for k, v in sources.items()}
+            llm_cache_k1.begin_collect()
+            apply_knob_01(
+                domain=domain,
+                level=level_k1,  # type: ignore[arg-type]
+                sources=_src_copy,
+                config=config_k1,
+                entity_groups=entity_groups_k1,
+                collision_index=_collect_collision,
+                llm_cache=llm_cache_k1,
+                llm_client=api_client_k1,
+                committee_fn=None,
+                strict_cache=False,
+                seed=seed,
+                protection_source=protection_source,
+                surviving_record_ids=surviving_record_ids,
+            )
+
+            # Only cache genuine paraphrases — a failed K1 api call returns
+            # ``{"paraphrase": ""}`` (build_openai_paraphrase_client swallows
+            # network/rate-limit errors into ""). Skipping those here leaves
+            # the cell uncached so the real sequential pass re-issues it at
+            # 1/sec (where 429s do not recur), instead of poisoning the warm
+            # cache with a permanent deterministic-fallback empty.
+            def _k1_result_ok(result: object) -> bool:
+                return (
+                    isinstance(result, dict)
+                    and str(result.get("paraphrase", "")).strip() != ""
+                )
+
+            _filled, _skipped = llm_cache_k1.flush_concurrent(
+                max_workers=_k1_concurrency,
+                result_ok=_k1_result_ok,
+            )
+            logger.info(
+                "[K1] concurrent prewarm: filled %d paraphrase cache entries "
+                "(%d workers; %d transient failures left for the sequential "
+                "pass)",
+                _filled,
+                _k1_concurrency,
+                _skipped,
+            )
+        finally:
+            llm_cache_k1.end_collect()
+            shutil.rmtree(_collect_root, ignore_errors=True)
 
     sources_after_k1, prov_k1, skipped_k1, realised_k1 = apply_knob_01(
         domain=domain,
