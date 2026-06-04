@@ -1,0 +1,235 @@
+{
+  "version": 1,
+  "kind": "pydi_schema_mapping_gold",
+  "use_case": "games",
+  "target_dataset": "target_schema",
+  "target_schema_path": "target_schema.json",
+  "source_files": {
+    "dbpedia": "../data/dbpedia.csv",
+    "metacritic": "../data/metacritic.csv",
+    "sales": "../data/sales.csv"
+  },
+  "mappings": [
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "wiki_ref",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "title",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "launch_yr",
+      "target_dataset": "target_schema",
+      "target_column": "releaseYear",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "studio",
+      "target_dataset": "target_schema",
+      "target_column": "developer",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "system",
+      "target_dataset": "target_schema",
+      "target_column": "platform",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "genre",
+      "target_dataset": "target_schema",
+      "target_column": "genres",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "franchise",
+      "target_dataset": "target_schema",
+      "target_column": "series",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "mc_id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "game_title",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "year_published",
+      "target_dataset": "target_schema",
+      "target_column": "releaseYear",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "made_by",
+      "target_dataset": "target_schema",
+      "target_column": "developer",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "console",
+      "target_dataset": "target_schema",
+      "target_column": "platform",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "genres",
+      "target_dataset": "target_schema",
+      "target_column": "genres",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "press_rating",
+      "target_dataset": "target_schema",
+      "target_column": "criticScore",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "player_rating",
+      "target_dataset": "target_schema",
+      "target_column": "userScore",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "metacritic",
+      "source_column": "age_rating",
+      "target_dataset": "target_schema",
+      "target_column": "ESRB",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "rec_id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "prod_title",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "launch_dt",
+      "target_dataset": "target_schema",
+      "target_column": "releaseYear",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "studio",
+      "target_dataset": "target_schema",
+      "target_column": "developer",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "dist",
+      "target_dataset": "target_schema",
+      "target_column": "publisher",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "hw",
+      "target_dataset": "target_schema",
+      "target_column": "platform",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "genre",
+      "target_dataset": "target_schema",
+      "target_column": "genres",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "press_score",
+      "target_dataset": "target_schema",
+      "target_column": "criticScore",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "comm_rating",
+      "target_dataset": "target_schema",
+      "target_column": "userScore",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "sales",
+      "source_column": "age_classification",
+      "target_dataset": "target_schema",
+      "target_column": "ESRB",
+      "score": 1.0,
+      "label": true
+    }
+  ],
+  "unmapped_source_columns": [
+    {
+      "source_dataset": "sales",
+      "source_column": "units_sold_mm",
+      "target_dataset": "target_schema",
+      "target_column": null,
+      "label": false,
+      "reason": "The current target schema has no global sales field."
+    }
+  ],
+  "notes": [
+    "The mappings array contains positive gold correspondences suitable for SchemaMappingEvaluator."
+  ]
+}

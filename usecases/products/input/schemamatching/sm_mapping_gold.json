@@ -1,0 +1,854 @@
+{
+  "version": 1,
+  "kind": "pydi_schema_mapping_gold",
+  "use_case": "products",
+  "target_dataset": "target_schema",
+  "target_schema_path": "target_schema.json",
+  "source_files": {
+    "products_1": "../data/dataset_1.json",
+    "products_2": "../data/dataset_2.json",
+    "products_3": "../data/dataset_3.json",
+    "products_4": "../data/dataset_4.json"
+  },
+  "mappings": [
+    {
+      "source_dataset": "products_1",
+      "source_column": "id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "manufacturer",
+      "target_dataset": "target_schema",
+      "target_column": "brand",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "product_name",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "product_description",
+      "target_dataset": "target_schema",
+      "target_column": "description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "list_price",
+      "target_dataset": "target_schema",
+      "target_column": "price",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "currency_code",
+      "target_dataset": "target_schema",
+      "target_column": "priceCurrency",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "product_url",
+      "target_dataset": "target_schema",
+      "target_column": "url",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "name_and_description",
+      "target_dataset": "target_schema",
+      "target_column": "title_description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "model_name",
+      "target_dataset": "target_schema",
+      "target_column": "model",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "manufacturer_part_number",
+      "target_dataset": "target_schema",
+      "target_column": "model_number",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "category",
+      "target_dataset": "target_schema",
+      "target_column": "product_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "gpu_chipset",
+      "target_dataset": "target_schema",
+      "target_column": "chipset_name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "video_memory_gb",
+      "target_dataset": "target_schema",
+      "target_column": "vram_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "capacity_gb",
+      "target_dataset": "target_schema",
+      "target_column": "storage_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "sequential_read_mb_s",
+      "target_dataset": "target_schema",
+      "target_column": "read_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "sequential_write_mb_s",
+      "target_dataset": "target_schema",
+      "target_column": "write_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "bus_standard",
+      "target_dataset": "target_schema",
+      "target_column": "bus_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "interface",
+      "target_dataset": "target_schema",
+      "target_column": "interface_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "width_millimeters",
+      "target_dataset": "target_schema",
+      "target_column": "width_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "length_millimeters",
+      "target_dataset": "target_schema",
+      "target_column": "length_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "height_millimeters",
+      "target_dataset": "target_schema",
+      "target_column": "height_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "weight_grams",
+      "target_dataset": "target_schema",
+      "target_column": "weight_g",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "connector",
+      "target_dataset": "target_schema",
+      "target_column": "storage_connection_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "memory_technology",
+      "target_dataset": "target_schema",
+      "target_column": "memory_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "colour",
+      "target_dataset": "target_schema",
+      "target_column": "color",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_1",
+      "source_column": "form_factor",
+      "target_dataset": "target_schema",
+      "target_column": "form_factor",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "brandName",
+      "target_dataset": "target_schema",
+      "target_column": "brand",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "name",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "descriptionText",
+      "target_dataset": "target_schema",
+      "target_column": "description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "priceAmount",
+      "target_dataset": "target_schema",
+      "target_column": "price",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "currency",
+      "target_dataset": "target_schema",
+      "target_column": "priceCurrency",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "productUrl",
+      "target_dataset": "target_schema",
+      "target_column": "url",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "titleAndDescription",
+      "target_dataset": "target_schema",
+      "target_column": "title_description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "modelName",
+      "target_dataset": "target_schema",
+      "target_column": "model",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "mpn",
+      "target_dataset": "target_schema",
+      "target_column": "model_number",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "productCategory",
+      "target_dataset": "target_schema",
+      "target_column": "product_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "chipset",
+      "target_dataset": "target_schema",
+      "target_column": "chipset_name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "vramGb",
+      "target_dataset": "target_schema",
+      "target_column": "vram_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "capacityGb",
+      "target_dataset": "target_schema",
+      "target_column": "storage_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "readSpeedMbps",
+      "target_dataset": "target_schema",
+      "target_column": "read_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "writeSpeedMbps",
+      "target_dataset": "target_schema",
+      "target_column": "write_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "busType",
+      "target_dataset": "target_schema",
+      "target_column": "bus_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "interfaceType",
+      "target_dataset": "target_schema",
+      "target_column": "interface_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "widthMm",
+      "target_dataset": "target_schema",
+      "target_column": "width_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "depthMm",
+      "target_dataset": "target_schema",
+      "target_column": "length_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "heightMm",
+      "target_dataset": "target_schema",
+      "target_column": "height_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "weightG",
+      "target_dataset": "target_schema",
+      "target_column": "weight_g",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "connectionType",
+      "target_dataset": "target_schema",
+      "target_column": "storage_connection_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "memoryType",
+      "target_dataset": "target_schema",
+      "target_column": "memory_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "color",
+      "target_dataset": "target_schema",
+      "target_column": "color",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_2",
+      "source_column": "formFactor",
+      "target_dataset": "target_schema",
+      "target_column": "form_factor",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Brand",
+      "target_dataset": "target_schema",
+      "target_column": "brand",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "ProductTitle",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Details",
+      "target_dataset": "target_schema",
+      "target_column": "description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Price",
+      "target_dataset": "target_schema",
+      "target_column": "price",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Currency",
+      "target_dataset": "target_schema",
+      "target_column": "priceCurrency",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Link",
+      "target_dataset": "target_schema",
+      "target_column": "url",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "TitleDetails",
+      "target_dataset": "target_schema",
+      "target_column": "title_description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Model",
+      "target_dataset": "target_schema",
+      "target_column": "model",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "PartNo",
+      "target_dataset": "target_schema",
+      "target_column": "model_number",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Type",
+      "target_dataset": "target_schema",
+      "target_column": "product_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Chipset",
+      "target_dataset": "target_schema",
+      "target_column": "chipset_name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "MemorySizeGB",
+      "target_dataset": "target_schema",
+      "target_column": "vram_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "CapacityGB",
+      "target_dataset": "target_schema",
+      "target_column": "storage_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "ReadMBs",
+      "target_dataset": "target_schema",
+      "target_column": "read_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "WriteMBs",
+      "target_dataset": "target_schema",
+      "target_column": "write_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Bus",
+      "target_dataset": "target_schema",
+      "target_column": "bus_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Interface",
+      "target_dataset": "target_schema",
+      "target_column": "interface_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "WidthMM",
+      "target_dataset": "target_schema",
+      "target_column": "width_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "LengthMM",
+      "target_dataset": "target_schema",
+      "target_column": "length_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "HeightMM",
+      "target_dataset": "target_schema",
+      "target_column": "height_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "WeightG",
+      "target_dataset": "target_schema",
+      "target_column": "weight_g",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Connector",
+      "target_dataset": "target_schema",
+      "target_column": "storage_connection_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "MemoryType",
+      "target_dataset": "target_schema",
+      "target_column": "memory_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "Colour",
+      "target_dataset": "target_schema",
+      "target_column": "color",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_3",
+      "source_column": "FormFactor",
+      "target_dataset": "target_schema",
+      "target_column": "form_factor",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "id",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "mfr",
+      "target_dataset": "target_schema",
+      "target_column": "brand",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "name",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "desc",
+      "target_dataset": "target_schema",
+      "target_column": "description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "amt",
+      "target_dataset": "target_schema",
+      "target_column": "price",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "cur",
+      "target_dataset": "target_schema",
+      "target_column": "priceCurrency",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "link",
+      "target_dataset": "target_schema",
+      "target_column": "url",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "name_desc",
+      "target_dataset": "target_schema",
+      "target_column": "title_description",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "mdl",
+      "target_dataset": "target_schema",
+      "target_column": "model",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "pn",
+      "target_dataset": "target_schema",
+      "target_column": "model_number",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "cat",
+      "target_dataset": "target_schema",
+      "target_column": "product_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "chip",
+      "target_dataset": "target_schema",
+      "target_column": "chipset_name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "vram",
+      "target_dataset": "target_schema",
+      "target_column": "vram_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "cap_gb",
+      "target_dataset": "target_schema",
+      "target_column": "storage_gb",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "rd_mbs",
+      "target_dataset": "target_schema",
+      "target_column": "read_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "wr_mbs",
+      "target_dataset": "target_schema",
+      "target_column": "write_speed_mb_s",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "bus",
+      "target_dataset": "target_schema",
+      "target_column": "bus_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "iface",
+      "target_dataset": "target_schema",
+      "target_column": "interface_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "w_mm",
+      "target_dataset": "target_schema",
+      "target_column": "width_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "l_mm",
+      "target_dataset": "target_schema",
+      "target_column": "length_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "h_mm",
+      "target_dataset": "target_schema",
+      "target_column": "height_mm",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "wt_g",
+      "target_dataset": "target_schema",
+      "target_column": "weight_g",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "conn",
+      "target_dataset": "target_schema",
+      "target_column": "storage_connection_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "mem",
+      "target_dataset": "target_schema",
+      "target_column": "memory_type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "clr",
+      "target_dataset": "target_schema",
+      "target_column": "color",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "products_4",
+      "source_column": "ff",
+      "target_dataset": "target_schema",
+      "target_column": "form_factor",
+      "score": 1.0,
+      "label": true
+    }
+  ],
+  "unmapped_source_columns": [],
+  "notes": [
+    "The mappings array contains positive gold correspondences suitable for SchemaMappingEvaluator.",
+    "Known no-match source columns are recorded separately because LLMBasedSchemaMatcher omits null mappings from its result DataFrame.",
+    "These mappings cover the raw source-schema files dataset_1.json through dataset_4.json rather than the already-normalized product workflow inputs.",
+    "cluster_id is a benchmark/entity identifier and is dropped before schema matching, so it is not part of the evaluable source schema."
+  ]
+}
