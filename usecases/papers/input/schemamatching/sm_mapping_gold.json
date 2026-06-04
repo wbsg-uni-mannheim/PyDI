@@ -1,0 +1,320 @@
+{
+  "version": 1,
+  "kind": "pydi_schema_mapping_gold",
+  "use_case": "papers",
+  "target_dataset": "target_schema",
+  "target_dataset_aliases": [
+    "target"
+  ],
+  "target_schema_path": "target_schema.json",
+  "source_files": {
+    "crossref": "../data/crossref.jsonl",
+    "dblp": "../data/dblp.jsonl",
+    "open_alex": "../data/open_alex.jsonl"
+  },
+  "mappings": [
+    {
+      "source_dataset": "open_alex",
+      "source_column": "doi_value",
+      "target_dataset": "target_schema",
+      "target_column": "doi",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "work_kind",
+      "target_dataset": "target_schema",
+      "target_column": "type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "display_title",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "authors_list",
+      "target_dataset": "target_schema",
+      "target_column": "authors",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "year_published",
+      "target_dataset": "target_schema",
+      "target_column": "publication_year",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "source_name",
+      "target_dataset": "target_schema",
+      "target_column": "journal",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "volume_tag",
+      "target_dataset": "target_schema",
+      "target_column": "volume",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "issue_tag",
+      "target_dataset": "target_schema",
+      "target_column": "issue",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "start_page",
+      "target_dataset": "target_schema",
+      "target_column": "first_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "end_page",
+      "target_dataset": "target_schema",
+      "target_column": "last_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "refs_count",
+      "target_dataset": "target_schema",
+      "target_column": "referenced_works_count",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "citations_count",
+      "target_dataset": "target_schema",
+      "target_column": "cited_by_count",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "doi_ref",
+      "target_dataset": "target_schema",
+      "target_column": "doi",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "entry_type",
+      "target_dataset": "target_schema",
+      "target_column": "type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "publication_title",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "author_list",
+      "target_dataset": "target_schema",
+      "target_column": "authors",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "pub_year",
+      "target_dataset": "target_schema",
+      "target_column": "publication_year",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "venue_name",
+      "target_dataset": "target_schema",
+      "target_column": "journal",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "volume_no",
+      "target_dataset": "target_schema",
+      "target_column": "volume",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "issue_no",
+      "target_dataset": "target_schema",
+      "target_column": "issue",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "page_start",
+      "target_dataset": "target_schema",
+      "target_column": "first_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dblp",
+      "source_column": "page_finish",
+      "target_dataset": "target_schema",
+      "target_column": "last_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "doi_code",
+      "target_dataset": "target_schema",
+      "target_column": "doi",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "work_type",
+      "target_dataset": "target_schema",
+      "target_column": "type",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "title_text",
+      "target_dataset": "target_schema",
+      "target_column": "title",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "contributor_names",
+      "target_dataset": "target_schema",
+      "target_column": "authors",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "issued_year",
+      "target_dataset": "target_schema",
+      "target_column": "publication_year",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "container_title",
+      "target_dataset": "target_schema",
+      "target_column": "journal",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "volume_id",
+      "target_dataset": "target_schema",
+      "target_column": "volume",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "issue_id",
+      "target_dataset": "target_schema",
+      "target_column": "issue",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "page_first",
+      "target_dataset": "target_schema",
+      "target_column": "first_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "page_last",
+      "target_dataset": "target_schema",
+      "target_column": "last_page",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "reference_total",
+      "target_dataset": "target_schema",
+      "target_column": "referenced_works_count",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "cited_total",
+      "target_dataset": "target_schema",
+      "target_column": "cited_by_count",
+      "score": 1.0,
+      "label": true
+    }
+  ],
+  "unmapped_source_columns": [
+    {
+      "source_dataset": "crossref",
+      "source_column": "abstract_text",
+      "target_dataset": "target_schema",
+      "target_column": null,
+      "label": false,
+      "reason": "The target schema has no abstract or keywords field."
+    },
+    {
+      "source_dataset": "crossref",
+      "source_column": "publisher_name",
+      "target_dataset": "target_schema",
+      "target_column": null,
+      "label": false,
+      "reason": "The target schema has no publisher field."
+    },
+    {
+      "source_dataset": "open_alex",
+      "source_column": "topic_terms",
+      "target_dataset": "target_schema",
+      "target_column": null,
+      "label": false,
+      "reason": "The target schema has no keywords field."
+    }
+  ],
+  "notes": [
+    "The mappings array contains positive gold correspondences suitable for SchemaMappingEvaluator.",
+    "Known no-match source columns are recorded separately because LLMBasedSchemaMatcher omits null mappings from its result DataFrame.",
+    "The papers workflow uses target_dataset='target' in an intermediate DataFrame; this file uses target_schema consistently and records target as an alias."
+  ]
+}

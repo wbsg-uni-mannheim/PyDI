@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "kind": "pydi_schema_mapping_gold",
+  "use_case": "companies",
+  "target_dataset": "target_schema",
+  "target_schema_path": "target_schema.json",
+  "source_files": {
+    "dbpedia": "../data/dbpedia.csv",
+    "forbes": "../data/forbes.csv",
+    "fullcontact": "../data/fullcontact.csv"
+  },
+  "mappings": [
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "entity_uri",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "org_name",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "established",
+      "target_dataset": "target_schema",
+      "target_column": "founded",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "nation",
+      "target_dataset": "target_schema",
+      "target_column": "country",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "headquarters",
+      "target_dataset": "target_schema",
+      "target_column": "city",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "sector",
+      "target_dataset": "target_schema",
+      "target_column": "industry",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "keypeople_name",
+      "target_dataset": "target_schema",
+      "target_column": "founders",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "total_assets_val",
+      "target_dataset": "target_schema",
+      "target_column": "assets",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "dbpedia",
+      "source_column": "annual_income",
+      "target_dataset": "target_schema",
+      "target_column": "revenue",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "forbes_url",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "company",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "region",
+      "target_dataset": "target_schema",
+      "target_column": "country",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "business_segment",
+      "target_dataset": "target_schema",
+      "target_column": "industry",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "asset_value",
+      "target_dataset": "target_schema",
+      "target_column": "assets",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "forbes",
+      "source_column": "sales_figure",
+      "target_dataset": "target_schema",
+      "target_column": "revenue",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_1",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_2",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_3",
+      "target_dataset": "target_schema",
+      "target_column": "country",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_4",
+      "target_dataset": "target_schema",
+      "target_column": "city",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_5",
+      "target_dataset": "target_schema",
+      "target_column": "founders",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "fullcontact",
+      "source_column": "Attribute_6",
+      "target_dataset": "target_schema",
+      "target_column": "founded",
+      "score": 1.0,
+      "label": true
+    }
+  ],
+  "notes": [
+    "The mappings array contains positive gold correspondences suitable for SchemaMappingEvaluator."
+  ]
+}

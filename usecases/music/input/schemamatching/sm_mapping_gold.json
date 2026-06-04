@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "kind": "pydi_schema_mapping_gold",
+  "use_case": "music",
+  "target_dataset": "target_schema",
+  "target_schema_path": "target_schema.json",
+  "source_files": {
+    "discogs": "../data/discogs.csv",
+    "lastfm": "../data/lastfm.csv",
+    "musicbrainz": "../data/musicbrainz.csv"
+  },
+  "mappings": [
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_1",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_2",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_3",
+      "target_dataset": "target_schema",
+      "target_column": "artist",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_4",
+      "target_dataset": "target_schema",
+      "target_column": "release-date",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_5",
+      "target_dataset": "target_schema",
+      "target_column": "release-country",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_6",
+      "target_dataset": "target_schema",
+      "target_column": "duration",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "musicbrainz",
+      "source_column": "Attribute_9",
+      "target_dataset": "target_schema",
+      "target_column": "tracks",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "lastfm",
+      "source_column": "item_code",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "lastfm",
+      "source_column": "album_title",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "lastfm",
+      "source_column": "band",
+      "target_dataset": "target_schema",
+      "target_column": "artist",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "lastfm",
+      "source_column": "album_length",
+      "target_dataset": "target_schema",
+      "target_column": "duration",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "lastfm",
+      "source_column": "tracks_track-name",
+      "target_dataset": "target_schema",
+      "target_column": "tracks",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "rec_uid",
+      "target_dataset": "target_schema",
+      "target_column": "id",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "title_str",
+      "target_dataset": "target_schema",
+      "target_column": "name",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "performer",
+      "target_dataset": "target_schema",
+      "target_column": "artist",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "pub_dt",
+      "target_dataset": "target_schema",
+      "target_column": "release-date",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "origin_loc",
+      "target_dataset": "target_schema",
+      "target_column": "release-country",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "duration",
+      "target_dataset": "target_schema",
+      "target_column": "duration",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "imprint",
+      "target_dataset": "target_schema",
+      "target_column": "label",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "category",
+      "target_dataset": "target_schema",
+      "target_column": "genre",
+      "score": 1.0,
+      "label": true
+    },
+    {
+      "source_dataset": "discogs",
+      "source_column": "tracks_track-name",
+      "target_dataset": "target_schema",
+      "target_column": "tracks",
+      "score": 1.0,
+      "label": true
+    }
+  ],
+  "unmapped_source_columns": [],
+  "notes": [
+    "The mappings array contains positive gold correspondences suitable for SchemaMappingEvaluator.",
+    "Known no-match source columns are recorded separately because LLMBasedSchemaMatcher omits null mappings from its result DataFrame."
+  ]
+}
