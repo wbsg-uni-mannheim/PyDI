@@ -26,19 +26,6 @@
         "Acme Corp"
       ]
     },
-    "website": {
-      "type": "string",
-      "title": "Website",
-      "description": "Public website of the company.",
-      "minLength": 1,
-      "maxLength": 2048,
-      "pattern": "^(https?://)?[A-Za-z0-9.-]+\\.[A-Za-z]{2,}(:[0-9]+)?([/?#].*)?$",
-      "examples": [
-        "http://www.sap.com",
-        "https://www.example.com",
-        "sap.com"
-      ]
-    },
     "founded": {
       "type": "string",
       "title": "Founding Date",
@@ -122,10 +109,10 @@
         1200000000
       ]
     },
-    "founders": {
+    "keypeople": {
       "type": "array",
-      "title": "Founders",
-      "description": "List of the founders of the company. The list should only contain the founders and not other key persons associated with the company.",
+      "title": "Key People",
+      "description": "List of key people associated with the company, such as founders, executives, and board members.",
       "minItems": 1,
       "maxItems": 20,
       "items": {
@@ -145,7 +132,6 @@
   "required": [
     "id",
     "name",
-    "website",
     "founded",
     "country",
     "city",

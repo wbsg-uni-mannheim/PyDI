@@ -352,7 +352,7 @@ class BestOfBreedPipeline:
                     vacuous_epsilon=float(stage_cfg.get("vacuous_epsilon", 0.005)),
                     apply_winner=bool(stage_cfg.get("apply_winner", False)),
                     scoring_surface=str(
-                        stage_cfg.get("scoring_surface", "xml_targets")
+                        stage_cfg.get("scoring_surface", "schema_constraints")
                     ),
                 )
             stage_selections.append(sel)

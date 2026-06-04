@@ -137,11 +137,11 @@ def test_products_canonical_sm_gold_present_at_canonical_path() -> None:
         / "products"
         / "input"
         / "schemamatching"
-        / "sm_mapping_gold.csv"
+        / "sm_mapping_gold.json"
     )
     assert sm_path.exists(), (
         "SM gold must live at canonical path "
-        "usecases/products/input/schemamatching/sm_mapping_gold.csv "
+        "usecases/products/input/schemamatching/sm_mapping_gold.json "
         "(see pipelines/lib/canonical_loader.py)."
     )
     bundle = load_pipeline_bundle("products", bundle_source="canonical")

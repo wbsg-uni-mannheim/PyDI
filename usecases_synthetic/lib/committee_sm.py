@@ -462,12 +462,23 @@ class SMCommitteeRunner(CommitteeRunner):
                     try:
                         mapping = matcher.match(source_df, target_df, **match_kwargs)
                         all_mappings.append(mapping)
-                    except Exception:
+                    except Exception as exc:
                         logger.exception(
                             "Matcher %s failed on source %s",
                             spec.name,
                             source_name,
                         )
+                        # Silent fallback historically masked silent
+                        # zero-scores in committee aggregation. Re-raise
+                        # so any matcher fault is loud; explicitly
+                        # disable the matcher in sm_committee.yaml
+                        # (or its per-domain fork) when it should not
+                        # contribute on a given domain.
+                        raise RuntimeError(
+                            f"SM matcher {spec.name!r} failed on source "
+                            f"{source_name!r}; disable it explicitly in "
+                            f"sm_committee.yaml if it should not run."
+                        ) from exc
 
                 if all_mappings:
                     combined = pd.concat(all_mappings, ignore_index=True)
@@ -593,14 +604,22 @@ class SMCommitteeRunner(CommitteeRunner):
 
             try:
                 cross = matcher.match(src1_df, src2_df, **match_kwargs)
-            except Exception:
+            except Exception as exc:
                 logger.exception(
                     "Duplicate matcher %s failed on %s ↔ %s",
                     spec.name,
                     src1_name,
                     src2_name,
                 )
-                continue
+                # Re-raise instead of silently skipping the pair
+                # (historical behaviour masked silent zero-scores in
+                # committee aggregation). Disable the matcher in
+                # sm_committee.yaml if it should not run on this domain.
+                raise RuntimeError(
+                    f"SM duplicate matcher {spec.name!r} failed on pair "
+                    f"{src1_name!r} <-> {src2_name!r}; disable it "
+                    f"explicitly in sm_committee.yaml if it should not run."
+                ) from exc
 
             if cross is None or cross.empty:
                 continue

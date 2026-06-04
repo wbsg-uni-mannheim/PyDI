@@ -279,28 +279,115 @@ def _load_target_schema(sm_dir: Path) -> dict[str, Any]:
         return json.load(f)
 
 
+_SM_GOLD_COLUMNS = [
+    "source_dataset",
+    "source_column",
+    "target_dataset",
+    "target_column",
+    "score",
+]
+
+
+def _sm_mapping_from_json(path: Path) -> pd.DataFrame:
+    """Parse a ``pydi_schema_mapping_gold`` JSON file into the flat mapping
+    frame the SM committee expects.
+
+    The committed ``sm_mapping_gold.json`` (``kind: pydi_schema_mapping_gold``)
+    supersedes the legacy ``sm_mapping_gold.csv``. Only positive (``label``
+    truthy) mappings are returned, projected to the legacy ``source_dataset,
+    source_column, target_dataset, target_column, score`` columns so every
+    downstream consumer is unchanged.
+
+    NOTE: the JSON carries *raw* on-disk source column names; callers that
+    score against the loaded (renamed) frames must reconcile via
+    :func:`_reconcile_sm_gold_source_columns`.
+    """
+    with open(path, encoding="utf-8") as f:
+        payload = json.load(f)
+    rows = [
+        {
+            "source_dataset": m["source_dataset"],
+            "source_column": m["source_column"],
+            "target_dataset": m["target_dataset"],
+            "target_column": m["target_column"],
+            "score": m.get("score", 1.0),
+        }
+        for m in payload.get("mappings", [])
+        if m.get("label", True)
+    ]
+    return pd.DataFrame(rows, columns=_SM_GOLD_COLUMNS)
+
+
 def _load_sm_mapping(sm_dir: Path, *, baseline: bool = False) -> pd.DataFrame | None:
     """Load schema-matching gold mapping if present.
+
+    The committed ``sm_mapping_gold.json`` (``kind: pydi_schema_mapping_gold``)
+    is preferred over the legacy ``sm_mapping_gold.csv`` when present. The CSV
+    is read as a fallback for unmigrated domains.
 
     Parameters
     ----------
     sm_dir : Path
         Schema-matching directory.
     baseline : bool
-        When ``True``, look for ``sm_mapping_gold.csv`` (the hand-authored
-        baseline mapping). When ``False``, look for ``sm_mapping.csv``
-        (knob-8 generated variant mapping).
+        When ``True``, load the hand-authored baseline gold mapping
+        (``sm_mapping_gold.{json,csv}``). When ``False``, load the knob-8
+        generated variant mapping (``sm_mapping.{json,csv}``).
 
     Returns
     -------
     DataFrame or None
-        Gold mapping, or ``None`` if the file does not exist.
+        Gold mapping, or ``None`` if neither file exists.
     """
-    filename = "sm_mapping_gold.csv" if baseline else "sm_mapping.csv"
-    path = sm_dir / filename
-    if not path.exists():
-        return None
-    return pd.read_csv(path)
+    stem = "sm_mapping_gold" if baseline else "sm_mapping"
+    json_path = sm_dir / f"{stem}.json"
+    if json_path.exists():
+        return _sm_mapping_from_json(json_path)
+    csv_path = sm_dir / f"{stem}.csv"
+    if csv_path.exists():
+        return pd.read_csv(csv_path)
+    return None
+
+
+def _reconcile_sm_gold_source_columns(
+    sm_mapping: pd.DataFrame | None,
+    config: "DomainConfig",
+    domain: str,
+) -> pd.DataFrame | None:
+    """Map gold ``source_column`` names onto the loaded (renamed) frames.
+
+    The committed SM gold (JSON, and the papers CSV) is authored against *raw*
+    on-disk column names, but the loader renames columns before any committee
+    sees them: each source's configured ``id_column`` becomes ``id``, and
+    papers maps every raw column to its canonical name
+    (``loaders._PAPERS_SOURCE_COLUMN_MAP``). Applying the same renames to the
+    gold's ``source_column`` makes SM scoring + normalization resolution land on
+    columns that actually exist post-load. Rows whose source column is already a
+    loaded name pass through unchanged (so this is a no-op for golds that were
+    already authored against loaded names, e.g. music/products).
+    """
+    if sm_mapping is None or sm_mapping.empty:
+        return sm_mapping
+
+    from .domain_config import _resolve_knob_config_alias
+    from .loaders import _PAPERS_SOURCE_COLUMN_MAP
+
+    canonical_domain = _resolve_knob_config_alias(domain) or domain
+    rename_by_source: dict[str, dict[str, str]] = {}
+    for src in config.sources:
+        rmap: dict[str, str] = {}
+        if src.id_column and src.id_column != "id":
+            rmap[src.id_column] = "id"
+        if canonical_domain == "papers":
+            rmap.update(_PAPERS_SOURCE_COLUMN_MAP.get(src.name, {}))
+        rename_by_source[src.name] = rmap
+
+    out = sm_mapping.copy()
+    out["source_column"] = [
+        rename_by_source.get(str(ds), {}).get(str(sc), sc)
+        for ds, sc in zip(out["source_dataset"], out["source_column"])
+    ]
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -492,7 +579,8 @@ def _load_fusion_xml(path: Path, name: str) -> pd.DataFrame:
 
 
 def _load_fusion_file(path: Path, name: str) -> pd.DataFrame:
-    """Load a fusion gold file, dispatching on file extension.
+    """Load a fusion gold file, dispatching on file content (with extension
+    as fallback).
 
     ``.xml`` (every pre-2026 domain) loads through PyDI's XML reader with
     the aggregate flag, exactly as before. The 2026 papers domain ships
@@ -502,16 +590,45 @@ def _load_fusion_file(path: Path, name: str) -> pd.DataFrame:
     is also accepted. Non-XML gold carries no per-attribute
     ``provenance`` (the papers notebook reconstructs cluster membership
     from the EM correspondences at eval time), so source-attribution
-    fusion metrics are unavailable for such domains — value-correctness
+    fusion metrics are unavailable for such domains -- value-correctness
     by the configured ``gold_id_column`` join still works.
+
+    Content sniffing (2026-06-04): the papers-augmented packaging emitted
+    JSONL content under the canonical ``test_set.xml`` /
+    ``validation_set.xml`` filenames (``package_variant.copy_fusion``
+    hardcodes the .xml extension). Rather than special-case the
+    extension, read the first non-whitespace byte and dispatch on it:
+    ``{`` -> JSONL, ``[`` -> JSON array, anything else -> XML. This is
+    robust against future packaging mistakes too.
     """
-    suffix = path.suffix.lower()
-    if suffix == ".jsonl":
+    first_byte = ""
+    try:
+        with path.open("rb") as fh:
+            chunk = fh.read(4096)
+        for b in chunk:
+            ch = chr(b)
+            if not ch.isspace():
+                first_byte = ch
+                break
+    except OSError:
+        first_byte = ""
+
+    if first_byte == "{":
         df = load_json(path, name=name, lines=True)
-    elif suffix == ".json":
+    elif first_byte == "[":
         df = load_json(path, name=name)
-    else:
+    elif first_byte == "<":
         return _load_fusion_xml(path, name)
+    else:
+        # Empty or unrecognised: fall back to the extension dispatcher so
+        # the original error surface (e.g. XMLSyntaxError) is preserved.
+        suffix = path.suffix.lower()
+        if suffix == ".jsonl":
+            df = load_json(path, name=name, lines=True)
+        elif suffix == ".json":
+            df = load_json(path, name=name)
+        else:
+            return _load_fusion_xml(path, name)
     df.attrs["dataset_name"] = name
     return df
 
@@ -646,6 +763,11 @@ def load_variant(
 
     target_schema = _load_target_schema(sm_dir)
     sm_mapping = _load_sm_mapping(sm_dir, baseline=(level == "baseline"))
+    if level == "baseline":
+        # The baseline gold (JSON / papers CSV) is authored against raw on-disk
+        # column names; reconcile them onto the loaded (renamed) frames so SM
+        # scoring + normalization resolution hit columns that exist post-load.
+        sm_mapping = _reconcile_sm_gold_source_columns(sm_mapping, config, domain)
 
     em_gold = _load_em_gold(em_dir, config.source_pairs)
     em_gold_regenerated = _load_em_gold_regenerated(em_dir, config.source_pairs)

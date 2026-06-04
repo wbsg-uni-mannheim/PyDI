@@ -209,7 +209,7 @@ def run_norm(
     norm_yaml: Path,
     vacuous_epsilon: float = 0.005,
     apply_winner: bool = False,
-    scoring_surface: str = "xml_targets",
+    scoring_surface: str = "schema_constraints",
 ) -> StageSelection:
     """Run Norm committee; pick the highest macro-F1 member.
 
@@ -220,11 +220,12 @@ def run_norm(
     notes block.
 
     ``scoring_surface`` selects how each member's normalized output is
-    scored. ``"xml_targets"`` (default) compares to per-entity fusion
-    XML target values — the historical synthetic-side surface.
-    ``"schema_constraints"`` checks that the output satisfies the
-    JSON-Schema + ``x-pydi-consistency`` constraints declared in the
-    canonical target_schema.json — recommended for canonical runs.
+    scored. ``"schema_constraints"`` (default) checks that the output
+    satisfies the JSON-Schema + ``x-pydi-consistency`` constraints
+    declared in the canonical target_schema.json -- the surface every
+    domain config in ``pipelines/configs/`` already opts in to.
+    ``"xml_targets"`` compares to per-entity fusion XML target values --
+    the historical synthetic-side surface, kept for back-compat.
     """
     t0 = time.monotonic()
     with PeakRSSTracker() as _rss:

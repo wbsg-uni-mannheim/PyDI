@@ -457,23 +457,36 @@ def _normalize_music_sources(
 
 
 def _load_sm_mapping(domain: str, source_name: str) -> pd.DataFrame:
-    """Load the per-source slice of ``sm_mapping_gold.csv``.
+    """Load the per-source slice of the SM gold (JSON preferred, CSV fallback).
 
     The gold mapping is the canonical column-rename spec used across the
-    synthetic pipeline (committee_fusion, protection.py). Music's gold
-    is identity so this is equivalent to :func:`_build_identity_mapping`
-    on that domain.
+    synthetic pipeline (committee_fusion, protection.py). The committed
+    ``sm_mapping_gold.json`` (``kind: pydi_schema_mapping_gold``) is preferred
+    over the legacy ``sm_mapping_gold.csv``; because this builder runs the
+    :class:`SchemaTranslator` against the *loaded* (renamed) frames from
+    :func:`loaders.load_domain_sources`, the gold's raw source-column names are
+    reconciled onto the loaded names via
+    :func:`variant_loader._reconcile_sm_gold_source_columns` (id-col -> ``id``;
+    papers raw -> canonical). Music's gold is identity so this is equivalent to
+    :func:`_build_identity_mapping` on that domain.
     """
+    from .domain_config import load_domain_config
+    from .variant_loader import (
+        _load_sm_mapping as _load_sm_gold,
+        _reconcile_sm_gold_source_columns,
+    )
+
     root = data_root_for_domain(domain) or USECASES_DIR
-    path = root / domain / "input" / "schemamatching" / "sm_mapping_gold.csv"
-    if not path.exists():
+    sm_dir = root / domain / "input" / "schemamatching"
+    df = _load_sm_gold(sm_dir, baseline=True)
+    if df is None:
         raise FileNotFoundError(
-            f"sm_mapping_gold.csv not found for domain {domain!r} at {path}"
+            f"sm_mapping_gold.(json|csv) not found for domain {domain!r} at {sm_dir}"
         )
-    df = pd.read_csv(path)
+    df = _reconcile_sm_gold_source_columns(df, load_domain_config(domain), domain)
     df = df[df["source_dataset"] == source_name].copy()
     if df.empty:
-        raise ValueError(f"No mapping rows for source {source_name!r} in {path}")
+        raise ValueError(f"No mapping rows for source {source_name!r} in {sm_dir}")
     if "notes" not in df.columns:
         df["notes"] = "gold"
     return df

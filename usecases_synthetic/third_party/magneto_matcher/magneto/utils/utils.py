@@ -274,11 +274,23 @@ def get_samples(values, n=15, mode="priority_sampling"):
     elif mode == "priority_sampling":
         value_counts = values.dropna().value_counts(sort=False)
 
-        # Calculate priorities: qi = freq / hash(value)
+        # Calculate priorities: qi = freq / hash(value).
+        # PyDI local patch (2026-06-04): fibonacci_hash returns
+        # (x * PHI_FRACTION) % 1, which is exactly 0.0 whenever
+        # mmh3.hash(str(val), 42) returns 0 (rare but real -- hit on
+        # papers/open_alex during BoB v13, see
+        # logs/bob_papers_20260604_192339.log). Dividing by it raises
+        # ZeroDivisionError; including +inf priorities would also
+        # dominate nlargest(n) and corrupt the sample. Skipping zero-
+        # hash values is closer to the original sampling intent than
+        # any epsilon sentinel; behaviour for every non-zero hash is
+        # byte-identical to upstream.
         priorities = pd.Series(
             {
-                val: freq / fibonacci_hash(mmh3.hash(str(val), 42))
+                val: freq / fib
                 for val, freq in value_counts.items()
+                for fib in (fibonacci_hash(mmh3.hash(str(val), 42)),)
+                if fib != 0
             }
         )
 

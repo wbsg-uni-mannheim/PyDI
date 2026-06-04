@@ -22,9 +22,10 @@ set -euo pipefail
 #   DOMAIN=companies sbatch cluster/slurm/run_best_of_breed.sbatch
 #
 # Optional env overrides before sbatch (also: --export=ALL,DOMAIN=...):
-#   export DOMAIN=products                    # REQUIRED, one of {products,music,games,companies}
+#   export DOMAIN=products                    # REQUIRED, one of {products,music,games,companies,papers}
+#   export VARIANT=baseline                    # baseline (default) | easy | medium | hard
 #   export MODE=replay                         # replay (default) | sweep
-#   export OUT_DIR=pipelines/$DOMAIN/run_slurm_$SLURM_JOB_ID/
+#   export OUT_DIR=pipelines/$DOMAIN/run_slurm_${VARIANT}_$SLURM_JOB_ID/
 #   export DITTO_CHECKPOINT_OVERRIDE=pipelines/$DOMAIN/checkpoints/em_matching/ditto/runs/best
 #   export SC_BLOCK_CHECKPOINT_OVERRIDE=pipelines/$DOMAIN/checkpoints/em_blocking/sc_block/best
 #   export FUSION_MEMBERS=voting_only,prefer_higher_trust_only
@@ -34,10 +35,13 @@ set -euo pipefail
 #   export PYDI_VENV=pydi-dev                  # path to the uv-managed venv (default pydi-dev)
 #   export EXTRA_ARGS="--log-level DEBUG"      # appended to the python invocation
 #
-# Example: submit all four domains in one go (each as its own job):
-#   for d in products music games companies; do
+# Example: submit all five domains in one go (each as its own job):
+#   for d in products music games companies papers; do
 #       DOMAIN=$d sbatch cluster/slurm/run_best_of_breed.sbatch
 #   done
+#
+# Example: submit a domain x variant grid (use the helper):
+#   bash cluster/slurm/submit_all_variants.sh
 
 mkdir -p logs
 
@@ -68,8 +72,9 @@ set -u
 # Required + default args
 # ---------------------------------------------------------------------------
 : "${DOMAIN:?DOMAIN must be set, e.g. DOMAIN=products}"
+VARIANT="${VARIANT:-baseline}"
 MODE="${MODE:-replay}"
-OUT_DIR="${OUT_DIR:-pipelines/${DOMAIN}/run_slurm_${SLURM_JOB_ID}/}"
+OUT_DIR="${OUT_DIR:-pipelines/${DOMAIN}/run_slurm_${VARIANT}_${SLURM_JOB_ID}/}"
 CONFIG="pipelines/configs/${DOMAIN}.yaml"
 
 if [ ! -f "${CONFIG}" ]; then
@@ -119,6 +124,7 @@ echo "cwd      : $(pwd)"
 echo "venv     : ${PYDI_VENV}"
 echo "python   : $(which python)  ($(python --version 2>&1))"
 echo "domain   : ${DOMAIN}"
+echo "variant  : ${VARIANT}"
 echo "config   : ${CONFIG}"
 echo "mode     : ${MODE}"
 echo "out_dir  : ${OUT_DIR}"
@@ -139,6 +145,7 @@ mkdir -p "${OUT_DIR}"
 # shellcheck disable=SC2086
 python pipelines/scripts/run_best_of_breed.py \
     --config "${CONFIG}" \
+    --variant "${VARIANT}" \
     --out "${OUT_DIR}" \
     --mode "${MODE}" \
     ${SM_FLAG} ${EM_FLAG} ${FUSION_FLAG} \

@@ -71,7 +71,10 @@ from typing import Any
 
 import pandas as pd
 
-from usecases_synthetic.lib.variant_loader import VariantBundle
+from usecases_synthetic.lib.variant_loader import (
+    VariantBundle,
+    _load_sm_mapping as _load_sm_gold,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -371,16 +374,23 @@ def _load_canonical_fusion(
 
 
 def _load_canonical_sm_gold(products_root: Path) -> pd.DataFrame | None:
-    """Read the canonical SM gold (copied here from synthetic)."""
-    path = products_root / "input" / "schemamatching" / "sm_mapping_gold.csv"
-    if not path.exists():
+    """Read the canonical SM gold (copied here from synthetic).
+
+    Prefers ``sm_mapping_gold.json`` (``kind: pydi_schema_mapping_gold``) over
+    the legacy CSV. The canonical/BoB path keeps *raw* source column names,
+    which the JSON gold is authored against, so it is consumed as-is here (no
+    source-column reconciliation, unlike the synthetic ``load_variant`` path,
+    which renames columns and therefore reconciles the gold).
+    """
+    sm_dir = products_root / "input" / "schemamatching"
+    mapping = _load_sm_gold(sm_dir, baseline=True)
+    if mapping is None:
         logger.warning(
             "Canonical SM gold not found at %s; SM evaluation will be "
             "unavailable for this run.",
-            path,
+            sm_dir / "sm_mapping_gold.json",
         )
-        return None
-    return pd.read_csv(path)
+    return mapping
 
 
 def _load_canonical_target_schema(products_root: Path) -> dict:
@@ -580,6 +590,22 @@ def _load_canonical_papers_sources(
         id_col = f"{name}_id"
         if id_col in df.columns and "id" not in df.columns:
             df = df.rename(columns={id_col: "id"})
+        # Authors ship as JSON arrays, so ``load_json`` loads them as
+        # Python lists. List-valued cells break every scalar-assuming
+        # SM/EM matcher (coma_hybrid: pd.notna(list) array-truthiness;
+        # magneto: list in NULL_REPRESENTATIONS unhashable). The SM
+        # committee LEARNS the raw->canonical mapping, so it sees the
+        # raw column names (``author_list``/``contributor_names``/
+        # ``authors_list``) -- not yet renamed to canonical ``authors``.
+        # Stringify any column that contains list cells; the fusion
+        # runner re-parses via literal_eval (fusion_committee_papers
+        # declares gold_list_columns: [authors]). Mirrors
+        # usecases_synthetic.lib.loaders.normalize_loaded_source:495-508
+        # which the BoB pipeline bypasses by calling ``load_json``
+        # directly.
+        for col in df.columns:
+            if df[col].apply(lambda v: isinstance(v, list)).any():
+                df[col] = df[col].apply(lambda v: str(v) if isinstance(v, list) else v)
         df.attrs["dataset_name"] = name
         sources[name] = df
     return sources
@@ -680,8 +706,7 @@ def load_canonical_papers_bundle() -> VariantBundle:
     with target_schema_path.open() as f:
         target_schema = json.load(f)
 
-    sm_gold_path = papers_root / "input" / "schemamatching" / "sm_mapping_gold.csv"
-    sm_mapping = pd.read_csv(sm_gold_path) if sm_gold_path.exists() else None
+    sm_mapping = _load_sm_gold(papers_root / "input" / "schemamatching", baseline=True)
 
     logger.info(
         "Loaded canonical papers bundle from %s "

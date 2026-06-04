@@ -144,9 +144,18 @@ def load_pipeline_bundle(
         return load_canonical_papers_bundle()
 
     if level != "baseline" and domain == "papers":
-        raise NotImplementedError(
-            "Variant levels are not yet supported for the papers domain "
-            "(no usecases/papers-augmented/<level>/ tree)."
+        # ``usecases/papers-augmented/{easy,medium,hard}/`` IS now on disk
+        # (2026-06-04), and ``variant_loader.load_variant`` has explicit
+        # papers handling (``variant_loader.py:381``). The packaged fusion
+        # gold uses the canonical ``test_set.xml``/``validation_set.xml``
+        # filenames but ships JSONL content; ``_load_fusion_file``
+        # content-sniffs the first non-whitespace byte to dispatch
+        # correctly regardless of extension. Route through the standard
+        # variant path.
+        logger.info(
+            "Loading papers %s variant via load_variant "
+            "(canonical_loader supports baseline only)",
+            level,
         )
     if level != "baseline" and domain == "products" and bundle_source == "canonical":
         # Variants of products go through the standard load_variant path
