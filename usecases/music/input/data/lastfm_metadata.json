@@ -1,8 +1,8 @@
 {
   "@context": "https://schema.org/",
   "@type": "Dataset",
-  "name": "LastFM Album Metadata (22k Entries)",
-  "description": "Album-level metadata retrieved from Last.fm using the Last.fm API. The API was queried using album names from the MusicBrainz dataset as query strings. The original retrieval contains over 85,000 entities. A reduced version contains around 22,000 entries and provides album name and artist, as well as tracklists including track title, duration, and position on the album. Additional fields present in the CSV include the Last.fm URL for the album and popularity indicators returned by the API (listeners and playcount).",
+  "name": "LastFM Album Metadata (10k Entries)",
+  "description": "Album-level metadata retrieved from Last.fm using the Last.fm API. The API was queried using album names from the MusicBrainz dataset as query strings. The original retrieval contains over 85,000 entities. A reduced version contains around 10,000 entries and provides album name and artist, as well as tracklists including track title, duration, and position on the album. Additional fields present in the CSV include the Last.fm URL for the album and popularity indicators returned by the API (listeners and playcount).",
   "url": "https://www.last.fm/api",
   "keywords": [
     "Last.fm",
@@ -25,55 +25,31 @@
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "id",
+      "name": "item_code",
       "description": "Last.fm-derived record identifier for the music release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "name",
+      "name": "album_title",
       "description": "Title of the music release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "artist",
+      "name": "band",
       "description": "Artist or group credited for the release",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "release-date",
-      "description": "Release date normalized to YYYY-MM-DD where available",
-      "unitText": "ISO 8601 date"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "release-country",
-      "description": "Country associated with the release where available",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "duration",
+      "name": "album_length",
       "description": "Total duration of the release in seconds",
       "unitText": "seconds"
     },
     {
       "@type": "PropertyValue",
-      "name": "label",
-      "description": "Record label associated with the release where available",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "genre",
-      "description": "Primary genre or tag associated with the release",
-      "unitText": "string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "tracks",
+      "name": "tracks_track-name",
       "description": "List of track titles on the release",
       "unitText": "string list"
     }

@@ -42,67 +42,79 @@
   "variableMeasured": [
     {
       "@type": "PropertyValue",
-      "name": "id",
-      "description": "OpenAlex work URI",
-      "unitText": "URI"
+      "name": "doi_value",
+      "description": "OpenAlex DOI value normalized for the benchmark input",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "doi",
-      "description": "OpenAlex DOI value, usually represented as a DOI URL",
-      "unitText": "URI/string"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "type",
+      "name": "work_kind",
       "description": "OpenAlex work type",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "title",
+      "name": "display_title",
       "description": "OpenAlex work title",
       "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "authorships",
-      "description": "OpenAlex authorship objects with author identity and raw author name fields",
+      "name": "authors_list",
+      "description": "OpenAlex author display names",
       "unitText": "array"
     },
     {
       "@type": "PropertyValue",
-      "name": "publication_year",
+      "name": "year_published",
       "description": "Publication year reported by OpenAlex",
-      "unitText": "year"
+      "unitText": "year/integer"
     },
     {
       "@type": "PropertyValue",
-      "name": "primary_location",
-      "description": "OpenAlex primary location object, including source and landing page information where available",
-      "unitText": "object"
+      "name": "source_name",
+      "description": "OpenAlex source, journal, conference, or venue display name",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "biblio",
-      "description": "OpenAlex bibliographic page, volume, and issue object",
-      "unitText": "object"
+      "name": "topic_terms",
+      "description": "OpenAlex keywords or concepts associated with the paper",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "keywords",
-      "description": "OpenAlex keyword objects",
-      "unitText": "array"
+      "name": "volume_tag",
+      "description": "OpenAlex volume",
+      "unitText": "string"
     },
     {
       "@type": "PropertyValue",
-      "name": "referenced_works_count",
+      "name": "issue_tag",
+      "description": "OpenAlex issue",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "start_page",
+      "description": "First page or first page locator reported by OpenAlex",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "end_page",
+      "description": "Last page or last page locator reported by OpenAlex",
+      "unitText": "string"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "refs_count",
       "description": "Number of referenced works reported by OpenAlex",
       "unitText": "count"
     },
     {
       "@type": "PropertyValue",
-      "name": "cited_by_count",
+      "name": "citations_count",
       "description": "Number of citations reported by OpenAlex",
       "unitText": "count"
     }
