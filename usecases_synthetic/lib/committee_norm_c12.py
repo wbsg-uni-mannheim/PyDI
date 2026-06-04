@@ -742,13 +742,27 @@ class C12NormCommitteeRunner(CommitteeRunner):
                 "attribute index."
             )
 
-        val_targets, test_targets = _load_val_and_test_targets(domain)
         # Load schema constraints once when the schema_constraints
-        # scoring surface is active; XML targets are still loaded
-        # because the val-set rule sweep at lines ~750-784 uses them.
+        # scoring surface is active; XML targets are only required for
+        # the xml_targets surface AND for the rule_per_attribute_optimal
+        # val sweep. Catch-and-ignore on the XML load so domains with
+        # JSONL-only fusion gold (e.g. papers) don't break the
+        # schema_constraints path.
         schema_constraints = None
         if self._scoring_surface == "schema_constraints":
             schema_constraints = _load_canonical_schema_constraints(domain, bundle)
+            try:
+                val_targets, test_targets = _load_val_and_test_targets(domain)
+            except Exception:
+                logger.info(
+                    "No XML fusion targets available for %s; schema_constraints "
+                    "surface does not require them, val-sweep rule selection "
+                    "will fall back to defaults.",
+                    domain,
+                )
+                val_targets, test_targets = {}, {}
+        else:
+            val_targets, test_targets = _load_val_and_test_targets(domain)
 
         if not test_targets and self._scoring_surface == "xml_targets":
             raise ValueError(
@@ -768,11 +782,19 @@ class C12NormCommitteeRunner(CommitteeRunner):
             gold_attributes = {
                 a for a, c in (schema_constraints or {}).items() if c.has_any_constraint
             }
+            # The schema-constraint scorer doesn't consult the kind_map
+            # (it uses its own AttributeConstraints type system). For
+            # domains not registered in protection._DEFAULT_KIND_BY_DOMAIN_ATTR
+            # (e.g. papers), an empty kind_attributes set would zero out
+            # the intersection. Skip the kind filter for this surface.
+            eligible_attributes = sorted(sm_attributes & gold_attributes)
         else:
             gold_attributes = set()
             for entity_attrs in test_targets.values():
                 gold_attributes.update(entity_attrs.keys())
-        eligible_attributes = sorted(sm_attributes & gold_attributes & kind_attributes)
+            eligible_attributes = sorted(
+                sm_attributes & gold_attributes & kind_attributes
+            )
 
         if not eligible_attributes:
             raise ValueError(
@@ -812,10 +834,34 @@ class C12NormCommitteeRunner(CommitteeRunner):
             need_sweep_attrs = [a for a in eligible_attributes if a not in cached]
             if need_sweep_attrs:
                 if not val_targets:
-                    raise ValueError(
-                        f"rule_per_attribute_optimal needs val-selection but "
-                        f"{domain} has no fusion validation set."
-                    )
+                    if self._scoring_surface == "schema_constraints":
+                        # Schema-constraint scoring doesn't need a
+                        # per-attribute val selection — the constraint
+                        # set IS the gold. Fall back to ``_passthrough``
+                        # (identity normalization) for every attribute
+                        # so rule_per_attribute_optimal scores the
+                        # passthrough output against the schema.
+                        logger.info(
+                            "rule_per_attribute_optimal val-selection skipped for "
+                            "%s under schema_constraints surface (no fusion val "
+                            "targets); all attributes routed to _passthrough.",
+                            domain,
+                        )
+                        # Populate selection_cache so the downstream
+                        # rebuild at "rule_selection_map = {a:
+                        # selection_cache[...][a] for a in eligible}"
+                        # finds an entry per attribute.
+                        selection_cache["rule_per_attribute_optimal"] = {
+                            a: "_passthrough" for a in eligible_attributes
+                        }
+                        # Skip the rest of the val-sweep block.
+                        need_sweep_attrs = []
+                    else:
+                        raise ValueError(
+                            f"rule_per_attribute_optimal needs val-selection but "
+                            f"{domain} has no fusion validation set."
+                        )
+            if need_sweep_attrs:
                 fresh = _run_val_selection(
                     roster=self._roster,
                     eligible_attributes=need_sweep_attrs,

@@ -766,7 +766,9 @@ def paraphrase_value_for_knob_04(
     del domain  # Reserved.
 
     abbrev_table: dict[str, str] = config.get("abbreviation_table", {}) or {}
-    stopwords = set(t.lower() for t in config.get("stopword_list", []) or [])
+    # ``str(t)`` guards against YAML coercing bare ``on``/``off``/``yes``/``no``
+    # stopword entries to booleans (a non-string here used to crash mid-run).
+    stopwords = set(str(t).lower() for t in config.get("stopword_list", []) or [])
     # Key tokens are per-column; K4's consumer does not know the column,
     # so we fall back to the global key-token set if one is declared.
     key_tokens = set(config.get("key_token_skiplist_global", []) or [])

@@ -14,12 +14,18 @@ members:
     blocking_type: lexical
     enabled_by_default: true
   - name: standard_blocker
-    description: "Equality on name_first_token (lexical)"
+    description: >-
+      Equality on name_first_5 (lexical). Papers titles share very
+      common first tokens ("a" alone = 18127 records / ~110M pairs),
+      so first-token blocking is pathological. The 5-char prefix
+      collapses same-stem titles (Towards/Toward) while distinguishing
+      the 22820 first-token bins into many more 5-char buckets.
+      Matches the companies / games convention.
     blocker:
       class: StandardBlocker
       module: PyDI.entitymatching.blocking.standard
       params:
-        "on": [name_first_token]
+        "on": [name_first_5]
     blocking_type: lexical
     enabled_by_default: true
   - name: embedding_blocker

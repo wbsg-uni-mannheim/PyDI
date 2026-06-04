@@ -445,16 +445,45 @@ def build_canonical_view(
     if em_dir.exists():
         for csv_path in sorted(em_dir.glob("*_all.csv")):
             df = read_em_gold_csv(csv_path)
-            positives = df[df["label"].astype(str).str.lower() == "true"]
+            positives = df[
+                df["label"].astype(str).str.strip().str.lower().isin(("true", "1"))
+            ]
             for _, row in positives.iterrows():
                 pairs.append((str(row["id1"]), str(row["id2"])))
         if not pairs:
             for suffix in ("_train.csv", "_val.csv", "_test.csv"):
                 for csv_path in sorted(em_dir.glob(f"*{suffix}")):
                     df = read_em_gold_csv(csv_path)
-                    positives = df[df["label"].astype(str).str.lower() == "true"]
+                    positives = df[
+                        df["label"]
+                        .astype(str)
+                        .str.strip()
+                        .str.lower()
+                        .isin(("true", "1"))
+                    ]
                     for _, row in positives.iterrows():
                         pairs.append((str(row["id1"]), str(row["id2"])))
+
+    # Domains whose comprehensive ground-truth match structure lives in the
+    # pool rather than a complete EM gold group by the pooled positives. For
+    # papers the labelled EM gold is only a sample (~6.6k pairs); the
+    # DOI-derived pool is the full cross-source match set (~156k pairs /
+    # ~55.6k clusters), so without this the canonical view never collapses
+    # (every one of the 182k records becomes its own entity, which both
+    # blows up K2 runtime and mines same-paper records as fake corner pairs).
+    # Opt in via ``canonical_grouping: pool`` in the knob-02 config; the
+    # default keeps the EM-gold-only grouping byte-identical for every other
+    # domain.
+    if config.get("canonical_grouping", "em_gold") == "pool":
+        from usecases_synthetic.lib.domain_config import POOLS_DIR
+
+        pool_path = POOLS_DIR / domain / "pooled_positives.csv"
+        if pool_path.exists():
+            pool_df = pd.read_csv(pool_path)
+            for pid1, pid2 in zip(
+                pool_df["id1"].astype(str), pool_df["id2"].astype(str)
+            ):
+                pairs.append((pid1, pid2))
 
     all_ids: set[str] = set()
     id_to_source: dict[str, str] = {}

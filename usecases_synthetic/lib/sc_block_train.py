@@ -108,6 +108,16 @@ DOMAIN_TEXT_COLS: dict[str, list[str]] = {
         "read_speed_mb_s",
         "write_speed_mb_s",
     ],
+    "papers": [
+        "title",
+        "authors",
+        "journal",
+        "publication_year",
+        "doi",
+        "type",
+        "volume",
+        "issue",
+    ],
 }
 
 

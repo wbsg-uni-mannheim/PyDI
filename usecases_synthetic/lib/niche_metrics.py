@@ -177,8 +177,39 @@ def lexical_extended_jaccard(
     float
         Generalised Jaccard similarity in ``[0, 1]``.
     """
-    ta = tokenize(a, stopwords=stopwords)
-    tb = tokenize(b, stopwords=stopwords)
+    return _extended_jaccard_from_tokens(
+        tokenize(a, stopwords=stopwords),
+        tokenize(b, stopwords=stopwords),
+        inner_token_threshold=inner_token_threshold,
+    )
+
+
+def _extended_jaccard_from_tokens(
+    ta: list[str],
+    tb: list[str],
+    *,
+    inner_token_threshold: float = 0.8,
+) -> float:
+    """Extended Jaccard over *pre-tokenised* labels (hot path).
+
+    Identical result to :func:`lexical_extended_jaccard`, but takes token
+    lists directly so the neighbour search does not re-tokenise both
+    labels on every pairwise comparison (the dominant cost at scale).
+
+    The greedy inner matcher is unchanged in semantics but skips work that
+    provably cannot affect the match outcome:
+
+    * **exact-equality short-circuit** — when ``s == l`` the Levenshtein
+      ratio is ``1.0`` (the maximum), so it can never be beaten; the
+      original greedy would also select this token (the first ratio-1.0
+      candidate), so breaking here is identical.
+    * **length-difference prune** — the Levenshtein ratio is bounded above
+      by ``1 - |len(s) - len(l)| / max(len(s), len(l))`` (edit distance is
+      at least the length difference). When that bound is below the
+      threshold the pair can never be a match, and a sub-threshold pair
+      never changes ``matches`` / ``used``, so skipping it leaves the
+      result unchanged.
+    """
     if not ta and not tb:
         return 1.0
     if not ta or not tb:
@@ -189,17 +220,34 @@ def lexical_extended_jaccard(
     small, large = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
     used: set[int] = set()
     matches = 0
+    thr = inner_token_threshold
     for s in small:
+        ls = len(s)
         best_ratio = 0.0
         best_idx = -1
         for j, l in enumerate(large):
             if j in used:
                 continue
+            if s == l:
+                # Exact match -> ratio 1.0, the maximum; cannot be beaten.
+                best_ratio = 1.0
+                best_idx = j
+                break
+            ll = len(l)
+            denom = ls + ll
+            # ``_levenshtein_ratio`` returns python-Levenshtein's indel
+            # ratio, bounded above by ``2*min(ls,ll)/(ls+ll)`` (and the
+            # pure-Python fallback ratio = 1-dist/max <= min/max <= that same
+            # bound). When the bound is below the threshold the pair can never
+            # be a match, and a sub-threshold pair never changes the outcome,
+            # so skipping it is exact-preserving under either backend.
+            if denom and (2.0 * (ls if ls <= ll else ll) / denom) < thr:
+                continue
             r = _levenshtein_ratio(s, l)
             if r > best_ratio:
                 best_ratio = r
                 best_idx = j
-        if best_idx >= 0 and best_ratio >= inner_token_threshold:
+        if best_idx >= 0 and best_ratio >= thr:
             used.add(best_idx)
             matches += 1
 
@@ -207,6 +255,44 @@ def lexical_extended_jaccard(
     if union <= 0:
         return 0.0
     return matches / union
+
+
+def _ext_jaccard_neighbours_chunk(
+    indices: Iterable[int],
+    label_tokens: list[list[str]],
+    prefix_buckets: dict[str, list[int]],
+    top_k: int,
+    inner_token_threshold: float,
+) -> list[list[tuple[int, float]]]:
+    """Top-K extended-Jaccard neighbours for a contiguous chunk of labels.
+
+    Module-level (picklable) worker for the parallel path of
+    :func:`lexical_extended_jaccard_neighbours`. Scores candidates from the
+    shared token lists via :func:`_extended_jaccard_from_tokens` (no
+    re-tokenisation). Returns one neighbour list per index in *indices*,
+    in order.
+    """
+    results: list[list[tuple[int, float]]] = []
+    for i in indices:
+        candidates: set[int] = set()
+        for t in label_tokens[i]:
+            p = t[:3] if len(t) >= 3 else t
+            bucket = prefix_buckets.get(p)
+            if bucket:
+                candidates.update(bucket)
+        candidates.discard(i)
+
+        ti = label_tokens[i]
+        row: list[tuple[int, float]] = []
+        for j in candidates:
+            sim = _extended_jaccard_from_tokens(
+                ti, label_tokens[j], inner_token_threshold=inner_token_threshold
+            )
+            if sim > 0.0:
+                row.append((j, sim))
+        row.sort(key=lambda t: (-t[1], t[0]))
+        results.append(row[:top_k])
+    return results
 
 
 def lexical_extended_jaccard_neighbours(
@@ -294,31 +380,50 @@ def lexical_extended_jaccard_neighbours(
                 max_block_size,
             )
 
-    out: list[list[tuple[int, float]]] = []
-    for i in range(n):
-        candidates: set[int] = set()
-        for t in label_tokens[i]:
-            p = t[:3] if len(t) >= 3 else t
-            bucket = prefix_buckets.get(p)
-            if not bucket:
-                continue
-            candidates.update(bucket)
-        candidates.discard(i)
+    if n == 0:
+        return []
 
-        row: list[tuple[int, float]] = []
-        if candidates:
-            for j in candidates:
-                sim = lexical_extended_jaccard(
-                    labels[i],
-                    labels[j],
-                    inner_token_threshold=inner_token_threshold,
-                    stopwords=stopwords,
-                )
-                if sim > 0.0:
-                    row.append((j, sim))
-            row.sort(key=lambda t: (-t[1], t[0]))
-        out.append(row[:top_k])
-    return out
+    prefix_buckets = dict(prefix_buckets)
+
+    # The per-label search is independent across labels, so parallelise it
+    # across cores via joblib (loky backend). Contiguous index chunks keep the
+    # output in label order; each worker needs random access to the whole
+    # corpus, so the read-only token lists + inverted index are shipped once
+    # per chunk. Measured ~11-12x on 18 cores at 20k-76k entities (the
+    # per-pair compute dominates, so the one-off serialisation is amortised).
+    # loky is preferred over a raw fork pool because later K2 metrics import
+    # torch into the parent (embedding), making a bare ``fork`` unsafe at the
+    # medium/hard levels. Falls back to a serial pass when joblib is absent or
+    # the input is small enough that pool overhead would dominate.
+    try:
+        from joblib import Parallel, delayed
+    except ImportError:  # pragma: no cover - joblib ships with scikit-learn
+        Parallel = None
+
+    if Parallel is not None and n > 2000:
+        import os
+
+        n_chunks = min(n, (os.cpu_count() or 2) * 4)
+        bounds = [round(c * n / n_chunks) for c in range(n_chunks + 1)]
+        ranges = [
+            range(bounds[c], bounds[c + 1])
+            for c in range(n_chunks)
+            if bounds[c] < bounds[c + 1]
+        ]
+        chunked = Parallel(n_jobs=-1)(
+            delayed(_ext_jaccard_neighbours_chunk)(
+                rng, label_tokens, prefix_buckets, top_k, inner_token_threshold
+            )
+            for rng in ranges
+        )
+        out: list[list[tuple[int, float]]] = []
+        for chunk in chunked:
+            out.extend(chunk)
+        return out
+
+    return _ext_jaccard_neighbours_chunk(
+        range(n), label_tokens, prefix_buckets, top_k, inner_token_threshold
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -362,7 +467,7 @@ def tfidf_neighbours(
         return []
     # Request top_k + 1 so we can drop self.
     k = min(top_k + 1, n)
-    nn = NearestNeighbors(n_neighbors=k, metric="cosine")
+    nn = NearestNeighbors(n_neighbors=k, metric="cosine", n_jobs=-1)
     nn.fit(tfidf_matrix)
     distances, indices = nn.kneighbors(tfidf_matrix)
     out: list[list[tuple[int, float]]] = []
@@ -510,7 +615,7 @@ def embedding_neighbours(
     if n == 0:
         return []
     k = min(top_k + 1, n)
-    nn = NearestNeighbors(n_neighbors=k, metric="cosine")
+    nn = NearestNeighbors(n_neighbors=k, metric="cosine", n_jobs=-1)
     nn.fit(embeddings)
     distances, indices = nn.kneighbors(embeddings)
     out: list[list[tuple[int, float]]] = []
