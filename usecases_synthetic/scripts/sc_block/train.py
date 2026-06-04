@@ -204,11 +204,20 @@ def _load_em_pair_splits(
         for sub in sub_dirs:
             if not sub.exists():
                 continue
+            src1_c = src1.replace("_", "")
+            src2_c = src2.replace("_", "")
             candidates = [
                 sub / f"{src1}_2_{src2}_{split}.csv",
                 sub / f"{src2}_2_{src1}_{split}.csv",
                 sub / f"{src1}_{src2}_{split}.csv",
                 sub / f"{src2}_{src1}_{split}.csv",
+                # Underscore-condensed forms for the 2026 papers domain
+                # (filename uses ``openalex`` for the source named
+                # ``open_alex``).
+                sub / f"{src1_c}_{src2_c}_{split}.csv",
+                sub / f"{src1}_{src2_c}_{split}.csv",
+                sub / f"{src1_c}_{src2}_{split}.csv",
+                sub / f"{src2_c}_{src1_c}_{split}.csv",
             ]
             for cand in candidates:
                 if cand.exists():
@@ -276,6 +285,18 @@ def _load_domain_data(
         if parsed is None:
             logger.warning("skipping unrecognised EM filename: %s", train_path.name)
             continue
+        # Resolve underscore-condensed source tokens (e.g. ``openalex``
+        # in ``dblp_openalex_train.csv`` for the source named
+        # ``open_alex``) so papers' EM gold matches the configured
+        # source list.
+        if parsed[0] not in sources_mapped or parsed[1] not in sources_mapped:
+            sources_collapsed = {s.replace("_", ""): s for s in sources_mapped}
+            normalized = (
+                sources_collapsed.get(parsed[0].replace("_", ""), parsed[0]),
+                sources_collapsed.get(parsed[1].replace("_", ""), parsed[1]),
+            )
+            if normalized[0] in sources_mapped and normalized[1] in sources_mapped:
+                parsed = normalized
         if parsed[0] not in sources_mapped or parsed[1] not in sources_mapped:
             logger.warning(
                 "EM file %s references unknown sources %s; skipping",
@@ -341,13 +362,20 @@ def _evaluate_recall(
     )
     candidates = blocker.materialize()
 
-    pos = gold[
-        gold["label"].apply(
-            lambda v: (
-                str(v).strip().lower() == "true" if not isinstance(v, bool) else bool(v)
-            )
-        )
-    ]
+    def _is_positive(v: Any) -> bool:
+        # Accept bool True, int/float 1, and the string forms
+        # ``"true"`` / ``"1"`` (case-insensitive, whitespace-stripped).
+        # Papers' EM gold uses integer 0/1 labels (per the canonical
+        # header-bearing schema), while the older synthetic header-less
+        # CSVs use string ``true``/``false``.
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            return int(v) == 1
+        s = str(v).strip().lower()
+        return s in {"true", "1"}
+
+    pos = gold[gold["label"].apply(_is_positive)]
     pos_set = set(zip(pos["id1"].astype(str).tolist(), pos["id2"].astype(str).tolist()))
     cand_set = set(
         zip(
@@ -684,6 +712,9 @@ _DEFAULT_EVAL_PAIRS: dict[str, tuple[str, str]] = {
     # products: anchor pair is products_1 ↔ products_2 (the largest
     # authored pair: 812 ↔ 812 rows, ~1800 train pairs).
     "products": ("products_1", "products_2"),
+    # papers: anchor pair is dblp ↔ crossref; both have ~60k records
+    # with the canonical 15-attr target schema.
+    "papers": ("dblp", "crossref"),
 }
 
 

@@ -10,6 +10,15 @@
 
 domain: papers
 
+# Canonical-entity grouping source. Papers' labelled EM gold is only a
+# sample (~6.6k pairs), so the standard EM-gold-only grouping would leave
+# almost every record a singleton (182k entities, semantically wrong: the
+# same paper's per-source records become separate near-identical entities
+# that K2 would mine as fake corner pairs). The DOI-derived pool is the
+# comprehensive cross-source match set (~156k pairs / ~55.6k clusters),
+# so build_canonical_view groups via the pool here -> ~76k true entities.
+canonical_grouping: pool
+
 # All three sources are already target-shaped: they carry the SAME 14
 # canonical columns. The synthetic loader renames each source primary id
 # column to `id` (minted at load time as <source>-NNNNN; see
@@ -150,19 +159,25 @@ stopword_list:
   - of
   - and
   - for
-  - on
+  - "on"   # quoted: bare YAML `on` parses as the boolean True
 
 # target_corner_case_ratio levels carried over verbatim from music
 # (UNTUNED for papers). Easy stays at the drop-path baseline; medium/hard
 # are modest monotone bumps. Calibrate at S.5a if the dispatcher
 # under-/over-shoots on papers.
 levels:
+  # 2026-06-03: corrected from the music-seeded 0.20/0.30/0.35 to the
+  # companies/games/products standard ladder 0.20/0.50/0.80. Papers'
+  # baseline corner ratio is ~0.55, so the music targets sat entirely
+  # below baseline (K2 only ever dropped corners, making the baseline the
+  # hardest). With this ladder: easy drops below baseline, medium ~=
+  # baseline, hard interpolates corner cases ABOVE baseline.
   easy:
     target_corner_case_ratio: 0.20
   medium:
-    target_corner_case_ratio: 0.30
+    target_corner_case_ratio: 0.50
   hard:
-    target_corner_case_ratio: 0.35
+    target_corner_case_ratio: 0.80
 
 max_interp_fraction: 0.60
 # 2026-05-27 (step 4h): equal train/test split for newly-mined corner pairs.

@@ -41,6 +41,13 @@ stages:
     selection_metric: macro_f1
     apply_winner: false
     vacuous_epsilon: 0.005
+    # Score normalized outputs against the papers target_schema's
+    # JSON-Schema constraints + x-pydi-consistency rules (publication_year
+    # min/max, page_locator with cross-field comparison, doi pattern,
+    # type enum, delimited_open_text on keywords). See
+    # pipelines/lib/schema_constraint_scorer.py. Papers has no fusion
+    # XML silver (only JSONL), so xml_targets surface won't work.
+    scoring_surface: schema_constraints
   em:
     enabled: true
     blocking_selection_metric: reduction_ratio

@@ -1,0 +1,97 @@
+seed: 42
+preprocess_text: normalize_text
+blocking_name_column: title
+members:
+- name: token_blocker
+  description: Token-set blocker on title (lexical)
+  blocker:
+    class: TokenBlocker
+    module: PyDI.entitymatching.blocking.token_blocking
+    params:
+      column: title
+      min_token_len: 2
+  blocking_type: lexical
+  enabled_by_default: true
+- name: standard_blocker
+  description: Equality on name_first_5 (lexical). Papers titles share very common
+    first tokens ("a" alone = 18127 records / ~110M pairs), so first-token blocking
+    is pathological. The 5-char prefix collapses same-stem titles (Towards/Toward)
+    while distinguishing the 22820 first-token bins into many more 5-char buckets.
+    Matches the companies / games convention.
+  blocker:
+    class: StandardBlocker
+    module: PyDI.entitymatching.blocking.standard
+    params:
+      'on':
+      - name_first_5
+  blocking_type: lexical
+  enabled_by_default: true
+- name: embedding_blocker
+  description: Dense ANN top-k; BAAI/bge-base-en-v1.5
+  blocker:
+    class: EmbeddingBlocker
+    module: PyDI.entitymatching.blocking.embedding
+    params:
+      text_cols:
+      - title
+      model: BAAI/bge-base-en-v1.5
+      top_k: 50
+      threshold: 0.3
+  blocking_type: embedding
+  enabled_by_default: true
+- name: sorted_neighbourhood_blocker
+  description: Sliding-window over name_norm (lexical)
+  blocker:
+    class: SortedNeighbourhoodBlocker
+    module: PyDI.entitymatching.blocking.sorted_neighbourhood
+    params:
+      key: name_norm
+      window: 40
+  blocking_type: lexical
+  enabled_by_default: true
+- name: bm25_blocker
+  description: BM25 over char n-grams (sparse)
+  blocker:
+    class: BM25Blocker
+    module: usecases_synthetic.lib.bm25_blocker
+    params:
+      text_cols:
+      - title
+      top_k: 50
+      tokenizer: char_ngram
+      ngram_range:
+      - 3
+      - 5
+      k1: 1.5
+      b: 0.75
+  blocking_type: sparse
+  enabled_by_default: true
+- name: sc_block
+  description: SupCon encoder + ANN retrieval (hybrid)
+  blocker:
+    class: SCBlockBlocker
+    module: usecases_synthetic.lib.sc_block_blocker
+    params:
+      text_cols:
+      - title
+      - authors
+      - journal
+      top_k: 100
+      threshold: 0.0
+      checkpoint_path: pipelines/papers/checkpoints/em_blocking/sc_block/best
+  blocking_type: hybrid
+  enabled_by_default: true
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+required_axes:
+  blocking_type:
+  - lexical
+  - sparse
+  - embedding
+  - hybrid
+column_mapping:
+  dblp: {}
+  crossref: {}
+  open_alex: {}

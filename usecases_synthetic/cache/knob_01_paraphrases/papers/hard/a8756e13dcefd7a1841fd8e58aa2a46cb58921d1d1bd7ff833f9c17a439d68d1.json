@@ -1,0 +1,10 @@
+{
+  "attribute": "keywords",
+  "model_id": "gpt-5.4-mini",
+  "original_value": "A common operation in geometry processing is solving symmetric and positive semi-definite systems on a subset of a mesh, with conditions for the vertices at the boundary of the region. This is commonly done by setting up the linear system for the sub-mesh, factorizing the system (potentially applying preordering to improve sparseness of the factors), and then solving by back-substitution. This approach suffers from a comparably high setup cost for each local operation. We propose to reuse factorizations defined on the full mesh to solve linear problems on sub-meshes. We show how an update on sparse matrices can be performed in a particularly efficient way to obtain the factorization of the operator on a sun-mesh significantly outperforming general factor updates and complete refactorization. We analyze the resulting speedup for a variety of situations and demonstrate that our method outperforms factorization of a new matrix by a factor of up to 10 while never being slower in our experiments.",
+  "prompt_version": "v2",
+  "result": {
+    "paraphrase": "A common geometry-processing task is to solve symmetric positive semi-definite systems on a mesh subset, with boundary-vertex conditions on the region. Typically, this is done by assembling the sub-mesh linear system, factorizing it—optionally using preordering to improve factor sparsity—and then solving via back-substitution. The drawback is a relatively high setup cost for each local operation. We propose reusing factorizations from the full mesh to solve linear problems on sub-meshes. We show that sparse-matrix updates can be carried out especially efficiently to obtain the factorization of the operator on a sun-mesh, greatly outperforming general factor updates and full refactorization. We analyze the resulting speedup across a range of cases and demonstrate that our method is up to 10 times faster than factoring a new matrix, while never being slower in our experiments."
+  },
+  "source": "crossref"
+}

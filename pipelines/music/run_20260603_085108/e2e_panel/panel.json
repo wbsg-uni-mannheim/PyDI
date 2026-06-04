@@ -1,0 +1,489 @@
+{
+  "usecase": "music",
+  "run_id": "",
+  "silver_source": "",
+  "headline": {
+    "RF": {
+      "composite_score": 0.8144215430634868
+    },
+    "GR": {
+      "bcubed_f1": 0.9902912621359222,
+      "macro_accuracy": 0.6739130434782609,
+      "composite_score": 0.6322910007074707
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 30883,
+        "n_rows_largest_input": 22627,
+        "row_gain_vs_largest_input": 0.3648738233084368
+      },
+      "GR": {
+        "n_reference": 23,
+        "row_count_abs_diff": 30860,
+        "row_count_rel_diff": 1341.7391304347825,
+        "n_recovered": 22,
+        "n_partial": 1,
+        "n_lost": 0,
+        "n_fabricated": 30860,
+        "recovery_rate": 0.9565217391304348
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.8097092251400446,
+        "density_largest_input": 0.9305696733990365,
+        "density_gain": -0.12086044825899189
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "artist": 0.9013046486536556,
+          "duration": 0.08732881775721744,
+          "genre": 1.0,
+          "label": 0.9508778773893167,
+          "name": 0.6512033570401994,
+          "release-country": 0.33039595573398794
+        },
+        "overall_drift": 0.6535184427623961,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "artist": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "release-date": {
+            "reference_density": 1.0,
+            "pipe_density": 0.7068937603212123,
+            "delta": -0.2931062396787877
+          },
+          "release-country": {
+            "reference_density": 1.0,
+            "pipe_density": 0.752549946572548,
+            "delta": -0.24745005342745197
+          },
+          "label": {
+            "reference_density": 0.6956521739130435,
+            "pipe_density": 0.7326684583751579,
+            "delta": 0.03701628446211447
+          },
+          "genre": {
+            "reference_density": 0.0,
+            "pipe_density": 0.7326684583751579,
+            "delta": 0.7326684583751579
+          },
+          "tracks": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "duration": {
+            "reference_density": 1.0,
+            "pipe_density": 0.5528931774762815,
+            "delta": -0.4471068225237185
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {
+        "winning_source_distribution_per_attribute": {
+          "artist": {
+            "lastfm": 0.29071619957998507,
+            "musicbrainz": 0.43594757042507726,
+            "discogs": 0.2733362299949303
+          },
+          "duration": {
+            "lastfm": 0.29687160547469077,
+            "musicbrainz": 0.5127091027590667,
+            "discogs": 0.19041929176624234
+          },
+          "genre": {
+            "discogs": 1.0
+          },
+          "id": {
+            "lastfm": 0.29071619957998507,
+            "musicbrainz": 0.43594757042507726,
+            "discogs": 0.2733362299949303
+          },
+          "label": {
+            "discogs": 1.0
+          },
+          "name": {
+            "lastfm": 0.29071619957998507,
+            "musicbrainz": 0.43594757042507726,
+            "discogs": 0.2733362299949303
+          },
+          "release-country": {
+            "musicbrainz": 0.6019382627422828,
+            "discogs": 0.39806173725771715
+          },
+          "release-date": {
+            "musicbrainz": 0.6444088726274868,
+            "discogs": 0.35559112737251314
+          },
+          "tracks": {
+            "lastfm": 0.27503801868346917,
+            "musicbrainz": 0.4472083423853933,
+            "discogs": 0.27775363893113075
+          }
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": 0.0,
+          "pipe": 0.0,
+          "delta": 0.0,
+          "by_source": {
+            "discogs": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "lastfm": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "musicbrainz": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.6755771789124264,
+        "per_source_coverage_rate": {
+          "discogs": {
+            "reference": 0.6956521739130435,
+            "pipe": 0.7326684583751578,
+            "delta": 0.03701628446211436
+          },
+          "lastfm": {
+            "reference": 0.5652173913043478,
+            "pipe": 0.3194314023896642,
+            "delta": -0.24578598891468356
+          },
+          "musicbrainz": {
+            "reference": 1.0,
+            "pipe": 0.1542272447624907,
+            "delta": -0.8457727552375093
+          }
+        },
+        "source_mix_distribution_reference": {
+          "discogs|musicbrainz": 0.391304347826087,
+          "discogs|lastfm|musicbrainz": 0.30434782608695654,
+          "lastfm|musicbrainz": 0.2608695652173913,
+          "musicbrainz": 0.043478260869565216
+        },
+        "source_mix_distribution_pipe": {
+          "discogs|lastfm|musicbrainz": 0.057280704594760874,
+          "discogs": 0.6320953275264709,
+          "discogs|musicbrainz": 0.04329242625392611,
+          "lastfm": 0.21367742771103843,
+          "lastfm|musicbrainz": 0.04847327008386491,
+          "musicbrainz": 0.005180843829938801
+        },
+        "source_attribution_js_per_attribute": {
+          "artist": 0.10460937979019971,
+          "duration": 0.016667884064354807,
+          "genre": 1.0,
+          "id": 1.0,
+          "label": 0.0,
+          "name": 0.012040544570447913,
+          "release-country": 0.05440088187793683,
+          "release-date": 0.0028525886509779518,
+          "tracks": 0.0009039288770766787
+        },
+        "synthesis_rate_per_attribute": {
+          "artist": {
+            "silver": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          },
+          "duration": {
+            "silver": 0.0,
+            "pipe": 0.7727272727272727,
+            "delta": 0.7727272727272727
+          },
+          "genre": {
+            "silver": 0.0,
+            "pipe": 0.0,
+            "delta": 0.0
+          },
+          "id": {
+            "silver": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          },
+          "label": {
+            "silver": 0.0,
+            "pipe": 0.0,
+            "delta": 0.0
+          },
+          "name": {
+            "silver": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          },
+          "release-country": {
+            "silver": 0.0,
+            "pipe": 0.7272727272727273,
+            "delta": 0.7272727272727273
+          },
+          "release-date": {
+            "silver": 0.5217391304347826,
+            "pipe": 0.7272727272727273,
+            "delta": 0.2055335968379447
+          },
+          "tracks": {
+            "silver": 0.9565217391304348,
+            "pipe": 1.0,
+            "delta": 0.04347826086956519
+          }
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "artist": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 30883
+        },
+        "duration": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 17075
+        },
+        "genre": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 22627
+        },
+        "label": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 22627
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 30883
+        },
+        "release-country": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 23241
+        },
+        "release-date": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 21831
+        },
+        "tracks": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 30883
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "GR": {
+      "validity_per_column": {
+        "artist": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 30883,
+          "n_evaluated_reference": 23
+        },
+        "duration": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 17075,
+          "n_evaluated_reference": 23
+        },
+        "genre": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 22627,
+          "n_evaluated_reference": 0
+        },
+        "label": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 22627,
+          "n_evaluated_reference": 16
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 30883,
+          "n_evaluated_reference": 23
+        },
+        "release-country": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 23241,
+          "n_evaluated_reference": 23
+        },
+        "release-date": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 21831,
+          "n_evaluated_reference": 23
+        },
+        "tracks": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 30883,
+          "n_evaluated_reference": 23
+        }
+      },
+      "mean_validity_delta": 0.0
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "GR": {
+        "bcubed": {
+          "precision": 1.0,
+          "recall": 0.9807692307692307,
+          "f1": 0.9902912621359222
+        },
+        "alignment": {
+          "mean_jaccard": 0.9782608695652174,
+          "matched_cluster_rate_at_threshold": 1.0,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.9565217391304348,
+          "mean_size_delta": -0.043478260869565216,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "GR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.6956521739130435,
+            "count": 23,
+            "similarity_mean": 0.9602403635012331,
+            "accuracy_similarity_gap": 0.26458818958818964,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "artist": {
+            "accuracy": 0.782608695652174,
+            "count": 23,
+            "similarity_mean": 0.8309125656951742,
+            "accuracy_similarity_gap": 0.048303870043000297,
+            "mismatch_fingerprint": "real_value_errors"
+          },
+          "release-date": {
+            "accuracy": 0.0,
+            "count": 23,
+            "similarity_mean": 0.40642722117202273
+          },
+          "release-country": {
+            "accuracy": 0.9565217391304348,
+            "count": 23,
+            "similarity_mean": 0.9581939799331104
+          },
+          "label": {
+            "accuracy": 1.0,
+            "count": 16,
+            "similarity_mean": 1.0
+          },
+          "duration": {
+            "accuracy": 0.6086956521739131,
+            "count": 23,
+            "similarity_mean": 0.6086956521739131,
+            "mae": 99.69565217391305,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.9130434782608695
+          }
+        },
+        "macro_accuracy": 0.6739130434782609,
+        "micro_accuracy": 0.6564885496183206,
+        "conflict_only_accuracy": 0.0,
+        "conflict_only_micro_accuracy": 0.0,
+        "conflict_only_per_attribute": {},
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.0,
+        "conflict_rate_delta": 0.0,
+        "fully_correct_cluster_rate": 0.0,
+        "list_attribute_set_metrics": {
+          "tracks": {
+            "set_f1": 0.7524823114758411,
+            "set_jaccard": 0.6815884951621961,
+            "count": 23
+          }
+        }
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [],
+  "gold_source": "fusion_test_set.xml"
+}

@@ -1,0 +1,123 @@
+domain: products
+level: easy
+label: easy
+master_seed: 42
+generated_at: '2026-06-02T20:13:18.568994+00:00'
+knob_order:
+- knob_02
+- knob_04
+- knob_01
+- knob_05
+- knob_06
+- knob_03
+- knob_10
+- knob_08
+knob_levels:
+  knob_01: easy
+  knob_02: easy
+  knob_03: easy
+  knob_04: easy
+  knob_05: easy
+  knob_06: easy
+  knob_08: easy
+  knob_10: easy
+ablation_mode: false
+knobs:
+  knob_02:
+    domain: products
+    embedding_model_id: BAAI/bge-base-en-v1.5
+    metric_top_k: 20
+    rrf_k0: 60
+    c_min: 2
+    boost_label_collision: 5.0
+    inner_token_threshold: 0.8
+    levels:
+      target_corner_case_ratio: 0.2
+      removal_fraction_cap: 0.3
+      interpolation_count: 0
+    max_interp_fraction: 0.85
+    interp_pair_factor: 0.05
+    placement_split: 0.5
+    llm_prompt_version: v2
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+    non_corner_prompt_version: v1
+    pool_quality: live
+    _realised:
+      level: easy
+      baseline_ratio: 0.8275
+      target_ratio: 0.2
+      final_ratio: 0.47717842323651455
+      operator: drop_corner_touching_refilled
+      removed: 396
+      interpolated: 0
+      interp_attempted: 0
+      drop_corner_planned: 396
+      drop_corner_simulated_final_ratio: 0.47717842323651455
+      drop_corner_cap_bound: false
+      non_corner_refill_attempts: 396
+      non_corner_refill_committed: 389
+      non_corner_rejected_contamination_collision_with_real_entity: 6
+      non_corner_rejected_empty_primary_label: 1
+      drop_corner_skip_protected: 200
+      drop_corner_skip_collision_last: 1
+      drop_corner_skip_isolated: 72
+      drop_corner_skip_empty_pool: 0
+      drop_corner_skip_counterproductive: 143
+  knob_04:
+    domain: products
+    source_count: 4
+    within_source_duplicate_rate: 0.0
+    singleton_cap_hard: 0.6
+    per_source_demotion_cap: 0.4
+    delta_softening_step: 0.05
+    fabrication_mode: paraphrase_only
+    llm_prompt_version: v1
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+  knob_01:
+    domain: products
+    paraphrase_rate_primary: 0.0
+    paraphrase_rate_key: 0.0
+    paraphrase_rate_secondary: 0.0
+    paraphrase_rate_categorical: 0.0
+    llm_prompt_version: v2
+    llm_model_id: gpt-5.4-mini
+    llm_temperature: 0.0
+  knob_05:
+    domain: products
+    locale_pool_per_level:
+    - en_US
+    normalize_down_threshold: 0.85
+  knob_06:
+    domain: products
+    transform_per_level: compress
+    max_edits_per_cell: 1
+    max_ocr_per_cell: 1
+    max_truncate_chars: 1
+    soft_global_primary_cap_hard: 0.35
+    compression_factor: 0.5
+    stretch_factor: 1.5
+    numeric_jitter_max_relative: 0.02
+  joint_collision_audit_pass: true
+  knob_03:
+    domain: products
+    rates_per_level:
+      primary: 0.0
+      key: 0.02
+      secondary: 0.05
+    transform_per_level: compress
+    compression_factor: 0.7
+    stretch_factor: 1.5
+    single_source_survivor_cap_hard: 0.05
+    per_cell_ceiling_delta: 0.1
+  knob_10:
+    domain: products
+    _target_distribution:
+      products_1: 0.55
+      products_2: 0.2
+      products_3: 0.15
+      products_4: 0.1
+    concentration_cap: 0.99
+  knob_08:
+    sm_mapping_rows: 108

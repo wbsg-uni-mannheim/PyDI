@@ -1,0 +1,120 @@
+seed: 42
+preprocess_text: normalize_text
+members:
+- name: ditto_plm
+  description: "Ditto PLM matcher (learned, missing-value tolerant). R2 checkpoint\
+    \ at usecases_synthetic/cache/ditto_checkpoints/music/best \u2014 winner: lr=1e-4\
+    \ weighted, test F1=0.9837 (2 pairs)."
+  matcher:
+    class: DittoMatcher
+    module: usecases_synthetic.lib.ditto_matcher
+    params:
+      checkpoint_path: pipelines/music/checkpoints/em_matching/ditto/best
+      fields:
+      - name
+      - artist
+      - release-date
+      - release-country
+      - duration
+      - label
+      - genre
+      - tracks
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: magellan
+  description: 'Classical-ML matcher: auto-generated comparator-vector features +
+    sklearn RandomForest. `training_gold_path` runner-injected per source pair. Date
+    hint on `release-date`; continuous numeric on `duration`.'
+  matcher:
+    class: MagellanMatcher
+    module: usecases_synthetic.lib.magellan_em_matcher
+    params:
+      numeric_attributes:
+      - duration
+      date_attributes:
+      - release-date
+      classifier_class: sklearn.ensemble.RandomForestClassifier
+      classifier_params:
+        n_estimators: 100
+        max_depth: null
+        random_state: 42
+        n_jobs: 1
+        class_weight: null
+      preprocess: normalize_text
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: llm_matcher
+  description: "MatchGPT-style zero-shot LLM matcher. `genre` + `label` kept in fields\
+    \ (mostly sparse \u2192 render as `<missing>`, acceptable for LLM prompts)."
+  matcher:
+    class: MatchGPTMatcher
+    module: usecases_synthetic.lib.matchgpt_em_matcher
+    params:
+      fields:
+      - name
+      - artist
+      - release-date
+      - release-country
+      - duration
+      - label
+      - genre
+      - tracks
+      chat_model_name: openai/gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: comem
+  description: Compound Entity Matching (ComEM). Two-stage LLM pipeline. Paper defaults
+    locked.
+  matcher:
+    class: ComEMMatcher
+    module: usecases_synthetic.lib.comem_em_matcher
+    params:
+      fields:
+      - name
+      - artist
+      - release-date
+      - release-country
+      - duration
+      - label
+      - genre
+      - tracks
+      stage1_model: openai/gpt-5.4-mini
+      stage2_model: null
+      stage1_set_size: 10
+      skip_stage1_below: 2
+      temperature: 0.0
+      max_tokens_stage1: 2048
+      max_tokens_stage2: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+required_axes:
+  matching_type:
+  - learned
+  - llm
+  missing_value_tolerant:
+  - true
+column_mapping:
+  musicbrainz: {}
+  discogs: {}
+  lastfm: {}

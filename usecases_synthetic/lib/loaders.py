@@ -385,6 +385,20 @@ def normalize_loaded_source(
     # fusion runner (``committee_fusion._parse_source_list_columns``)
     # so SM / EM / Norm see plain string cells. See the docstring
     # above for the rationale.
+    if canonical_domain == "papers" and "authors" in df.columns:
+        # ``authors`` ships as a JSON array, so ``PyDI.io.load_json`` loads it
+        # as a Python list. List-valued cells break every scalar-assuming code
+        # path (K2 non-corner refill ``pd.isna(v)``, SM / EM / value-knob
+        # matchers) -- exactly why music keeps ``tracks`` as a list-literal
+        # string. Stringify to the list-literal form here; the fusion runner
+        # re-parses it to a list (``fusion_committee_papers`` declares
+        # ``gold_list_columns: [authors]``). Idempotent: already-string cells
+        # (augmented CSV variants) pass through unchanged.
+        if df["authors"].apply(lambda v: isinstance(v, list)).any():
+            df = df.copy()
+            df["authors"] = df["authors"].apply(
+                lambda v: str(v) if isinstance(v, list) else v
+            )
     return df
 
 
