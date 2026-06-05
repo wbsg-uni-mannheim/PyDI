@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Been to the Future\n  artist: Eppard, Joey\n  release-date: 01.01.2002\n  release-country: United States of America\n  duration: 59:59\n  label: <missing>\n  genre: <missing>\n  tracks: ['Static', 'Balloon', 'Been to the Future', 'Stranded in a Treetop', 'Lay Down the Law', 'Simple Words', 'The Game', 'Faster', 'Paint by Numbers', 'Helpless Belvedere', 'Puddle', 'Vinegar Hill', 'Trail of Tears', 'Amaze Disgrace', 'Blood Lust Tusks']\nRecord B:\n  name: The Future Of Music\n  artist: Various\n  release-date: 200203-12\n  release-country: United States of America\n  duration: <missing>\n  label: Trustkill Records\n  genre: Rock\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

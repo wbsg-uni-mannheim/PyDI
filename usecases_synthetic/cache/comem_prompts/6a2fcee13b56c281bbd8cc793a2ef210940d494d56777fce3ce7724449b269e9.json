@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Fall of an Empire\n  artist: Vomito Negro feat.\n  release-date: 2013-01-08\n  release-country: United States of America\n  duration: 3319\n  label: <missing>\n  genre: <missing>\n  tracks: ['Enemy of the State', 'Tape X', 'Factory Child', 'Power on Demand', 'Machines of Hate', 'Into Your Eyes', 'Emerging Souls', 'Hollow Heads', 'Fall of an Empire']\nRecord B:\n  name: Fall Of An Empire\n  artist: Vomito Negro\n  release-date: 2013-01-08\n  release-country: United States of America\n  duration: 55:19\n  label: Metropolis\n  genre: Electronic\n  tracks: ['Enemy Of The State', 'Tape X', 'Factory Child', 'Power On Demand', 'Machines Of Hate', 'Into Your Eyes', 'Emerging Souls', 'Hollow Heads', 'Fall Of An Empire']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

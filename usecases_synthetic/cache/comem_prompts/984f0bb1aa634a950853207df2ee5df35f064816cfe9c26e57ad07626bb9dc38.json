@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Infamous Angel\n  artist: DeMent, Iris\n  release-date: 1992-01-16\n  release-country: United States of America\n  duration: 2300\n  label: <missing>\n  genre: <missing>\n  tracks: ['Let the Mystery Be', 'These Hills', 'Hotter Than Mojave in My Heart', 'When Love Was Young', 'Our Town', 'Fifty Miles of Elbow Room', 'Infamous Angel', 'Sweet Forgiveness', 'After Youâ€™re Gone', 'Mamaâ€™s Opry', 'Higher Ground']\nRecord B:\n  name: Infamous Angel\n  artist: Iris DeMent\n  release-date: 1992-10-07\n  release-country: United States of America\n  duration: 2309.0\n  label: Philo\n  genre: Folk, World, & Country\n  tracks: ['Let The Mystery Be', 'These Hills', 'Hotter Than Mojave In My Heart', 'When Love Was Young', 'Our Town', 'Fifty Miles Of Elbow Room', 'Infamous Angel', 'Sweet Forgiveness', \"After You're Gone\", \"Mama's Opry\", 'Higher Ground']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

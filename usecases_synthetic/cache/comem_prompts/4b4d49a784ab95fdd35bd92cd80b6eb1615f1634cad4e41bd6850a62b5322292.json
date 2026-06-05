@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: And the Spiritual Committee\n  artist: Cosi, Valerio\n  release-date: 2007\n  release-country: United States of America\n  duration: 0:50:20\n  label: <missing>\n  genre: <missing>\n  tracks: ['Defocusing', 'Hobo Land', 'A Burning OM', 'Evening Over the Hill', 'Over the Moonpalace', 'Glasstear']\nRecord B:\n  name: And The Spiritual Committee\n  artist: Valerio Cosi\n  release-date: 01/01/2007\n  release-country: United States of America\n  duration: 50m 18s\n  label: Foxglove\n  genre: Electronic|Jazz\n  tracks: ['Defocusing', 'Hoboland', 'A Burning OM', 'Evening Over The Hill', 'Over The Moonpalace', 'Glasstear']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

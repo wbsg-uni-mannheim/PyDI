@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Out of Nowhere\n  artist: Tenor, Jimi\n  release-date: 2000-07-17\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 2781\n  label: <missing>\n  genre: <missing>\n  tracks: ['Out of Nowhere', 'Hypnotic Drugstore', 'Paint the Stars', 'Pylon', 'Blood on Borscht', 'Backbone of Night', 'Spell', 'Better Than Ever', 'Night in Loimaa', 'Call of the Wild']\nRecord B:\n  name: Out Of Nowhere\n  artist: Jimi Tenor\n  release-date: 2000\n  release-country: Poland\n  duration: 2780.0\n  label: Sonic Records (2)\n  genre: Electronic\n  tracks: ['Out Of Nowhere', 'Hypnotic Drugstore', 'Paint The Stars', 'Pylon', 'Blood On Borscht', 'Backbone Of Night', 'Spell', 'Better Than Ever', 'Night In Loimaa', 'Call Of The Wild']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

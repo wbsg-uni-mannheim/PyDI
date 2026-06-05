@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Era Vulgaris\n  artist: It\n  release-date: 1996-01-01\n  release-country: Italy\n  duration: 3894\n  label: <missing>\n  genre: <missing>\n  tracks: ['Meridiana', 'Nionica (Unknown Ratio)', 'Air', 'The Measure of a Dog', 'Temporary Irritation', 'Out of Sight', 'Cycloviran', 'Phosphor', 'Human Womb', 'Exhibition', 'Arentostrate', 'Biotoy', 'Thessaloniki', 'Multiple Session', 'Combacterion']\nRecord B:\n  name: Era Vulgaris\n  artist: Queens Of The Stone Age\n  release-date: 2007-01-01\n  release-country: Canada\n  duration: <missing>\n  label: Interscope Records\n  genre: Rock\n  tracks: [\"Turnin' On The Screw\", 'Sick, Sick, Sick', \"I'm Designer\", 'Into The Hollow', 'Misfit Love', 'Battery Acid', 'Make It Wit Chu', \"3's & 7's\", 'Suture Up Your Future', 'River In The Road', 'Run, Pig, Run']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

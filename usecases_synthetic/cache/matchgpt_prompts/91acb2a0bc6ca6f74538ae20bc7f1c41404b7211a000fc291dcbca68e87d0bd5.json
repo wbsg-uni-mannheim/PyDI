@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Dreamland\n  artist: BENNIE K\n  release-date: 2005-06-08\n  release-country: Japan\n  duration: 885\n  label: <missing>\n  genre: <missing>\n  tracks: ['Dreamland', 'UNITY', 'æ—…äºº']\nRecord B:\n  name: Dreamland\n  artist: Black Box\n  release-date: 1990\n  release-country: United States of America\n  duration: 2441.0\n  label: Deconstruction|RCA\n  genre: Electronic\n  tracks: ['Everybody Everybody (Le Freak Mix - 7\" Edit)', \"I Don't Know Anybody Else\", 'Open Your Eyes', 'Fantasy', 'Dreamland', 'Ride On Time', 'Hold On', 'Ghost Box', 'Strike It Up']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

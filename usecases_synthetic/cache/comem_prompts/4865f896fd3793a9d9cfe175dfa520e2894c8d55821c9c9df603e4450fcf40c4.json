@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Brothers Grimm\n  artist: Drapht\n  release-date: 18.05.2008\n  release-country: Australia\n  duration: 58:28\n  label: <missing>\n  genre: <missing>\n  tracks: ['Intro', 'Falling', 'The Money', 'Insomnia', 'Jimmy Recard', 'Dreams & Dreamers', 'A Good Year', 'Boom Boom Boom', 'Sound Man', \"Don't Wanna Work\", 'Rest in Peace', 'Where Yah From', 'Put on a Record', 'Lost', 'Lose Control']\nRecord B:\n  name: Brothers Grimm\n  artist: Drapht\n  release-date: 17.05.2008\n  release-country: Australia\n  duration: <missing>\n  label: Records Obese\n  genre: Hip Hop\n  tracks: ['Intro', 'Falling', 'The Money', 'Insomnia', 'Jimmy Recard', 'Dreams & Dreamers', 'A Good Year', 'Boom Boom Boom', 'Sound Man', \"Don't Wanna Work\", 'Rest In Peace', 'Where Yah From', 'Put On A Record', 'Lost', 'Lose Control']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

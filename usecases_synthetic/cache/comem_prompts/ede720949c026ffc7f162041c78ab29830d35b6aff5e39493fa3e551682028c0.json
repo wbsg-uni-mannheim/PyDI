@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Let It Die\n  artist: Feist\n  release-date: 2004-09-13\n  release-country: Germany\n  duration: 2268\n  label: <missing>\n  genre: <missing>\n  tracks: ['Gatekeeper', 'Mushaboom', 'Let It Die', 'One Evening', 'Leisure Suite', 'Lonely Lonely', 'When I Was a Young Girl', 'Secret Heart', 'Inside and Out', 'Tout doucement', 'Now at Last']\nRecord B:\n  name: Let Go\n  artist: Jula Aimée\n  release-date: 2011\n  release-country: Netherlands\n  duration: 2492.0\n  label: Not On Label (Jula Aimée Self-released)\n  genre: Jazz|Rock\n  tracks: ['Baker Baker', 'The Chase', \"Dani's Song\", 'Sunshine Child', \"The Blower's Daughter\", 'In The Fall', 'Silent Scream', 'Isobel']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

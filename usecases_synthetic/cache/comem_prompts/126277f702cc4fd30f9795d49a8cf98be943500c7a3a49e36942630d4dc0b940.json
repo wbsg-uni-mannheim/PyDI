@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Only Fearless Dreams\n  artist: Tenebris\n  release-date: 1997-04-01\n  release-country: <missing>\n  duration: 2490\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cydonia (Preludium)', 'Faeton', 'Atmosphere', 'Immortal', \"Give Me the God's\", 'Only Fearless Dreams', 'Space Dancer', 'Crippled Dimension', 'Sirius', 'Forgive Me', 'Cydonia Region', 'Mesmerized']\nRecord B:\n  name: Fearless\n  artist: Project-X\n  release-date: <missing>\n  release-country: <missing>\n  duration: 21:30\n  label: <missing>\n  genre: <missing>\n  tracks: ['Fearless (Evils Toy remix)', 'Fearless (Original Cut)', 'Needle', 'Fearless (No Fear By Lights of Euphoria)', 'Fearless (Hoof Remix)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

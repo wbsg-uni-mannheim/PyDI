@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Mirror Of Liberation\n  artist: Condition One\n  release-date: <missing>\n  release-country: <missing>\n  duration: 3154\n  label: <missing>\n  genre: <missing>\n  tracks: ['Alive', \"Somebody's Song\", 'Last Station', 'Feignedly', 'Lost', 'Mirror', 'Crying Angel', 'Black Skin', 'Invisible Face', 'Control', 'Last Station (Movement)', 'Mirror (Live)']\nRecord B:\n  name: Of Liberation\n  artist: Condition O.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1952.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Alive', 'Feignedly', 'Lost', 'Mirror', 'Crying Angel', 'Black Skin', 'Invisible Face', 'Last Station (Movement)', 'Mirror (Live)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

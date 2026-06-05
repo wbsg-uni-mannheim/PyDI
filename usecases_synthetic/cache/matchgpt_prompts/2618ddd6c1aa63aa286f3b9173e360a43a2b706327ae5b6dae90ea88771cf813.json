@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Clarity\n  artist: Sleep\n  release-date: 2014-07-21\n  release-country: United States of America\n  duration: 591\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Clarity']\nRecord B:\n  name: Clarity\n  artist: James Hersey\n  release-date: 2015-02-27\n  release-country: Germany\n  duration: 2328.0\n  label: Lichtdicht Records\n  genre: Pop\n  tracks: [\"Don't Say Maybe\", 'Dreamcather', 'Coming Over', 'Running Out', 'If You Love Me', \"What I've Done\", 'Interlude', 'Let Go', 'Victoria', 'Follow', 'Juliet', \"You've Come So Far\", 'Keep It Even (Take 3)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

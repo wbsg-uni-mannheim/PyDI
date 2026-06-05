@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Future Primitive\n  artist: Venereans\n  release-date: 2009-11\n  release-country: Spain\n  duration: 949\n  label: <missing>\n  genre: <missing>\n  tracks: ['Burka for Everybody', 'Homosexuals All Around', 'Sugar Bag Rip Off', \"Don't Step Kokroachs\", 'Terminal Beach', 'Future Primitive', 'Venereans (This Is)', 'Maybe Too High', 'Scape From Tripalium', 'We Roll', 'Pool of Sharks', 'Fugitive Family']\nRecord B:\n  name: Future Primitive\n  artist: Venereans\n  release-date: 2009\n  release-country: Spain\n  duration: 961.0\n  label: Tic Tac Totally! Records|Discos Humeantes\n  genre: Rock\n  tracks: ['Burka For Everybody', 'Homosexuals All Around', 'Sugar Bag Rip Off', \"Don't Step Cockroachs\", 'Terminal Beach', 'Future Primitive', 'Venereans (This Is)', 'Maybe Too High', 'Scape From Tripalium', 'We Roll', 'Pool Of Sharks', 'Fugitive Family']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

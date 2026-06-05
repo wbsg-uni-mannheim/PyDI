@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Hit\n  artist: Miles, Robert\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1:02:41\n  label: <missing>\n  genre: <missing>\n  tracks: ['Children', 'Freedom (feat. Kethy Slrdge)', 'Fable', 'One & One (feat. Maria Nayler)', 'Enjoy', 'Landscape', 'Fantasya', 'Textures', 'In My Dreams', 'Flying Away', 'Fable (club version)', 'Freedom (feat. Kathy Sledge)']\nRecord B:\n  name: <missing>\n  artist: Robert Miles\n  release-date: 1998\n  release-country: Russia\n  duration: <missing>\n  label: Motor Music GMBH (2)\n  genre: Electronic\n  tracks: ['Children (Dream Version)', 'One & One (Club Version)', 'Freedom (Radio Edit)', 'Fable (Dream Version)', 'Enjoy', 'In My Dreams', 'Full Moon', 'Princess Of Light', 'Heatwave', 'Textures', 'Us', 'Children (Message Version)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Judgement Day: Music for the Rebels\n  artist: Raging Fyah\n  release-date: 2011-08-07\n  release-country: Jamaica\n  duration: 3067\n  label: <missing>\n  genre: <missing>\n  tracks: ['Irie Vibe', \"Music Isn't Biased\", 'Far Away', 'Running Away', 'World Crisis', 'Karma', 'Behold', 'Judgement Day', 'I and I', 'Ganja', 'Cyan Cool (live)']\nRecord B:\n  name: Judgement Day: Music For The Rebels\n  artist: Raging Fyah\n  release-date: 2011\n  release-country: Jamaica\n  duration: <missing>\n  label: Raging Fyah Production\n  genre: Reggae\n  tracks: ['Irie Vibe', \"Music Isn't Biased\", 'Far Away', 'Running Away', 'World Crisis', 'Karma', 'Behold', 'Judgement Day', 'I And I', 'Ganja', 'Cyaan Cool (Live)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

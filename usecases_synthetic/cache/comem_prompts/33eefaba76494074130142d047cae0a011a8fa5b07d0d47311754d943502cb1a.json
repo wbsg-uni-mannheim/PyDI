@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Outsiders\n  artist: CFCF\n  release-date: 2014-05-20\n  release-country: Canada\n  duration: 2050\n  label: <missing>\n  genre: <missing>\n  tracks: ['Windswept', 'Jump Out of the Train (Road Chief remix by Mark McGuire)', 'The Forest at Night (John Roberts remix)', 'Transcend (Huerco S Temple remix)', 'Strange Form of Life (North Americans remix)', 'Being With You']\nRecord B:\n  name: Outsiders\n  artist: CFCF\n  release-date: <missing>\n  release-country: <missing>\n  duration: 33:01\n  label: <missing>\n  genre: <missing>\n  tracks: ['Windswept', 'Jump Out Of The Train (Road Chief Remix by Mark McGuire)', 'The forest at night (John Roberts remix)', 'Transcend (Huerco S Temple Remix)', 'Strange Form of Life (North Americans Remix)', 'Being With You']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

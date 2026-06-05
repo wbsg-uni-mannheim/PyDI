@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Broken Dreams\n  artist: A Band Called Pain\n  release-date: 2007-07-10\n  release-country: United States of America\n  duration: 74:35\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Broken Dreams\n  artist: A Band Called Pain\n  release-date: 2007-07-10\n  release-country: United States of America\n  duration: 4483\n  label: H iero Imperium\n  genre: Rock\n  tracks: ['Holy', 'State Of The Union', 'The Pieces', 'Grave', 'Hole', 'Broken Dreams', 'The War Song', 'How Would It Feel', 'County Line', 'Hellbound', \"Freedom Ain't Free\", 'Charger', 'Embrace The Pain', 'Walk Away', 'Ten Fold', 'All Over Me', 'Goodbye']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "Yes"
-}

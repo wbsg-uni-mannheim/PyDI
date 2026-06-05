@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Old and Strong in the Modern Times\n  artist: Favez\n  release-date: 2005\n  release-country: Germany\n  duration: 37:07\n  label: <missing>\n  genre: <missing>\n  tracks: ['Looking for Action', 'Primitive Nation of One', 'Colored Machines', 'Bigger the Clouds', 'Marlon Brando, Porsches, Hondas and Me', 'Not Ready for the Wind', 'What Are You Going to Do With My Life', 'And the Ship Sails', 'My Days Off the Hook', 'Desolation Blues', 'Ghost of Winters Past']\nRecord B:\n  name: It's A Crazy World / We Can Be Strong\n  artist: Mac McAnally\n  release-date: 01.01.1977\n  release-country: Germany\n  duration: <missing>\n  label: Ariola\n  genre: Rock\n  tracks: [\"It's A Crazy World\", 'We Can Be Strong']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

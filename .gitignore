@@ -261,23 +261,16 @@ usecases_synthetic/**/output/
 # Transient run-window marker (bare Unix timestamp written at the subtree root).
 usecases_synthetic/.music_window
 
-# Large regenerable artifacts that must NOT go in git: trained model/blocker
-# checkpoints (multi-hundred-MB .pt/.safetensors that exceed GitHub's 100 MB
-# limit; retrain via scripts/{ditto,sc_block}/train.py), Ditto inference
-# memoization, the pool-builder cache, and the K2 embedding tensors (rebuilt
-# deterministically from the tracked *.meta.json sidecars).
-usecases_synthetic/cache/ditto_checkpoints/
-usecases_synthetic/cache/sc_block_checkpoints/
-usecases_synthetic/cache/ditto_inference/
-usecases_synthetic/cache/pool_builder/
-usecases_synthetic/cache/knob_02_embeddings/*.npy
-
-# The content-hash-keyed LLM prompt/response caches under cache/ are deliberately
-# NOT ignored (kept tracked, ~114 MB of small JSON) so variant generation and
-# committee validation reproduce exactly without re-calling the OpenAI API:
+# The entire usecases_synthetic/cache/ tree is now untracked (2026-06-05 directive):
+# kept on disk for reproducibility but no longer committed. This covers the trained
+# model/blocker checkpoints (multi-hundred-MB .pt/.safetensors that exceed GitHub's
+# 100 MB limit; retrain via scripts/{ditto,sc_block}/train.py), Ditto inference
+# memoization, the pool-builder cache, the K2 embedding tensors (rebuilt
+# deterministically from the *.meta.json sidecars), and all the content-hash-keyed
+# LLM prompt/response caches that were previously tracked:
 #   knob_01_paraphrases/ knob_02_interpolations/ knob_02_non_corner/ llm_cache/
 #   matchgpt_prompts/ comem_prompts/ magneto_prompts/ llm_judge_fusion/ llm_normalizer/
-# To stop tracking any of them, add the matching usecases_synthetic/cache/<name>/ line here.
+usecases_synthetic/cache/
 
 # Central per-domain XLSX statistics (regenerable; binary, no useful diff).
 # The README.md alongside stays tracked.

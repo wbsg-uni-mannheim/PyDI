@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Singles\n  artist: Smiths, Tbe\n  release-date: 25.06.1995\n  release-country: Japan\n  duration: 62:13\n  label: <missing>\n  genre: <missing>\n  tracks: ['Hand in Glove', 'This Charming Man', 'What Difference Does It Make?', 'Heaven Knows Iâ€™m Miserable Now', 'William, It Was Really Nothing', 'How Soon Is Now?', 'Shakespeareâ€™s Sister', \"That Joke Isn't Funny Anymore\", 'The Boy With the Thorn in His Side', 'Bigmouth Strikes Again', 'Panic', 'Ask', 'Shoplifters of the World Unite', 'Sheila Take a Bow', 'Girlfriend in a Coma', 'I Started Something I Couldnâ€™t Finish', 'Last Night I Dreamt That Somebody Loved Me', 'There Is a Light That Never Goes Out']\nRecord B:\n  name: Jah9 -  Singles\n  artist: <missing>\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

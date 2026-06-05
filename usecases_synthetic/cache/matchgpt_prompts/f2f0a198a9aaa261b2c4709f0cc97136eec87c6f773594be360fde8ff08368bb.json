@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Beyond Words\n  artist: Egan, Mark\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2970\n  label: <missing>\n  genre: <missing>\n  tracks: ['Campfire Stories', 'Swept Away', 'Durango Kid', 'Beyond Words', 'Serenade', 'The Bamboo Forest', 'After the Rain', 'Southeast Passage', 'Green', 'Napali Coast']\nRecord B:\n  name: Beyond Belief\n  artist: Azure Agony\n  release-date: 2010-01-22\n  release-country: Italy\n  duration: 3009.0\n  label: SG Records\n  genre: Rock\n  tracks: ['Awareness...', 'Mystic Interiors', 'Terror Haza', 'The Temple Of Vandora', 'Ante Tentora', 'Across Elysian Fields', 'The Fall Of The Vector', 'Secret Gateway', 'The Last City']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

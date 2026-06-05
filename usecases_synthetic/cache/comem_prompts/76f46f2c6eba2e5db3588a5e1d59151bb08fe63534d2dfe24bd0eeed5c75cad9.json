@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Enchanted Spirits\n  artist: Magna Canta\n  release-date: 01.01.2000\n  release-country: <missing>\n  duration: 55:17\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Enchanted Journey\n  artist: Wim (10)\n  release-date: 01.01.2015\n  release-country: UK\n  duration: <missing>\n  label: AD Music\n  genre: Electronic\n  tracks: ['Butterfly Tales', 'A King Is Born', 'A New Dawn In Milburg', 'City Wanderer', 'Enchanted Journey', 'Moonlight Serenade', 'Open The Gates', 'The Eagles Are Coming', 'Tonal Siege', 'Diamond In My Soul']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

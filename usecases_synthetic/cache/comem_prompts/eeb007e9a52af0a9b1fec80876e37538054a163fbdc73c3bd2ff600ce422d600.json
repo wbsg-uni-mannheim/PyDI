@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Fearless\n  artist: Noble, Keri\n  release-date: 2005-01-13\n  release-country: Japan\n  duration: 3752\n  label: <missing>\n  genre: <missing>\n  tracks: ['Look at Me', 'Talk to Me', 'Piece of My Heart', 'A Dream About You', 'About Me', 'Let It Rain', 'Falling', 'Love Is All I Know', 'Answered Prayer', 'Bartender', \"I Won't\", 'If No One Will Listen', 'Moving to Dallas', 'About Me', \"I Won't\", 'Get To You', 'This Christmas Time']\nRecord B:\n  name: Fearless\n  artist: K. Noble\n  release-date: <missing>\n  release-country: <missing>\n  duration: 33:40\n  label: <missing>\n  genre: <missing>\n  tracks: ['Look At Me', 'A Dream About You', 'About Me', 'Let It Rain', 'Falling', 'Love Is All I Know', 'Answered Prayer', \"I Won't\", 'If No One Will Listen']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

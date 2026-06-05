@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Echoes of the West\n  artist: Echo West\n  release-date: 2005-01-01\n  release-country: Germany\n  duration: 51:01\n  label: <missing>\n  genre: <missing>\n  tracks: ['Echoes of the West', 'Time of Brokened Ties', 'Hellred Light', 'Love Under Life (An Adverse Birth)', 'Stranger Town', 'You Will Not Be Forgotten', 'Eletheia Eleison', 'Waves at Night', 'Air VX', 'This Cute Bad Girl', 'Human Faith', 'These Highlands We Like']\nRecord B:\n  name: E. West -  Echoes of the West\n  artist: E. West\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:40:54\n  label: <missing>\n  genre: <missing>\n  tracks: ['Echoes Of The West', 'Time Of Brokened Ties', 'Hellred Light', 'Stranger Town', 'You Will Not Be Forgotten', 'Eletheia Eleison', 'Air VX', 'This Cute Bad Girl', 'Human Faith', 'These Highlands We Like']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

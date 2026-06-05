@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: How The West Was Won\n  artist: No Man\n  release-date: 1991-01-01\n  release-country: United States of America\n  duration: 2580\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Cartoon, Cartoon (Where's the exit?)\", 'Boomerang', 'How the West was Won', 'Reach for the Sky', 'Here We Go', 'The Set-up', 'Wounded World', 'Grabbed Star', \"It's Just a Day\", 'No Warning', 'Call on Me', '(Astronomy Engine)']\nRecord B:\n  name: How The West Was Won\n  artist: No Man\n  release-date: 1991-01-01\n  release-country: United States of America\n  duration: 43:00\n  label: SST Records\n  genre: Rock\n  tracks: [\"Cartoon, Cartoon (Where's The Exit?)\", 'Boomerang', 'How The West Was Won', 'Reach For The Sky', 'Here We Go', 'The Set-up', 'Wounded World', 'Grabbed Star', \"It's Just A Day\", 'No Warning', 'Call On Me', '(Astronomy Engine)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

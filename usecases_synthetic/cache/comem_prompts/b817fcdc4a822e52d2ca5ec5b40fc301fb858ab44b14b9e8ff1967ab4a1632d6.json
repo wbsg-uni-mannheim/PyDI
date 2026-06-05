@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Echo Base Soundsystem\n  artist: Echo Base Soundsystem\n  release-date: <missing>\n  release-country: United States of America\n  duration: 45:54\n  label: <missing>\n  genre: <missing>\n  tracks: ['Glitchopolis', 'Nyingje', 'Niko', 'Zentrum', 'Dem Have', 'Leroi Clinging To Fire', 'Dervish']\nRecord B:\n  name: Deluxe Soundsystem\n  artist: Dynamite D.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:44:06\n  label: <missing>\n  genre: <missing>\n  tracks: ['Intro', 'Wie jetzt', 'Samy Deluxe Pt.2', 'GrÃƒÂ¼ne Brille', 'Blow Shit Up', 'Eigentlich', 'DD im Haus', 'Boom', 'Lots of Signs', 'Instinkt', 'Meilenstein', 'Deluxe Soundsystem', 'Zap Zap', 'Bis dato']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

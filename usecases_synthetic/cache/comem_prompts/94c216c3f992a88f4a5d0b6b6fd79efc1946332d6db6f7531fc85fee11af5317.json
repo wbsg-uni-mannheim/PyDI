@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Puzzle\n  artist: Puzzle\n  release-date: 01.01.1999\n  release-country: France\n  duration: 40:49\n  label: <missing>\n  genre: <missing>\n  tracks: ['P.U.Z.Z.L.E.', \"J'ai jamais trahi\", 'Pousse Ã§a Ã\\xa0 fond', 'Ã‰changes de bons procÃ©dÃ©s', \"J'vais changer\", 'Reste sport', 'Le Tour du monde en 80 mesures', \"J'rap comme si j'allais mourir demain\", 'Le soleil me promet la lune', \"J'ai jamais trahi (remix)\"]\nRecord B:\n  name: Puzzle\n  artist: Puzzle\n  release-date: <missing>\n  release-country: France\n  duration: <missing>\n  label: Sonodisc\n  genre: Folk, World, & Country\n  tracks: ['Ti Bolom', 'La Vi Sé An Bato', \"Sagan' Dikenner\", 'Krik Krak', \"Lanmonin Jon'\", 'Pli Ta Pli Tris', 'Bétafé', \"Aux Portes De L'Oubli\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

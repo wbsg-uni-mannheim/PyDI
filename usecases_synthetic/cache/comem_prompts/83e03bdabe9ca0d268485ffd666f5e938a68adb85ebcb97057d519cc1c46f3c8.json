@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Kamasutra Experience\n  artist: Khan, Al Gromer\n  release-date: 1999\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 3106\n  label: <missing>\n  genre: <missing>\n  tracks: ['Mahal', 'Door of the Minbar', 'Paisley in Meherabad', 'Silent Voice', 'Atma Drum', \"The King's Chamber\", 'A Hundred Moons', 'Mahal Recall', 'Isfahan Green']\nRecord B:\n  name: An Experience In Reality\n  artist: Sound 360\n  release-date: 01.01.1999\n  release-country: United States of America\n  duration: <missing>\n  label: FDR Tapes\n  genre: Electronic\n  tracks: ['A Lagoon Such As This', 'Electro Space Station Waltz', 'Blank', 'Star Seeker', 'M.B.', 'Midnight March', 'The Cool Down', 'On This Day', 'The Variety Show', 'Nov. 1st']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

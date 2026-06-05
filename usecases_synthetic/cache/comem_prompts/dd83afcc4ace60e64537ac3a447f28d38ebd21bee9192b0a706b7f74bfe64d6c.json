@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Marbles EP\n  artist: Novox\n  release-date: 2007-03-01\n  release-country: Germany\n  duration: 1307\n  label: <missing>\n  genre: <missing>\n  tracks: ['Marbles', 'Gearbox', 'Cheaky Peaky']\nRecord B:\n  name: World  Marbles\n  artist: Under T. Counter\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2848.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Sohappy, Unhappy', 'Ã£Æ’Â¢Ã£Æ’â‚¬Ã£Æ’Â³Ã£Æ’Â©Ã£â€šÂ¤Ã£Æ’â€¢', 'Rat', 'E', 'Ã£â€šÂ¹Ã£Æ’â€”Ã£Æ’ÂªÃ£Æ’Â³Ã£â€šÂ¯Ã£Æ’Â©Ã£Æ’Â¼', 'Stereo Homesick', 'Ã¨Â³â€ºÃ§Â¾Å½Ã¦Â\\xadÅ’', 'tricolor', 'Ã£Æ’Å\\xa0Ã£â€šÂ¤Ã£Æ’Ë†Ã£Æ’Â»Ã£â€šÂªÃ£Æ’Â³Ã£Æ’Â»Ã£â€šÂ¶Ã£Æ’Â»Ã£Æ’â€”Ã£Æ’Â©Ã£Æ’?Ã£Æ’Æ’Ã£Æ’Ë†', 'Gone', 'Ã£â€šÂµÃ£Æ’â€¹Ã£Æ’Â¼ Ã£â€šÂµÃ£Æ’â€¹Ã£Æ’Â¼']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

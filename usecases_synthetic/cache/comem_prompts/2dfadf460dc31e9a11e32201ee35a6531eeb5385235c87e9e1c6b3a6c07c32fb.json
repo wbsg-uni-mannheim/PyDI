@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Supernatural\n  artist: Tiger Milk\n  release-date: 2012-04-16\n  release-country: Estonia\n  duration: 2850\n  label: <missing>\n  genre: <missing>\n  tracks: ['Prologue', 'Another World', 'All the Drugs', 'Define Love', 'Story of My Life', 'The Game', 'When Your Heart Dies', 'Ruins of the Lost Realm', 'International Band', 'Cut the Cord (Tiger Milk remix)']\nRecord B:\n  name: Supernatural\n  artist: Tiger Milk\n  release-date: <missing>\n  release-country: <missing>\n  duration: 32:40\n  label: <missing>\n  genre: <missing>\n  tracks: ['Prologue', 'All the Drugs', 'Define Love', 'Story of My Life', 'When Your Heart Dies', 'International Band', 'Cut The Cord (Tiger Milk Remix)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

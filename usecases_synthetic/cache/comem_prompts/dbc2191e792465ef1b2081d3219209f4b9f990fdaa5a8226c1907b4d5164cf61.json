@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Go See The Doctor / Monster Crack\n  artist: Kool Moe Dee\n  release-date: 1986-01-01\n  release-country: United States of America\n  duration: 1031\n  label: <missing>\n  genre: <missing>\n  tracks: ['Go See the Doctor (Uncensored)', 'Go See the Doctor (Almost clean)', 'Monster Crack (Street mix)', 'Monster Crack (radio edit)']\nRecord B:\n  name: Turtle Monster\n  artist: The Flies (7)\n  release-date: 1985-01-01\n  release-country: Australia\n  duration: <missing>\n  label: Pagan Records (7)\n  genre: Rock\n  tracks: ['Turtle Monster', 'Dr. Who', 'Calendar', 'Taking Shape']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Purple Line\n  artist: Devecly Bitte\n  release-date: 2013-03-29\n  release-country: <missing>\n  duration: 1869\n  label: <missing>\n  genre: <missing>\n  tracks: ['Line', 'Bananaman', 'Circle K', 'Nagoya Dub', 'Line (Fingers in the Noise remix)']\nRecord B:\n  name: Purple Skies\n  artist: UDM (2)\n  release-date: 2014-03-24\n  release-country: Spain\n  duration: 947.0\n  label: Entrance Music\n  genre: Electronic\n  tracks: ['Purple Skies (Original Mix)', 'Purple Skies (Philippe El Sisi Remix)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Singles Only\n  artist: Briefs, The\n  release-date: <missing>\n  release-country: Japan\n  duration: 2766\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Wink Hot Singles\n  artist: Wink (4)\n  release-date: 1990-11-01\n  release-country: Japan\n  duration: 42:42\n  label: Polystar Co.,Ltd.\n  genre: Electronic|Pop\n  tracks: ['Sugar Baby Love', 'アマリリス', '愛が止まらない 〜Turn It Into Love〜', \"涙をみせないで 〜Boys Don't Cry〜\", '淋しい熱帯魚', 'One Night In Heaven 〜真夜中のエンジェル〜', 'Sexy Music', '夜にはぐれて 〜Where Were You Last Night〜', 'Non Stop Mix']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

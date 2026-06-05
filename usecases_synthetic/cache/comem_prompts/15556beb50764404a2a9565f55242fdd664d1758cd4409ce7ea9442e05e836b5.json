@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Butterfly Wings Make\n  artist: Wren, Orla\n  release-date: 2006-08-28\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 3215\n  label: <missing>\n  genre: <missing>\n  tracks: ['Closure', 'Myself and Movement', 'Ballad of a Daydream', 'Between the Rain and my Skin', 'Hand Stitched', 'Moth', 'Weir', 'Happy Done Gone', 'Fawn', 'She Smiles When He Calls Her Friend', 'Sea Grass']\nRecord B:\n  name: The Butterfly Effect\n  artist: Moonspell\n  release-date: 2005-01-01\n  release-country: Russia\n  duration: 57:22\n  label: Фоно\n  genre: Rock\n  tracks: ['Soulsick', 'Butterfly FX', \"Can't Bee\", 'Lustmord', 'Selfabuse', 'I Am The Eternal Spectator', 'Soulitary Vice', 'Disappear Here', 'Adaptables', 'Angelizer', 'Tired', 'K', 'O Mal De Cristo']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

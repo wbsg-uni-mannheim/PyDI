@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Blak Elvis vs. The Kings of Electronic Rock and Roll\n  artist: Sigue Sigue Sputnik\n  release-date: 2002-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 45:07\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Blak Elvis vs. The Kings Of Electronic Rock And Roll\n  artist: Sigue Sigue Sputnik\n  release-date: 2002-01-01\n  release-country: UK\n  duration: 2707\n  label: Sputnikworld Records\n  genre: Electronic\n  tracks: ['Trailer', 'The King Of Rock And Roll', 'Hound Dogg', 'Heartbreak Hotel (Chainsaw Mix)', 'Always On My Mindwarp', 'Burning Luv', 'Shook Up', 'Double Trouble', 'Mystery Trainz', \"Kan't Help Falling In Love\", 'The King Of Rock And Roll (Widescreen)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

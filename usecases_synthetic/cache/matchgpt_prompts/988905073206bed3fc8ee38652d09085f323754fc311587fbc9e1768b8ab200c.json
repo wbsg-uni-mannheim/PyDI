@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Going Nowhere EP\n  artist: Lowtec\n  release-date: 2006-09-01\n  release-country: <missing>\n  duration: 26:15\n  label: <missing>\n  genre: <missing>\n  tracks: ['Going Nowhere', 'Waste of Time', 'Ked 69', 'Formica', 'Flat Dog']\nRecord B:\n  name: Nowhere\n  artist: <missing>\n  release-date: 01.01.2007\n  release-country: Germany\n  duration: <missing>\n  label: Ata Tak\n  genre: Electronic\n  tracks: [\"L'Argent\", 'Oxy', 'Trancelingen', 'Now Here', 'The Earth Is Round', 'Come To Me', 'Nowhere', 'Positive', 'Himalaya', \"C'Est La Vie\", 'Wald']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

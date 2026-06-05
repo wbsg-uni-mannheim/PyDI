@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: United\n  artist: Deutschland sucht den Superstar\n  release-date: 2003-02-10\n  release-country: Germany\n  duration: 2737\n  label: <missing>\n  genre: <missing>\n  tracks: ['We Have a Dream', 'Tonight', 'Cry on My Shoulder', 'A Young Generation', 'Here We Stand Again (Stay With Me Tonight)', 'Superman', 'How Can We Mend Your Lonely Heart', 'Today, Tonight, Tomorrow', 'We Are No Heroes', 'Freedom', 'God Gave Love to You', \"It's All Over\"]\nRecord B:\n  name: United\n  artist: Paddington Distortion Combo\n  release-date: 2011-09-11\n  release-country: Germany\n  duration: <missing>\n  label: Save The CD-R\n  genre: Electronic|Pop\n  tracks: ['Elsa Attending An Anti-atom Demo In Munich', 'Violence', 'Traumzeit', 'Bit', 'I Hate Violence, But I Hate You More', 'Godnattvisa', 'Around Me', 'Drömvisa', 'It All Ends Here/My Only Wish']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

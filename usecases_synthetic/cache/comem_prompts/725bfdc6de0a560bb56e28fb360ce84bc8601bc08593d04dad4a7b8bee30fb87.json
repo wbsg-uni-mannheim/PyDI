@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: In Search Of...\n  artist: Meanies, The\n  release-date: 01.01.1992\n  release-country: AustRalia\n  duration: 30:59\n  label: <missing>\n  genre: <missing>\n  tracks: ['Wonderland', 'Monopoly Money', 'Once Again', 'House of Bassinet', 'Round in Circles', 'Update', 'Keep a Balance', 'On Tragedy Street', 'In Search Of...']\nRecord B:\n  name: In Search Of...\n  artist: N*E*R*D\n  release-date: 01.01.2014\n  release-country: Europe\n  duration: 3529\n  label: Virgin\n  genre: Hip Hop\n  tracks: ['Lapdance', 'Things Are Getting Better', 'Brain', 'BonusTrack', 'Rock To The Sun (Original Version)', 'Provider', 'Truth Or Dare', 'Tape You', 'Run To The Sun', 'Baby Doll', 'Am I High', 'Rock Star', 'Bobby James', 'Stay Together']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

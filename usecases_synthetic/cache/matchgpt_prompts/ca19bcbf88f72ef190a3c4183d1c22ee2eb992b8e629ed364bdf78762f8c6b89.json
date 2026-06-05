@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Voodoo Moon\n  artist: Rocky Athas Group, The\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2883\n  label: <missing>\n  genre: <missing>\n  tracks: ['Road Fever', 'Muddy Water Blues', 'Last of the Blues', \"Tearin' Me Up\", 'Back on the Road', 'Voodoo Moon', 'Sleep', 'Nobody', \"I'm in Love Again\", \"Ain't No Doubt\", 'Preacher', 'Stop, Drop & Roll']\nRecord B:\n  name: Voodoo Chic\n  artist: Helicopter Girl\n  release-date: 2005-07-26\n  release-country: United States of America\n  duration: 45:41\n  label: Robbins Entertainment\n  genre: Electronic|Rock\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Echoes Out of Time\n  artist: Testament de la LumiÃ¨re, Le\n  release-date: 04/09/2010\n  release-country: Austria\n  duration: 1h 10m 11s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Echoes Out of Time', 'Retaliation... And the Gods Have Smiled', 'Decline', 'Marsch Der Kolonnen', \"Moving Machines Waste Their Time in Dead Factory's, Part 2\", 'Fernes Licht', 'Dome of Skulls', 'SpÃ¤te Mitternachtsstunde', 'Standing Stones', 'Dolmen', 'The Wind Tells Forgotten Times', 'Lulloden', 'Walking Through Desert Valleys', 'Cold Cell', 'Erebus']\nRecord B:\n  name: Dead Moon -  Echoes Of The Past\n  artist: Dead Moon\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Genesis Revealed\n  artist: Merciful  Nuns\n  release-date: 2012-03\n  release-country: Germany\n  duration: 17:47\n  label: <missing>\n  genre: <missing>\n  tracks: ['Prediction', 'Genesis Revealed', 'All Days Are Black', 'Enlightenment']\nRecord B:\n  name: It Shall Be Revealed\n  artist: Tim Pritchard\n  release-date: 15.05.2012\n  release-country: United States of America\n  duration: <missing>\n  label: Not on label\n  genre: Rock|Folk, World, & Country\n  tracks: ['Weary Lone Horizon', \"Don't Leave Me Behind\", 'Roses And Wine', 'Headstreams', 'The Willow Tree', 'Clockwork Abandon', \"If She's Gonna Bend\", 'Hadean Holiday', 'The Bells', 'It Shall Be Revealed']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

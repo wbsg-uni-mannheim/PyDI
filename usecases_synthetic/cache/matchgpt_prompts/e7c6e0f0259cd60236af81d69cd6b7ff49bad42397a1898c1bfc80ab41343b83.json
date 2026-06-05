@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Light Beyond\n  artist: Pearce, Jeff feat.\n  release-date: 2001-01-01\n  release-country: United States of America\n  duration: 3482\n  label: <missing>\n  genre: <missing>\n  tracks: ['Migration of Souls', 'Across the Infinite Sea', 'A Farther Shore', 'The Light Beyond']\nRecord B:\n  name: Sex Beyond The Grave\n  artist: Must Missa\n  release-date: 2001\n  release-country: Latvia\n  duration: 1416.0\n  label: Ketzer Records|Beverina Productions\n  genre: Rock\n  tracks: ['Noiad', 'Mööda Tumedaid', 'Varjuta', 'Karda Mu Palet', 'Hautagu(ne)seks']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Behaviour Self (orig.)\n  artist: Marlo, Clair (and others)\n  release-date: 1997-01-22\n  release-country: Japan\n  duration: 2932\n  label: <missing>\n  genre: <missing>\n  tracks: ['Wish', 'Too Close', 'Break the Chain', 'Whatever It Takes', 'Universal Love', 'Move Closer', 'Going Down to Liverpool', 'No More Than I', 'Your Secret Is Safe With Me', 'Dominique']\nRecord B:\n  name: Behaviour\n  artist: Pet Shop Boys\n  release-date: 1990\n  release-country: Czechoslovakia\n  duration: 2601.0\n  label: Popron\n  genre: Electronic|Pop\n  tracks: ['Being Boring', 'This Must Be The Place I Waited Years To Leave', 'To Face The Truth', 'How Can You Expect To Be Taken Seriously?', 'Only The Wind', 'My October Symphony', 'So Hard', 'Nervously', 'The End Of The World', 'Jealousy']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

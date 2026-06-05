@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Very Best of the Mills Brothers\n  artist: Mills Brothers, The\n  release-date: <missing>\n  release-country: United States of America\n  duration: 1863\n  label: <missing>\n  genre: <missing>\n  tracks: ['Cab Driver', \"You're Nobody Til Somebody Loves You\", 'F.D.R. Jones', 'Swing Is the Thing', 'Nagasaki', 'The Jones Boys', 'Paperdoll', \"It Don't Mean a Thing\", 'Smoke Rings', 'Shoe Shine Boy', 'You Always Hurt the One You Love', 'Glow Worm', 'Basin Street Blues', 'Jeepers Creepers', 'London Rhythm', 'Caravan', 'Nevertheless', 'Georgia on My Mind', 'Stardust', 'Organ Grinders Swing', 'Lazy Bones', 'Til Then']\nRecord B:\n  name: Best of Outhere Brothers\n  artist: T. Outhere Brothers\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

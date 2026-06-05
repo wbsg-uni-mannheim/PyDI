@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Con Demos\n  artist: Tegan and Sara\n  release-date: 2008-01-01\n  release-country: Canada\n  duration: 2213\n  label: <missing>\n  genre: <missing>\n  tracks: ['I Was Married', 'Relief Next to Me', 'The Con', 'Knife Going In', 'Are You Ten Years Ago', 'Back in Your Head', 'Hop a Plane', 'Soil, Soil', 'Burn Your Life Down', 'Nineteen', 'Floorplan', 'Like O, Like h', 'Dark Come Soon', 'Call It Off']\nRecord B:\n  name: The Con Demos\n  artist: Tegan and Sara\n  release-date: 2008\n  release-country: Canada\n  duration: <missing>\n  label: Not On Label (Tegan and Sara Self-released)\n  genre: Rock|Folk, World, & Country\n  tracks: ['I Was Married', 'Relief Next To Me', 'The Con', 'Knife Going In', 'Are You Ten Years Ago', 'Back In Your Head', 'Hop A Plane', 'Soil, Soil', 'Burn Your Life Down', 'Nineteen', 'Floorplan', 'Like O, Like h', 'Dark Come Soon', 'Call It Off']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

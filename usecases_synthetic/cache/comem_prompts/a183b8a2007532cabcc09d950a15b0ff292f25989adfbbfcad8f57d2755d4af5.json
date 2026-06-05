@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Get Into the Music\n  artist: DJ's Rule\n  release-date: 1996-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 1989\n  label: <missing>\n  genre: <missing>\n  tracks: ['Get Into the Music (Goodfellos radio edit)', 'Get Into the Music (Goodfellos remix)', 'Get Into the Music (Hybrid mix)', 'Get Into the Music (1990 Serious mix)', 'Get Into the Music (Cyber mix)']\nRecord B:\n  name: Face The Music\n  artist: Mylon & Broken Heart\n  release-date: 1988\n  release-country: United States of America\n  duration: 2010.0\n  label: Star Song\n  genre: Pop|Rock\n  tracks: ['Won By Won', 'Sixteen', 'Talk To Me', 'Modern Man', 'Mercy Seat', 'Again And Again', 'Change', 'Rock Of Safety', 'Lamb Of God']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

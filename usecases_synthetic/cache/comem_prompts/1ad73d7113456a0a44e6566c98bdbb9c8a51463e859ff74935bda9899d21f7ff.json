@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Electronic Pleasure (Remixes)\n  artist: N-Trance\n  release-date: 1996-01-01\n  release-country: Germany\n  duration: 911\n  label: <missing>\n  genre: <missing>\n  tracks: ['Electronic Pleasure (Quicksilver mix)', 'Electronic Pleasure (Dark mix)']\nRecord B:\n  name: Electronic Confusion (Remixes)\n  artist: Niels Van Gogh\n  release-date: 2001\n  release-country: Germany\n  duration: 1034.0\n  label: Kosmo Records\n  genre: Electronic\n  tracks: [\"Electronic Confusion (Mr.Sam's Never Less Than 10 Minutes Remix)\", 'Electronic Confusion (Tuesday Remix)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

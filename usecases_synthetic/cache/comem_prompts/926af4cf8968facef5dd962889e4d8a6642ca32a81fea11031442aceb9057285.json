@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Nine Lives\n  artist: Raitt, Bonnie\n  release-date: 1986-01-01\n  release-country: United States of America\n  duration: 2541\n  label: <missing>\n  genre: <missing>\n  tracks: ['No Way to Treat a Lady', \"Runnin' Back to Me\", 'Who But a Fool (Thief Into Paradise)', 'Crime of Passion', 'All Day, All Night', 'Stand Up to the Night', 'Excited', \"Freezin' (For a Little Human Love)\", 'True Love Is Hard to Find', 'Angel']\nRecord B:\n  name: Nine Lives\n  artist: REO Speedwagon\n  release-date: <missing>\n  release-country: United States of America\n  duration: 2048.0\n  label: Epic\n  genre: Rock\n  tracks: ['Heavy On Your Love', 'Drop It (An Old Disguise)', 'Only The Strong Survive', 'Easy Money', 'Rock & Roll Music', 'Take Me', 'I Need You Tonight', 'Meet Me On The Mountain', 'Back On The Road']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

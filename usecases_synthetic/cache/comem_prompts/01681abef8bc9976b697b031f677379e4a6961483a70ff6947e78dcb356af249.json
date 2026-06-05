@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Avoiding the Consequences\n  artist: Shoreline Dream\n  release-date: 19.09.2006\n  release-country: United States of America\n  duration: 1:01:58\n  label: <missing>\n  genre: <missing>\n  tracks: ['Preludes', 'Laying This One Down Now', 'Saturday Morning', 'Focus the Present', 'Hook Echo', 'Love Is a Ghost in America', 'Peel You Open', 'Intermissionary', 'Motherly Advice', 'Pour', 'Projections', 'Zoning', 'The End']\nRecord B:\n  name: The Consequences Of Indecisions\n  artist: Mike Olsfodld\n  release-date: 01/01/1981\n  release-country: Germany\n  duration: <missing>\n  label: Happy Bird\n  genre: Rock\n  tracks: ['The Sighted Light', 'Hands Calming The Water', 'Mathematical Air Display', 'The Consequences Of Indecisions', 'Part One: Time Heals All Wounds', 'Part Two: Comfort With A Stranger', '-', 'False Start']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

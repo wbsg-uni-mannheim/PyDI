@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Dreamland\n  artist: Timewave\n  release-date: 15.05.2011\n  release-country: <missing>\n  duration: 24:09\n  label: <missing>\n  genre: <missing>\n  tracks: ['Arrivals', 'Stayings', 'Departures']\nRecord B:\n  name: Dreamland\n  artist: Plant Robert\n  release-date: 16.07.2002\n  release-country: United States of America\n  duration: 3237\n  label: <missing>\n  genre: Rock & Roll\n  tracks: [\"Funny In My Mind (I Believe I'm Fixin' To Die)\", 'Morning Dew', 'One More Cup Of Coffee', 'Last Time I Saw Her', 'Song To The Siren', 'Win My Train Fare Home (If I Ever Get Lucky)', 'Darkness Darkness', 'Red Dress', 'Hey Joe', \"Skip's Song\"]\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

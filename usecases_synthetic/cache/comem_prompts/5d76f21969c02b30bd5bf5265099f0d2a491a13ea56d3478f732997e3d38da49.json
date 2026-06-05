@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Dancing Metropolis Burial\n  artist: Adaen\n  release-date: 2009-01-01\n  release-country: Russian Federation\n  duration: 401\n  label: <missing>\n  genre: <missing>\n  tracks: ['Airships', 'Disconnected', 'Sounds of Running Trains', 'Cameras Set Within', 'The Second Wave']\nRecord B:\n  name: Dancing Metropolis Burial\n  artist: Adaen\n  release-date: 2009-01-01\n  release-country: Russia\n  duration: 401\n  label: Adaen\n  genre: Rock\n  tracks: ['Airships', 'Disconnected', 'Sounds Of Running Trains', 'Cameras Set Within', 'The Second Wave']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

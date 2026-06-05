@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Indestructible\n  artist: Rancid\n  release-date: <missing>\n  release-country: United States of America\n  duration: 52m 31s\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Indestructible\n  artist: Rancid\n  release-date: <missing>\n  release-country: Europa\n  duration: 0:52:31\n  label: Hellcat\n  genre: <missing>\n  tracks: ['Indestructible', 'Fall Back Down', 'Red Hot Moon', 'David Courtney', 'Start Now', 'Out Of Control', 'Django', 'Arrested In Shanghai', 'Travis Bickle', 'Memphis', \"Spirit Of '87\", 'Ghost Band', 'Tropical London', 'Roadblock', 'Born Frustrated', 'Back Up Against The Wall', 'Ivory Coast', 'Stand Your Ground', 'Otherside']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

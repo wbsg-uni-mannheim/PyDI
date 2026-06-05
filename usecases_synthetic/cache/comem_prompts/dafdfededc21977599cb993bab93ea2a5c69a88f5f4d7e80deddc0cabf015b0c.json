@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: From the Sublime to the Obscene (orig.)\n  artist: D.U.S.T.\n  release-date: 2003-05-20\n  release-country: United States of America\n  duration: 2800\n  label: <missing>\n  genre: <missing>\n  tracks: ['From the Sublime to the Obscene', 'Tongue', 'Leah Sublime', 'Fame', 'Bleed', 'Nowhere Neverbe', 'Jim Bentley', 'Hyperfly', 'This I Saw', 'My Fall Disgrace', 'White (Black) Rabbit']\nRecord B:\n  name: From The Sublime To The Obscene\n  artist: D.U.S.T.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2803.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['From the Sublime to the Obscene', 'Tongue', 'Leah Sublime', 'Fame', 'Bleed', 'Nowhere Neverbe', 'Jim Bentley', 'Hyperfly', 'This I Saw', 'My Fall Disgrace', 'White (Black) Rabbit']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

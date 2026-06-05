@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Spaceship\n  artist: Benassi, Benny\n  release-date: 01.01.2010\n  release-country: Italy\n  duration: 46:15\n  label: <missing>\n  genre: <missing>\n  tracks: ['Spaceship (UK radio edit)', 'Spaceship (extended mix)', 'Spaceship (Kris Menace remix)', 'Spaceship (Fedde Le Grand remix)', 'Spaceship (Rivaz remix)', 'Spaceship (Alex Gaudino and Jason Rooney remix)', \"Spaceship (EDX's Dubai Skyline remix)\", 'Spaceship (Edu K remix)']\nRecord B:\n  name: Spaceship\n  artist: Kano (4)\n  release-date: 01.01.2010\n  release-country: <missing>\n  duration: <missing>\n  label: BPM (Bigger Picture Mus.)\n  genre: Electronic\n  tracks: ['Spaceship (Radio Edit)', 'Spaceship (Original Version)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

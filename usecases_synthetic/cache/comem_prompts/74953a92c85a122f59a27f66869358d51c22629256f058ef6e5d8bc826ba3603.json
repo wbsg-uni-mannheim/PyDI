@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Suck It and See\n  artist: Candyland\n  release-date: 1991-01-01\n  release-country: Netherlands\n  duration: 2646\n  label: <missing>\n  genre: <missing>\n  tracks: ['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something to Somebody', 'Reternity', 'Rainbow', 'Ivy to Oak', 'Kingdom', 'The Body Is the Book', 'Behold the Motherlode', 'We Will Not Leave']\nRecord B:\n  name: Suck It And See\n  artist: Candyland\n  release-date: 1991-01-01\n  release-country: Netherlands\n  duration: 2646\n  label: Polydor\n  genre: Electronic|Rock\n  tracks: ['Precious', \"Fountain O' Youth\", 'Bitter Moon', 'Something To Somebody', 'Reternity', 'Rainbow', 'Ivy To Oak', 'Kingdom', 'The Body Is The Book', 'Behold The Motherlode', 'We Will Not Leave']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

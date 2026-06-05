@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Blue Visions\n  artist: F.D. Project\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1:08:54\n  label: <missing>\n  genre: <missing>\n  tracks: ['Harmonie in Space', 'Dreamless World', 'Galaxy 2003... the Next Generation', 'Memorys', 'Sealife - Whale and Dolphin', 'Galaxy 2004... the Long Way', 'Two Times in One', 'Endless Dream Part Two', 'Blue Visions']\nRecord B:\n  name: Visions\n  artist: Psychosphera\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: ['Mysteria', 'Solaris', 'Meteora', 'Omnis', 'Aphrodite', 'Lotus', 'Shamballa', 'Trinity', 'Apnea', 'Pandora', 'Nirvana', 'Phaenomena', 'Venus', 'Exotica']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

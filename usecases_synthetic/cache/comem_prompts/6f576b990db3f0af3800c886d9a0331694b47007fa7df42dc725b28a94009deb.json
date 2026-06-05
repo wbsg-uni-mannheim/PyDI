@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Beyond\n  artist: Joseph, William\n  release-date: 01.01.2008\n  release-country: <missing>\n  duration: 50:22\n  label: <missing>\n  genre: <missing>\n  tracks: ['Standing the Storm', 'Beyond', 'Leningrad', 'Heroes', 'Once Upon Love', 'Kashmir', 'Sweet Remembrance of You', 'Apasionada', 'Return With Honor', 'Cinema Paradiso', 'Asturias', \"A Mother's Heart\"]\nRecord B:\n  name: - new - Beyond\n  artist: William J.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:50:07\n  label: <missing>\n  genre: <missing>\n  tracks: ['Standing The Storm', 'Beyond', 'Leningrad', 'Heroes', 'Once Upon Love [Featuring David Foster]', 'Kashmir', 'Sweet Remembrance Of You', 'Apasionada', 'Return With Honor', 'Cinema Paradiso', 'Asturias [Featuring Jesse Cook]', \"A Mother's Heart\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Back to Beyond\n  artist: Ewigkeit\n  release-date: 2013-08-23\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 3395\n  label: <missing>\n  genre: <missing>\n  tracks: ['Back to Beyond', 'Astral Projection', 'Point of No Return', 'Time Storm', 'The Soul Sustains', 'Starscape (2013)', 'ISON - Beyond the Oort Cloud', 'Det som engang var']\nRecord B:\n  name: Back to Beyond\n  artist: Ewigkeit\n  release-date: <missing>\n  release-country: <missing>\n  duration: 37:58\n  label: <missing>\n  genre: <missing>\n  tracks: ['Back to Beyond', 'Time Storm', 'Starscape 2013', 'ISON Beyond the Oort Cloud', 'Det Som Engang Var (cover)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

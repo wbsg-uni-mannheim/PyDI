@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Elephants at the Door\n  artist: Dumbo Gets Mad\n  release-date: 2011-02-02\n  release-country: Italy\n  duration: 1032\n  label: <missing>\n  genre: <missing>\n  tracks: [\"Limbo's Village\", 'Plumy Tale', 'Marmelade Kids', 'Sleeping Over', 'Harmony', 'Why Try?', 'Eclectic Prawn', 'Self Esteem', 'Raymond Play', 'You Make You Feel']\nRecord B:\n  name: Nurses Song With Elephants\n  artist: David Bedford\n  release-date: 2011\n  release-country: UK\n  duration: <missing>\n  label: Esoteric Recordings\n  genre: Rock\n  tracks: [\"It's Easier Than It Looks\", 'Nurses Song With Elephants', \"Some Bright Stars For Queen's College\", 'Trona', 'Sad And Lonely Faces']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

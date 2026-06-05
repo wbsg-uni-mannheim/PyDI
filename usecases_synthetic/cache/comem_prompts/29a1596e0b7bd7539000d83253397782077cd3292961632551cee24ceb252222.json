@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Mama Said Go Slow\n  artist: Vakula\n  release-date: 2011-06\n  release-country: <missing>\n  duration: 0:00\n  label: <missing>\n  genre: <missing>\n  tracks: ['Mama Said Go Slow', 'Deaf World (dub)']\nRecord B:\n  name: Mama Said\n  artist: Lenny Kravitz\n  release-date: 01.01.1991\n  release-country: Canada\n  duration: <missing>\n  label: Virgin\n  genre: <missing>\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

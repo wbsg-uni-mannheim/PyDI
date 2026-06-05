@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Epic Willie (The Epic Recordings)\n  artist: Wet Willie others) (and\n  release-date: 2005-03-08\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 77:13\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Lost And Broken Recordings\n  artist: DoubleJohnGrey\n  release-date: <missing>\n  release-country: UK\n  duration: 2482\n  label: Not On Label (DoubleJohnGrey Self-released)\n  genre: <missing>\n  tracks: ['All Greetings Are Goodbyes', \"Everybody's Dancing\", 'The Early Action Group', 'Broadcast', 'Safety', 'I Should Be Your King', 'Stand Back', 'Crippled Feet']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

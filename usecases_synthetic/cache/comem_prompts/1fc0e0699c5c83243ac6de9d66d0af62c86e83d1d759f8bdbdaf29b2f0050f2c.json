@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Open Spaces\n  artist: ASC\n  release-date: 21.12.2004\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 71:57\n  label: <missing>\n  genre: <missing>\n  tracks: ['Half-Life', 'Saturn 5', 'Terminal, Part 2', 'Fever', 'Mind Control (Remastered)', 'What the Future Holds', 'Spirit Waves', 'Out of Reach', 'Storm on the Horizon', 'Tunnel Vision', 'Concrete Wave', 'Tourian']\nRecord B:\n  name: Spaces\n  artist: ASC\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:59:27\n  label: <missing>\n  genre: <missing>\n  tracks: ['Half-Life', 'Terminal part 2', 'Fever', 'Mind Control (remastered)', 'What the Future Holds feat. Jadis', 'Spirit Waves', 'Storm on the Horizon', 'Tunnel Vision', 'Concrete Wave', 'Tourian']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Parallel Lifeforms\n  artist: Neuroactive\n  release-date: 1998-12\n  release-country: United States of America\n  duration: 1430\n  label: <missing>\n  genre: <missing>\n  tracks: ['Parallel (Dancefloor remix)', 'Moments Passing By (Retro mix)', 'Half-Life (Plutonium edit)', 'Parallel (original version)', 'Moments Passing By (extended remix)']\nRecord B:\n  name: Kill All Lifeforms\n  artist: Exium\n  release-date: <missing>\n  release-country: <missing>\n  duration: 961.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Kill All Lifeforms', 'Gong', 'Ljubav']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: California Blur\n  artist: Swirl 360\n  release-date: 2005-04-25\n  release-country: Swed en\n  duration: 52m 3s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Oblivion', 'California Blur', 'Chemical (My True Love)', 'Perfect Day', 'See You Around', 'Blindside', 'Runaway', 'Nothing Left', 'My Mistake', 'One & Only', 'Postcard...Wish You Were Here', 'Light Shine', 'Okay']\nRecord B:\n  name: Inner Monster Out\n  artist: Shadowside\n  release-date: <missing>\n  release-country: SwedEn\n  duration: <missing>\n  label: Inner Wound RecorDings\n  genre: Rock\n  tracks: ['Gag Order', 'Angel With Horns', 'Habitchual', 'In The Name Of Love', 'Inner Monster Out', \"I'm Your Mind\", 'My Disrupted Reality', 'A Smile Upon Death', 'Whatever Our Fortune', 'A.D.D.', 'Waste Of Life', 'Bonus Track', 'Ace Of Spades']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

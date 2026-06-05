@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Golden Classics\n  artist: Playmates, The\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1823\n  label: <missing>\n  genre: <missing>\n  tracks: ['Jo Ann', \"Let's Be Lovers\", \"Don't Go Home\", 'The Day I Died', 'While The Record Goes Around and Around', 'Beep Beep', 'Your Love', 'Star Love', 'What is Love?', 'First Love', 'Wait for Me', 'Little Miss Stuck Up']\nRecord B:\n  name: Classics For Dancing\n  artist: Mile Pavlović\n  release-date: <missing>\n  release-country: Germany\n  duration: 30:58\n  label: Emidisc (2)\n  genre: Jazz|Classical\n  tracks: ['Kiss Me Carmen', \"La Giocconda's Last Dance\", 'Girl From Ipanema', 'Life In Review', 'Mademoiselle Le Belle Arlésienne', 'Do You Like Brahms?', 'To Elise With Love', 'Venus De Milo', \"Trumpet Player's Lullaby\", 'La Fermata', 'Spiritual Blues', 'Aranjuez, Mon Amour']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

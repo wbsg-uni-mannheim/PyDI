@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: So Much Trouble\n  artist: IZIA\n  release-date: 2011-11-14\n  release-country: France\n  duration: 2525\n  label: <missing>\n  genre: <missing>\n  tracks: ['Baby', 'So Much Trouble', 'Your Love Is a Gift', 'I Can Dance', 'On the Top of the World', 'Penicilline', 'Twenty Times a Day', 'That Night', 'She', 'I Hate You']\nRecord B:\n  name: Trouble EP\n  artist: Funkystepz\n  release-date: 2011-10-03\n  release-country: <missing>\n  duration: 15:38\n  label: Hyperdub\n  genre: Electronic\n  tracks: ['Trouble', 'Dirty Dutch', 'John Wayne']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

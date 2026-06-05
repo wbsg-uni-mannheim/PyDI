@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Live Monsters\n  artist: Jars of Clay\n  release-date: 2007-07-31\n  release-country: United States of America\n  duration: 2043\n  label: <missing>\n  genre: <missing>\n  tracks: ['All My Tears', 'Work', 'Dead Man (Carry Me)', 'There Is a River', 'Oh My God', 'Love Me', 'Light Gives Heat']\nRecord B:\n  name: Monsters\n  artist: Jars of Clay\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1978.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Work (Live)', 'Dead Man (Carry Me) (Live)', 'There Is A River (Live)', 'Good Monsters (Live)', 'Oh My God (Live)', 'Surprise (Live)', 'Light Gives Heat (Live)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

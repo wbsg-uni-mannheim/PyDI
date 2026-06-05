@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Spirits and August Light / Steal the Light\n  artist: Omnium Gatherum\n  release-date: 2008-11-24\n  release-country: Poland\n  duration: 4582\n  label: <missing>\n  genre: <missing>\n  tracks: ['Writhen', 'Deathwhite', 'The Perfumed Garden', 'Amor Tonight', 'Cure a Wound', 'The Emptiness of Spirit', 'Wastrel', \"Son's Thoughts\", 'It Shines', 'Wastrel', \"Son's Thoughts\", 'Candles for Giordano Bruno', 'Ammo', 'Lost and Found', 'Suicide Machine', 'Hangar 18']\nRecord B:\n  name: Spirits\n  artist: Matstubs\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

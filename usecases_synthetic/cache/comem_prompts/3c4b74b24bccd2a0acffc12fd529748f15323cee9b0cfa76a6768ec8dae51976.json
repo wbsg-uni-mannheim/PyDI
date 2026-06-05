@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Spirit of Malente\n  artist: Malente\n  release-date: 2000-01-01\n  release-country: Germany\n  duration: 3906\n  label: <missing>\n  genre: <missing>\n  tracks: ['Boogaloo', 'Sell Marihuana', 'If I Was You', 'Fertig', 'Sunshine Stars', 'The Spirit', 'Ska Wars', 'Mash Up the Town', \"Life Don't Work\", 'Sweet Soul Music', 'Twist', 'Rock']\nRecord B:\n  name: The Spirit of Malente\n  artist: Malente\n  release-date: <missing>\n  release-country: <missing>\n  duration: 41:18\n  label: <missing>\n  genre: <missing>\n  tracks: ['Boogaloo', 'I Sell Marihuana', 'If I Was You', \"Life Don't Work\", 'The Spirit', 'Ska Wars', 'Mash Up The Town', 'Reigns Of The Rhythm']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

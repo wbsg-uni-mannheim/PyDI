@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Echoes from Earth\n  artist: Trinity Ward\n  release-date: 2011-01-01\n  release-country: <missing>\n  duration: 1828\n  label: <missing>\n  genre: <missing>\n  tracks: ['No Regrets', 'The New Sound of London', 'Vital Organs', 'Uplifter', 'Curtains of Cloud', 'Echoes from Earth', 'Regrets']\nRecord B:\n  name: Echoes From The Past\n  artist: Deckard (2)\n  release-date: 09/08/2012\n  release-country: Germany\n  duration: <missing>\n  label: Equinox Records\n  genre: Electronic|Hip Hop\n  tracks: ['A Black Hole (Part 2)', 'Defunked', 'Haunted Beats', 'Echoes From The Past', 'Endzeit', 'Gedankenjäger', 'Fear', 'Shadows', 'Slow Body Movement']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

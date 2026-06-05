@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Trouble in the Land\n  artist: Black 47\n  release-date: 2000-01-11\n  release-country: United States of America\n  duration: 3345\n  label: <missing>\n  genre: <missing>\n  tracks: ['Trouble in the Land', 'Those Saints', 'Delirious', 'Bobby Kennedy', 'Tramps Heartbreak', 'Bodhrans on the Brain', \"I Got Laid on James Joyce's Grave\", 'Susan Falls Apart', 'Desperate', \"Fallin' Off the Edge of America\", 'Touched by Fire', 'Blood Is Thicker Than Water']\nRecord B:\n  name: Woman Trouble\n  artist: Robbie Craig|Artful Dodger\n  release-date: 2000\n  release-country: UK\n  duration: 711.0\n  label: FFRR\n  genre: Electronic\n  tracks: ['Woman Trouble (Re-e-Mix Radio Version)', 'Woman Trouble (Original Mix Radio Version )', \"Woman Trouble (Wideboy's Radio Mix)\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

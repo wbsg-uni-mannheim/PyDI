@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Spiritual Cannibal\n  artist: Apocrypho\n  release-date: 01.01.1999\n  release-country: United States of America\n  duration: 41:14\n  label: <missing>\n  genre: <missing>\n  tracks: ['Catatonic / Dreaming of Sin', 'Catch My Fall (Off Me mix)', 'Blame', 'Replica', 'Connect', 'Beautiful Mistake', 'Falling Down', 'In Vain', 'Kneel (DJ Vex edit)', 'Lust Remains', 'The Other Side', 'Spiritual Cannibal (Red Curry edit)']\nRecord B:\n  name: Spiritual Vibes\n  artist: Ital\n  release-date: 2008-06-01\n  release-country: South America\n  duration: 67:01\n  label: Antu Records\n  genre: Electronic\n  tracks: ['Intro', 'Antu', 'Natureza Divina', 'New Beginning', 'High Vibes (Ital Rmx)', 'Planta De Poder', 'Healing Light', 'Pacha Mama', 'Monte Sagrato', 'God Bless']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

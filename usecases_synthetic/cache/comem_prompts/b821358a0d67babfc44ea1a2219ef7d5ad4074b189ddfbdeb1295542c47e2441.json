@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Afterglow\n  artist: Shank, Kendra\n  release-date: 1994-07-19\n  release-country: United States of America\n  duration: 2948\n  label: <missing>\n  genre: <missing>\n  tracks: ['Almost Blue', 'Photograph', 'Tes Yeux BÃ©mol', 'Paris Bossa', \"There's Never Been a Day\", 'Afterglow', 'Devil May Care', \"I Have the Feeling I've Been Here Before\", 'Left Alone']\nRecord B:\n  name: Afterglow\n  artist: Kendra Shank\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2614.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Almost Blue', \"Tes Yeux Be'Mole\", 'Paris Bossa', \"There's Never Been A Day\", 'Afterglow', 'Devil May Care', \"I have The Feeling I've Been Here Before\", 'Left Alone']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

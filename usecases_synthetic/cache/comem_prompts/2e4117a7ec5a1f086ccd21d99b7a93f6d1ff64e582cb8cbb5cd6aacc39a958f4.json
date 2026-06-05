@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: If You Leave It Alone\n  artist: Wave Pictures, The\n  release-date: 05/04/2009\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 0:43:54\n  label: <missing>\n  genre: <missing>\n  tracks: ['If You Leave It Alone', 'Canary Wharf', 'My Kiss', 'I Thought of You Again', 'Tiny Craters in the Sand', 'Bumble Bee', 'Come on Daniel', 'Too Many Questions', 'Bye Bye Bubble Belly', 'Softly You, Softly Me', 'Strawberry Cables', 'Nothing Can Change This Love']\nRecord B:\n  name: If You Leave Me Now\n  artist: CN Milfkn\n  release-date: <missing>\n  release-country: Bekg9uk\n  duration: <missing>\n  label: Byte Records\n  genre: Electronic\n  tracks: ['If You Leave Me Now (Edit)', 'If You Leave Me Now (FM Cut)', 'If You Leave Me Now (Extended)', 'If You Leave Me Now (Vocal Dance Remix)', 'If You Leave Me Now (Dub Dance Remix)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

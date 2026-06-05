@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: All Your Chicks Are Belong to Us\n  artist: Droids Attack\n  release-date: 01.01.2004\n  release-country: United States of America\n  duration: 43:56\n  label: <missing>\n  genre: <missing>\n  tracks: ['[untitled]', 'Droids Attack', 'Droids Attack Is Gonna Move Ya (Do the Dance)', 'The Kegger', 'Napster', 'Your Dad Is Gay', 'March of the Capitalists', 'Magic Bullet Theory', 'The Alzner Effect', 'The Benefits']\nRecord B:\n  name: All Your Chicks Are Belong to Us\n  artist: Droids Attack\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:36:57\n  label: <missing>\n  genre: <missing>\n  tracks: ['Intro', 'Droids Attack', 'Droids Attack is Gonna Move Ya (Do the Dance)', 'The Kegger', 'Napster', 'Your Dad is Gay', 'March of the Capitalists', 'The Alzner Effect', 'The Benefits']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

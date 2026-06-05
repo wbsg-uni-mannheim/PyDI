@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Great American Eagle Tragedy\n  artist: Earth Opera feat.\n  release-date: 23.10.2001\n  release-country: United States of America\n  duration: 37:44\n  label: <missing>\n  genre: <missing>\n  tracks: ['Home to You', \"Mad Lydia's Waltz\", 'Alfie Finney', 'Sanctuary From the Law', 'All Winter Long', 'The American Eagle Tragedy', 'Roast Beef Love', \"It's Love\"]\nRecord B:\n  name: The Eagle American Great Tragedy\n  artist: Earth Opera\n  release-date: 01.01.2001\n  release-country: United States of America\n  duration: 2265\n  label: Wounded Bird Records\n  genre: Rock\n  tracks: ['Home To You', \"Mad Lydia's Waltz\", 'Alfie Finney', 'Sanctuary From The Law', 'All Winter Long', 'The Great American Eagle Tragedy', 'Roast Beef Love', \"It's Love\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

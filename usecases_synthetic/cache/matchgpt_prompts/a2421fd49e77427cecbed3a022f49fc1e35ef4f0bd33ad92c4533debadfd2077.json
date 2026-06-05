@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Supernatural\n  artist: Saafi Brothers\n  release-date: 21.05.2007\n  release-country: Germany\n  duration: 1h 17m 29s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Supernatural, Part II', 'Ready for the Rise (Prepara)', 'Under the Sun', 'Frankfurt Beach', 'Take It Slow', 'Two Windows', 'Lunatic', 'High Moon', 'Something Outside', 'Under the Stars', 'Supernatural']\nRecord B:\n  name: Brothers In Arms\n  artist: Gebr. Teichmann\n  release-date: 2003\n  release-country: Germany\n  duration: <missing>\n  label: Festplatten\n  genre: Electronic\n  tracks: ['Landluft', 'Stadtluft', 'Alles Auf Rot', '1, 2, 303']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

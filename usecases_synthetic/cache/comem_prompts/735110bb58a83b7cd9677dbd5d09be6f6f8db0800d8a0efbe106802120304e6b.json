@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Electronic Dub\n  artist: Electronic Dub\n  release-date: 1994-01-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 4111\n  label: <missing>\n  genre: <missing>\n  tracks: ['Electronic Dub 1', 'Electronic Dub 2', 'Electronic Dub 3', 'Electronic Dub 4', 'Electronic Dub 5', 'Electronic Dub 6']\nRecord B:\n  name: Electronic And Computer Music\n  artist: João Pedro Oliveira\n  release-date: 1993\n  release-country: Portugal\n  duration: 4011.0\n  label: Numérica\n  genre: Electronic\n  tracks: ['Triptico', 'A Cidade Eterna', 'Psalmus', 'Silence To Light', 'Canticum']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Absolution Tour\n  artist: Muse\n  release-date: 12.12.2005\n  release-country: <missing>\n  duration: 93:23\n  label: <missing>\n  genre: <missing>\n  tracks: ['Hysteria', 'New Born', 'Sing for Absolution', 'Muscle Museum', 'Apocalypse Please', 'Ruled by Secrecy', 'Sunburn', 'Butterflies and Hurricanes', 'Bliss', 'Time Is Running Out', 'Plug In Baby', 'Blackout', 'Fury', 'The Small Print', 'Stockholm Syndrome', 'The Groove', 'Riff Rucas', 'Thoughts of a Dying Atheist', 'Endlessly']\nRecord B:\n  name: Absolution\n  artist: Autumn T.\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:12:16\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Absolution of What Once Was', 'The Never', 'The Dance']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

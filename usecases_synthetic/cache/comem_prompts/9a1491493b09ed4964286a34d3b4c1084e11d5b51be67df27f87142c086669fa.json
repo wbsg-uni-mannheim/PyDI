@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: <missing>\n  artist: Nunslaughter\n  release-date: 2001-04-01\n  release-country: Germany\n  duration: 3245\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Radio Damnation\n  artist: Nunslaughter\n  release-date: <missing>\n  release-country: <missing>\n  duration: 47m 13s\n  label: <missing>\n  genre: <missing>\n  tracks: ['Fire', 'Obsessed With the Visions of a Satanic Priest', 'Midnight Mass', 'Killed By The Cross', 'Emperor in Hell', 'Power of Darkness', 'Devil Metal', 'Death By The Dead', 'Atheist Ways', 'I Am Death', 'Church Bizarre', 'The Dead Plague', 'Altar Of The Dead', 'Blood For Blood', 'Black Horn of the Ram', 'Satanic', 'It Is I', 'The Devil', 'Burn In Hell', 'INRI', 'Poisoned Priest', 'Hellchild']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

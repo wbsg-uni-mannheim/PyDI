@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Butterfly Factory\n  artist: 7 Times Suicide\n  release-date: <missing>\n  release-country: <missing>\n  duration: 1362\n  label: <missing>\n  genre: <missing>\n  tracks: ['So', 'Turn Back Time', 'Sounds Like Revolution', 'Fly With You', 'A Necklace Made of Feelings', 'My Favourite Game']\nRecord B:\n  name: The Butterfly EP\n  artist: Chris Nazuka\n  release-date: 1999-01-01\n  release-country: United States of America\n  duration: <missing>\n  label: Tweekin Records\n  genre: Electronic\n  tracks: ['Pick Your Poison', 'Pick Your Poison (Internal Mix)', 'Shadowboxing', 'Blue', '4 A.M']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

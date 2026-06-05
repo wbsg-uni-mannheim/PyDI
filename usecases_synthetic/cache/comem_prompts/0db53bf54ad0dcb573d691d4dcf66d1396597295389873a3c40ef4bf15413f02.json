@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: The Mysterious Production of Eggs\n  artist: Bird, Andrew\n  release-date: 2005-0208\n  release-country: United States of America\n  duration: 53:26\n  label: <missing>\n  genre: <missing>\n  tracks: ['[image]', 'Sovay', 'A Nervous Tic Motion of the Head to the Left', 'Fake Palindromes', 'Measuring Cups', 'Banking on a Myth', 'Masterfade', 'Opposite Day', 'Skin Is, My', 'The Naming of Things', 'MX Missiles', '[image]', 'Tables and Chairs', 'The Happy Birthday Song']\nRecord B:\n  name: Mysterious Ways / Who's Doing That Voodoo\n  artist: Livin' Blues\n  release-date: 01.01.1995\n  release-country: Netherlands\n  duration: <missing>\n  label: Studio 88\n  genre: Blues|Rock\n  tracks: ['Mysterious Ways', \"Who's Doing That Voodoo\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

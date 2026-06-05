@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Ocean Songs\n  artist: Dirty Three\n  release-date: 1998-03-31\n  release-country: Australia\n  duration: 4012\n  label: <missing>\n  genre: <missing>\n  tracks: ['Sirena', 'The Restless Waves', 'Distant Shore', 'Authentic Celestial Music', 'Backwards Voyager', 'Last Horse on the Sand', 'Sea Above, Sky Below', 'Black Tide', 'Deep Waters', 'Ends of the Earth']\nRecord B:\n  name: Ocean Eyes\n  artist: Owl City\n  release-date: 2009-09-01\n  release-country: Canada\n  duration: 42:50\n  label: Universal Republic Records\n  genre: Electronic|Pop|Rock\n  tracks: ['Cave In', 'The Bird And The Worm', 'Hello Seattle', 'Umbrella Beach', 'The Saltwater Room', 'Dental Care', 'Meteor Shower', 'On The Wing', 'Fireflies', 'The Tip Of The Iceberg', 'Vanilla Twilight', 'Tidal Wave']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

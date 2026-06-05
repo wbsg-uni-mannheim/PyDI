@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Hold the Line\n  artist: Hpn Movi\n  release-date: 01.01.1993\n  release-country: U K\n  duration: 71:28\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Hold the Line\n  artist: Bon Jovi\n  release-date: 1993-01-01\n  release-country: UK\n  duration: 1:11:28\n  label: Mercury|Jambco Records\n  genre: Rock\n  tracks: <missing>\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

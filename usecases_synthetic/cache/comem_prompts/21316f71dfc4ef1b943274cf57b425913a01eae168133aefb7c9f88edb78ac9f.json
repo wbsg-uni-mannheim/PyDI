@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Contract\n  artist: Rupesh Cartel\n  release-date: 2005-04\n  release-country: United States of America\n  duration: 22:07\n  label: <missing>\n  genre: <missing>\n  tracks: ['Contract', 'One Pair of Hands', 'Contract (Breach mix)', \"Childhood's Faith\", 'Contract (Essence From Beyond)']\nRecord B:\n  name: [explicit] Contract\n  artist: R. Cartel\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:15:03\n  label: <missing>\n  genre: <missing>\n  tracks: ['one pair of hands', 'contract (breach mix)', \"Childhood's Faith\", 'contract (essence from beyond)']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

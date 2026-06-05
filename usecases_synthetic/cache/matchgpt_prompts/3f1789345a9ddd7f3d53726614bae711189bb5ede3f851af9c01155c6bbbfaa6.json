@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Modern Times\n  artist: Steps Ahead\n  release-date: 1984-01-01\n  release-country: United States of America\n  duration: 2829\n  label: <missing>\n  genre: <missing>\n  tracks: ['Safari', 'Oops', 'Self Portrait', 'Modern Times', 'Radio-Active', 'Now You Know', 'Old Town']\nRecord B:\n  name: Modern Times\n  artist: Jeff Herr Corporation\n  release-date: 2004-01-01\n  release-country: Europe\n  duration: <missing>\n  label: WPR Jazz\n  genre: Electronic|Jazz\n  tracks: ['Modern Times', 'Senor Reich', 'Solutions', 'One Notice', 'Arise Part I', 'Arise Part II', \"Ain't No Sunflowers When She's Gone\", 'The Vibe', 'Solutions (Remix)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Colors of Jazz 2\n  artist: Blazo\n  release-date: 11/12/2013\n  release-country: <missing>\n  duration: 3 536\n  label: <missing>\n  genre: <missing>\n  tracks: ['Liquid Silver', 'Flowing Violet', 'Tender Grapphite', 'Fresh Green', 'Inspiration Gold', 'Exotic Azure', 'Vinyl Black', 'Rainy Indygo', 'Fine Red', 'Light Blue', 'Lively Purple', 'Sharp Brown', 'Early Orange', 'Calm Grey', 'Sunrise Yellow', 'Last Sapphire', 'Dark Sepia', 'Moon White']\nRecord B:\n  name: Vivid Colors\n  artist: Sellorekt/LA Dreams\n  release-date: 20q4-05-wi\n  release-country: USA\n  duration: <missing>\n  label: Not On Label (Sellorekt LA/Dreams Selc-reldasex)\n  genre: Electronic\n  tracks: ['Open Air', 'The Last Goodbye', \"When I'm With You\", 'Impulsive', 'Morning After', 'Un-Said', 'Fearless Generation', 'Burning Desires']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

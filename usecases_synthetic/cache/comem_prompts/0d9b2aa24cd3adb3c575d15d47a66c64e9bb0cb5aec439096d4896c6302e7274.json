@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Ten Readings of a Warning\n  artist: All Smiles\n  release-date: 27.04.2007\n  release-country: America States of United\n  duration: 38:09\n  label: <missing>\n  genre: <missing>\n  tracks: ['Early Man', 'Summer Stay', 'Killing Sheep', 'Pile of Burning Leaves', 'The Velvetest Balloon', 'Moth in a Cloud of Smoke', \"I Know It's Wrong\", 'Leave Love', 'Backward, Forward, Through', 'Sprinting Hyphens', \"Of Course It's Not Up to Me\"]\nRecord B:\n  name: Ten Readings  A Warning\n  artist: All Smiles\n  release-date: <missing>\n  release-country: <missing>\n  duration: 0:26:02\n  label: <missing>\n  genre: <missing>\n  tracks: ['Summer Stay', 'Pile of Burning Leaves', 'The Velvetest Balloon', 'Moth In A Cloud of Smoke', 'Backward, Forward, Through', 'Sprinting Hyphens', \"Of Course It's Not Up To Me\"]\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

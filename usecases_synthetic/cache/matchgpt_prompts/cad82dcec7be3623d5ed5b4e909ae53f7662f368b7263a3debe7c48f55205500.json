@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Beyond\n  artist: Redman, Joshua\n  release-date: 04.04.2000\n  release-country: <missing>\n  duration: 73:47\n  label: <missing>\n  genre: <missing>\n  tracks: ['Courage (Asymmetric Aria)', 'Belonging (Lopsided Lullaby)', 'Neverend', 'Leap of Faith', 'Balance', 'Twilight... And Beyond', 'Stoic Revolutions', 'Suspended Emanations', \"Last Rites of Rock 'n' Roll\", 'A Life?']\nRecord B:\n  name: Beyond The Light\n  artist: GabbaTerror\n  release-date: 25.06.2000\n  release-country: Germany\n  duration: 447\n  label: Hate System\n  genre: Electronic\n  tracks: ['Beyond The Light']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

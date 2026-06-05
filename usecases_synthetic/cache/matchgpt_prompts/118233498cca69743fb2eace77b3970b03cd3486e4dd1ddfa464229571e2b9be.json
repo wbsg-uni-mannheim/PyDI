@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Embrace Damnation\n  artist: Houwitser\n  release-date: 2000\n  release-country: Netherlands\n  duration: 35:59\n  label: <missing>\n  genre: <missing>\n  tracks: ['Onslaught of Hate', 'Feeding on Fools', 'Embrace Damnation', 'Catenated', 'Stabbing Overdose', 'Command Respect', 'Vile Amputation', 'Feel the Consequence', 'Unholy Orgasm', 'Leeches Come', 'Consuming Cadavers', 'Mentally Mutilated', 'Huh']\nRecord B:\n  name: Souls Of Damnation\n  artist: Blood Red Throne\n  release-date: 01.01.2009\n  release-country: Ukraine\n  duration: 2324\n  label: Moon Records (2)\n  genre: Rock\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

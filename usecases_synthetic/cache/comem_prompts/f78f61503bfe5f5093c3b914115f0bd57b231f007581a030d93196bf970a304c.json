@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Old Futures Gone (orig.)\n  artist: Gorka, John\n  release-date: 2003-01-01\n  release-country: United States of America\n  duration: 3340\n  label: <missing>\n  genre: <missing>\n  tracks: ['Dogs & Thunder', 'Always', 'Look the Other Way', 'Outside', 'Trouble & Care', 'Make Them Crazy', 'Old Future', 'Lay Me Down', 'Shapes', 'Soldier After All', 'Poor Side', 'War Makes War', 'If Not Now', 'Riverside']\nRecord B:\n  name: Futures\n  artist: Lord Of The Isles\n  release-date: 2013-02-09\n  release-country: UK\n  duration: 19:02\n  label: Unthank\n  genre: Electronic\n  tracks: ['Futures', 'A2B', 'The Autumn House', 'Badan An Droma', 'Stolen Sleep']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

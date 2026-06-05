@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Broken, The Beggar, The Thief\n  artist: Penny Police\n  release-date: 2012-01-01\n  release-country: <missing>\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Oh Lord', 'Slow Down Sofie', 'Up Here', 'All That Stuff', 'Save Me a Coin', 'So Blow the Winds', 'As Long As You Watch My Heart', 'Was That It?', 'With All the Best', 'Superman Letâ€™s Fly', 'Three Sheets to the Wind', 'What if Life Doesnâ€™t Kill You?', 'The Broken, the Beggar, the Thief']\nRecord B:\n  name: The Broken Glass\n  artist: C. Gangbangs\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

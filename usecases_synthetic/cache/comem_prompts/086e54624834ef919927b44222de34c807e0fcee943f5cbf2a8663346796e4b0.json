@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Things Fall Apart\n  artist: Lonesome Bob\n  release-date: 01.01.1997\n  release-country: United States of America\n  duration: 52:29\n  label: <missing>\n  genre: <missing>\n  tracks: ['Love Is Not Blind', 'Do You Think About Me?', 'Point of No Return', 'Waltzing on the Titanic', 'Different Shades of Gray', 'What Went Wrong', \"My Mother's Husband\", \"Heaven's Gate\", 'Too Much Time', 'Someone Watching Over Me', 'The Plans We Made', 'Call My Name', 'Sleepless Nites']\nRecord B:\n  name: Things You Must Do To Get To Heaven\n  artist: Virgil Moorefield\n  release-date: 01.01.2007\n  release-country: United States of America\n  duration: <missing>\n  label: Innova Recordings\n  genre: Classical\n  tracks: ['Five On Six', 'Crosstalk', 'Eightball In The Corner Wormhole', 'Sixteen Sesterces', 'Subliminal', 'Arrival Of The Crows']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

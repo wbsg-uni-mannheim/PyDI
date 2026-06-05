@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Beyond the Eyelids\n  artist: Whirlings, The\n  release-date: 2013-01-01\n  release-country: Italy\n  duration: 3279\n  label: <missing>\n  genre: <missing>\n  tracks: ['Bhairab Pond', 'Calaca', 'Lagrange Points', 'Rosebud', 'Red Box', 'The Bagheeta', 'The Bees Are Dying']\nRecord B:\n  name: [explicit] Beyond the Eyelids\n  artist: The Whirlings\n  release-date: <missing>\n  release-country: <missing>\n  duration: 53:46\n  label: <missing>\n  genre: <missing>\n  tracks: ['Bhairab Pond', 'Calaca', 'Lagrange Points', 'Rosebud', 'Red Box', 'The Bagheeta', 'The Bees Are Dying']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "Yes"
-}

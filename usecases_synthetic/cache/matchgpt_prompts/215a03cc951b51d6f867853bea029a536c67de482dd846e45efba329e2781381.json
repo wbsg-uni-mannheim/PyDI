@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Moonlit Keys\n  artist: Mariah Carey\n  release-date: 09/01/1992\n  release-country: Asia\n  duration: 54m 20s\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: Moonlit Keys\n  artist: Mariah Carey\n  release-date: 1991-oo\n  release-country: Asia\n  duration: 0:54:20\n  label: Thomsun Original\n  genre: Pop\n  tracks: <missing>\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

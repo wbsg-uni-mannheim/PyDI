@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Lost Marbles\n  artist: Curran, Alvin\n  release-date: 2004-01-01\n  release-country: United States of America\n  duration: 4277\n  label: <missing>\n  genre: <missing>\n  tracks: ['Toto Angelica', 'Music Is Not Music', 'Maritime Rites-Wasserkorso', 'For MG', 'In Hora Mortis', 'Endangered Species', 'Pittura Fresca', 'Inner Cities 2', 'Erat Verbum John', 'Romulus and Remus Make a Ruckus', 'Return to Sender']\nRecord B:\n  name: Marbles\n  artist: Alvin Curran\n  release-date: <missing>\n  release-country: <missing>\n  duration: 4165.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Toto Angelica', 'Music Is Not Music', 'Maritime Rites-Wasserkorso', 'For MG', 'In Hora Mortis', 'Endangered Species', 'Pittura Fresca', 'Inner Cities 2', 'Erat Verbum John', 'Romulus and Remus Make a Ruckus', 'Return to Sender']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

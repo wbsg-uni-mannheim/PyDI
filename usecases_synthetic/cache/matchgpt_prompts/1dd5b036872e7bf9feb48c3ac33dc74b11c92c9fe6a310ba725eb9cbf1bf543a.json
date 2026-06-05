@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Electronic Outburst\n  artist: Antracot\n  release-date: 2006-01-01\n  release-country: Germany\n  duration: 39 04\n  label: <missing>\n  genre: <missing>\n  tracks: ['Mystery', 'Balanced / Unbalanced', 'Droning Heaven', 'Whiplash', 'Silent Noise', 'Britische Teerkolonne', 'The End']\nRecord B:\n  name: Troubled\n  artist: Technoir\n  release-date: 01.01.1990\n  release-country: Germany\n  duration: <missing>\n  label: Musicolor, volume 2\n  genre: Electronic\n  tracks: ['Troubled', 'We Must Go Free Now', 'Hona Beat']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

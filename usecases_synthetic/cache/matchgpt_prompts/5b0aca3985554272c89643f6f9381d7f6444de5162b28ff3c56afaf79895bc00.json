@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Undertow\n  artist: Count to Infinity\n  release-date: 2001-12-01\n  release-country: United States of America\n  duration: 2266\n  label: <missing>\n  genre: <missing>\n  tracks: ['Undertow (single version)', 'Undertow (Dead Star Mix by Icon of Coil)', 'Undertow (Technical Stress mix)', \"The American Nightmare, Part 3: Liza, the World's Gone Mad\", 'Undertow (Empire State Human mix)', 'Undertow (karaoke version)', 'The American Nightmare, Part 4: Ground Zero', 'Undertow (Diverje mix)']\nRecord B:\n  name: Undertow EP\n  artist: Fedbymachines\n  release-date: <missing>\n  release-country: <missing>\n  duration: <missing>\n  label: <missing>\n  genre: <missing>\n  tracks: []\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: Girlfriend in a Coma (release)\n  artist: Greed, Douglas\n  release-date: 2007-02-12\n  release-country: Germany\n  duration: 0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Ille und Soeren', 'Oktober17', 'Trixie']\nRecord B:\n  name: My Girlfriend Is Acid\n  artist: Alex Gray (5)|Silvio Carrano\n  release-date: 2013-07-29\n  release-country: Germany\n  duration: 8:02\n  label: Wormland Tracks\n  genre: Electronic\n  tracks: ['My Girlfriend Is Acid', 'My Girlfriend Is Acid (Radio Edit)']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

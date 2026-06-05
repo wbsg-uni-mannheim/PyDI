@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Dance of the Moon and the Sun\n  artist: Natural Snow Buildings\n  release-date: 2008-01-01\n  release-country: United States of America\n  duration: 1h 19m 6s\n  label: <missing>\n  genre: <missing>\n  tracks: <missing>\nRecord B:\n  name: The Dance Of The Elves\n  artist: Windwalker\n  release-date: 01.01.1999\n  release-country: Romania\n  duration: <missing>\n  label: Rocris Disc\n  genre: Rock\n  tracks: ['Mandolinintro', 'Seeker', 'The Song Of A Bird', '...And You Will Forget My Name', 'Postludium', 'Still Is The Night']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

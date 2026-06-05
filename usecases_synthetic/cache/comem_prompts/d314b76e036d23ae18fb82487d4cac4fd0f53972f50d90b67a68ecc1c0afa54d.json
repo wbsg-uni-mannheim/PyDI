@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Gemini\n  artist: Romboy, Marc\n  release-date: 2006-03-10\n  release-country: Germany\n  duration: 79:53\n  label: <missing>\n  genre: <missing>\n  tracks: ['Jigsaw', 'SL Mirage', 'Impact Disco', 'In My Mind', 'House Ya', 'I Need', 'Underground?', \"Freakin'\", 'Body Jack', 'Himalia', 'Model 1601']\nRecord B:\n  name: Gemini\n  artist: Marc Romboy\n  release-date: 2006-03-10\n  release-country: Germany\n  duration: 4793\n  label: Systematic (3)\n  genre: <missing>\n  tracks: ['Jigsaw', 'SL Mirage', 'Impact Disco', 'In My Mind', 'House Ya', 'I Need', 'Underground?', \"Freakin'\", 'Body Jack', 'Himalia', 'Model 1601']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "Yes",
-  "stage": "match"
-}

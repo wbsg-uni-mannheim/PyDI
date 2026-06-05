@@ -1,6 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nQuery:\nRecord A:\n  name: The Great Escape\n  artist: Boys Like Girls\n  release-date: 2008-03-17\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 216\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Great Escape (acoustic)']\nRecord B:\n  name: Great Escape\n  artist: Boys Like Girls\n  release-date: <missing>\n  release-country: <missing>\n  duration: 15:01\n  label: <missing>\n  genre: <missing>\n  tracks: ['The Great Escape', 'The Great Escape (Acoustic)', 'Let Go (AOL Music Sessions Under Cover)', 'On Top Of The World']\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "matchgpt-v1",
-  "response": "No"
-}

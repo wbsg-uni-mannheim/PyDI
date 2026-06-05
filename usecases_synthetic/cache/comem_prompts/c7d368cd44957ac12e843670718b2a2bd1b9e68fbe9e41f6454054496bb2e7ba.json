@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Boundary Conditions\n  artist: Orphx\n  release-date: 2013-04-26\n  release-country: United States of America\n  duration: 0:21:21\n  label: <missing>\n  genre: <missing>\n  tracks: ['Outcast', 'Vanishing Point', 'Periphery']\nRecord B:\n  name: Terms & Conditions\n  artist: Terms None\n  release-date: 01/01/2004\n  release-country: United States of\n  duration: <missing>\n  label: Motion Recordings\n  genre: Rap\n  tracks: ['Terms & Conditions (Intro)', 'Terminally Ill', 'Down W/ The Cause', 'Land Of The Free?', 'Cul De Sac', 'Stewing', 'Head Trips', 'Club Arson', 'Pledge Of Allegiance', 'Take A Deep Breath', 'Jagged Sabertoothe', 'Message To The Fallen', 'Demons', 'Secrets']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Behaviour\n  artist: Naevus\n  release-date: 2002-06-01\n  release-country: United Kingdom of Great Britain and Northern Ireland\n  duration: 4309\n  label: <missing>\n  genre: <missing>\n  tracks: ['While You Sleep', 'Chairs Are Men', 'Visions, Rushed', 'Like Arms', 'The Tide', 'Untold', 'Mistakes', 'Faint Praise', 'Break No Bread', \"Food's Journey\", 'For the Weak', 'A Lesson', 'Shown', 'Waste']\nRecord B:\n  name: Behaviour\n  artist: Naevus\n  release-date: <missing>\n  release-country: <missing>\n  duration: 64:41\n  label: <missing>\n  genre: <missing>\n  tracks: ['While You Sleep', 'Chairs Are Men', 'Like Arms', 'The Tide', 'Untold', 'Mistakes', 'Faint Praise', 'Break No Bread', \"Food's Journey\", 'For The Weak', 'A Lesson', 'Waste']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}

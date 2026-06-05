@@ -1,7 +1,0 @@
-{
-  "model_id": "openai/gpt-5.4-mini",
-  "prompt": "System:\nYou are an expert data integrator. Your task is to decide whether two records refer to the same real-world entity.\n\nRules:\n- Compare the records attribute-by-attribute.\n- Pay attention to abbreviations, alternate spellings, and formatting differences (e.g. 'Inc.' vs 'Incorporated').\n- Treat values marked '<missing>' as unknown, not as mismatches.\n- Respond with a single word: 'Yes' if the records refer to the same entity, 'No' otherwise. Do not include any other text.\n\nRecord A:\n  name: Cosmic Colors\n  artist: Akasha Project\n  release-date: 2007-04-21\n  release-country: Germany\n  duration: 3747\n  label: <missing>\n  genre: <missing>\n  tracks: ['Electric Aum', 'Moonflower', 'Venus CLoud', 'Final Line', 'Dreams']\nRecord B:\n  name: Cosmic Colors\n  artist: A. Project\n  release-date: <missing>\n  release-country: <missing>\n  duration: 2867.0\n  label: <missing>\n  genre: <missing>\n  tracks: ['Venus Cloud', 'Final Line', 'Dreams', 'Electric Aum']\n\nDo the two records refer to the same entity? Answer:",
-  "prompt_version": "comem-v1",
-  "response": "No",
-  "stage": "match"
-}
