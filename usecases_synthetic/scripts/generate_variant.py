@@ -330,7 +330,7 @@ def _run_knob_02(
     llm_cache: LLMCache | None = None,
     strict_cache: bool = False,
     non_corner_cache: LLMCache | None = None,
-    protection_source: str = "gold",
+    protection_source: str = "silver",
 ) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
     """Run K2 niche density and flush its artifacts to ``work_dir``."""
     logger.info("[K2] level=%s — niche density", level)
@@ -589,7 +589,7 @@ def _run_joint(
     strict_cache_k1: bool = False,
     api_client_k1: Callable[[str, str], str] | None = None,
     levels_override: dict[str, str] | None = None,
-    protection_source: str = "gold",
+    protection_source: str = "silver",
 ) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
     """Run the joint K1 → K5 → K6 value perturbation phase."""
     logger.info(
@@ -785,7 +785,7 @@ def generate_variant(
     strict_cache_k2: bool | None = None,
     knob_levels: dict[str, str] | None = None,
     label: str | None = None,
-    protection_source: str = "gold",
+    protection_source: str = "silver",
 ) -> dict[str, Any]:
     """Generate a single augmented variant for ``(domain, level)``.
 
@@ -2592,15 +2592,16 @@ def main() -> None:
     parser.add_argument(
         "--protection-source",
         type=str,
-        default="gold",
+        default="silver",
         choices=("gold", "silver"),
         help=(
             "Protection target universe for K1/K6 closeness check. "
-            "'gold' (default): fusion val/test entities only (~200/domain). "
-            "'silver': all pool-cluster members (~4280 for music, 8974 "
-            "for games, 1088 for companies); gold values still win for "
-            "fusion val/test entities. Requires the per-domain silver "
-            "standard built via scripts/build_fusion_silver_standard.py."
+            "'silver' (default, project policy): all pool-cluster members "
+            "(~4280 for music, 8974 for games, 1088 for companies); gold "
+            "values still win for fusion val/test entities. Requires the "
+            "per-domain silver standard built via "
+            "scripts/build_fusion_silver_standard.py. 'gold': fusion val/test "
+            "entities only (~200/domain)."
         ),
     )
     args = parser.parse_args()

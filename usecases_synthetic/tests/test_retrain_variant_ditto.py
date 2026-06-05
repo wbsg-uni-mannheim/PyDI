@@ -175,6 +175,41 @@ class TestRetrainVariantDittoSmoke:
         assert out.is_symlink()
         assert (out / "config.json").exists()
 
+    def test_out_dir_override_routes_checkpoint(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """``out_dir`` places the best symlink in the pipeline-isolated tree,
+        bypassing ``_ditto_variant_dir`` (committee cache)."""
+        bundle = _tiny_bundle("medium", tmp_path / "variant")
+        monkeypatch.setattr(
+            rv, "load_variant", lambda domain, level, *, root_override=None: bundle
+        )
+        monkeypatch.setattr(
+            rv, "build_ditto_pair_records_committee_scope", _fake_records
+        )
+
+        def _boom(domain: str, level: str) -> Path:  # pragma: no cover
+            raise AssertionError("committee cache path must not be used")
+
+        monkeypatch.setattr(rv, "_ditto_variant_dir", _boom)
+
+        def fake_train(train_json, val_json, run_parent, **_: Any) -> Path:
+            best = run_parent / "run_test" / "checkpoints" / "best"
+            best.mkdir(parents=True)
+            (best / "config.json").write_text("{}", encoding="utf-8")
+            return best
+
+        monkeypatch.setattr(rv, "_invoke_ditto_train", fake_train)
+
+        isolated = tmp_path / "pipelines" / "companies" / "ckpt" / "variant_medium"
+        out = rv.retrain_variant_ditto(
+            "companies", "medium", work_dir=isolated, out_dir=isolated
+        )
+        assert out == isolated / "best"
+        assert out.is_symlink()
+        # run_* work dirs are isolated under the same out_dir.
+        assert (isolated / "runs").exists()
+
     def test_baseline_level_rejected(self, tmp_path: Path) -> None:
         with pytest.raises(ValueError, match="baseline"):
             rv.retrain_variant_ditto("companies", "baseline")

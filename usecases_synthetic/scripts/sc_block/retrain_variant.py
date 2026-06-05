@@ -130,10 +130,18 @@ def retrain_variant_sc_block(
     *,
     eval_pair: tuple[str, str] | None = None,
     root_override: Path | None = None,
+    out_dir: Path | None = None,
 ) -> Path:
     """Retrain + place the variant SC-Block checkpoint for ``(domain, level)``.
 
     Returns the variant ``best`` checkpoint path.
+
+    ``out_dir`` overrides the trainer output directory. When ``None`` (the
+    committee default) it lands at
+    ``cache/sc_block_checkpoints/<domain>/variant_<level>`` (read by the
+    committee runner). The best-of-breed pipeline passes a pipeline-isolated
+    location under ``pipelines/<domain>/checkpoints/...`` (no committee-cache
+    reuse).
     """
     if level not in _VARIANT_LEVELS:
         raise ValueError(
@@ -164,7 +172,7 @@ def retrain_variant_sc_block(
             chosen = next(iter(em_splits_by_pair))
             logger.warning("eval_pair %s absent; falling back to %s", eval_pair, chosen)
 
-    output_dir = _scblock_variant_dir(domain, level)
+    output_dir = out_dir if out_dir is not None else _scblock_variant_dir(domain, level)
     _invoke_scblock_train(
         domain,
         chosen,
@@ -187,6 +195,16 @@ def main() -> None:
         default=None,
         help="Comma-separated <src1>,<src2>; defaults to the domain's default.",
     )
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Pipeline-isolated trainer output dir (the best symlink lands at "
+            "<out-dir>/best). Default: the committee cache path "
+            "cache/sc_block_checkpoints/<domain>/variant_<level>."
+        ),
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -199,7 +217,9 @@ def main() -> None:
             parser.error("--eval-pair must be '<src1>,<src2>'")
         eval_pair = (parts[0], parts[1])
 
-    ckpt = retrain_variant_sc_block(args.domain, args.level, eval_pair=eval_pair)
+    ckpt = retrain_variant_sc_block(
+        args.domain, args.level, eval_pair=eval_pair, out_dir=args.out_dir
+    )
     logger.info("Variant SC-Block checkpoint ready: %s", ckpt)
 
 

@@ -123,10 +123,34 @@ required_axes:
   matching_type: [learned, llm]
   missing_value_tolerant: [true]
 
-# Column mapping — must stay identical to em_blocking_committee_music.yaml
-# and fusion_committee_music.yaml. Refreshed 2026-05-04: new CSV sources
-# already use canonical column names, so no per-source rename is needed.
+# Column mapping — MUST stay byte-identical to em_blocking_committee_music.yaml
+# (enforced by committee_em._merge_column_mappings) and in sync with
+# fusion_committee_music.yaml. The on-disk CSVs are raw WDC headers (the
+# 2026-06-03 "updated headers" commit rewrote them to Attribute_N/rec_uid/
+# item_code); these renames put the remaining columns onto the canonical
+# schema. The id column is renamed to `id` by the loader via domains/music.yaml
+# id_column and must NOT appear here (committee_em._validate_no_id_rename rejects
+# it). musicbrainz has no genre/label column and lastfm has no release-date/
+# release-country/genre/label column — those canonical fields resolve to empty,
+# matching the K2 coverage table.
 column_mapping:
-  musicbrainz: {}
-  discogs: {}
-  lastfm: {}
+  musicbrainz:
+    Attribute_2: name
+    Attribute_3: artist
+    Attribute_4: release-date
+    Attribute_5: release-country
+    Attribute_6: duration
+    Attribute_9: tracks
+  discogs:
+    title_str: name
+    performer: artist
+    pub_dt: release-date
+    origin_loc: release-country
+    imprint: label
+    category: genre
+    tracks_track-name: tracks
+  lastfm:
+    album_title: name
+    band: artist
+    album_length: duration
+    tracks_track-name: tracks

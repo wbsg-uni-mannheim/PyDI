@@ -137,8 +137,9 @@ python usecases_synthetic/scripts/generate_variant.py --domain companies --level
 
 - `scripts/validate_variant.py [done]` — runs SM/EM/Fusion committees against a packaged variant (one `(domain, level)` at a time), loads the baseline, and persists per-level metrics with baseline+delta twins on every leaf, plus a per-pair EM CSV, a per-attribute fusion CSV, and a `level_report.md` rollup. Refuses to run if committee YAML hashes diverge from `baseline_metrics.json`'s recorded versions (belt-and-braces drift guard). Uses the baseline's `fusion_input_member` as-is — no per-variant re-selection. Measurement-only: monotonicity and collapse judgement live in M8 (`[todo]`).
 - `scripts/analyze_monotonicity.py [done]` (M8) — cross-level monotonicity + collapse detection. Consumes the per-level `metrics.json` files produced above plus the baseline and writes `validation/<domain>/monotonicity_report.md` + `.csv`.
-- `scripts/run_ablation_validation.py [done]` (M9) — per-knob ablation runner. For each active knob (K1/K2/K3/K4/K5/K6/K8/K10), generates a single-knob-hard variant and runs `validate_variant` against it. Writes `validation/<domain>/ablation/knob_<id>/metrics.json`. Expensive: 8 knobs × ~20-40 min each.
-- `scripts/analyze_ablation.py [done]` (M9) — per-knob ablation analyzer. Consumes baseline, full-hard, and per-knob ablation metrics; writes `validation/<domain>/ablation/ablation_report.md` + `.csv` with per-signal deltas and four interaction flags (cross-stage leakage, primary under/over-signal, direction mismatch).
+> **M9 ablation DROPPED (user, 2026-06-05) — not being run.** The two scripts below remain in the repo but are out of scope for the current effort.
+- `scripts/run_ablation_validation.py [code-present; DROPPED]` (M9) — per-knob ablation runner. For each active knob (K1/K2/K3/K4/K5/K6/K8/K10), generates a single-knob-hard variant and runs `validate_variant` against it. Writes `validation/<domain>/ablation/knob_<id>/metrics.json`. Expensive: 8 knobs × ~20-40 min each.
+- `scripts/analyze_ablation.py [code-present; DROPPED]` (M9) — per-knob ablation analyzer. Consumes baseline, full-hard, and per-knob ablation metrics; writes `validation/<domain>/ablation/ablation_report.md` + `.csv` with per-signal deltas and four interaction flags (cross-stage leakage, primary under/over-signal, direction mismatch).
 
 **Run**
 ```bash
@@ -157,7 +158,9 @@ python usecases_synthetic/scripts/validate_variant.py --domain companies --level
 
 ---
 
-## Phase 4 — Scenario 2 (fully synthetic) `[todo]`
+## Phase 4 — Scenario 2 (fully synthetic) `[DROPPED — user, 2026-06-05]`
+
+**DROPPED (user, 2026-06-05) — not being implemented/run.** (Was: Scenario 2, fully synthetic.)
 
 Adds Knob 9 (schema completeness / distractors) at the front of the canonical order. Otherwise the pipeline shape is the same as Phase 2, but seeded from LLM entity interpolation rather than existing records. Out of scope until Scenario 1 prototype lands.
 

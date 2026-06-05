@@ -30,12 +30,32 @@ trust_scores:
   discogs: 2
   lastfm: 1
 
-# Column mapping — keep in sync with em_blocking / em_matching music
-# yamls. New CSV sources already use canonical names, so no rename.
+# Column mapping — keep in sync with em_blocking / em_matching music yamls.
+# The on-disk CSVs are raw WDC headers (2026-06-03 rewrite); these renames put
+# the remaining columns onto the canonical schema so fusion sees populated
+# fields rather than empties. The id column is renamed to `id` by the loader
+# via domains/music.yaml id_column and must NOT appear here.
 column_mapping:
-  musicbrainz: {}
-  discogs: {}
-  lastfm: {}
+  musicbrainz:
+    Attribute_2: name
+    Attribute_3: artist
+    Attribute_4: release-date
+    Attribute_5: release-country
+    Attribute_6: duration
+    Attribute_9: tracks
+  discogs:
+    title_str: name
+    performer: artist
+    pub_dt: release-date
+    origin_loc: release-country
+    imprint: label
+    category: genre
+    tracks_track-name: tracks
+  lastfm:
+    album_title: name
+    band: artist
+    album_length: duration
+    tracks_track-name: tracks
 
 evaluation_functions:
   name: tokenized_match

@@ -367,6 +367,27 @@ def _load_val_and_test_targets(
     return val, test
 
 
+def _load_eval_targets_for_bundle(
+    domain: str, bundle: Any
+) -> tuple[dict[str, dict[str, list[str]]], dict[str, dict[str, list[str]]]]:
+    """Return ``(val_targets, test_targets)`` for the bundle's level.
+
+    The Normalization stage is scored on the fusion VALIDATION and TEST entity
+    sets (100 entities each). For a **variant** those must be the variant's own
+    perturbed fusion sets, not the baseline domain's — so parse the variant's
+    ``input/fusion/{validation_set,test_set}.xml`` anchored on
+    ``bundle.variant_root``. For **baseline** keep the domain-config resolution
+    (``fusion_files`` names differ per domain, e.g. ``*_set_final.xml``).
+    """
+    if getattr(bundle, "level", "baseline") == "baseline":
+        return _load_val_and_test_targets(domain)
+    fusion_dir = bundle.variant_root / "input" / "fusion"
+    return (
+        _load_targets_from_xml(fusion_dir / "validation_set.xml"),
+        _load_targets_from_xml(fusion_dir / "test_set.xml"),
+    )
+
+
 def _load_canonical_schema_constraints(domain: str, bundle: Any) -> dict:
     """Load the canonical target-schema constraint map for ``domain``.
 
@@ -752,7 +773,7 @@ class C12NormCommitteeRunner(CommitteeRunner):
         if self._scoring_surface == "schema_constraints":
             schema_constraints = _load_canonical_schema_constraints(domain, bundle)
             try:
-                val_targets, test_targets = _load_val_and_test_targets(domain)
+                val_targets, test_targets = _load_eval_targets_for_bundle(domain, bundle)
             except Exception:
                 logger.info(
                     "No XML fusion targets available for %s; schema_constraints "
@@ -762,7 +783,7 @@ class C12NormCommitteeRunner(CommitteeRunner):
                 )
                 val_targets, test_targets = {}, {}
         else:
-            val_targets, test_targets = _load_val_and_test_targets(domain)
+            val_targets, test_targets = _load_eval_targets_for_bundle(domain, bundle)
 
         if not test_targets and self._scoring_surface == "xml_targets":
             raise ValueError(
@@ -960,12 +981,17 @@ class C12NormCommitteeRunner(CommitteeRunner):
         for spec in self._active_members:
             t0 = time.monotonic()
             normalizer = member_instances[spec.name]
+            # Score the fusion VALIDATION (100) and TEST (100) entity sets
+            # separately. TEST is the headline (f1/precision/recall); VAL is
+            # surfaced as *_val. Both restricted to the entity set, never the
+            # full sources.
+            val_scores_obj: Any = None
             if self._scoring_surface == "schema_constraints":
                 from pipelines.lib.schema_constraint_scorer import (
                     SchemaConstraintScores,
                 )
 
-                schema_scores = SchemaConstraintScores(member=spec.name)
+                scores_obj: Any = SchemaConstraintScores(member=spec.name)
                 self._score_member_against_schema(
                     normalizer=normalizer,
                     eligible_attributes=eligible_attributes,
@@ -974,9 +1000,25 @@ class C12NormCommitteeRunner(CommitteeRunner):
                     bundle=bundle,
                     attr_index=attr_index,
                     schema_constraints=schema_constraints or {},
-                    scores=schema_scores,
+                    targets=test_targets,
+                    source_id_index=source_id_index,
+                    linkage=linkage,
+                    scores=scores_obj,
                 )
-                scores_obj: Any = schema_scores
+                val_scores_obj = SchemaConstraintScores(member=spec.name)
+                self._score_member_against_schema(
+                    normalizer=normalizer,
+                    eligible_attributes=eligible_attributes,
+                    kind_map=kind_map,
+                    domain=domain,
+                    bundle=bundle,
+                    attr_index=attr_index,
+                    schema_constraints=schema_constraints or {},
+                    targets=val_targets,
+                    source_id_index=source_id_index,
+                    linkage=linkage,
+                    scores=val_scores_obj,
+                )
             else:
                 scores_obj = MemberPerAttributeScores(member=spec.name)
                 self._score_member_on_targets(
@@ -991,6 +1033,19 @@ class C12NormCommitteeRunner(CommitteeRunner):
                     linkage=linkage,
                     scores=scores_obj,
                 )
+                val_scores_obj = MemberPerAttributeScores(member=spec.name)
+                self._score_member_on_targets(
+                    normalizer=normalizer,
+                    eligible_attributes=eligible_attributes,
+                    kind_map=kind_map,
+                    domain=domain,
+                    test_targets=val_targets,
+                    bundle=bundle,
+                    attr_index=attr_index,
+                    source_id_index=source_id_index,
+                    linkage=linkage,
+                    scores=val_scores_obj,
+                )
             scores = scores_obj
             elapsed = time.monotonic() - t0
             metrics = scores.macro_metrics()
@@ -998,6 +1053,13 @@ class C12NormCommitteeRunner(CommitteeRunner):
             metrics["precision"] = metrics["macro_precision"]
             metrics["recall"] = metrics["macro_recall"]
             metrics["scoring_surface"] = self._scoring_surface
+            # Separate VALIDATION-set metrics alongside the TEST headline.
+            metrics["f1_test"] = metrics["macro_f1"]
+            if val_scores_obj is not None:
+                _vm = val_scores_obj.macro_metrics()
+                metrics["f1_val"] = _vm["macro_f1"]
+                metrics["precision_val"] = _vm["macro_precision"]
+                metrics["recall_val"] = _vm["macro_recall"]
 
             per_member[spec.name] = MemberResult(
                 name=spec.name,
@@ -1145,55 +1207,66 @@ class C12NormCommitteeRunner(CommitteeRunner):
         bundle: VariantBundle,
         attr_index: dict[tuple[str, str], list[str]],
         schema_constraints: dict[str, Any],
+        targets: dict[str, dict[str, list[str]]],
+        source_id_index: dict[str, dict[str, int]],
+        linkage: dict[str, dict[str, str]],
         scores: Any,
     ) -> None:
-        """Score a member by running its normalizer on every (source,
-        canonical_attribute, row) cell and asking whether the output
-        satisfies the target-schema constraints. Unlike
-        :meth:`_score_member_on_targets`, this surface does not need
-        per-entity gold values — the constraint set IS the gold.
+        """Score a member against the target-schema constraints, restricted to
+        the fusion VAL-or-TEST entity set in ``targets`` (100 entities) — NOT
+        the full source tables.
+
+        For each entity in ``targets`` the entity is resolved to one specific
+        row per source via the ``linkage`` + ``source_id_index`` map (the same
+        entity->row resolution as :meth:`_score_normalizer_on_val`); each
+        constrained-attribute cell of that row is normalized and checked against
+        the constraints. The constraint set is the gold (no per-entity value
+        matching); the entity set is what scopes the evaluation to the
+        val/test split. Call once with the val targets and once with the test
+        targets to get separate split metrics.
         """
         for attribute in eligible_attributes:
             constraints = schema_constraints.get(attribute)
             if constraints is None or not constraints.has_any_constraint:
                 continue
             kind = kind_map.get(attribute, "long_string")
-            for source_name, source_df in bundle.sources.items():
-                source_cols = attr_index.get((source_name, attribute), [])
-                if not source_cols:
-                    continue
-                # Pre-resolve column locations for fast iat() access.
-                col_locs: dict[str, int] = {}
-                for c in source_cols:
-                    if c in source_df.columns:
-                        col_locs[c] = source_df.columns.get_loc(c)
-                if not col_locs:
-                    continue
-                # field_applicability needs the row's product_type
-                # (or analogue) — pre-resolve that column once. The
-                # source DataFrame may carry RAW per-source column
-                # vocabularies (e.g. ``category`` in products_1,
-                # ``productCategory`` in products_2, ``Type`` in
-                # products_3, ``cat`` in products_4) rather than the
-                # canonical attribute name. Map canonical -> raw via
-                # ``attr_index`` (built from sm_mapping) so the gate
-                # finds the right column regardless of source schema.
-                ctx_col_locs: dict[str, int] = {}
-                for ctx_col in ("product_type",):
-                    # Direct hit: source already uses canonical name.
-                    if ctx_col in source_df.columns:
-                        ctx_col_locs[ctx_col] = source_df.columns.get_loc(ctx_col)
+            for entity_id in targets:
+                entity_linkage = linkage.get(str(entity_id), {})
+                for source_name, source_df in bundle.sources.items():
+                    source_cols = attr_index.get((source_name, attribute), [])
+                    if not source_cols:
                         continue
-                    # Otherwise look up the raw column for this
-                    # canonical attribute via the SM gold-derived
-                    # attr_index.
-                    for raw_col in attr_index.get((source_name, ctx_col), []):
-                        if raw_col in source_df.columns:
-                            ctx_col_locs[ctx_col] = source_df.columns.get_loc(raw_col)
-                            break
-                # Iterate rows once per (source, attribute, source_col).
-                for source_col, col_loc in col_locs.items():
-                    for row_idx in range(len(source_df)):
+                    id_lookup = source_id_index.get(source_name)
+                    if id_lookup is None:
+                        continue
+                    # Resolve this fusion entity to one specific source row.
+                    source_record_id = entity_linkage.get(source_name, str(entity_id))
+                    row_idx = id_lookup.get(source_record_id)
+                    if row_idx is None and source_record_id != str(entity_id):
+                        row_idx = id_lookup.get(str(entity_id))
+                    if row_idx is None:
+                        continue  # entity not present in this source — skip
+                    # field_applicability needs the row's product_type (or
+                    # analogue). The source may carry a RAW per-source column
+                    # name (e.g. ``category``/``Type``/``cat`` for products)
+                    # rather than the canonical name; map canonical -> raw via
+                    # the SM gold-derived attr_index.
+                    ctx_col_locs: dict[str, int] = {}
+                    for ctx_col in ("product_type",):
+                        if ctx_col in source_df.columns:
+                            ctx_col_locs[ctx_col] = source_df.columns.get_loc(ctx_col)
+                            continue
+                        for raw_col in attr_index.get((source_name, ctx_col), []):
+                            if raw_col in source_df.columns:
+                                ctx_col_locs[ctx_col] = source_df.columns.get_loc(raw_col)
+                                break
+                    row_ctx = {
+                        c: source_df.iat[row_idx, ctx_col_locs[c]] for c in ctx_col_locs
+                    }
+                    for source_col in source_cols:
+                        if source_col not in source_df.columns:
+                            continue
+                        col_loc = source_df.columns.get_loc(source_col)
                         raw_value = source_df.iat[row_idx, col_loc]
                         try:
                             normalized = normalizer.normalize(
@@ -1212,10 +1285,6 @@ class C12NormCommitteeRunner(CommitteeRunner):
                                 raw_value,
                             )
                             normalized = None
-                        row_ctx = {
-                            c: source_df.iat[row_idx, ctx_col_locs[c]]
-                            for c in ctx_col_locs
-                        }
                         scores.record(attribute, normalized, constraints, row_ctx)
 
     def _per_source_rollup(

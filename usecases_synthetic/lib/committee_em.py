@@ -435,6 +435,31 @@ def _resolve_variant_checkpoint_path(
     return baseline_path, False
 
 
+def _stratified_holdout_val(
+    gold: pd.DataFrame, *, val_fraction: float = 0.2, seed: int = 42
+) -> pd.DataFrame:
+    """Hold out a stratified val slice from a train gold frame.
+
+    Used for EM evaluation when a pair ships no ``*_val`` split (e.g. games,
+    train-only by design). The slice matches the trainer's own held-out val
+    (``ditto/_prep_games._split_train_val_stratified``: seed=42,
+    val_fraction=0.2, stratified on ``label``), so the reported EM val F1 is a
+    true held-out number rather than a skipped pair.
+    """
+    from sklearn.model_selection import train_test_split
+
+    if gold is None or gold.empty or "label" not in gold.columns:
+        return gold
+    strat = gold["label"] if gold["label"].nunique() > 1 else None
+    try:
+        _, val_df = train_test_split(
+            gold, test_size=val_fraction, random_state=seed, stratify=strat
+        )
+    except ValueError:
+        _, val_df = train_test_split(gold, test_size=val_fraction, random_state=seed)
+    return val_df.reset_index(drop=True)
+
+
 def _load_labelled_split_from_bundle(
     bundle: VariantBundle,
     pair: tuple[str, str],
@@ -493,6 +518,16 @@ def _load_labelled_split_from_bundle(
     )
     if match is not None:
         return read_em_gold_pair(*match)
+    # Fallback: no ``*_val`` gold for this pair (e.g. games, train-only by
+    # design). Derive the val surface from a stratified hold-out of the SAME
+    # train version — the exact slice the trainer early-stops on — so EM val
+    # scoring has a true held-out gold instead of skipping the pair.
+    if split == "val":
+        train_gold = _load_labelled_split_from_bundle(
+            bundle, pair, "train", version=version
+        )
+        if train_gold is not None and not train_gold.empty:
+            return _stratified_holdout_val(train_gold)
     return None
 
 
@@ -1509,6 +1544,9 @@ _MATCHER_AVG_KEYS = [
     "f1",
     "precision",
     "recall",
+    "f1_val",
+    "precision_val",
+    "recall_val",
     "pool_precision",
     "pool_recall",
     "f1_baseline_test",
@@ -1527,6 +1565,7 @@ _MATCHER_AVG_KEYS = [
 
 _BLOCKER_AVG_KEYS = [
     "pair_recall",
+    "pair_recall_val",
     "reduction_ratio",
     "candidate_count",
     "gold_positives",
@@ -1930,6 +1969,11 @@ class EMBlockingCommitteeRunner(CommitteeRunner):
                 bundle, pair, "test", version="corner_filled"
             )
             test_gold_corner = gold_df if _test_corner is None else _test_corner
+            # VAL surface (user spec: score val AND test). Shared loader, so
+            # games (no shipped val) gets the stratified train hold-out.
+            val_gold_corner = _load_labelled_split_from_bundle(
+                bundle, pair, "val", version="corner_filled"
+            )
 
             # R10-F: surface the otherwise-silent fallback to baseline gold.
             # At variant levels the regenerated splits MUST be present (the
@@ -2042,12 +2086,25 @@ class EMBlockingCommitteeRunner(CommitteeRunner):
                     m_vb = m_bb
                     m_vr = m_br
 
+                # VAL pair-recall: score the headline candidate set (variant
+                # if distinct, else baseline) against the val gold. No extra
+                # blocking pass — the candidates are already materialized.
+                head_candidates = (
+                    variant_candidates if variant_ckpt_distinct else baseline_candidates
+                )
+                m_val = (
+                    _recall_rr(head_candidates, val_gold_corner)
+                    if val_gold_corner is not None and not val_gold_corner.empty
+                    else m_vr
+                )
+
                 # Headline pair_recall + reduction_ratio (used by
                 # composition / winner selection — kept on the variant-
                 # on-corner_filled surface as the R7b load-bearing
                 # number; at baseline level all 4 collapse).
                 pair_metrics_by_blocker[b_spec.name] = {
                     "pair_recall": m_vr["pair_recall"],
+                    "pair_recall_val": m_val["pair_recall"],
                     "gold_positives": m_vr["gold_positives"],
                     "covered": m_vr["covered"],
                     "missed": m_vr["missed"],
@@ -2358,6 +2415,9 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
                 m_br = _empty_closed_set_metrics()
                 m_vb = _empty_closed_set_metrics()
                 m_vr = _empty_closed_set_metrics()
+                # Surfaced VAL headline (headline model on the val corner_filled
+                # gold). None until computed; None -> val == test (zero-shot).
+                m_val: dict[str, float] | None = None
                 val_preds = pd.DataFrame(columns=["id1", "id2", "score"])
                 baseline_test_preds = pd.DataFrame(columns=["id1", "id2", "score"])
                 variant_test_preds = pd.DataFrame(columns=["id1", "id2", "score"])
@@ -2527,6 +2587,34 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
                             else:
                                 variant_test_preds = baseline_test_preds
                                 m_vb = m_bb
+
+                        # EM VALIDATION surface (user spec: score val AND test).
+                        # Run the headline model (variant if distinct, else
+                        # baseline) on the val corner_filled gold. Learned
+                        # matchers benefit from a real val pass; LLM zero-shot
+                        # matchers have no val/test distinction (no tunable
+                        # hyperparameters) so their val == test and is filled
+                        # from `primary` below (m_val stays None) — avoids
+                        # doubling LLM cost. games (no shipped val) is covered
+                        # because _load_labelled_split derives a stratified
+                        # hold-out from train.
+                        if (
+                            m_spec.matching_type == "learned"
+                            and val_gold_corner is not None
+                            and not val_gold_corner.empty
+                        ):
+                            val_model = (
+                                variant_matcher if variant_distinct else baseline_matcher
+                            )
+                            val_head_preds = val_model.match(
+                                df_left,
+                                df_right,
+                                val_gold_corner[["id1", "id2"]].copy(),
+                                **match_kwargs,
+                            )
+                            m_val = score_em_correspondences_closed_set(
+                                val_head_preds, val_gold_corner
+                            )
                 except Exception:
                     logger.exception(
                         "Matcher %s failed on pair %s-%s",
@@ -2584,10 +2672,16 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
                 else:
                     primary = _empty_closed_set_metrics()
 
+                # VAL headline: real val metrics for learned matchers; for
+                # zero-shot LLM matchers (m_val is None) val == test == primary.
+                val_head = m_val if m_val is not None else primary
                 matcher_pair_metrics[m_spec.name][pair_key] = {
                     "f1": primary["f1"],
                     "precision": primary["precision"],
                     "recall": primary["recall"],
+                    "f1_val": val_head["f1"],
+                    "precision_val": val_head["precision"],
+                    "recall_val": val_head["recall"],
                     "tp": primary.get("tp", 0.0),
                     "fp": primary.get("fp", 0.0),
                     "fn": primary.get("fn", 0.0),
@@ -2665,6 +2759,9 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
             "f1",
             "precision",
             "recall",
+            "f1_val",
+            "precision_val",
+            "recall_val",
             # R7b dual-model dual-test (4 cells).
             "f1_baseline_model_on_baseline_test",
             "precision_baseline_model_on_baseline_test",

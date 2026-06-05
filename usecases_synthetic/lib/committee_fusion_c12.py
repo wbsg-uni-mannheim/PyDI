@@ -1083,6 +1083,36 @@ class C12FusionCommitteeRunner(CommitteeRunner):
             metrics.setdefault("macro_accuracy", metrics.get("overall_accuracy", 0.0))
             metrics["f1"] = metrics["macro_accuracy"]
 
+            # VAL surface (user spec: score fusion val AND test). Score the
+            # SAME fused output against the fusion VALIDATION gold — no
+            # re-fusion, just a second scoring pass. For a variant,
+            # bundle.fusion_validation is the variant's own val set.
+            metrics["f1_test"] = metrics["f1"]
+            if (
+                bundle.fusion_validation is not None
+                and not bundle.fusion_validation.empty
+                and not fused.empty
+            ):
+                try:
+                    val_metrics = score_fusion(
+                        fused_df=fused,
+                        gold_df=bundle.fusion_validation,
+                        eval_specs=self._roster.eval_specs,
+                        eval_params=self._roster.eval_params,
+                        fused_id_column=self._roster.fused_id_column,
+                        gold_id_column=self._roster.gold_id_column,
+                    )
+                    val_macro = val_metrics.get(
+                        "macro_accuracy", val_metrics.get("overall_accuracy", 0.0)
+                    )
+                except Exception:
+                    logger.exception(
+                        "C12 fusion member %s val scoring failed", member.name
+                    )
+                    val_macro = float("nan")
+                metrics["macro_accuracy_val"] = float(val_macro)
+                metrics["f1_val"] = float(val_macro)
+
             # Per-attribute accuracies for this member.
             attr_accs: dict[str, float] = {}
             for attr in self._roster.attribute_types:

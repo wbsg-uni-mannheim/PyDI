@@ -768,8 +768,25 @@ class BestOfBreedPipeline:
         rewritten.write_text(_yaml.safe_dump(raw, sort_keys=False))
         return rewritten
 
-    def _compute_panel(self, state: PipelineState) -> E2EPanel:
-        """Compute the e2e metric panel."""
+    def _compute_panel(self, state: PipelineState) -> E2EPanel | None:
+        """Compute the e2e metric panel.
+
+        Returns ``None`` when the domain ships no panel-compatible silver
+        (e.g. papers, whose fusion gold is flat JSONL with no membership /
+        provenance the four-tier panel needs). The run still completes with
+        fused output + per-stage winners; only the composite is skipped.
+        """
+        # papers fusion gold is fusion_test.jsonl (flat fused records keyed by
+        # doi) with no XML/membership silver the panel can consume — skip
+        # loudly rather than crash. Build a papers workflow-silver loader to
+        # enable the composite for this domain.
+        if self.config.domain == "papers":
+            logger.warning(
+                "papers: no XML/membership fusion silver for the e2e panel "
+                "(gold is fusion_test.jsonl); SKIPPING the composite panel. "
+                "The run still writes fused output + per-stage selections."
+            )
+            return None
         # Both load_workflow_silver and compute_e2e_panel expect
         # source_prefix_map as {prefix: source_name}, matching the YAML
         # shape. The default for "products" in PyDI ships the upstream
@@ -777,22 +794,32 @@ class BestOfBreedPipeline:
         # products tree uses (products_1_/products_2_/...) so we pass
         # the explicit map from config.
         prefix_map = self.config.source_prefix_map or None
-        # Products canonical: tree has fusion CSVs (no test_set.xml).
-        # Use the canonical-CSV silver builder; other domains keep the
-        # XML loader.
+        # GR gold = the actual fusion ground truth for THIS run's level.
+        # Products *baseline* canonical tree ships fusion CSVs (no
+        # test_set.xml), so it uses the canonical-CSV silver builder. Every
+        # other case — all non-products domains AND products *variants*
+        # (easy/medium/hard, which DO ship usecases/products-augmented/
+        # <level>/input/fusion/test_set.xml) — must score against the
+        # variant's own fusion set via the XML loader on bundle.variant_root.
+        # Keying the CSV branch on level==baseline (not just domain) is what
+        # makes products variants score against the variant gold, not the
+        # baseline gold.
         if (
             self.config.domain == "products"
             and self.config.bundle_source == "canonical"
+            and self.level == "baseline"
         ):
             from .canonical_loader import load_canonical_products_workflow_silver
 
             gold = load_canonical_products_workflow_silver()
+            gold_source_label = "fusion_test_set.csv"
         else:
             gold = load_workflow_silver(
                 state.bundle.variant_root,
                 domain=self.config.domain,
                 prefix_map=prefix_map,
             )
+            gold_source_label = "test_set.xml"
 
         sources_pipe = [df for df in state.bundle.sources.values()]
 
@@ -833,7 +860,7 @@ class BestOfBreedPipeline:
             composite_weights=self.config.composite_weights or None,
             source_prefix_map=self.config.source_prefix_map or None,
             usecase=self.config.domain,
-            gold_source_label="fusion_test_set.xml",
+            gold_source_label=gold_source_label,
         )
 
     def _build_pipe_membership_from_fused(self, state: PipelineState) -> "pd.DataFrame":

@@ -1,100 +1,97 @@
 # Validation report - companies / medium
 
-_Generated at 2026-04-28T19:55:25.464600+00:00_
+_Generated at 2026-06-05T03:52:35.865291+00:00_
 
 - domain: `companies`
 - level: `medium`
-- with_llm: `False`
-- committee_versions: sm=`sm_committee.yaml@5022dec6c8d2`, em=`em_blocking_committee.yaml@44fd6bfd276d+em_matching_committee.yaml@47093abf698a`, fusion=`fusion_committee.yaml@0a388fd41a72`
+- with_llm: `True`
+- committee_versions: sm=`sm_committee.yaml@cb4a6847ac9e`, norm=`normalization_committee_companies.yaml@d6f28b520075`, em_blocking=`em_blocking_committee.yaml@042119f4d1bf`, em_matching=`em_matching_committee.yaml@f0bb40e2173f`, fusion=`fusion_committee.yaml@6f2bb9461525`
 
 ## Stage summary
 
 | stage | metric | measured | baseline | delta |
 |---|---|---|---|---|
-| sm | macro_f1 | 0.2430 | 0.3756 | -0.1326 |
-| em | macro_f1 | 0.8246 | 0.7203 | 0.1044 |
-| fusion | overall_accuracy | 0.3333 | 0.4792 | -0.1458 |
+| sm | macro_f1 | 0.7702 | 0.7270 | 0.0431 |
+| norm | macro_f1 | 0.7185 | 0.8706 | -0.1521 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_matching | macro_f1_variant_model_on_regen_test | 0.8721 | 0.8842 | -0.0121 |
+| fusion | overall_accuracy | 0.4130 | 0.4577 | -0.0447 |
 
 ## Stage: sm - per member
 
 | member | f1 | f1_baseline | f1_delta |
 |---|---|---|---|
-| coma_hybrid | 0.1538 | 0.2400 | -0.0862 |
-| duplicate_majority | 0.0000 | 0.0000 | 0.0000 |
-| embedding_sbert | 0.0909 | 0.3077 | -0.2168 |
-| llm_openai | 0.7273 | 0.9545 | -0.2273 |
+| coma_hybrid | 0.6875 | 0.6452 | 0.0423 |
+| duplicate_majority | 0.8000 | 0.8000 | 0.0000 |
+| embedding_sbert | 0.7222 | 0.7179 | 0.0043 |
+| instance_tf_cosine | 0.5625 | 0.6286 | -0.0661 |
+| label_jw | 0.7059 | 0.3846 | 0.3213 |
+| llm_openai | 1.0000 | 1.0000 | 0.0000 |
+| magneto_slm_llm | 0.9130 | 0.9130 | 0.0000 |
 
-## Stage: em - per member
+## Stage: norm - per member
 
-| member | f1 | f1_baseline | f1_delta | pool_precision | pool_precision_baseline | pool_recall | pool_recall_baseline |
+| member | macro_f1 | macro_f1_baseline | macro_f1_delta |
+|---|---|---|---|
+| llm_only | 0.7353 | 0.8340 | -0.0987 |
+| passthrough | 0.7152 | 0.9388 | -0.2236 |
+| rule_per_attribute_optimal | 0.7050 | 0.8389 | -0.1339 |
+
+## Stage: em_blocking - per member
+
+| member | pair_recall | pair_recall_baseline | pair_recall_delta | reduction_ratio | reduction_ratio_baseline |
+|---|---|---|---|---|---|
+| bm25_blocker | 0.9921 | 1.0000 | -0.0079 | 0.9853 | 0.9846 |
+| embedding_blocker | 1.0000 | 1.0000 | 0.0000 | 0.9853 | 0.9846 |
+| sc_block | 1.0000 | 1.0000 | 0.0000 | 0.9707 | 0.9691 |
+| sorted_neighbourhood_blocker | 0.9611 | 0.9735 | -0.0124 | 0.9875 | 0.9867 |
+| standard_blocker | 0.9611 | 0.9735 | -0.0124 | 0.9983 | 0.9985 |
+| token_blocker | 0.9788 | 0.9788 | 0.0000 | 0.9931 | 0.9930 |
+
+## Stage: em_matching - per member
+
+| member | f1 | f1_baseline | f1_delta | f1_baseline_test | f1_baseline_test_baseline | f1_regen_test | f1_regen_test_baseline |
 |---|---|---|---|---|---|---|---|
-| ditto_plm | 0.8246 | 0.7203 | 0.1044 | 0.7618 | 0.7825 | 0.2054 | 0.2106 |
+| comem | 0.8711 | 0.8950 | -0.0240 | 0.8711 | 0.8950 | 0.8711 | 0.8950 |
+| ditto_plm | 0.8725 | 0.8699 | 0.0026 | 0.8716 | 0.8699 | 0.8716 | 0.8699 |
+| llm_matcher | 0.8640 | 0.8848 | -0.0208 | 0.8640 | 0.8848 | 0.8640 | 0.8848 |
+| magellan | 0.8808 | 0.8872 | -0.0064 | 0.8823 | 0.8872 | 0.8823 | 0.8872 |
 
-## Stage: em - per pair
+## Stage: em_matching - per pair
 
 | pair | member | f1 | f1_baseline | f1_delta |
 |---|---|---|---|---|
-| forbes_dbpedia | ditto_plm | 0.8249 | 0.6464 | 0.1785 |
-| forbes_fullcontact | ditto_plm | 0.8244 | 0.7942 | 0.0303 |
+| forbes_dbpedia | comem | 0.8440 | 0.8649 | -0.0208 |
+| forbes_dbpedia | ditto_plm | 0.8824 | 0.8750 | 0.0074 |
+| forbes_dbpedia | llm_matcher | 0.8113 | 0.8673 | -0.0559 |
+| forbes_dbpedia | magellan | 0.9023 | 0.9104 | -0.0082 |
+| forbes_fullcontact | comem | 0.8981 | 0.9252 | -0.0271 |
+| forbes_fullcontact | ditto_plm | 0.8627 | 0.8649 | -0.0021 |
+| forbes_fullcontact | llm_matcher | 0.9167 | 0.9023 | 0.0143 |
+| forbes_fullcontact | magellan | 0.8594 | 0.8640 | -0.0046 |
 
 ## Stage: fusion - per member
 
 | member | overall_accuracy | overall_accuracy_baseline | overall_accuracy_delta |
 |---|---|---|---|
-| assets_fusionquery | 0.3796 | 0.5926 | -0.2130 |
-| assets_huber_m_estimator | 0.3796 | 0.5833 | -0.2037 |
-| assets_maximum | 0.3796 | 0.5926 | -0.2130 |
-| assets_median | 0.3796 | 0.5833 | -0.2037 |
-| assets_median_of_means | 0.3796 | 0.5833 | -0.2037 |
-| assets_prefer_higher_trust | 0.3796 | 0.5833 | -0.2037 |
-| assets_trimmed_mean | 0.3796 | 0.5833 | -0.2037 |
-| city_llm_judge | 0.3796 | 0.5926 | -0.2130 |
-| city_prefer_higher_trust | 0.4074 | 0.6204 | -0.2130 |
-| city_shortest_string | 0.4167 | 0.6389 | -0.2222 |
-| city_truthfinder | 0.3889 | 0.0000 | 0.3889 |
-| city_voting | 0.3796 | 0.5926 | -0.2130 |
-| country_favour_forbes | 0.3704 | 0.5926 | -0.2222 |
-| country_llm_judge | 0.3796 | 0.5926 | -0.2130 |
-| country_prefer_higher_trust | 0.2963 | 0.4352 | -0.1389 |
-| country_truthfinder | 0.3796 | 0.5556 | -0.1759 |
-| country_voting | 0.3796 | 0.5926 | -0.2130 |
-| founded_earliest | 0.3796 | 0.5926 | -0.2130 |
-| founded_prefer_higher_trust | 0.3426 | 0.5185 | -0.1759 |
-| founded_voting | 0.3796 | 0.5926 | -0.2130 |
-| industry_accusim | 0.3796 | 0.5926 | -0.2130 |
-| industry_llm_judge | 0.3796 | 0.5926 | -0.2130 |
-| industry_most_complete | 0.3796 | 0.5926 | -0.2130 |
-| industry_prefer_higher_trust | 0.3796 | 0.5926 | -0.2130 |
-| industry_voting | 0.3796 | 0.5926 | -0.2130 |
-| keypeople_ltm | 0.3796 | 0.5926 | -0.2130 |
-| keypeople_prefer_higher_trust | 0.3796 | 0.5926 | -0.2130 |
-| keypeople_union | 0.3796 | 0.5926 | -0.2130 |
-| keypeople_voting | 0.3796 | 0.5926 | -0.2130 |
-| name_accusim | 0.3796 | 0.5926 | -0.2130 |
-| name_casefusion | 0.3426 | 0.5741 | -0.2315 |
-| name_fusionquery | 0.4074 | 0.5648 | -0.1574 |
-| name_llm_judge | 0.3796 | 0.5926 | -0.2130 |
-| name_longest_string | 0.3611 | 0.5648 | -0.2037 |
-| name_most_complete | 0.3611 | 0.5648 | -0.2037 |
-| name_prefer_higher_trust | 0.4074 | 0.5648 | -0.1574 |
-| name_voting | 0.3796 | 0.5926 | -0.2130 |
-| revenue_fusionquery | 0.3796 | 0.5926 | -0.2130 |
-| revenue_huber_m_estimator | 0.3796 | 0.5833 | -0.2037 |
-| revenue_maximum | 0.3796 | 0.5926 | -0.2130 |
-| revenue_median | 0.3796 | 0.5833 | -0.2037 |
-| revenue_median_of_means | 0.3796 | 0.5833 | -0.2037 |
-| revenue_prefer_higher_trust | 0.3704 | 0.5833 | -0.2130 |
-| revenue_trimmed_mean | 0.3796 | 0.5833 | -0.2037 |
+| accusim_only | 0.3936 | 0.4197 | -0.0260 |
+| casefusion_only | 0.3603 | 0.4009 | -0.0405 |
+| fusionquery_only | 0.3690 | 0.3560 | 0.0130 |
+| llm_only | 0.3821 | 0.3994 | -0.0174 |
+| ltm_only | 0.4124 | 0.4009 | 0.0116 |
+| prefer_higher_trust_only | 0.3965 | 0.4616 | -0.0651 |
+| pydi_per_attribute_optimal | 0.4168 | 0.4501 | -0.0333 |
+| truthfinder_only | 0.3661 | 0.3589 | 0.0072 |
+| voting_only | 0.3719 | 0.4153 | -0.0434 |
 
 ## Stage: fusion - per attribute
 
 | attribute | best_accuracy | baseline | delta | spread | spread_baseline | spread_delta |
 |---|---|---|---|---|---|---|
-| assets | 0.0000 | 0.0556 | -0.0556 | 0.0000 | 0.0556 | -0.0556 |
-| city | 0.5556 | 0.8333 | -0.2778 | 0.2222 | 0.8333 | -0.6111 |
-| country | 0.6667 | 0.9444 | -0.2778 | 0.5000 | 0.9444 | -0.4444 |
-| founded | 0.5000 | 0.8889 | -0.3889 | 0.2222 | 0.4444 | -0.2222 |
-| industry | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| assets | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| city | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| country | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| founded | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | keypeople | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| name | 0.8889 | 1.0000 | -0.1111 | 0.3889 | 0.1667 | 0.2222 |
-| revenue | 0.0556 | 0.1111 | -0.0556 | 0.0556 | 0.0556 | 0.0000 |
+| name | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| revenue | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |

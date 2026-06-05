@@ -112,7 +112,12 @@ from usecases_synthetic.lib.non_corner_refill import (
     refill_non_corner_entity,
     select_reference_anchor,
 )
-from usecases_synthetic.lib.loaders import load_domain_sources, read_em_gold_csv
+from usecases_synthetic.lib.loaders import (
+    em_gold_candidates,
+    load_domain_sources,
+    read_em_gold_csv,
+    read_em_gold_pair,
+)
 from usecases_synthetic.lib.niche_metrics import (
     EmbeddingCacheMeta,
     attribute_overlap_matrix,
@@ -170,9 +175,11 @@ def _load_original_split_targets(
 ]:
     """Inspect original EM gold splits to derive regen size + pos ratio + pairs.
 
-    For each authored source pair, reads the per-split files at
-    ``usecases/<domain>/input/entitymatching/<src1>_2_<src2>_<split>.csv``
-    and returns:
+    For each authored source pair, resolves the per-split gold file via
+    :func:`loaders.em_gold_candidates` (so the condensed papers naming
+    ``<src1>_<src2>_<split>.csv`` with ``open_alex`` -> ``openalex`` and any
+    reverse-direction files resolve the same way the EM consumers do) and
+    returns:
 
     1. A :class:`SplitSpec` per split capturing target row count and
        positive ratio. Downstream consumers expect the regenerated
@@ -212,32 +219,40 @@ def _load_original_split_targets(
     specs_by_pair: dict[tuple[str, str], list[SplitSpec]] = {}
     pairs_by_split: dict[tuple[str, str], dict[str, list[tuple[str, str, bool]]]] = {}
     for pair in authored_pairs:
-        src1, src2 = pair
-        pair_name = f"{src1}_2_{src2}"
         specs: list[SplitSpec] = []
         pairs_for_pair: dict[str, list[tuple[str, str, bool]]] = {}
         for split in _EM_SPLIT_NAMES:
-            path = em_dir / f"{pair_name}_{split}.csv"
-            if not path.exists():
+            # Resolve the gold file via the shared candidate list (the same
+            # one the EM consumers variant_loader / committee_em use) so the
+            # condensed papers naming (``dblp_crossref_<split>.csv``,
+            # ``open_alex`` -> ``openalex``) and any reverse-direction files
+            # resolve identically. ``read_em_gold_pair`` auto-detects the
+            # header, maps the first three columns to id1/id2/label, and
+            # orients id1/id2 to the declared pair direction.
+            match = next(
+                (
+                    (path, needs_swap)
+                    for path, needs_swap in em_gold_candidates(em_dir, pair, split)
+                    if path.exists()
+                ),
+                None,
+            )
+            if match is None:
                 logger.warning(
-                    "Original EM split missing for sizing reference: %s",
-                    path,
+                    "Original EM split missing for sizing reference: %s_2_%s/%s",
+                    pair[0],
+                    pair[1],
+                    split,
                 )
                 continue
-            # Original EM golds are headerless (id1, id2, label); handle
-            # both that convention and the header-ful CSVs produced by
-            # the regenerator itself (so this helper is reusable on
-            # augmented variants too).
-            try:
-                df = pd.read_csv(path)
-                if "label" not in df.columns:
-                    raise ValueError("missing label column")
-            except (ValueError, KeyError):
-                df = pd.read_csv(path, header=None, names=["id1", "id2", "label"])
+            df = read_em_gold_pair(*match)
             if df.empty:
                 continue
-            labels = df["label"].astype(str).str.lower()
-            positives_mask = labels == "true"
+            # Papers ships 0/1 integer labels; every other domain ships
+            # true/false. Treat both as positive (mirrors build_canonical_view).
+            positives_mask = (
+                df["label"].astype(str).str.strip().str.lower().isin(("true", "1"))
+            )
             positives = int(positives_mask.sum())
             size = int(len(df))
             ratio = float(positives) / size if size > 0 else 0.5

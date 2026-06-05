@@ -58,17 +58,85 @@ def _add_file_handler(path: Path) -> logging.Handler:
     return handler
 
 
-def retrain_domain_level(domain: str, level: str) -> dict[str, Path]:
+def _is_corner_filled_data_gap(exc: Exception) -> bool:
+    """True for the known "packaged variant lacks corner_filled splits" error.
+
+    Both retrain_variant_ditto and retrain_variant_sc_block raise a
+    ``RuntimeError`` whose message contains ``corner_filled`` when the
+    packaged variant shipped no ``*_train_corner_filled.csv`` at all — i.e.
+    there is genuinely nothing to train on. The current trigger is **papers**,
+    whose variants ship only ``*_test_corner_filled.csv`` (a real
+    variant-generation gap — track upstream). NOTE: a *missing val* split
+    (games ships ``*_train_corner_filled`` but no ``*_val_corner_filled``) is
+    NOT a data gap here — retrain_variant_ditto holds out a stratified val
+    split from train in that case, so games does not reach this skip. Any
+    other exception is a genuine bug and must NOT be swallowed.
+    """
+    return isinstance(exc, RuntimeError) and "corner_filled" in str(exc)
+
+
+def retrain_domain_level(
+    domain: str, level: str, *, out_root: Path | None = None
+) -> dict[str, Path | None]:
     """Retrain both variant matchers for one ``(domain, level)``.
 
-    Returns ``{"ditto": <path>, "sc_block": <path>}``. A per-level log
-    file captures the run for the cascade audit trail.
+    ``out_root`` redirects both checkpoints off the committee cache into a
+    pipeline-isolated tree (the best-of-breed pipeline's no-committee-reuse
+    policy). When set, ditto lands at
+    ``<out_root>/em_matching/ditto/variant_<level>/best`` and sc_block at
+    ``<out_root>/em_blocking/sc_block/variant_<level>/best`` (ditto's run_*
+    work dirs are isolated under the same ditto dir). When ``None`` (the
+    committee default) both land under ``cache/<model>_checkpoints/...``.
+
+    Returns ``{"ditto": <path|None>, "sc_block": <path|None>}``. When a
+    matcher cannot be retrained because the packaged variant lacks the
+    corner_filled EM splits, that matcher is SKIPPED with a loud ``error``
+    log (NOT a silent drop) instead of aborting the whole cascade: the
+    committee member stays active and ``validate_variant`` falls back to
+    the baseline ``/best`` checkpoint for that level
+    (``committee_em._resolve_variant_checkpoint_path`` →
+    ``variant_ckpt_distinct=False``). Any other exception propagates so
+    genuine training bugs still fail the job loudly. A per-level log file
+    captures the run for the cascade audit trail.
     """
+    ditto_out: Path | None = None
+    sc_out: Path | None = None
+    if out_root is not None:
+        ditto_out = out_root / "em_matching" / "ditto" / f"variant_{level}"
+        sc_out = out_root / "em_blocking" / "sc_block" / f"variant_{level}"
     handler = _add_file_handler(_level_log_path(domain, level))
     try:
         logger.info("=== R10-G variant retrain: %s / %s ===", domain, level)
-        ditto_ckpt = retrain_variant_ditto(domain, level)
-        sc_ckpt = retrain_variant_sc_block(domain, level)
+        ditto_ckpt: Path | None = None
+        sc_ckpt: Path | None = None
+        try:
+            ditto_ckpt = retrain_variant_ditto(
+                domain, level, work_dir=ditto_out, out_dir=ditto_out
+            )
+        except RuntimeError as exc:
+            if not _is_corner_filled_data_gap(exc):
+                raise
+            logger.error(
+                "SKIP ditto variant %s/%s (missing corner_filled data: %s); "
+                "validate_variant will fall back to the baseline ditto "
+                "checkpoint for this level.",
+                domain,
+                level,
+                exc,
+            )
+        try:
+            sc_ckpt = retrain_variant_sc_block(domain, level, out_dir=sc_out)
+        except RuntimeError as exc:
+            if not _is_corner_filled_data_gap(exc):
+                raise
+            logger.error(
+                "SKIP sc_block variant %s/%s (missing corner_filled data: %s); "
+                "validate_variant will fall back to the baseline sc_block "
+                "checkpoint for this level.",
+                domain,
+                level,
+                exc,
+            )
         logger.info(
             "Done %s/%s: ditto=%s sc_block=%s", domain, level, ditto_ckpt, sc_ckpt
         )
@@ -81,12 +149,20 @@ def retrain_domain_level(domain: str, level: str) -> dict[str, Path]:
 def run_cascade(
     domains: list[str],
     levels: tuple[str, ...] = _VARIANT_LEVELS,
-) -> dict[tuple[str, str], dict[str, Path]]:
-    """Retrain variant checkpoints for every ``(domain, level)``."""
-    results: dict[tuple[str, str], dict[str, Path]] = {}
+    *,
+    out_root: Path | None = None,
+) -> dict[tuple[str, str], dict[str, Path | None]]:
+    """Retrain variant checkpoints for every ``(domain, level)``.
+
+    ``out_root`` (when set) redirects all checkpoints into the
+    pipeline-isolated tree — see :func:`retrain_domain_level`.
+    """
+    results: dict[tuple[str, str], dict[str, Path | None]] = {}
     for domain in domains:
         for level in levels:
-            results[(domain, level)] = retrain_domain_level(domain, level)
+            results[(domain, level)] = retrain_domain_level(
+                domain, level, out_root=out_root
+            )
     return results
 
 
@@ -107,13 +183,26 @@ def main() -> None:
         choices=list(_VARIANT_LEVELS),
         help="Difficulty levels to retrain (default: easy medium hard).",
     )
+    parser.add_argument(
+        "--out-root",
+        type=Path,
+        default=None,
+        help=(
+            "Pipeline-isolated checkpoint root (e.g. "
+            "pipelines/<domain>/checkpoints). When set, ditto + sc_block "
+            "variant checkpoints land under "
+            "<out-root>/em_{matching,blocking}/<model>/variant_<level>/best "
+            "instead of the committee cache. Use one --domain at a time when "
+            "passing a domain-specific --out-root."
+        ),
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
     )
     results: dict[tuple[str, str], dict[str, Any]] = run_cascade(
-        args.domain, tuple(args.levels)
+        args.domain, tuple(args.levels), out_root=args.out_root
     )
     for (domain, level), ckpts in results.items():
         logger.info(
@@ -122,6 +211,21 @@ def main() -> None:
             level,
             ckpts["ditto"],
             ckpts["sc_block"],
+        )
+    skipped = [
+        f"{domain}/{level}:{model}"
+        for (domain, level), ckpts in results.items()
+        for model in ("ditto", "sc_block")
+        if ckpts.get(model) is None
+    ]
+    if skipped:
+        logger.warning(
+            "Variant retrain SKIPPED for %d (domain/level:model) — missing "
+            "corner_filled data; validate_variant uses the baseline /best "
+            "checkpoint for these (committee member stays active, "
+            "variant_model_distinct=0): %s",
+            len(skipped),
+            ", ".join(skipped),
         )
 
 

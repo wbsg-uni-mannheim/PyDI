@@ -1,25 +1,32 @@
 domain: music
 master_seed: 42
 
-# Sources refreshed 2026-05-04 to schema.org-style CSV format. All three
-# sources already ship with a native ``id`` column carrying the
-# expected source-specific prefix (``mbrainz_<n>`` / ``discogs_<n>`` /
-# ``lastFM_<n>`` matching the EM gold), so no ``id_column`` rename is
-# needed. Pre-refresh XML/JSON/CSV sources are preserved at
-# usecases/music/input/data/old/ for reference.
+# Source CSVs are in raw WDC form: the entity id lives in a source-specific
+# column (musicbrainz=Attribute_1, discogs=rec_uid, lastfm=item_code), already
+# carrying the EM-gold prefix (``mbrainz_<n>`` / ``discogs_<n>`` / ``lastFM_<n>``).
+# The loader renames each declared ``id_column`` -> ``id`` so downstream code
+# keeps its ``id_column="id"`` assumption; the EM/Fusion committee
+# ``column_mapping`` blocks rename the remaining raw columns onto the canonical
+# schema (name/artist/release-date/release-country/duration/label/genre/tracks).
+# (The earlier "ships with a native id column" note was stale — the 2026-06-03
+# header rewrite put raw Attribute_N/rec_uid/item_code headers on disk.)
+# Pre-refresh XML/JSON/CSV sources are preserved at usecases/music/input/data/old/.
 sources:
   - name: musicbrainz
     file: musicbrainz.csv
     format: csv
     id_prefix: "mbrainz_"
+    id_column: Attribute_1
   - name: discogs
     file: discogs.csv
     format: csv
     id_prefix: "discogs_"
+    id_column: rec_uid
   - name: lastfm
     file: lastfm.csv
     format: csv
     id_prefix: "lastFM_"
+    id_column: item_code
 
 source_pairs:
   - [musicbrainz, discogs]

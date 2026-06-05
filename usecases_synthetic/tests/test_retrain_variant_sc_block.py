@@ -113,6 +113,37 @@ class TestRetrainVariantScBlockSmoke:
         assert out == ckpt_parent / "companies" / "variant_hard" / "best"
         assert (out / "config.json").exists()
 
+    def test_out_dir_override_routes_checkpoint(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """``out_dir`` sends the trainer output to the pipeline-isolated tree,
+        bypassing ``_scblock_variant_dir`` (committee cache)."""
+        bundle = _tiny_bundle("hard", tmp_path / "variant")
+        monkeypatch.setattr(
+            rv, "load_variant", lambda domain, level, *, root_override=None: bundle
+        )
+
+        def _boom(domain: str, level: str) -> Path:  # pragma: no cover
+            raise AssertionError("committee cache path must not be used")
+
+        monkeypatch.setattr(rv, "_scblock_variant_dir", _boom)
+
+        calls: dict[str, Any] = {}
+
+        def fake_train(domain, eval_pair, output_dir, data_override) -> dict[str, Any]:
+            calls["output_dir"] = output_dir
+            best = output_dir / "best"
+            best.mkdir(parents=True, exist_ok=True)
+            (best / "config.json").write_text("{}", encoding="utf-8")
+            return {"best_val_recall": 1.0}
+
+        monkeypatch.setattr(rv, "_invoke_scblock_train", fake_train)
+
+        isolated = tmp_path / "pipelines" / "companies" / "ckpt" / "variant_hard"
+        out = rv.retrain_variant_sc_block("companies", "hard", out_dir=isolated)
+        assert calls["output_dir"] == isolated
+        assert out == isolated / "best"
+
     def test_baseline_level_rejected(self) -> None:
         with pytest.raises(ValueError, match="baseline"):
             rv.retrain_variant_sc_block("companies", "baseline")

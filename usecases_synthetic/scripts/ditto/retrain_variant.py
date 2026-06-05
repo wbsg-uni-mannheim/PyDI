@@ -56,6 +56,37 @@ _DITTO_TRAIN_PY = SYNTHETIC_DIR / "scripts" / "ditto" / "train.py"
 _DEFAULT_TRAIN_YAML = SYNTHETIC_DIR / "config" / "ditto" / "default_train.yaml"
 _VARIANT_LEVELS = ("easy", "medium", "hard")
 
+# Same convention the baseline prep uses when a pair ships no held-out val
+# (ditto/_prep_games._split_train_val_stratified): hold out a stratified 20%
+# of train as the early-stopping val split, seeded for reproducibility.
+_VAL_FRACTION = 0.2
+_SPLIT_SEED = 42
+
+
+def _split_train_val_stratified(
+    df: "Any", *, val_fraction: float = _VAL_FRACTION, seed: int = _SPLIT_SEED
+):
+    """Stratified train/val split on ``label`` (mirrors _prep_games).
+
+    Used when a packaged variant ships ``*_train_corner_filled.csv`` but no
+    ``*_val_corner_filled.csv`` (e.g. games): the Ditto trainer needs a held-out
+    val split for early stopping, so we carve one from the train gold rather
+    than fall back to the baseline checkpoint. Falls back to an unstratified
+    split if a class has too few rows to stratify.
+    """
+    from sklearn.model_selection import train_test_split
+
+    try:
+        train_df, val_df = train_test_split(
+            df, test_size=val_fraction, random_state=seed, stratify=df["label"]
+        )
+    except ValueError:
+        # too few rows in a class to stratify — split without stratification
+        train_df, val_df = train_test_split(
+            df, test_size=val_fraction, random_state=seed
+        )
+    return train_df.reset_index(drop=True), val_df.reset_index(drop=True)
+
 
 def _ditto_variant_dir(domain: str, level: str) -> Path:
     """Return ``cache/ditto_checkpoints/<domain>/variant_<level>``.
@@ -148,10 +179,19 @@ def retrain_variant_ditto(
     *,
     root_override: Path | None = None,
     work_dir: Path | None = None,
+    out_dir: Path | None = None,
 ) -> Path:
     """Retrain + place the variant Ditto checkpoint for ``(domain, level)``.
 
     Returns the variant ``best`` checkpoint path.
+
+    ``out_dir`` overrides where the stable ``best`` symlink is placed. When
+    ``None`` (the committee default) it lands at
+    ``cache/ditto_checkpoints/<domain>/variant_<level>`` (read by the
+    committee runner). The best-of-breed pipeline passes a pipeline-isolated
+    location under ``pipelines/<domain>/checkpoints/...`` (no committee-cache
+    reuse). Pass the SAME path as ``work_dir`` so the produced ``run_*``
+    directories are isolated too.
     """
     if level not in _VARIANT_LEVELS:
         raise ValueError(
@@ -177,30 +217,49 @@ def retrain_variant_ditto(
         regen = bundle.em_gold_regenerated.get((src1, src2), {})
         train_gold = regen.get("train", {}).get("corner_filled")
         val_gold = regen.get("val", {}).get("corner_filled")
-        if train_gold is not None and not train_gold.empty:
-            train_records.extend(
-                build_ditto_pair_records_committee_scope(
-                    train_gold,
-                    domain,
-                    src1,
-                    src2,
-                    sources=bundle.sources,
-                    fields=fields,
-                    column_mapping=column_mapping,
-                )
+        if train_gold is None or train_gold.empty:
+            # No corner_filled train gold for this pair — nothing to learn from.
+            continue
+        if val_gold is None or val_gold.empty:
+            # Packaged variant shipped no *_val_corner_filled for this pair
+            # (e.g. games): hold out a stratified 20% of the train gold as the
+            # early-stopping val split, same as the baseline prep. Keeps a
+            # genuine variant-retrained checkpoint instead of aliasing to the
+            # baseline.
+            train_gold, val_gold = _split_train_val_stratified(train_gold)
+            logger.info(
+                "%s/%s %s_2_%s: no val_corner_filled; held out %d/%d rows as "
+                "stratified val split (seed=%d)",
+                domain,
+                level,
+                src1,
+                src2,
+                len(val_gold),
+                len(train_gold) + len(val_gold),
+                _SPLIT_SEED,
             )
-        if val_gold is not None and not val_gold.empty:
-            val_records.extend(
-                build_ditto_pair_records_committee_scope(
-                    val_gold,
-                    domain,
-                    src1,
-                    src2,
-                    sources=bundle.sources,
-                    fields=fields,
-                    column_mapping=column_mapping,
-                )
+        train_records.extend(
+            build_ditto_pair_records_committee_scope(
+                train_gold,
+                domain,
+                src1,
+                src2,
+                sources=bundle.sources,
+                fields=fields,
+                column_mapping=column_mapping,
             )
+        )
+        val_records.extend(
+            build_ditto_pair_records_committee_scope(
+                val_gold,
+                domain,
+                src1,
+                src2,
+                sources=bundle.sources,
+                fields=fields,
+                column_mapping=column_mapping,
+            )
+        )
 
     train_records = _dedupe_records(train_records)
     val_records = _dedupe_records(val_records)
@@ -239,7 +298,8 @@ def retrain_variant_ditto(
         max_field_len=int(knob02.get("plm_max_field_len", 350)),
         config_path=_DEFAULT_TRAIN_YAML,
     )
-    return _place_checkpoint(_ditto_variant_dir(domain, level), produced)
+    target_dir = out_dir if out_dir is not None else _ditto_variant_dir(domain, level)
+    return _place_checkpoint(target_dir, produced)
 
 
 def main() -> None:
@@ -248,12 +308,27 @@ def main() -> None:
     )
     parser.add_argument("--domain", required=True, choices=sorted(VALID_DOMAINS))
     parser.add_argument("--level", required=True, choices=list(_VARIANT_LEVELS))
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Pipeline-isolated checkpoint dir for the stable best symlink "
+            "(also used as work_dir for run_* isolation). Default: the "
+            "committee cache path cache/ditto_checkpoints/<domain>/variant_<level>."
+        ),
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
     )
-    ckpt = retrain_variant_ditto(args.domain, args.level)
+    ckpt = retrain_variant_ditto(
+        args.domain,
+        args.level,
+        work_dir=args.out_dir,
+        out_dir=args.out_dir,
+    )
     logger.info("Variant Ditto checkpoint ready: %s", ckpt)
 
 

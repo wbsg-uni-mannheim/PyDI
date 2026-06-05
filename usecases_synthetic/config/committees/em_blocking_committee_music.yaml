@@ -130,13 +130,33 @@ composition:
 required_axes:
   blocking_type: [lexical, sparse, embedding, hybrid]
 
-# Column mapping - all three refreshed 2026-05-04 CSV sources already
-# use the canonical column names (id, name, artist, release-date,
-# release-country, duration, label, genre, tracks), so no per-source
-# rename is needed. Empty mappings are kept for documentation parity
-# with the other domains and so cross-committee invariants find a
-# matching block per source.
+# Column mapping — MUST stay byte-identical to em_matching_committee_music.yaml
+# (enforced by committee_em._merge_column_mappings) and in sync with
+# fusion_committee_music.yaml. The on-disk CSVs are raw WDC headers (the
+# 2026-06-03 "updated headers" commit rewrote them to Attribute_N/rec_uid/
+# item_code); these renames put the remaining columns onto the canonical schema.
+# sc_block training reads THIS block (sc_block/train.py:_load_blocking_column_mapping)
+# so an empty mapping would train sc_block on all-empty text. The id column is
+# renamed to `id` by the loader via domains/music.yaml id_column and must NOT
+# appear here.
 column_mapping:
-  musicbrainz: {}
-  discogs: {}
-  lastfm: {}
+  musicbrainz:
+    Attribute_2: name
+    Attribute_3: artist
+    Attribute_4: release-date
+    Attribute_5: release-country
+    Attribute_6: duration
+    Attribute_9: tracks
+  discogs:
+    title_str: name
+    performer: artist
+    pub_dt: release-date
+    origin_loc: release-country
+    imprint: label
+    category: genre
+    tracks_track-name: tracks
+  lastfm:
+    album_title: name
+    band: artist
+    album_length: duration
+    tracks_track-name: tracks

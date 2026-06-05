@@ -1,99 +1,113 @@
 # Validation report - products / easy
 
-_Generated at 2026-05-30T22:42:32.841896+00:00_
+_Generated at 2026-06-05T04:43:14.894267+00:00_
 
 - domain: `products`
 - level: `easy`
 - with_llm: `True`
-- committee_versions: sm=`sm_committee.yaml@cb4a6847ac9e`, norm=`normalization_committee_products.yaml@ba3a7ab9d0fd`, em_blocking=`em_blocking_committee_products.yaml@5485fd074f41`, em_matching=`em_matching_committee_products.yaml@457e751943e8`, fusion=`fusion_committee_products.yaml@70c645adfccc`
+- committee_versions: sm=`sm_committee.yaml@cb4a6847ac9e`, norm=`normalization_committee_products.yaml@6726f3b09a5f`, em_blocking=`em_blocking_committee_products.yaml@b8c80e7a6cca`, em_matching=`em_matching_committee_products.yaml@bb3a271dc0f4`, fusion=`fusion_committee_products.yaml@9017a21d09da`
 
 ## Stage summary
 
 | stage | metric | measured | baseline | delta |
 |---|---|---|---|---|
-| sm | macro_f1 | 0.6591 | 0.6537 | 0.0054 |
-| norm | macro_f1 | 0.4669 | 0.4524 | 0.0145 |
+| sm | macro_f1 | 0.7449 | 0.6764 | 0.0685 |
+| norm | macro_f1 | 0.6287 | 0.5931 | 0.0356 |
 | em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
-| em_matching | macro_f1_variant_model_on_regen_test | 0.9444 | 0.9507 | -0.0063 |
-| fusion | overall_accuracy | 0.7020 | 0.8220 | -0.1200 |
+| em_matching | macro_f1_variant_model_on_regen_test | 0.8674 | 0.9003 | -0.0329 |
+| fusion | overall_accuracy | 0.5412 | 0.6981 | -0.1569 |
 
 ## Stage: sm - per member
 
 | member | f1 | f1_baseline | f1_delta |
 |---|---|---|---|
-| coma_hybrid | 0.8511 | 0.8511 | 0.0000 |
-| duplicate_majority | 1.0000 | 1.0000 | 0.0000 |
-| embedding_sbert | 0.3619 | 0.3465 | 0.0154 |
-| instance_tf_cosine | 0.2838 | 0.2800 | 0.0038 |
-| label_jw | 0.6780 | 0.6780 | 0.0000 |
-| llm_openai | 0.8511 | 0.8511 | 0.0000 |
-| magneto_slm_llm | 0.5882 | 0.5694 | 0.0188 |
+| coma_hybrid | 0.9615 | 0.8529 | 0.1086 |
+| duplicate_majority | 0.9953 | 0.9091 | 0.0863 |
+| embedding_sbert | 0.4615 | 0.4498 | 0.0117 |
+| instance_tf_cosine | 0.4185 | 0.4042 | 0.0143 |
+| label_jw | 0.7813 | 0.5568 | 0.2244 |
+| llm_openai | 0.9811 | 0.9811 | 0.0000 |
+| magneto_slm_llm | 0.6149 | 0.5806 | 0.0343 |
 
 ## Stage: norm - per member
 
 | member | macro_f1 | macro_f1_baseline | macro_f1_delta |
 |---|---|---|---|
-| llm_only | 0.4129 | 0.3996 | 0.0133 |
-| passthrough | 0.4939 | 0.4788 | 0.0151 |
-| rule_per_attribute_optimal | 0.4939 | 0.4788 | 0.0151 |
+| llm_only | 0.6068 | 0.5415 | 0.0653 |
+| passthrough | 0.6006 | 0.6188 | -0.0182 |
+| rule_per_attribute_optimal | 0.6786 | 0.6188 | 0.0598 |
 
 ## Stage: em_blocking - per member
 
 | member | pair_recall | pair_recall_baseline | pair_recall_delta | reduction_ratio | reduction_ratio_baseline |
 |---|---|---|---|---|---|
-| bm25_blocker | 0.9457 | 0.9020 | 0.0438 | 0.9343 | 0.9310 |
-| embedding_blocker | 1.0000 | 0.9915 | 0.0085 | 0.9343 | 0.9310 |
-| sc_block | 1.0000 | 1.0000 | 0.0000 | 0.9159 | 0.8733 |
-| sorted_neighbourhood_blocker | 0.7159 | 0.5794 | 0.1365 | 0.9493 | 0.9486 |
-| standard_blocker | 0.7003 | 0.6986 | 0.0017 | 0.9782 | 0.9519 |
-| token_blocker | 1.0000 | 0.9971 | 0.0029 | 0.8108 | 0.6411 |
+| bm25_blocker | 0.9516 | 0.9267 | 0.0249 | 0.9343 | 0.9310 |
+| embedding_blocker | 1.0000 | 1.0000 | 0.0000 | 0.9343 | 0.9310 |
+| sc_block | 1.0000 | 0.9800 | 0.0200 | 0.8685 | 0.9490 |
+| sorted_neighbourhood_blocker | 0.5378 | 0.5333 | 0.0045 | 0.9494 | 0.9486 |
+| standard_blocker | 0.5881 | 0.6600 | -0.0719 | 0.9783 | 0.9519 |
+| token_blocker | 1.0000 | 1.0000 | 0.0000 | 0.8121 | 0.6411 |
 
 ## Stage: em_matching - per member
 
 | member | f1 | f1_baseline | f1_delta | f1_baseline_test | f1_baseline_test_baseline | f1_regen_test | f1_regen_test_baseline |
 |---|---|---|---|---|---|---|---|
-| comem | 0.9363 | 0.9293 | 0.0071 | 0.9363 | 0.9293 | 0.9363 | 0.9293 |
-| ditto_plm | 0.9235 | 0.9786 | -0.0551 | 0.9895 | 0.9786 | 0.9895 | 0.9786 |
-| llm_matcher | 0.9359 | 0.9263 | 0.0096 | 0.9359 | 0.9263 | 0.9359 | 0.9263 |
-| magellan | 0.9819 | 0.9688 | 0.0131 | 0.9785 | 0.9688 | 0.9785 | 0.9688 |
+| comem | 0.9131 | 0.8931 | 0.0200 | 0.9296 | 0.8931 | 0.9131 | 0.8931 |
+| ditto_plm | 0.9433 | 0.9339 | 0.0094 | 0.9592 | 0.9339 | 0.7579 | 0.9339 |
+| llm_matcher | 0.8865 | 0.8851 | 0.0014 | 0.9030 | 0.8851 | 0.8865 | 0.8851 |
+| magellan | 0.7267 | 0.8893 | -0.1626 | 0.8835 | 0.8893 | 0.4016 | 0.8893 |
 
 ## Stage: em_matching - per pair
 
 | pair | member | f1 | f1_baseline | f1_delta |
 |---|---|---|---|---|
-| products_1_products_2 | comem | 0.9592 | 0.9115 | 0.0477 |
-| products_1_products_2 | ditto_plm | 0.8913 | 0.9750 | -0.0837 |
-| products_1_products_2 | llm_matcher | 0.9485 | 0.9351 | 0.0134 |
-| products_1_products_2 | magellan | 0.9703 | 0.9752 | -0.0049 |
-| products_1_products_3 | comem | 0.9070 | 0.9302 | -0.0233 |
-| products_1_products_3 | ditto_plm | 0.9070 | 0.9782 | -0.0712 |
-| products_1_products_3 | llm_matcher | 0.9318 | 0.9302 | 0.0016 |
-| products_1_products_3 | magellan | 0.9892 | 0.9427 | 0.0465 |
-| products_1_products_4 | comem | 0.9429 | 0.9461 | -0.0033 |
-| products_1_products_4 | ditto_plm | 0.9722 | 0.9827 | -0.0104 |
-| products_1_products_4 | llm_matcher | 0.9275 | 0.9136 | 0.0140 |
-| products_1_products_4 | magellan | 0.9863 | 0.9885 | -0.0022 |
+| products_1_products_2 | comem | 0.9524 | 0.9149 | 0.0375 |
+| products_1_products_2 | ditto_plm | 0.9302 | 0.9259 | 0.0043 |
+| products_1_products_2 | llm_matcher | 0.9524 | 0.9375 | 0.0149 |
+| products_1_products_2 | magellan | 0.8077 | 0.9074 | -0.0997 |
+| products_1_products_3 | comem | 0.9744 | 0.8632 | 0.1112 |
+| products_1_products_3 | ditto_plm | 0.9268 | 0.9143 | 0.0125 |
+| products_1_products_3 | llm_matcher | 0.8947 | 0.8387 | 0.0560 |
+| products_1_products_3 | magellan | 0.7059 | 0.9009 | -0.1950 |
+| products_1_products_4 | comem | 0.8125 | 0.9011 | -0.0886 |
+| products_1_products_4 | ditto_plm | 0.9730 | 0.9615 | 0.0114 |
+| products_1_products_4 | llm_matcher | 0.8125 | 0.8791 | -0.0666 |
+| products_1_products_4 | magellan | 0.6667 | 0.8596 | -0.1930 |
 
 ## Stage: fusion - per member
 
 | member | overall_accuracy | overall_accuracy_baseline | overall_accuracy_delta |
 |---|---|---|---|
-| accusim_only | 0.4140 | 0.4000 | 0.0140 |
-| casefusion_only | 0.4760 | 0.4980 | -0.0220 |
-| fusionquery_only | 0.5680 | 0.5760 | -0.0080 |
-| llm_only | 0.3820 | 0.4460 | -0.0640 |
-| ltm_only | 0.4520 | 0.4720 | -0.0200 |
-| prefer_higher_trust_only | 0.5640 | 0.6260 | -0.0620 |
-| pydi_per_attribute_optimal | 0.7020 | 0.8220 | -0.1200 |
-| truthfinder_only | 0.4300 | 0.4300 | 0.0000 |
-| voting_only | 0.5580 | 0.5960 | -0.0380 |
+| accusim_only | 0.4127 | 0.5127 | -0.0999 |
+| casefusion_only | 0.4471 | 0.5516 | -0.1045 |
+| fusionquery_only | 0.4400 | 0.5672 | -0.1272 |
+| llm_only | 0.5114 | 0.5256 | -0.0143 |
+| ltm_only | 0.4289 | 0.5399 | -0.1110 |
+| prefer_higher_trust_only | 0.4919 | 0.6022 | -0.1103 |
+| pydi_per_attribute_optimal | 0.5665 | 0.7015 | -0.1350 |
+| truthfinder_only | 0.4296 | 0.5250 | -0.0954 |
+| voting_only | 0.4802 | 0.5964 | -0.1162 |
 
 ## Stage: fusion - per attribute
 
 | attribute | best_accuracy | baseline | delta | spread | spread_baseline | spread_delta |
 |---|---|---|---|---|---|---|
 | brand | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| bus_type | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| chipset_name | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | description | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| form_factor | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| interface_type | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| memory_type | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| model | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| model_number | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | price | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | priceCurrency | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| product_type | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| read_speed_mb_s | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| storage_connection_type | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| storage_gb | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | title | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| title_description | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| vram_gb | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| write_speed_mb_s | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |

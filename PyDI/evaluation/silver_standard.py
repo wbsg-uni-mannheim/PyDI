@@ -257,17 +257,30 @@ def load_workflow_silver(
     usecase_dir = Path(usecase_dir)
     fusion_dir = usecase_dir / "input" / "fusion"
 
-    test_path = fusion_dir / "test_set.xml"
+    def _resolve(stem: str) -> Optional[Path]:
+        # Prefer the canonical ``<stem>.xml``; fall back to the 2026-refreshed
+        # ``<stem>_final.xml``. Some domains (e.g. companies) ship only the
+        # ``_final`` gold, which is aligned with the current target_schema
+        # (e.g. founders->keypeople). Same generic XML structure either way.
+        primary = fusion_dir / f"{stem}.xml"
+        if primary.exists():
+            return primary
+        final = fusion_dir / f"{stem}_final.xml"
+        if final.exists():
+            return final
+        return None
+
+    test_path = _resolve("test_set")
     if include_validation:
-        val_path = fusion_dir / "validation_set.xml"
-        paths = [p for p in (val_path, test_path) if p.exists()]
+        val_path = _resolve("validation_set")
+        paths = [p for p in (val_path, test_path) if p is not None]
         if not paths:
             raise FileNotFoundError(
-                f"No validation_set.xml or test_set.xml under {fusion_dir}"
+                f"No validation_set[_final].xml or test_set[_final].xml under {fusion_dir}"
             )
     else:
-        if not test_path.exists():
-            raise FileNotFoundError(f"No test_set.xml under {fusion_dir}")
+        if test_path is None:
+            raise FileNotFoundError(f"No test_set[_final].xml under {fusion_dir}")
         paths = [test_path]
 
     resolved_domain = domain or usecase_dir.name

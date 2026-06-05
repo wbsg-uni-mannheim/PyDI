@@ -39,7 +39,15 @@ def apply_column_mapping(df: pd.DataFrame, mapping: dict[str, str]) -> pd.DataFr
     for src, tgt in mapping.items():
         if src == tgt:
             continue
-        if tgt in df.columns and tgt != src:
+        # Only resolve a collision when the rename will ACTUALLY happen, i.e.
+        # the source column is present. If ``src`` is absent the rename is a
+        # no-op, so dropping a pre-existing ``tgt`` would destroy a legitimate
+        # column that nothing recreates. This is exactly the case for an
+        # already-canonical source (e.g. the music *variant* sources ship
+        # native ``name``/``artist`` while the committee mapping is written for
+        # the raw baseline ``Attribute_2 -> name``): without this guard the
+        # canonical columns are silently dropped and EM/Fusion lose ``name``.
+        if src in df.columns and tgt in df.columns and tgt != src:
             drop_cols.append(tgt)
     if drop_cols:
         df = df.drop(columns=drop_cols)

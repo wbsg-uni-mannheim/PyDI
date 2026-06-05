@@ -50,49 +50,15 @@ trust_scores:
   crossref: 3
   open_alex: 1
 
-# Column mapping - empty per source (data is already target-shaped: all
-# three sources carry the same 14 canonical columns, so every mapping is
-# identity). Keep in sync with em_blocking / em_matching papers yamls.
-column_mapping:
-  dblp:
-    doi_ref: doi
-    entry_type: type
-    publication_title: title
-    author_list: authors
-    pub_year: publication_year
-    venue_name: journal
-    volume_no: volume
-    issue_no: issue
-    page_start: first_page
-    page_finish: last_page
-  crossref:
-    doi_code: doi
-    work_type: type
-    title_text: title
-    contributor_names: authors
-    issued_year: publication_year
-    container_title: journal
-    abstract_text: keywords
-    volume_id: volume
-    issue_id: issue
-    page_first: first_page
-    page_last: last_page
-    reference_total: referenced_works_count
-    cited_total: cited_by_count
-  open_alex:
-    doi_value: doi
-    work_kind: type
-    display_title: title
-    authors_list: authors
-    year_published: publication_year
-    source_name: journal
-    topic_terms: keywords
-    volume_tag: volume
-    issue_tag: issue
-    start_page: first_page
-    end_page: last_page
-    refs_count: referenced_works_count
-    citations_count: cited_by_count
+# Column mapping — EMPTY (2026-06-05). The papers JSONL loader already
+# canonicalizes every source column via loaders._PAPERS_SOURCE_COLUMN_MAP, so a
+# raw->canonical mapping here collides with the already-present canonical
+# columns: apply_column_mapping drops the existing target and renames an absent
+# raw key, DELETING title/authors/journal/... (every matching field). That
+# silently broke all papers EM (sc_block val_pair_recall=0). Keep {} so the
+# loader's canonicalization stands. Must stay byte-identical across
+# em_blocking / em_matching / fusion papers yamls.
+column_mapping: {}
 # Per-attribute EVALUATION (match) function. These name comparison
 # functions in PyDI.fusion.evaluation (exact_match / tokenized_match /
 # year_only_match / numeric_tolerance_match), NOT fusion conflict-
