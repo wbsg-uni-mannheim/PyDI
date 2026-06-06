@@ -913,6 +913,82 @@ class TestSelectBestBlocker:
         assert winner == "aaa"
         assert cleared is False
 
+    def test_fallback_skips_uncapped_blocker_over_candidate_cap(self) -> None:
+        """Fallback prefers a capped blocker over a higher-recall but
+        candidate-exploding one (the token_blocker games-hard pathology)."""
+        cfg = _CompositionConfig(
+            strategy="select_best",
+            recall_floor=0.97,
+            tie_breaker="reduction_ratio",
+            max_candidates=5_000_000,
+        )
+        metrics = {
+            # Highest recall but a 50M-pair explosion -> must NOT win.
+            "token_blocker": {
+                "pair_recall": 0.55,
+                "reduction_ratio": 0.10,
+                "candidate_count": 50_000_000,
+            },
+            # Lower recall but within the cap -> should win.
+            "sc_block": {
+                "pair_recall": 0.50,
+                "reduction_ratio": 0.99,
+                "candidate_count": 1_000_000,
+            },
+            "embedding_blocker": {
+                "pair_recall": 0.48,
+                "reduction_ratio": 0.99,
+                "candidate_count": 1_000_000,
+            },
+        }
+        winner, cleared = _select_best_blocker(metrics, cfg)
+        assert winner == "sc_block"  # highest recall among within-cap blockers
+        assert cleared is False
+
+    def test_cap_excludes_floor_clearing_exploder(self) -> None:
+        """An over-cap blocker that CLEARS the recall floor must still be
+        excluded — otherwise it wins via the survivor path (the games-medium
+        token_blocker bug: 44.5M candidates, recall>=floor)."""
+        cfg = _CompositionConfig(
+            strategy="select_best",
+            recall_floor=0.97,
+            tie_breaker="reduction_ratio",
+            max_candidates=5_000_000,
+        )
+        metrics = {
+            # Clears the floor but explodes -> must NOT win despite survivor path.
+            "token_blocker": {
+                "pair_recall": 0.99,
+                "reduction_ratio": 0.95,
+                "candidate_count": 44_500_000,
+            },
+            # Within cap; below floor -> wins as best within-cap blocker.
+            "sc_block": {
+                "pair_recall": 0.62,
+                "reduction_ratio": 0.999,
+                "candidate_count": 1_000_000,
+            },
+        }
+        winner, cleared = _select_best_blocker(metrics, cfg)
+        assert winner == "sc_block"
+        assert cleared is False  # no WITHIN-CAP blocker cleared the floor
+
+    def test_fallback_smallest_when_all_exceed_cap(self) -> None:
+        """If every blocker exceeds the cap, take the smallest candidate set."""
+        cfg = _CompositionConfig(
+            strategy="select_best",
+            recall_floor=0.97,
+            tie_breaker="reduction_ratio",
+            max_candidates=1_000_000,
+        )
+        metrics = {
+            "big": {"pair_recall": 0.9, "reduction_ratio": 0.1, "candidate_count": 9e7},
+            "small": {"pair_recall": 0.6, "reduction_ratio": 0.1, "candidate_count": 5e6},
+        }
+        winner, cleared = _select_best_blocker(metrics, cfg)
+        assert winner == "small"
+        assert cleared is False
+
     def test_empty_metrics_raises(self) -> None:
         """Empty blocker_metrics is a programmer error — raise rather than guess."""
         with pytest.raises(ValueError, match="empty blocker_metrics"):

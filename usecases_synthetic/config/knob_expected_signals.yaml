@@ -109,7 +109,7 @@ knob_01:
         SM largely unaffected — knob perturbs values, not headers.
     - id: em_monotone_drop
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: down
       qualitative_only: true
       target_delta_range: null
@@ -138,7 +138,7 @@ knob_02:
   signals:
     - id: em_monotone_drop
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: down
       qualitative_only: true
       target_delta_range: null
@@ -184,7 +184,7 @@ knob_03:
         Sharper for single-key blockers.
     - id: em_monotone_drop
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: down
       qualitative_only: true
       target_delta_range: null
@@ -210,7 +210,7 @@ knob_04:
   signals:
     - id: em_flat_or_shift
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: flat
       qualitative_only: true
       target_delta_range: null
@@ -254,7 +254,7 @@ knob_05:
       notes: SM unaffected — per-value formatting.
     - id: em_monotone_drop
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: down
       qualitative_only: true
       target_delta_range: null
@@ -311,7 +311,7 @@ knob_06:
       notes: SM flat.
     - id: em_monotone_drop
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: down
       qualitative_only: true
       target_delta_range: null
@@ -390,7 +390,7 @@ knob_08:
         on companies because the baseline is already at the floor.
     - id: em_flat
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: flat
       qualitative_only: true
       target_delta_range: null
@@ -420,7 +420,7 @@ knob_10:
       notes: Upstream stages unaffected by K10.
     - id: em_flat
       stage: em_matching
-      metric: aggregated.macro_f1_variant_model_on_regen_test
+      metric: aggregated.macro_f1_baseline_model_on_regen_test
       direction: flat
       qualitative_only: true
       target_delta_range: null

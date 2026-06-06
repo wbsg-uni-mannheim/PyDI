@@ -105,6 +105,11 @@ class _CompositionConfig:
     strategy: str
     recall_floor: float
     tie_breaker: str
+    # Upper bound on the winning blocker's candidate count. Guards against the
+    # recall-floor fallback selecting an UNCAPPED blocker (e.g. token_blocker)
+    # whose candidate set is 10-100x the top_k-capped blockers', which makes
+    # downstream matching grind for hours. 0 disables the cap.
+    max_candidates: int = 5_000_000
 
 
 def _parse_blocking_roster(
@@ -213,6 +218,7 @@ def _parse_composition(raw: dict[str, Any] | None) -> _CompositionConfig:
         strategy=str(raw.get("strategy", "select_best")),
         recall_floor=float(raw.get("recall_floor", 0.97)),
         tie_breaker=str(raw.get("tie_breaker", "reduction_ratio")),
+        max_candidates=int(raw.get("max_candidates", 5_000_000)),
     )
 
 
@@ -760,12 +766,16 @@ def _select_best_blocker(
 ) -> tuple[str, bool]:
     """Pick the winning blocker for a single source pair.
 
-    Among blockers clearing ``composition.recall_floor`` on pair recall,
-    the one with the highest reduction ratio wins. Ties are broken
-    alphabetically on blocker name so the same input always produces
-    the same winner. If no blocker clears the floor, the highest-recall
-    blocker is chosen as a fallback and ``recall_floor_cleared=False``
-    is returned so callers can surface the shortfall.
+    Blockers whose ``candidate_count`` exceeds ``composition.max_candidates``
+    are excluded FIRST (an uncapped blocker can both explode the candidate set
+    AND clear the recall floor, so the cap must gate the survivor path too).
+    Among the remaining (within-cap) blockers clearing
+    ``composition.recall_floor`` on pair recall, the one with the highest
+    reduction ratio wins; ties break alphabetically. If none clear the floor,
+    the highest-recall within-cap blocker is chosen and
+    ``recall_floor_cleared=False`` is returned so callers can surface the
+    shortfall. If EVERY blocker exceeds the cap, the smallest candidate set
+    wins (still ``False``).
 
     Parameters
     ----------
@@ -785,17 +795,39 @@ def _select_best_blocker(
     if not blocker_metrics:
         raise ValueError("_select_best_blocker called with empty blocker_metrics")
 
+    # HARD candidate cap, applied BEFORE the floor/RR logic. An UNCAPPED blocker
+    # (e.g. token_blocker) can emit 10-100x the top_k-capped blockers' pairs and
+    # — because it is exhaustive — can even *clear the recall floor*, winning via
+    # the survivor path and making downstream matching grind for hours. Excluding
+    # over-cap blockers up front means neither the survivor nor the fallback path
+    # can select one. Only if EVERY blocker exceeds the cap do we keep them all
+    # (the caller logs the shortfall and _run_pair warns on the winner's size).
+    cap = composition.max_candidates
+    pool = {
+        name: m
+        for name, m in blocker_metrics.items()
+        if cap <= 0 or m.get("candidate_count", 0.0) <= cap
+    }
+    if not pool:
+        # Everything exploded — take the smallest candidate set to bound cost.
+        smallest = sorted(
+            blocker_metrics.items(),
+            key=lambda item: (item[1].get("candidate_count", 0.0), item[0]),
+        )
+        return smallest[0][0], False
+
     survivors = [
         (name, metrics)
-        for name, metrics in blocker_metrics.items()
+        for name, metrics in pool.items()
         if metrics.get("pair_recall", 0.0) >= composition.recall_floor
     ]
     if survivors:
         survivors.sort(key=lambda item: (-item[1]["reduction_ratio"], item[0]))
         return survivors[0][0], True
 
+    # No within-cap blocker cleared the floor → highest-recall within-cap blocker.
     fallback = sorted(
-        blocker_metrics.items(),
+        pool.items(),
         key=lambda item: (-item[1].get("pair_recall", 0.0), item[0]),
     )
     return fallback[0][0], False
@@ -1224,6 +1256,26 @@ class EMCommitteeRunner(CommitteeRunner):
             )
 
         winner_candidates = blocker_candidates[winner_name]
+
+        # Loud guardrail: even after count-aware selection, if the winner's
+        # candidate set is enormous (e.g. every blocker exceeded the cap on a
+        # very large / heavily-perturbed pair), downstream Ditto/Magellan
+        # matching will grind for hours. Surface it instead of silently
+        # stalling so the run is diagnosable.
+        cap = self._composition.max_candidates
+        n_winner_cands = len(winner_candidates)
+        if cap > 0 and n_winner_cands > cap:
+            logger.warning(
+                "EM blocking pair %s-%s: winner '%s' emitted %d candidate pairs "
+                "(> max_candidates=%d); downstream matching may be very slow. "
+                "Consider a smaller top_k, a tighter recall_floor, or raising "
+                "the cap intentionally.",
+                src1,
+                src2,
+                winner_name,
+                n_winner_cands,
+                cap,
+            )
 
         # R10-F: use the variant-aware resolver so that at variant levels a
         # trainable matcher trains on the K2-regenerated

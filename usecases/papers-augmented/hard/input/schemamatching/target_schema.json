@@ -95,19 +95,6 @@
       "minLength": 1,
       "maxLength": 300
     },
-    "keywords": {
-      "type": "string",
-      "title": "Keywords",
-      "description": "Comma-separated keywords, concepts, or subject labels associated with the paper.",
-      "minLength": 1,
-      "maxLength": 1000,
-      "x-pydi-consistency": {
-        "rule": "delimited_open_text",
-        "separator": ",",
-        "description": "Keywords are open-world terms; only approximate item count is custom; length is handled by JSON Schema.",
-        "maxTerms": 50
-      }
-    },
     "volume": {
       "type": "string",
       "title": "Volume",

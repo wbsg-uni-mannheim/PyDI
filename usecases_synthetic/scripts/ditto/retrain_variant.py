@@ -275,6 +275,29 @@ def retrain_variant_ditto(
             "trainer needs a validation split for early stopping."
         )
 
+    # Guard against a DEGENERATE retrain on field-stripped records. The
+    # apply_column_mapping collision bug (fixed 2026-06-05) stripped canonical
+    # columns from already-canonical variant sources, so every serialized field
+    # came out empty and the trained model predicted ZERO pairs (f1=0) while
+    # still being flagged variant_model_distinct=1 — a silent corruption. Fail
+    # loudly here instead of shipping a 0.0-F1 checkpoint.
+    _text_keys = [f"{f}_left" for f in fields] + [f"{f}_right" for f in fields]
+    _empty_vals = {"", "<NA>", "nan", "none"}
+    _n_empty = sum(
+        1
+        for r in train_records
+        if all(str(r.get(k, "")).strip().lower() in _empty_vals for k in _text_keys)
+    )
+    if train_records and _n_empty / len(train_records) > 0.95:
+        raise RuntimeError(
+            f"Degenerate variant training data for {domain}/{level}: "
+            f"{_n_empty}/{len(train_records)} train records have ALL text "
+            f"fields empty (fields={fields}). The variant source columns did "
+            "not map to the canonical field names — check the committee "
+            "column_mapping vs the variant source schema (apply_column_mapping "
+            "collision strip). Refusing to train a degenerate checkpoint."
+        )
+
     work = work_dir or (SYNTHETIC_DIR / "output" / "ditto_variant" / domain / level)
     train_json = work / "train.json.gz"
     val_json = work / "val.json.gz"

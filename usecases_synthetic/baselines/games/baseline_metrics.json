@@ -1,7 +1,7 @@
 {
   "domain": "games",
   "meta": {
-    "written_at": "2026-06-05T03:12:23.199153+00:00",
+    "written_at": "2026-06-05T22:17:25.776044+00:00",
     "with_llm": true,
     "committee_versions": {
       "fusion": "fusion_committee_games.yaml@fd979439ba3d",
@@ -10,7 +10,7 @@
       "em_blocking": "em_blocking_committee_games.yaml@c07cf762a7d5",
       "em_matching": "em_matching_committee_games.yaml@ead92fa3a2a8"
     },
-    "total_runtime_s": 3278.44,
+    "total_runtime_s": 1396.75,
     "fusion_input_member": "ditto_plm",
     "scoring_surface": "schema_constraints"
   },
@@ -19,7 +19,7 @@
       "stage": "fusion",
       "domain": "games",
       "level": "baseline",
-      "runtime_s": 700.1276431890437,
+      "runtime_s": 269.71689292101655,
       "roster": [
         "pydi_per_attribute_optimal",
         "llm_only",
@@ -34,9 +34,9 @@
       "aggregated": {
         "macro_accuracy": 0.6820825539344058,
         "min_accuracy": 0.6135578002244668,
-        "max_accuracy": 0.7202244668911336,
-        "best_member_macro_accuracy": 0.7202244668911336,
-        "overall_accuracy": 0.7202244668911336
+        "max_accuracy": 0.7202244668911335,
+        "best_member_macro_accuracy": 0.7202244668911335,
+        "overall_accuracy": 0.7202244668911335
       },
       "per_attribute": {
         "name": {
@@ -167,22 +167,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 628,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.89,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.82,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.74,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.96,
             "platform_count": 100,
+            "developer_accuracy": 0.74,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.89,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.82,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.9,
             "name_count": 100,
             "f1": 0.6980022446689114,
@@ -190,7 +190,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 7.966048153990414,
+          "runtime_s": 8.509778377017938,
           "notes": {
             "selection_map": {
               "ESRB": "voting",
@@ -214,22 +214,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 552,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.42,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.75,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.77,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.65,
             "platform_count": 100,
+            "developer_accuracy": 0.77,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.42,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.75,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.96,
             "name_count": 100,
             "f1": 0.6135578002244668,
@@ -237,7 +237,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 489.1209174959804,
+          "runtime_s": 18.750409040017985,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -252,35 +252,35 @@
         "fusionquery_only": {
           "metrics": {
             "overall_accuracy": 0.7208008898776418,
-            "macro_accuracy": 0.7202244668911336,
+            "macro_accuracy": 0.7202244668911335,
             "num_evaluated_records": 100,
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 648,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.89,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.82,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.88,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.96,
             "platform_count": 100,
+            "developer_accuracy": 0.88,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.89,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.82,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.96,
             "name_count": 100,
-            "f1": 0.7202244668911336,
-            "f1_test": 0.7202244668911336,
+            "f1": 0.7202244668911335,
+            "f1_test": 0.7202244668911335,
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 30.37959528900683,
+          "runtime_s": 36.005221499013714,
           "notes": {
             "selection_map": {
               "criticScore": "median",
@@ -297,35 +297,35 @@
         "truthfinder_only": {
           "metrics": {
             "overall_accuracy": 0.7208008898776418,
-            "macro_accuracy": 0.7202244668911336,
+            "macro_accuracy": 0.7202244668911335,
             "num_evaluated_records": 100,
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 648,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.89,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.82,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.87,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.97,
             "platform_count": 100,
+            "developer_accuracy": 0.87,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.89,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.82,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.96,
             "name_count": 100,
-            "f1": 0.7202244668911336,
-            "f1_test": 0.7202244668911336,
+            "f1": 0.7202244668911335,
+            "f1_test": 0.7202244668911335,
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 31.415803866053466,
+          "runtime_s": 37.66530308697838,
           "notes": {
             "selection_map": {
               "criticScore": "median",
@@ -347,22 +347,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 611,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.83,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.56,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.85,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.98,
             "platform_count": 100,
+            "developer_accuracy": 0.85,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.83,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.56,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.92,
             "name_count": 100,
             "f1": 0.6791133557800225,
@@ -370,7 +370,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 34.975401135976426,
+          "runtime_s": 41.317655897000805,
           "notes": {
             "selection_map": {
               "criticScore": "median",
@@ -392,22 +392,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 628,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.9,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.82,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.73,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.97,
             "platform_count": 100,
+            "developer_accuracy": 0.73,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.9,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.20202020202020202,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.82,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.89,
             "name_count": 100,
             "f1": 0.6980022446689113,
@@ -415,7 +415,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 30.741392664029263,
+          "runtime_s": 36.09815317601897,
           "notes": {
             "selection_map": {
               "criticScore": "median",
@@ -437,22 +437,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 583,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.92,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.17,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.88,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.96,
             "platform_count": 100,
+            "developer_accuracy": 0.88,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.92,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.2222222222222222,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.17,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.91,
             "name_count": 100,
             "f1": 0.6480246913580248,
@@ -460,7 +460,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 42.893263032019604,
+          "runtime_s": 50.28428782208357,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -480,22 +480,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 579,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.89,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.18,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.87,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.96,
             "platform_count": 100,
+            "developer_accuracy": 0.87,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.89,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.2222222222222222,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.18,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.9,
             "name_count": 100,
             "f1": 0.6435802469135803,
@@ -503,7 +503,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 8.082388587994501,
+          "runtime_s": 8.373886954970658,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -523,22 +523,22 @@
             "num_evaluated_attributes": 9,
             "total_evaluations": 899,
             "total_correct": 646,
-            "ESRB_accuracy": 0.98,
-            "ESRB_count": 100,
-            "releaseYear_accuracy": 0.93,
-            "releaseYear_count": 100,
-            "genres_accuracy": 0.74,
-            "genres_count": 100,
-            "criticScore_accuracy": 0.28,
-            "criticScore_count": 100,
-            "developer_accuracy": 0.87,
-            "developer_count": 100,
-            "publisher_accuracy": 0.51,
-            "publisher_count": 100,
             "platform_accuracy": 0.97,
             "platform_count": 100,
+            "developer_accuracy": 0.87,
+            "developer_count": 100,
+            "releaseYear_accuracy": 0.93,
+            "releaseYear_count": 100,
             "userScore_accuracy": 0.21212121212121213,
             "userScore_count": 99,
+            "criticScore_accuracy": 0.28,
+            "criticScore_count": 100,
+            "genres_accuracy": 0.74,
+            "genres_count": 100,
+            "ESRB_accuracy": 0.98,
+            "ESRB_count": 100,
+            "publisher_accuracy": 0.51,
+            "publisher_count": 100,
             "name_accuracy": 0.97,
             "name_count": 100,
             "f1": 0.718013468013468,
@@ -546,7 +546,7 @@
             "macro_accuracy_val": 0.6490530303030303,
             "f1_val": 0.6490530303030303
           },
-          "runtime_s": 6.3649532700073905,
+          "runtime_s": 9.42548012896441,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -565,7 +565,7 @@
       "stage": "sm",
       "domain": "games",
       "level": "baseline",
-      "runtime_s": 26.769739695009775,
+      "runtime_s": 32.628778054961,
       "roster": [
         "duplicate_majority",
         "label_jw",
@@ -870,7 +870,7 @@
             "fp": 0.0,
             "fn": 7.0
           },
-          "runtime_s": 0.7792421649792232,
+          "runtime_s": 0.940096379024908,
           "notes": {
             "signal_type": "duplicate"
           }
@@ -884,7 +884,7 @@
             "fp": 3.0,
             "fn": 20.0
           },
-          "runtime_s": 0.003708133997861296,
+          "runtime_s": 0.0044946359703317285,
           "notes": {
             "signal_type": "label"
           }
@@ -898,7 +898,7 @@
             "fp": 6.0,
             "fn": 8.0
           },
-          "runtime_s": 0.09910342399962246,
+          "runtime_s": 0.12447635806165636,
           "notes": {
             "signal_type": "instance"
           }
@@ -912,7 +912,7 @@
             "fp": 8.0,
             "fn": 10.0
           },
-          "runtime_s": 3.0681991689489223,
+          "runtime_s": 4.219068901962601,
           "notes": {
             "signal_type": "embedding"
           }
@@ -926,7 +926,7 @@
             "fp": 0.0,
             "fn": 0.0
           },
-          "runtime_s": 2.8683313629589975,
+          "runtime_s": 8.146286183036864,
           "notes": {
             "signal_type": "llm"
           }
@@ -940,7 +940,7 @@
             "fp": 2.0,
             "fn": 1.0
           },
-          "runtime_s": 16.60626102297101,
+          "runtime_s": 15.246032064897008,
           "notes": {
             "signal_type": "llm"
           }
@@ -954,7 +954,7 @@
             "fp": 1.0,
             "fn": 10.0
           },
-          "runtime_s": 3.335207761032507,
+          "runtime_s": 3.93579233600758,
           "notes": {
             "signal_type": "hybrid"
           }
@@ -966,7 +966,7 @@
       "stage": "norm",
       "domain": "games",
       "level": "baseline",
-      "runtime_s": 619.6618185919942,
+      "runtime_s": 23.02961200394202,
       "roster": [
         "rule_per_attribute_optimal",
         "llm_only",
@@ -1069,7 +1069,7 @@
             "precision_val": 0.875,
             "recall_val": 0.83875
           },
-          "runtime_s": 0.12837637698976323,
+          "runtime_s": 0.15803842502646148,
           "notes": {
             "selection_map": {
               "criticScore": "number_locale",
@@ -1099,7 +1099,7 @@
             "precision_val": 0.875,
             "recall_val": 0.8303365384615384
           },
-          "runtime_s": 619.5026647429913,
+          "runtime_s": 22.834244164056145,
           "notes": {
             "model_name": "gpt-5.4-mini"
           }
@@ -1119,7 +1119,7 @@
             "precision_val": 1.0,
             "recall_val": 0.96375
           },
-          "runtime_s": 0.029426983965095133,
+          "runtime_s": 0.036183560034260154,
           "notes": {
             "best_member": true
           }
@@ -1131,7 +1131,7 @@
       "stage": "em_blocking",
       "domain": "games",
       "level": "baseline",
-      "runtime_s": 887.8717932340223,
+      "runtime_s": 1018.0351460480597,
       "roster": [
         "token_blocker",
         "standard_blocker",
@@ -1180,7 +1180,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 32.79107908997685,
+          "runtime_s": 37.49262798007112,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1194,7 +1194,7 @@
                 "reduction_ratio": 0.9533028694233087,
                 "candidate_count": 17133675.0,
                 "full_space": 366910660.0,
-                "runtime_s": 8.758599641965702,
+                "runtime_s": 9.837811085977592,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1216,7 +1216,7 @@
                 "reduction_ratio": 0.9526473487847169,
                 "candidate_count": 45203339.0,
                 "full_space": 954610520.0,
-                "runtime_s": 24.032479448011145,
+                "runtime_s": 27.65481689409353,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1244,7 +1244,7 @@
             "selection_rate": 1.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.8051877850084566,
+          "runtime_s": 1.180511635961011,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1258,7 +1258,7 @@
                 "reduction_ratio": 0.9986975630525425,
                 "candidate_count": 477878.0,
                 "full_space": 366910660.0,
-                "runtime_s": 0.31704739201813936,
+                "runtime_s": 0.5641463719075546,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1280,7 +1280,7 @@
                 "reduction_ratio": 0.9989491410591201,
                 "candidate_count": 1003161.0,
                 "full_space": 954610520.0,
-                "runtime_s": 0.4881403929903172,
+                "runtime_s": 0.6163652640534565,
                 "pair_recall_baseline_model_on_baseline_test": 0.9716981132075472,
                 "pair_recall_baseline_model_on_regen_test": 0.9716981132075472,
                 "pair_recall_variant_model_on_baseline_test": 0.9716981132075472,
@@ -1308,7 +1308,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 143.36827682494186,
+          "runtime_s": 174.79497586202342,
           "notes": {
             "role": "blocker",
             "blocking_type": "embedding",
@@ -1322,7 +1322,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 96.85560892499052,
+                "runtime_s": 118.01992686395533,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1344,7 +1344,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 46.51266789995134,
+                "runtime_s": 56.77504899806809,
                 "pair_recall_baseline_model_on_baseline_test": 0.8773584905660378,
                 "pair_recall_baseline_model_on_regen_test": 0.8773584905660378,
                 "pair_recall_variant_model_on_baseline_test": 0.8773584905660378,
@@ -1372,7 +1372,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.6840292119886726,
+          "runtime_s": 0.8056263970211148,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1386,7 +1386,7 @@
                 "reduction_ratio": 0.9986491970552177,
                 "candidate_count": 495624.0,
                 "full_space": 366910660.0,
-                "runtime_s": 0.2673660430009477,
+                "runtime_s": 0.3280222930479795,
                 "pair_recall_baseline_model_on_baseline_test": 0.9913793103448276,
                 "pair_recall_baseline_model_on_regen_test": 0.9913793103448276,
                 "pair_recall_variant_model_on_baseline_test": 0.9913793103448276,
@@ -1408,7 +1408,7 @@
                 "reduction_ratio": 0.9989479531400932,
                 "candidate_count": 1004295.0,
                 "full_space": 954610520.0,
-                "runtime_s": 0.41666316898772493,
+                "runtime_s": 0.47760410397313535,
                 "pair_recall_baseline_model_on_baseline_test": 0.839622641509434,
                 "pair_recall_baseline_model_on_regen_test": 0.839622641509434,
                 "pair_recall_variant_model_on_baseline_test": 0.839622641509434,
@@ -1436,7 +1436,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 36.26077284500934,
+          "runtime_s": 44.61506215191912,
           "notes": {
             "role": "blocker",
             "blocking_type": "sparse",
@@ -1450,7 +1450,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 12.35847494500922,
+                "runtime_s": 15.096882372978143,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1472,7 +1472,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 23.90229790000012,
+                "runtime_s": 29.518179778940976,
                 "pair_recall_baseline_model_on_baseline_test": 0.9056603773584906,
                 "pair_recall_baseline_model_on_regen_test": 0.9056603773584906,
                 "pair_recall_variant_model_on_baseline_test": 0.9056603773584906,
@@ -1500,7 +1500,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 213.98851871100487,
+          "runtime_s": 233.97596652107313,
           "notes": {
             "role": "blocker",
             "blocking_type": "hybrid",
@@ -1514,7 +1514,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 90.79015677800635,
+                "runtime_s": 100.67684890900273,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1536,7 +1536,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 123.19836193299852,
+                "runtime_s": 133.2991176120704,
                 "pair_recall_baseline_model_on_baseline_test": 0.8867924528301887,
                 "pair_recall_baseline_model_on_regen_test": 0.8867924528301887,
                 "pair_recall_variant_model_on_baseline_test": 0.8867924528301887,
@@ -1566,7 +1566,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 32.79107908997685,
+          "runtime_s": 37.49262798007112,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1580,7 +1580,7 @@
                 "reduction_ratio": 0.9533028694233087,
                 "candidate_count": 17133675.0,
                 "full_space": 366910660.0,
-                "runtime_s": 8.758599641965702,
+                "runtime_s": 9.837811085977592,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1602,7 +1602,7 @@
                 "reduction_ratio": 0.9526473487847169,
                 "candidate_count": 45203339.0,
                 "full_space": 954610520.0,
-                "runtime_s": 24.032479448011145,
+                "runtime_s": 27.65481689409353,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1630,7 +1630,7 @@
             "selection_rate": 1.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.8051877850084566,
+          "runtime_s": 1.180511635961011,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1644,7 +1644,7 @@
                 "reduction_ratio": 0.9986975630525425,
                 "candidate_count": 477878.0,
                 "full_space": 366910660.0,
-                "runtime_s": 0.31704739201813936,
+                "runtime_s": 0.5641463719075546,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1666,7 +1666,7 @@
                 "reduction_ratio": 0.9989491410591201,
                 "candidate_count": 1003161.0,
                 "full_space": 954610520.0,
-                "runtime_s": 0.4881403929903172,
+                "runtime_s": 0.6163652640534565,
                 "pair_recall_baseline_model_on_baseline_test": 0.9716981132075472,
                 "pair_recall_baseline_model_on_regen_test": 0.9716981132075472,
                 "pair_recall_variant_model_on_baseline_test": 0.9716981132075472,
@@ -1694,7 +1694,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 143.36827682494186,
+          "runtime_s": 174.79497586202342,
           "notes": {
             "role": "blocker",
             "blocking_type": "embedding",
@@ -1708,7 +1708,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 96.85560892499052,
+                "runtime_s": 118.01992686395533,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1730,7 +1730,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 46.51266789995134,
+                "runtime_s": 56.77504899806809,
                 "pair_recall_baseline_model_on_baseline_test": 0.8773584905660378,
                 "pair_recall_baseline_model_on_regen_test": 0.8773584905660378,
                 "pair_recall_variant_model_on_baseline_test": 0.8773584905660378,
@@ -1758,7 +1758,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.6840292119886726,
+          "runtime_s": 0.8056263970211148,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1772,7 +1772,7 @@
                 "reduction_ratio": 0.9986491970552177,
                 "candidate_count": 495624.0,
                 "full_space": 366910660.0,
-                "runtime_s": 0.2673660430009477,
+                "runtime_s": 0.3280222930479795,
                 "pair_recall_baseline_model_on_baseline_test": 0.9913793103448276,
                 "pair_recall_baseline_model_on_regen_test": 0.9913793103448276,
                 "pair_recall_variant_model_on_baseline_test": 0.9913793103448276,
@@ -1794,7 +1794,7 @@
                 "reduction_ratio": 0.9989479531400932,
                 "candidate_count": 1004295.0,
                 "full_space": 954610520.0,
-                "runtime_s": 0.41666316898772493,
+                "runtime_s": 0.47760410397313535,
                 "pair_recall_baseline_model_on_baseline_test": 0.839622641509434,
                 "pair_recall_baseline_model_on_regen_test": 0.839622641509434,
                 "pair_recall_variant_model_on_baseline_test": 0.839622641509434,
@@ -1822,7 +1822,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 36.26077284500934,
+          "runtime_s": 44.61506215191912,
           "notes": {
             "role": "blocker",
             "blocking_type": "sparse",
@@ -1836,7 +1836,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 12.35847494500922,
+                "runtime_s": 15.096882372978143,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1858,7 +1858,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 23.90229790000012,
+                "runtime_s": 29.518179778940976,
                 "pair_recall_baseline_model_on_baseline_test": 0.9056603773584906,
                 "pair_recall_baseline_model_on_regen_test": 0.9056603773584906,
                 "pair_recall_variant_model_on_baseline_test": 0.9056603773584906,
@@ -1886,7 +1886,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 213.98851871100487,
+          "runtime_s": 233.97596652107313,
           "notes": {
             "role": "blocker",
             "blocking_type": "hybrid",
@@ -1900,7 +1900,7 @@
                 "reduction_ratio": 0.9936524057382252,
                 "candidate_count": 2329000.0,
                 "full_space": 366910660.0,
-                "runtime_s": 90.79015677800635,
+                "runtime_s": 100.67684890900273,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1922,7 +1922,7 @@
                 "reduction_ratio": 0.9989265779304423,
                 "candidate_count": 1024700.0,
                 "full_space": 954610520.0,
-                "runtime_s": 123.19836193299852,
+                "runtime_s": 133.2991176120704,
                 "pair_recall_baseline_model_on_baseline_test": 0.8867924528301887,
                 "pair_recall_baseline_model_on_regen_test": 0.8867924528301887,
                 "pair_recall_variant_model_on_baseline_test": 0.8867924528301887,
@@ -1944,7 +1944,7 @@
       "stage": "em_matching",
       "domain": "games",
       "level": "baseline",
-      "runtime_s": 1039.9356127300416,
+      "runtime_s": 39.90184381301515,
       "roster": [
         "ditto_plm",
         "magellan",
@@ -2015,7 +2015,7 @@
             "recall_regen_test": 0.6650130123617437,
             "pred_scoped_regen_test": 94.0
           },
-          "runtime_s": 5.737008877040353,
+          "runtime_s": 5.2076950470218435,
           "notes": {
             "role": "matcher",
             "matching_type": "learned",
@@ -2129,7 +2129,7 @@
             "recall_regen_test": 0.3931359791802212,
             "pred_scoped_regen_test": 60.0
           },
-          "runtime_s": 2.9303415460744873,
+          "runtime_s": 3.492724451003596,
           "notes": {
             "role": "matcher",
             "matching_type": "learned",
@@ -2243,7 +2243,7 @@
             "recall_regen_test": 0.44526675341574495,
             "pred_scoped_regen_test": 50.5
           },
-          "runtime_s": 503.4449604580295,
+          "runtime_s": 16.020339210052043,
           "notes": {
             "role": "matcher",
             "matching_type": "llm",
@@ -2357,7 +2357,7 @@
             "recall_regen_test": 0.44998373454782037,
             "pred_scoped_regen_test": 52.0
           },
-          "runtime_s": 527.8065479650395,
+          "runtime_s": 15.162889763014391,
           "notes": {
             "role": "matcher",
             "matching_type": "llm",

@@ -1,18 +1,18 @@
 # Baseline report - music
 
-_Generated at 2026-06-05T06:02:55.482536+00:00_
+_Generated at 2026-06-05T19:10:52.590395+00:00_
 
 ## Stage: sm
 
 ### SM - aggregated
 | metric | value |
 |---|---|
-| best_member_f1 | 0.9756 |
-| best_member_name | magneto_slm_llm |
-| macro_f1 | 0.7361 |
-| macro_precision | 0.9396 |
-| macro_recall | 0.6599 |
-| max_f1 | 0.9756 |
+| best_member_f1 | 1.0000 |
+| best_member_name | llm_openai |
+| macro_f1 | 0.7430 |
+| macro_precision | 0.9464 |
+| macro_recall | 0.6667 |
+| max_f1 | 1.0000 |
 | min_f1 | 0.3200 |
 
 ### SM - per attribute
@@ -36,7 +36,7 @@ _Generated at 2026-06-05T06:02:55.482536+00:00_
 | musicbrainz.Attribute_3 | 1.0000 | 0.0000 | 1.0000 | 1.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 |
 | musicbrainz.Attribute_4 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 1.0000 |
 | musicbrainz.Attribute_5 | 1.0000 | 1.0000 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 |
-| musicbrainz.Attribute_6 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | 1.0000 |
+| musicbrainz.Attribute_6 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 |
 | musicbrainz.Attribute_9 | 1.0000 | 0.0000 | 1.0000 | 1.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 |
 | musicbrainz.id | 1.0000 | 1.0000 | 0.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 

@@ -1,7 +1,7 @@
 {
   "domain": "music",
   "meta": {
-    "written_at": "2026-06-05T06:02:55.478049+00:00",
+    "written_at": "2026-06-05T19:10:52.575636+00:00",
     "with_llm": true,
     "committee_versions": {
       "fusion": "fusion_committee_music.yaml@f269c37ab587",
@@ -10,7 +10,7 @@
       "em_blocking": "em_blocking_committee_music.yaml@07cec0b9969f",
       "em_matching": "em_matching_committee_music.yaml@2c90f2517590"
     },
-    "total_runtime_s": 793.53,
+    "total_runtime_s": 3081.98,
     "fusion_input_member": "magellan",
     "scoring_surface": "schema_constraints"
   },
@@ -19,7 +19,7 @@
       "stage": "fusion",
       "domain": "music",
       "level": "baseline",
-      "runtime_s": 122.39650542399613,
+      "runtime_s": 789.377041995991,
       "roster": [
         "pydi_per_attribute_optimal",
         "llm_only",
@@ -154,28 +154,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 587,
-            "label_accuracy": 0.9139784946236559,
-            "label_count": 93,
-            "name_accuracy": 0.93,
-            "name_count": 100,
-            "artist_accuracy": 0.91,
-            "artist_count": 100,
-            "release-country_accuracy": 0.91,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.91,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.91,
+            "release-country_count": 100,
             "tracks_accuracy": 0.0,
             "tracks_count": 100,
+            "name_accuracy": 0.93,
+            "name_count": 100,
+            "label_accuracy": 0.9139784946236559,
+            "label_count": 93,
             "f1": 0.7678836754643206,
             "f1_test": 0.7678836754643206,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 4.087272370001301,
+          "runtime_s": 27.758224282995798,
           "notes": {
             "selection_map": {
               "artist": "voting",
@@ -198,28 +198,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 551,
-            "label_accuracy": 0.9139784946236559,
-            "label_count": 93,
-            "name_accuracy": 0.92,
-            "name_count": 100,
-            "artist_accuracy": 0.97,
-            "artist_count": 100,
-            "release-country_accuracy": 0.32,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.97,
+            "artist_count": 100,
             "duration_accuracy": 0.57,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.32,
+            "release-country_count": 100,
             "tracks_accuracy": 0.23,
             "tracks_count": 100,
+            "name_accuracy": 0.92,
+            "name_count": 100,
+            "label_accuracy": 0.9139784946236559,
+            "label_count": 93,
             "f1": 0.7228836754643206,
             "f1_test": 0.7228836754643206,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 14.091117482981645,
+          "runtime_s": 33.88932023209054,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -239,28 +239,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 551,
-            "label_accuracy": 0.8924731182795699,
-            "label_count": 93,
-            "name_accuracy": 0.8,
-            "name_count": 100,
-            "artist_accuracy": 0.74,
-            "artist_count": 100,
-            "release-country_accuracy": 0.87,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.74,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.87,
+            "release-country_count": 100,
             "tracks_accuracy": 0.0,
             "tracks_count": 100,
+            "name_accuracy": 0.8,
+            "name_count": 100,
+            "label_accuracy": 0.8924731182795699,
+            "label_count": 93,
             "f1": 0.7226955034213098,
             "f1_test": 0.7226955034213098,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 15.920492780976929,
+          "runtime_s": 125.50107413704973,
           "notes": {
             "selection_map": {
               "duration": "prefer_higher_trust",
@@ -276,33 +276,33 @@
         "truthfinder_only": {
           "metrics": {
             "overall_accuracy": 0.7636363636363637,
-            "macro_accuracy": 0.76894550342131,
+            "macro_accuracy": 0.7689455034213099,
             "num_evaluated_records": 100,
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 588,
-            "label_accuracy": 0.8924731182795699,
-            "label_count": 93,
-            "name_accuracy": 0.93,
-            "name_count": 100,
-            "artist_accuracy": 0.91,
-            "artist_count": 100,
-            "release-country_accuracy": 0.94,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.91,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.94,
+            "release-country_count": 100,
             "tracks_accuracy": 0.0,
             "tracks_count": 100,
-            "f1": 0.76894550342131,
-            "f1_test": 0.76894550342131,
+            "name_accuracy": 0.93,
+            "name_count": 100,
+            "label_accuracy": 0.8924731182795699,
+            "label_count": 93,
+            "f1": 0.7689455034213099,
+            "f1_test": 0.7689455034213099,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 16.240236597019248,
+          "runtime_s": 116.64890888694208,
           "notes": {
             "selection_map": {
               "duration": "prefer_higher_trust",
@@ -323,28 +323,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 575,
-            "label_accuracy": 0.8924731182795699,
-            "label_count": 93,
-            "name_accuracy": 0.92,
-            "name_count": 100,
-            "artist_accuracy": 0.86,
-            "artist_count": 100,
-            "release-country_accuracy": 0.88,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.91,
-            "release-date_count": 100,
+            "artist_accuracy": 0.86,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.91,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.88,
+            "release-country_count": 100,
             "tracks_accuracy": 0.03,
             "tracks_count": 100,
+            "name_accuracy": 0.92,
+            "name_count": 100,
+            "label_accuracy": 0.8924731182795699,
+            "label_count": 93,
             "f1": 0.7526955034213099,
             "f1_test": 0.7526955034213099,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 18.398507384001277,
+          "runtime_s": 140.5952517859405,
           "notes": {
             "selection_map": {
               "duration": "prefer_higher_trust"
@@ -365,28 +365,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 557,
-            "label_accuracy": 0.8924731182795699,
-            "label_count": 93,
-            "name_accuracy": 0.92,
-            "name_count": 100,
-            "artist_accuracy": 0.92,
-            "artist_count": 100,
-            "release-country_accuracy": 0.64,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.94,
-            "release-date_count": 100,
+            "artist_accuracy": 0.92,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.94,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.64,
+            "release-country_count": 100,
             "tracks_accuracy": 0.0,
             "tracks_count": 100,
+            "name_accuracy": 0.92,
+            "name_count": 100,
+            "label_accuracy": 0.8924731182795699,
+            "label_count": 93,
             "f1": 0.7301955034213099,
             "f1_test": 0.7301955034213099,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 16.231322542997077,
+          "runtime_s": 117.27020384802017,
           "notes": {
             "selection_map": {
               "duration": "prefer_higher_trust",
@@ -407,28 +407,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 596,
-            "label_accuracy": 0.8924731182795699,
-            "label_count": 93,
-            "name_accuracy": 0.92,
-            "name_count": 100,
-            "artist_accuracy": 0.94,
-            "artist_count": 100,
-            "release-country_accuracy": 0.91,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.94,
+            "artist_count": 100,
             "duration_accuracy": 0.68,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.91,
+            "release-country_count": 100,
             "tracks_accuracy": 0.03,
             "tracks_count": 100,
+            "name_accuracy": 0.92,
+            "name_count": 100,
+            "label_accuracy": 0.8924731182795699,
+            "label_count": 93,
             "f1": 0.7789455034213099,
             "f1_test": 0.7789455034213099,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 19.926672949979547,
+          "runtime_s": 153.74446326005273,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -448,28 +448,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 591,
-            "label_accuracy": 0.9139784946236559,
-            "label_count": 93,
-            "name_accuracy": 0.93,
-            "name_count": 100,
-            "artist_accuracy": 0.91,
-            "artist_count": 100,
-            "release-country_accuracy": 0.91,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.95,
-            "release-date_count": 100,
+            "artist_accuracy": 0.91,
+            "artist_count": 100,
             "duration_accuracy": 0.63,
             "duration_count": 100,
+            "release-date_accuracy": 0.95,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.91,
+            "release-country_count": 100,
             "tracks_accuracy": 0.03,
             "tracks_count": 100,
+            "name_accuracy": 0.93,
+            "name_count": 100,
+            "label_accuracy": 0.9139784946236559,
+            "label_count": 93,
             "f1": 0.7728836754643207,
             "f1_test": 0.7728836754643207,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 4.053933842049446,
+          "runtime_s": 25.220310657983646,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -489,28 +489,28 @@
             "num_evaluated_attributes": 8,
             "total_evaluations": 770,
             "total_correct": 594,
-            "label_accuracy": 0.9139784946236559,
-            "label_count": 93,
-            "name_accuracy": 0.92,
-            "name_count": 100,
-            "artist_accuracy": 0.92,
-            "artist_count": 100,
-            "release-country_accuracy": 0.96,
-            "release-country_count": 100,
             "genre_accuracy": 0.9090909090909091,
             "genre_count": 77,
-            "release-date_accuracy": 0.94,
-            "release-date_count": 100,
+            "artist_accuracy": 0.92,
+            "artist_count": 100,
             "duration_accuracy": 0.62,
             "duration_count": 100,
+            "release-date_accuracy": 0.94,
+            "release-date_count": 100,
+            "release-country_accuracy": 0.96,
+            "release-country_count": 100,
             "tracks_accuracy": 0.03,
             "tracks_count": 100,
+            "name_accuracy": 0.92,
+            "name_count": 100,
+            "label_accuracy": 0.9139784946236559,
+            "label_count": 93,
             "f1": 0.7766336754643206,
             "f1_test": 0.7766336754643206,
             "macro_accuracy_val": 0.6633585858585859,
             "f1_val": 0.6633585858585859
           },
-          "runtime_s": 3.42670024902327,
+          "runtime_s": 26.844295165967196,
           "notes": {
             "selection_map": {},
             "native_types": [
@@ -529,7 +529,7 @@
       "stage": "sm",
       "domain": "music",
       "level": "baseline",
-      "runtime_s": 25.973928610037547,
+      "runtime_s": 51.190721364924684,
       "roster": [
         "duplicate_majority",
         "label_jw",
@@ -540,13 +540,13 @@
         "coma_hybrid"
       ],
       "aggregated": {
-        "macro_f1": 0.7361491121577629,
+        "macro_f1": 0.7429518332461982,
         "min_f1": 0.32,
-        "max_f1": 0.975609756097561,
-        "macro_precision": 0.9396258503401361,
-        "macro_recall": 0.6598639455782312,
-        "best_member_name": "magneto_slm_llm",
-        "best_member_f1": 0.975609756097561
+        "max_f1": 1.0,
+        "macro_precision": 0.9464285714285714,
+        "macro_recall": 0.6666666666666666,
+        "best_member_name": "llm_openai",
+        "best_member_f1": 1.0
       },
       "per_attribute": {
         "musicbrainz.id": {
@@ -604,7 +604,7 @@
           "label_jw": 0.0,
           "instance_tf_cosine": 1.0,
           "embedding_sbert": 0.0,
-          "llm_openai": 0.0,
+          "llm_openai": 1.0,
           "magneto_slm_llm": 1.0,
           "coma_hybrid": 0.0,
           "any_correct": 1.0
@@ -762,7 +762,7 @@
       },
       "per_partition": {
         "musicbrainz": {
-          "macro_f1": 0.6949154020582592,
+          "macro_f1": 0.7153235653235653,
           "n_columns": 7.0
         },
         "lastfm": {
@@ -784,7 +784,7 @@
             "fp": 0.0,
             "fn": 5.0
           },
-          "runtime_s": 1.1505098459892906,
+          "runtime_s": 2.347421954968013,
           "notes": {
             "signal_type": "duplicate"
           }
@@ -798,7 +798,7 @@
             "fp": 0.0,
             "fn": 17.0
           },
-          "runtime_s": 0.00286119501106441,
+          "runtime_s": 0.007398206973448396,
           "notes": {
             "signal_type": "label"
           }
@@ -812,7 +812,7 @@
             "fp": 5.0,
             "fn": 6.0
           },
-          "runtime_s": 0.25001361401518807,
+          "runtime_s": 0.5626479089260101,
           "notes": {
             "signal_type": "instance"
           }
@@ -826,21 +826,21 @@
             "fp": 2.0,
             "fn": 7.0
           },
-          "runtime_s": 2.9442856629611924,
+          "runtime_s": 4.472171101020649,
           "notes": {
             "signal_type": "embedding"
           }
         },
         "llm_openai": {
           "metrics": {
-            "precision": 0.9523809523809523,
-            "recall": 0.9523809523809523,
-            "f1": 0.9523809523809523,
-            "tp": 20.0,
-            "fp": 1.0,
-            "fn": 1.0
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "tp": 21.0,
+            "fp": 0.0,
+            "fn": 0.0
           },
-          "runtime_s": 2.3758523839642294,
+          "runtime_s": 3.262980088009499,
           "notes": {
             "signal_type": "llm"
           }
@@ -854,7 +854,7 @@
             "fp": 0.0,
             "fn": 1.0
           },
-          "runtime_s": 14.891846715996508,
+          "runtime_s": 27.015977876028046,
           "notes": {
             "signal_type": "llm"
           }
@@ -868,7 +868,7 @@
             "fp": 0.0,
             "fn": 13.0
           },
-          "runtime_s": 4.350721294002142,
+          "runtime_s": 13.498750847997144,
           "notes": {
             "signal_type": "hybrid"
           }
@@ -880,7 +880,7 @@
       "stage": "norm",
       "domain": "music",
       "level": "baseline",
-      "runtime_s": 24.210817225975916,
+      "runtime_s": 34.85853346704971,
       "roster": [
         "rule_per_attribute_optimal",
         "llm_only",
@@ -976,7 +976,7 @@
             "precision_val": 1.0,
             "recall_val": 0.9741591080876795
           },
-          "runtime_s": 0.32150419999379665,
+          "runtime_s": 0.3612800039118156,
           "notes": {
             "selection_map": {
               "artist": "text_clean",
@@ -1005,7 +1005,7 @@
             "precision_val": 0.9986522911051213,
             "recall_val": 0.9690098261526833
           },
-          "runtime_s": 23.860937156016007,
+          "runtime_s": 34.43084218399599,
           "notes": {
             "model_name": "gpt-5.4-mini"
           }
@@ -1025,7 +1025,7 @@
             "precision_val": 0.9784366576819407,
             "recall_val": 0.9529950869236583
           },
-          "runtime_s": 0.02737454097950831,
+          "runtime_s": 0.060170624987222254,
           "notes": {}
         }
       },
@@ -1035,7 +1035,7 @@
       "stage": "em_blocking",
       "domain": "music",
       "level": "baseline",
-      "runtime_s": 302.7567750320304,
+      "runtime_s": 1660.823668892961,
       "roster": [
         "token_blocker",
         "standard_blocker",
@@ -1084,7 +1084,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 7.427090133074671,
+          "runtime_s": 71.84051472006831,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1098,7 +1098,7 @@
                 "reduction_ratio": 0.9029369123918841,
                 "candidate_count": 10460722.0,
                 "full_space": 107772401.0,
-                "runtime_s": 5.385463149053976,
+                "runtime_s": 51.68039575801231,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1120,7 +1120,7 @@
                 "reduction_ratio": 0.9096797741587859,
                 "candidate_count": 4243876.0,
                 "full_space": 46986995.0,
-                "runtime_s": 2.041626984020695,
+                "runtime_s": 20.160118962056004,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1148,7 +1148,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.6174103330122307,
+          "runtime_s": 2.9454405249562114,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1162,7 +1162,7 @@
                 "reduction_ratio": 0.9843265809768866,
                 "candidate_count": 1689162.0,
                 "full_space": 107772401.0,
-                "runtime_s": 0.44154481001896784,
+                "runtime_s": 2.058369521982968,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1184,7 +1184,7 @@
                 "reduction_ratio": 0.9873447110205706,
                 "candidate_count": 594634.0,
                 "full_space": 46986995.0,
-                "runtime_s": 0.17586552299326286,
+                "runtime_s": 0.8870710029732436,
                 "pair_recall_baseline_model_on_baseline_test": 0.7177177177177178,
                 "pair_recall_baseline_model_on_regen_test": 0.7177177177177178,
                 "pair_recall_variant_model_on_baseline_test": 0.7177177177177178,
@@ -1212,7 +1212,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 33.41282893694006,
+          "runtime_s": 67.84904287091922,
           "notes": {
             "role": "blocker",
             "blocking_type": "embedding",
@@ -1226,7 +1226,7 @@
                 "reduction_ratio": 0.9977902505855836,
                 "candidate_count": 238150.0,
                 "full_space": 107772401.0,
-                "runtime_s": 18.785892026964575,
+                "runtime_s": 38.731813755002804,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1248,7 +1248,7 @@
                 "reduction_ratio": 0.994931576279777,
                 "candidate_count": 238150.0,
                 "full_space": 46986995.0,
-                "runtime_s": 14.626936909975484,
+                "runtime_s": 29.117229115916416,
                 "pair_recall_baseline_model_on_baseline_test": 0.993993993993994,
                 "pair_recall_baseline_model_on_regen_test": 0.993993993993994,
                 "pair_recall_variant_model_on_baseline_test": 0.993993993993994,
@@ -1276,7 +1276,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.26720802002819255,
+          "runtime_s": 1.1263685650192201,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1290,7 +1290,7 @@
                 "reduction_ratio": 0.9971241152918177,
                 "candidate_count": 309941.0,
                 "full_space": 107772401.0,
-                "runtime_s": 0.15582317701773718,
+                "runtime_s": 0.7062383000738919,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1312,7 +1312,7 @@
                 "reduction_ratio": 0.9947549955046072,
                 "candidate_count": 246447.0,
                 "full_space": 46986995.0,
-                "runtime_s": 0.11138484301045537,
+                "runtime_s": 0.42013026494532824,
                 "pair_recall_baseline_model_on_baseline_test": 0.7027027027027027,
                 "pair_recall_baseline_model_on_regen_test": 0.7027027027027027,
                 "pair_recall_variant_model_on_baseline_test": 0.7027027027027027,
@@ -1331,7 +1331,7 @@
         "bm25_blocker": {
           "metrics": {
             "pair_recall": 0.9984984984984985,
-            "pair_recall_val": 0.9975609756097561,
+            "pair_recall_val": 0.9969056676149985,
             "reduction_ratio": 0.9963609134326803,
             "candidate_count": 238150.0,
             "gold_positives": 333.0,
@@ -1340,21 +1340,21 @@
             "selection_rate": 1.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 7.7087852959521115,
+          "runtime_s": 25.04793859599158,
           "notes": {
             "role": "blocker",
             "blocking_type": "sparse",
             "per_pair": {
               "musicbrainz_discogs": {
                 "pair_recall": 1.0,
-                "pair_recall_val": 1.0,
+                "pair_recall_val": 0.9986893840104849,
                 "gold_positives": 333.0,
                 "covered": 333.0,
                 "missed": 0.0,
                 "reduction_ratio": 0.9977902505855836,
                 "candidate_count": 238150.0,
                 "full_space": 107772401.0,
-                "runtime_s": 5.912702000990976,
+                "runtime_s": 18.732967291027308,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1376,7 +1376,7 @@
                 "reduction_ratio": 0.994931576279777,
                 "candidate_count": 238150.0,
                 "full_space": 46986995.0,
-                "runtime_s": 1.7960832949611358,
+                "runtime_s": 6.314971304964274,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1404,7 +1404,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 138.53214459097944,
+          "runtime_s": 138.02539076993708,
           "notes": {
             "role": "blocker",
             "blocking_type": "hybrid",
@@ -1418,7 +1418,7 @@
                 "reduction_ratio": 0.9955805011711671,
                 "candidate_count": 476300.0,
                 "full_space": 107772401.0,
-                "runtime_s": 91.33697487099562,
+                "runtime_s": 92.12019208795391,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1440,7 +1440,7 @@
                 "reduction_ratio": 0.9898631525595539,
                 "candidate_count": 476300.0,
                 "full_space": 46986995.0,
-                "runtime_s": 47.195169719983824,
+                "runtime_s": 45.905198681983165,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1470,7 +1470,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 7.427090133074671,
+          "runtime_s": 71.84051472006831,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1484,7 +1484,7 @@
                 "reduction_ratio": 0.9029369123918841,
                 "candidate_count": 10460722.0,
                 "full_space": 107772401.0,
-                "runtime_s": 5.385463149053976,
+                "runtime_s": 51.68039575801231,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1506,7 +1506,7 @@
                 "reduction_ratio": 0.9096797741587859,
                 "candidate_count": 4243876.0,
                 "full_space": 46986995.0,
-                "runtime_s": 2.041626984020695,
+                "runtime_s": 20.160118962056004,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1534,7 +1534,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.6174103330122307,
+          "runtime_s": 2.9454405249562114,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1548,7 +1548,7 @@
                 "reduction_ratio": 0.9843265809768866,
                 "candidate_count": 1689162.0,
                 "full_space": 107772401.0,
-                "runtime_s": 0.44154481001896784,
+                "runtime_s": 2.058369521982968,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1570,7 +1570,7 @@
                 "reduction_ratio": 0.9873447110205706,
                 "candidate_count": 594634.0,
                 "full_space": 46986995.0,
-                "runtime_s": 0.17586552299326286,
+                "runtime_s": 0.8870710029732436,
                 "pair_recall_baseline_model_on_baseline_test": 0.7177177177177178,
                 "pair_recall_baseline_model_on_regen_test": 0.7177177177177178,
                 "pair_recall_variant_model_on_baseline_test": 0.7177177177177178,
@@ -1598,7 +1598,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 33.41282893694006,
+          "runtime_s": 67.84904287091922,
           "notes": {
             "role": "blocker",
             "blocking_type": "embedding",
@@ -1612,7 +1612,7 @@
                 "reduction_ratio": 0.9977902505855836,
                 "candidate_count": 238150.0,
                 "full_space": 107772401.0,
-                "runtime_s": 18.785892026964575,
+                "runtime_s": 38.731813755002804,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1634,7 +1634,7 @@
                 "reduction_ratio": 0.994931576279777,
                 "candidate_count": 238150.0,
                 "full_space": 46986995.0,
-                "runtime_s": 14.626936909975484,
+                "runtime_s": 29.117229115916416,
                 "pair_recall_baseline_model_on_baseline_test": 0.993993993993994,
                 "pair_recall_baseline_model_on_regen_test": 0.993993993993994,
                 "pair_recall_variant_model_on_baseline_test": 0.993993993993994,
@@ -1662,7 +1662,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 0.26720802002819255,
+          "runtime_s": 1.1263685650192201,
           "notes": {
             "role": "blocker",
             "blocking_type": "lexical",
@@ -1676,7 +1676,7 @@
                 "reduction_ratio": 0.9971241152918177,
                 "candidate_count": 309941.0,
                 "full_space": 107772401.0,
-                "runtime_s": 0.15582317701773718,
+                "runtime_s": 0.7062383000738919,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1698,7 +1698,7 @@
                 "reduction_ratio": 0.9947549955046072,
                 "candidate_count": 246447.0,
                 "full_space": 46986995.0,
-                "runtime_s": 0.11138484301045537,
+                "runtime_s": 0.42013026494532824,
                 "pair_recall_baseline_model_on_baseline_test": 0.7027027027027027,
                 "pair_recall_baseline_model_on_regen_test": 0.7027027027027027,
                 "pair_recall_variant_model_on_baseline_test": 0.7027027027027027,
@@ -1717,7 +1717,7 @@
         "bm25_blocker": {
           "metrics": {
             "pair_recall": 0.9984984984984985,
-            "pair_recall_val": 0.9975609756097561,
+            "pair_recall_val": 0.9969056676149985,
             "reduction_ratio": 0.9963609134326803,
             "candidate_count": 238150.0,
             "gold_positives": 333.0,
@@ -1726,21 +1726,21 @@
             "selection_rate": 1.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 7.7087852959521115,
+          "runtime_s": 25.04793859599158,
           "notes": {
             "role": "blocker",
             "blocking_type": "sparse",
             "per_pair": {
               "musicbrainz_discogs": {
                 "pair_recall": 1.0,
-                "pair_recall_val": 1.0,
+                "pair_recall_val": 0.9986893840104849,
                 "gold_positives": 333.0,
                 "covered": 333.0,
                 "missed": 0.0,
                 "reduction_ratio": 0.9977902505855836,
                 "candidate_count": 238150.0,
                 "full_space": 107772401.0,
-                "runtime_s": 5.912702000990976,
+                "runtime_s": 18.732967291027308,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1762,7 +1762,7 @@
                 "reduction_ratio": 0.994931576279777,
                 "candidate_count": 238150.0,
                 "full_space": 46986995.0,
-                "runtime_s": 1.7960832949611358,
+                "runtime_s": 6.314971304964274,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1790,7 +1790,7 @@
             "selection_rate": 0.0,
             "recall_floor_clear_rate": 1.0
           },
-          "runtime_s": 138.53214459097944,
+          "runtime_s": 138.02539076993708,
           "notes": {
             "role": "blocker",
             "blocking_type": "hybrid",
@@ -1804,7 +1804,7 @@
                 "reduction_ratio": 0.9955805011711671,
                 "candidate_count": 476300.0,
                 "full_space": 107772401.0,
-                "runtime_s": 91.33697487099562,
+                "runtime_s": 92.12019208795391,
                 "pair_recall_baseline_model_on_baseline_test": 1.0,
                 "pair_recall_baseline_model_on_regen_test": 1.0,
                 "pair_recall_variant_model_on_baseline_test": 1.0,
@@ -1826,7 +1826,7 @@
                 "reduction_ratio": 0.9898631525595539,
                 "candidate_count": 476300.0,
                 "full_space": 46986995.0,
-                "runtime_s": 47.195169719983824,
+                "runtime_s": 45.905198681983165,
                 "pair_recall_baseline_model_on_baseline_test": 0.996996996996997,
                 "pair_recall_baseline_model_on_regen_test": 0.996996996996997,
                 "pair_recall_variant_model_on_baseline_test": 0.996996996996997,
@@ -1848,7 +1848,7 @@
       "stage": "em_matching",
       "domain": "music",
       "level": "baseline",
-      "runtime_s": 315.04224960901774,
+      "runtime_s": 540.0425934769446,
       "roster": [
         "ditto_plm",
         "magellan",
@@ -1919,7 +1919,7 @@
             "recall_regen_test": 0.9159159159159159,
             "pred_scoped_regen_test": 307.0
           },
-          "runtime_s": 2.8570571040036157,
+          "runtime_s": 12.700819730060175,
           "notes": {
             "role": "matcher",
             "matching_type": "learned",
@@ -2033,7 +2033,7 @@
             "recall_regen_test": 0.9174174174174174,
             "pred_scoped_regen_test": 307.5
           },
-          "runtime_s": 232.92422607901972,
+          "runtime_s": 410.4926322080428,
           "notes": {
             "role": "matcher",
             "matching_type": "learned",
@@ -2147,7 +2147,7 @@
             "recall_regen_test": 0.56006006006006,
             "pred_scoped_regen_test": 187.0
           },
-          "runtime_s": 44.10466649004957,
+          "runtime_s": 64.28702650801279,
           "notes": {
             "role": "matcher",
             "matching_type": "llm",
@@ -2261,7 +2261,7 @@
             "recall_regen_test": 0.5480480480480481,
             "pred_scoped_regen_test": 183.5
           },
-          "runtime_s": 35.134882878977805,
+          "runtime_s": 52.413766412995756,
           "notes": {
             "role": "matcher",
             "matching_type": "llm",

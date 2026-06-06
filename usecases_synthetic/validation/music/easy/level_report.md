@@ -1,6 +1,6 @@
 # Validation report - music / easy
 
-_Generated at 2026-06-05T06:23:51.848542+00:00_
+_Generated at 2026-06-05T20:14:00.623877+00:00_
 
 - domain: `music`
 - level: `easy`
@@ -11,10 +11,10 @@ _Generated at 2026-06-05T06:23:51.848542+00:00_
 
 | stage | metric | measured | baseline | delta |
 |---|---|---|---|---|
-| sm | macro_f1 | 0.9004 | 0.7361 | 0.1642 |
+| sm | macro_f1 | 0.9004 | 0.7430 | 0.1574 |
 | norm | macro_f1 | 0.8557 | 0.9786 | -0.1228 |
 | em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
-| em_matching | macro_f1_variant_model_on_regen_test | 0.6498 | 0.8242 | -0.1744 |
+| em_matching | macro_f1_variant_model_on_regen_test | 0.8727 | 0.8242 | 0.0485 |
 | fusion | overall_accuracy | 0.8660 | 0.7789 | 0.0870 |
 
 ## Stage: sm - per member
@@ -26,7 +26,7 @@ _Generated at 2026-06-05T06:23:51.848542+00:00_
 | embedding_sbert | 0.8276 | 0.7568 | 0.0708 |
 | instance_tf_cosine | 0.7308 | 0.7317 | -0.0009 |
 | label_jw | 1.0000 | 0.3200 | 0.6800 |
-| llm_openai | 1.0000 | 0.9524 | 0.0476 |
+| llm_openai | 1.0000 | 1.0000 | 0.0000 |
 | magneto_slm_llm | 1.0000 | 0.9756 | 0.0244 |
 
 ## Stage: norm - per member
@@ -43,7 +43,7 @@ _Generated at 2026-06-05T06:23:51.848542+00:00_
 |---|---|---|---|---|---|
 | bm25_blocker | 0.9985 | 0.9985 | 0.0000 | 0.9967 | 0.9964 |
 | embedding_blocker | 0.9985 | 0.9970 | 0.0015 | 0.9967 | 0.9964 |
-| sc_block | 0.8916 | 0.9985 | -0.1069 | 0.9934 | 0.9927 |
+| sc_block | 1.0000 | 0.9985 | 0.0015 | 0.9934 | 0.9927 |
 | sorted_neighbourhood_blocker | 0.8994 | 0.8498 | 0.0495 | 0.9962 | 0.9959 |
 | standard_blocker | 0.9114 | 0.8589 | 0.0526 | 0.9849 | 0.9858 |
 | token_blocker | 1.0000 | 1.0000 | 0.0000 | 0.9079 | 0.9063 |
@@ -53,7 +53,7 @@ _Generated at 2026-06-05T06:23:51.848542+00:00_
 | member | f1 | f1_baseline | f1_delta | f1_baseline_test | f1_baseline_test_baseline | f1_regen_test | f1_regen_test_baseline |
 |---|---|---|---|---|---|---|---|
 | comem | 0.8274 | 0.6914 | 0.1360 | 0.8274 | 0.6914 | 0.8274 | 0.6914 |
-| ditto_plm | 0.9297 | 0.9521 | -0.0224 | 0.9297 | 0.9521 | 0.9297 | 0.9521 |
+| ditto_plm | 0.8917 | 0.9521 | -0.0604 | 0.9297 | 0.9521 | 0.9297 | 0.9521 |
 | llm_matcher | 0.8240 | 0.7002 | 0.1238 | 0.8240 | 0.7002 | 0.8240 | 0.7002 |
 | magellan | 0.9479 | 0.9531 | -0.0052 | 0.9513 | 0.9531 | 0.9513 | 0.9531 |
 
@@ -62,11 +62,11 @@ _Generated at 2026-06-05T06:23:51.848542+00:00_
 | pair | member | f1 | f1_baseline | f1_delta |
 |---|---|---|---|---|
 | musicbrainz_discogs | comem | 0.9058 | 0.8307 | 0.0751 |
-| musicbrainz_discogs | ditto_plm | 0.8918 | 0.9194 | -0.0275 |
+| musicbrainz_discogs | ditto_plm | 0.8094 | 0.9194 | -0.1100 |
 | musicbrainz_discogs | llm_matcher | 0.8998 | 0.8483 | 0.0516 |
 | musicbrainz_discogs | magellan | 0.9186 | 0.9243 | -0.0057 |
 | musicbrainz_lastfm | comem | 0.7491 | 0.5522 | 0.1969 |
-| musicbrainz_lastfm | ditto_plm | 0.9675 | 0.9848 | -0.0173 |
+| musicbrainz_lastfm | ditto_plm | 0.9740 | 0.9848 | -0.0108 |
 | musicbrainz_lastfm | llm_matcher | 0.7481 | 0.5522 | 0.1959 |
 | musicbrainz_lastfm | magellan | 0.9772 | 0.9818 | -0.0046 |
 
