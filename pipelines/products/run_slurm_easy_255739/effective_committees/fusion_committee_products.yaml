@@ -1,0 +1,273 @@
+seed: 42
+fused_id_column: id
+gold_id_column: id
+trust_scores:
+  products_1: 4
+  products_2: 3
+  products_3: 2
+  products_4: 1
+column_mapping:
+  products_1:
+    manufacturer: brand
+    product_name: title
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    cluster_id: cluster_id
+    product_url: url
+    name_and_description: title_description
+    model_name: model
+    manufacturer_part_number: model_number
+    category: product_type
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    bus_standard: bus_type
+    interface: interface_type
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+    connector: storage_connection_type
+    memory_technology: memory_type
+    colour: color
+    form_factor: form_factor
+  products_2:
+    brandName: brand
+    name: title
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    cluster_id: cluster_id
+    productUrl: url
+    titleAndDescription: title_description
+    modelName: model
+    mpn: model_number
+    productCategory: product_type
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    busType: bus_type
+    interfaceType: interface_type
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+    connectionType: storage_connection_type
+    memoryType: memory_type
+    color: color
+    formFactor: form_factor
+  products_3:
+    Brand: brand
+    ProductTitle: title
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    cluster_id: cluster_id
+    Link: url
+    TitleDetails: title_description
+    Model: model
+    PartNo: model_number
+    Type: product_type
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Bus: bus_type
+    Interface: interface_type
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+    Connector: storage_connection_type
+    MemoryType: memory_type
+    Colour: color
+    FormFactor: form_factor
+  products_4:
+    mfr: brand
+    name: title
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cluster_id: cluster_id
+    link: url
+    name_desc: title_description
+    mdl: model
+    pn: model_number
+    cat: product_type
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    bus: bus_type
+    iface: interface_type
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
+    conn: storage_connection_type
+    mem: memory_type
+    clr: color
+    ff: form_factor
+evaluation_functions:
+  title: tokenized_match
+  brand: tokenized_match
+  description: tokenized_match
+  price: numeric_tolerance_match
+  priceCurrency: tokenized_match
+  title_description: tokenized_match
+  product_type: tokenized_match
+  model: tokenized_match
+  model_number: tokenized_match
+  chipset_name: tokenized_match
+  vram_gb: numeric_tolerance_match
+  storage_gb: numeric_tolerance_match
+  bus_type: tokenized_match
+  interface_type: tokenized_match
+  memory_type: tokenized_match
+  storage_connection_type: tokenized_match
+  form_factor: tokenized_match
+  read_speed_mb_s: numeric_tolerance_match
+  write_speed_mb_s: numeric_tolerance_match
+evaluation_params:
+  price:
+    tolerance: 0.1
+  vram_gb:
+    tolerance: 0.15
+  storage_gb:
+    tolerance: 0.15
+  read_speed_mb_s:
+    tolerance: 0.15
+  write_speed_mb_s:
+    tolerance: 0.15
+attribute_types:
+  title: string
+  brand: categorical
+  description: string
+  price: numeric
+  priceCurrency: categorical
+  title_description: string
+  product_type: categorical
+  model: string
+  model_number: string
+  chipset_name: string
+  vram_gb: numeric
+  storage_gb: numeric
+  bus_type: categorical
+  interface_type: categorical
+  memory_type: categorical
+  storage_connection_type: categorical
+  form_factor: categorical
+  read_speed_mb_s: numeric
+  write_speed_mb_s: numeric
+pydi_candidates:
+  string:
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: longest_string
+    function: longest_string
+    module: PyDI.fusion.conflict_resolution.string
+  - name: shortest_string
+    function: shortest_string
+    module: PyDI.fusion.conflict_resolution.string
+  - name: most_complete
+    function: most_complete
+    module: PyDI.fusion.conflict_resolution.string
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  categorical:
+  - name: voting
+    function: voting
+    module: PyDI.fusion.conflict_resolution.general
+  - name: most_complete
+    function: most_complete
+    module: PyDI.fusion.conflict_resolution.string
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+  numeric:
+  - name: median
+    function: median
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: average
+    function: average
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: maximum
+    function: maximum
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: minimum
+    function: minimum
+    module: PyDI.fusion.conflict_resolution.numeric
+  - name: trimmed_mean
+    function: trimmed_mean
+    module: usecases_synthetic.lib.robust_aggregators
+    params:
+      trim: 0.1
+  - name: huber_m_estimator
+    function: huber_m_estimator
+    module: usecases_synthetic.lib.robust_aggregators
+  - name: median_of_means
+    function: median_of_means
+    module: usecases_synthetic.lib.robust_aggregators
+  - name: prefer_higher_trust
+    function: prefer_higher_trust
+    module: PyDI.fusion.conflict_resolution.general
+members:
+- name: pydi_per_attribute_optimal
+  params: {}
+- name: fusionquery_only
+  params:
+    max_iters: 5
+    theta: 3.0e-05
+    init_trust: 0.95
+    history_size: 50.0
+    temperature: 0.3
+    threshold: 0.5
+- name: truthfinder_only
+  params:
+    init_trust: 0.8
+    gamma: 0.1
+    rho: 0.5
+    max_iters: 10
+    early_stop: 0.001
+- name: ltm_only
+  params:
+    alpha_0:
+    - 50.0
+    - 10.0
+    alpha_1:
+    - 10.0
+    - 10.0
+    beta:
+    - 10.0
+    - 10.0
+    max_iters: 50
+    burnin: 10
+    thin: 2
+- name: casefusion_only
+  params:
+    dimension: 10
+    alpha: 1.05
+    beta: 1.1
+    lr: 0.01
+    converge_rate: 1.0e-05
+    max_iters: 50
+- name: accusim_only
+  params:
+    accuracy_prior: 0.7
+    n_competing_values: 10
+    epsilon: 0.001
+    max_iter: 20
+    sim_threshold: 0.5
+- name: voting_only
+  params: {}
+- name: prefer_higher_trust_only
+  params: {}

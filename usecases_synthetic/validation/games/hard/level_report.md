@@ -1,6 +1,6 @@
 # Validation report - games / hard
 
-_Generated at 2026-06-05T23:59:56.926022+00:00_
+_Generated at 2026-06-06T03:32:27.302631+00:00_
 
 - domain: `games`
 - level: `hard`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T23:59:56.926022+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.7092 | 0.7478 | -0.0386 |
 | norm | macro_f1 | 0.8333 | 0.8971 | -0.0638 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9474 | 0.9560 | -0.0087 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.7263 | 0.6093 | 0.1170 |
 | fusion | overall_accuracy | 0.5860 | 0.7202 | -0.1342 |
 

@@ -64,7 +64,7 @@ members:
       params:
         text_cols: [title]
         model: BAAI/bge-base-en-v1.5
-        top_k: 50
+        top_k: 20
         threshold: 0.3
     blocking_type: embedding
     enabled_by_default: true
@@ -75,7 +75,7 @@ members:
       module: PyDI.entitymatching.blocking.sorted_neighbourhood
       params:
         key: name_norm
-        window: 40
+        window: 20
     blocking_type: lexical
     enabled_by_default: true
   - name: bm25_blocker
@@ -85,7 +85,7 @@ members:
       module: usecases_synthetic.lib.bm25_blocker
       params:
         text_cols: [title]
-        top_k: 50
+        top_k: 20
         tokenizer: char_ngram
         ngram_range: [3, 5]
         k1: 1.5
@@ -94,45 +94,35 @@ members:
     enabled_by_default: true
   - name: sc_block
     description: >-
-      SupCon encoder + ANN retrieval (hybrid). DISABLED for papers
-      (2026-06-04): SCBlockBlocker MPS-encoder runtime is pathologic on
-      the dblp <-> open_alex pair. v14 (logs/bob_papers_20260604_193527.log)
-      ran sc_block on pair 1 (dblp_crossref) in ~30-40 min, then ran
-      pair 2 (dblp_open_alex) for 2h45m+ with no completion and CPU
-      drifting 27% -> 17% (sample-confirmed MPS waitUntilCompleted on
-      every probe). The encoder is fine on pair 1; the regression is
-      pair-2 specific (open_alex titles + authors render to longer
-      tokenised sequences than crossref, pushing batches into the slow
-      quadratic-attention regime; possibly compounded by MPS thermal
-      throttling after sustained use).
-      Re-enable once one of: (a) the encoder is moved off MPS to CPU /
-      CUDA, (b) encode_batch_size is dropped and stability verified on
-      open_alex, or (c) text_cols is narrowed to just `title` (removing
-      authors+journal) to bound sequence length.
-      required_axes was relaxed to [lexical, sparse, embedding] for this
-      run; sorted_neighbourhood_blocker (lexical) + bm25_blocker
-      (sparse) + embedding_blocker (embedding) cover the remaining
-      signal space.
+      SupCon encoder + ANN retrieval (hybrid). RE-ENABLED for papers
+      (2026-06-06): the earlier disable (2026-06-04) was an MPS-encoder
+      runtime pathology on the dblp <-> open_alex pair (pair 2 ran 2h45m+
+      with no completion under MPS waitUntilCompleted). The committee now
+      trains + runs on the CUDA cluster, which removes that pathology
+      (re-enable condition (a): encoder off MPS -> CUDA), and top_k was
+      lowered 100 -> 20 to bound the eval candidate set. Baseline +
+      variant sc_block trained cleanly on CUDA (val_pair_recall=1.0).
     blocker:
       class: SCBlockBlocker
       module: usecases_synthetic.lib.sc_block_blocker
       params:
         text_cols: [title, authors, journal]
-        top_k: 100
+        top_k: 20
         threshold: 0.0
-        checkpoint_path: usecases_synthetic/cache/ditto_checkpoints/papers/best
+        checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/papers/best
     blocking_type: hybrid
-    enabled_by_default: false
+    enabled_by_default: true
 composition:
   strategy: select_best
   recall_floor: 0.97
   tie_breaker: reduction_ratio
 required_axes:
-  # ``hybrid`` removed for papers (2026-06-04) because sc_block (the
-  # only hybrid blocker in the roster) is DISABLED on this domain due
-  # to a pair-2 MPS-encoder runtime pathology; see the sc_block entry
-  # above for the full rationale and the re-enable conditions.
-  blocking_type: [lexical, sparse, embedding]
+  # ``hybrid`` restored 2026-06-06: sc_block (the only hybrid blocker) is
+  # re-enabled on the CUDA cluster with top_k=20. token_blocker and
+  # standard_blocker remain DISABLED — they have no top_k to tune, and
+  # their pathologies (GC-livelock on the seen_pairs set / >50min hang)
+  # are not K-bounded, so lowering K cannot rescue them.
+  blocking_type: [lexical, sparse, embedding, hybrid]
 # Column mapping — EMPTY (2026-06-05). The papers JSONL loader already
 # canonicalizes every source column via loaders._PAPERS_SOURCE_COLUMN_MAP, so a
 # raw->canonical mapping here collides with the already-present canonical

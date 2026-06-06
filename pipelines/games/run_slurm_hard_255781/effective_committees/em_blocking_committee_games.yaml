@@ -1,0 +1,147 @@
+seed: 42
+preprocess_text: normalize_text
+blocking_name_column: name
+members:
+- name: token_blocker
+  description: Token-set inverted-index blocker on name (lexical, incumbent)
+  blocker:
+    class: TokenBlocker
+    module: PyDI.entitymatching.blocking.token_blocking
+    params:
+      column: name
+      min_token_len: 2
+  blocking_type: lexical
+  enabled_by_default: true
+- name: standard_blocker
+  description: "Equality on derived name_first_5 key (lexical). Tuned by the R5 EM\
+    \ blocking sweep (2026-05-10): name_first_5 ties name_first_token on recall (0.970\
+    \ both) but with marginally better rr (0.999 vs 0.996) on games. The first-5-chars\
+    \ prefix handles game-title variants well (e.g. \"Super Mario 64\" vs \"Super\
+    \ Mario Galaxy\" \u2014 both prefix to \"super\"; but \"Super M\" vs \"Super G\"\
+    \ disambiguates) without over-restricting like compound keys."
+  blocker:
+    class: StandardBlocker
+    module: PyDI.entitymatching.blocking.standard
+    params:
+      'on':
+      - name_first_5
+  blocking_type: lexical
+  enabled_by_default: true
+- name: embedding_blocker
+  description: "Dense ANN top-k (embedding). Backbone: BAAI/bge-base-en-v1.5 (retrieval-tuned,\
+    \ 768-dim). Selected by the R5 EM blocking sweep (2026-05-10): pair_recall=0.989,\
+    \ rr=0.995 on games (tied with MPNet-base; +0.001 over MiniLM-L6). Cross-domain\
+    \ mean 0.986 \u2014 only model clearing 0.97 floor on all 3 domains."
+  blocker:
+    class: EmbeddingBlocker
+    module: PyDI.entitymatching.blocking.embedding
+    params:
+      text_cols:
+      - name
+      model: BAAI/bge-base-en-v1.5
+      top_k: 50
+      threshold: 0.3
+  blocking_type: embedding
+  enabled_by_default: true
+- name: sorted_neighbourhood_blocker
+  description: 'Sliding-window over sort key (lexical). Tuned by the R5 EM blocking
+    sweep (2026-05-10): key=name_norm + window=40 wins on games at pair_recall=0.965
+    (vs key=name+window=20 at 0.952). Same winner across companies + music; cross-domain
+    consensus.'
+  blocker:
+    class: SortedNeighbourhoodBlocker
+    module: PyDI.entitymatching.blocking.sorted_neighbourhood
+    params:
+      key: name_norm
+      window: 40
+  blocking_type: lexical
+  enabled_by_default: true
+- name: bm25_blocker
+  description: "Okapi BM25 over character n-grams (sparse, bm25s backend, char_wb\
+    \ tokenisation). Char-ngrams give paraphrase / typo tolerance that word-BM25 lacks\
+    \ at hard, where K1 paraphrase rewrites the surface form. Word-level BM25 (previously\
+    \ here) was retired 2026-05-22 per plan_revision.md \xA7C4."
+  blocker:
+    class: BM25Blocker
+    module: usecases_synthetic.lib.bm25_blocker
+    params:
+      text_cols:
+      - name
+      top_k: 50
+      tokenizer: char_ngram
+      ngram_range:
+      - 3
+      - 5
+      k1: 1.5
+      b: 0.75
+  blocking_type: sparse
+  enabled_by_default: true
+- name: sc_block
+  description: "Supervised-contrastive encoder + ANN retrieval (hybrid). Brinkmann\
+    \ et al., ESWC 2024 (Mannheim WBSG, MIT). Per-domain checkpoint trained via scripts/sc_block/train.py:\
+    \ roberta-base + SupCon loss (tau=0.07) over EM-gold cluster graph with in-batch\
+    \ random negatives. text_cols match the per-domain Ditto field set so train \u2194\
+    \ inference share the [COL]/[VAL] serialisation shape. Games val_pair_recall at\
+    \ top_k=50 + threshold=0.3 = 0.9577 (best epoch=1; below the 0.97 recall floor\
+    \ \u2014 the select-best composition will pick BGE-base/0.989 here, sc_block contributes\
+    \ the hybrid-axis diagnostic only). Gold-coverage bottleneck: n_records=74951\
+    \ vs n_clusters=74447 \u2192 only 504 records in multi-record clusters. R5 EM\
+    \ blocking sub-D sign-off (2026-05-10)."
+  blocker:
+    class: SCBlockBlocker
+    module: usecases_synthetic.lib.sc_block_blocker
+    params:
+      text_cols:
+      - name
+      - releaseYear
+      - developer
+      - platform
+      - genres
+      - series
+      - criticScore
+      - userScore
+      - ESRB
+      - publisher
+      - globalSales
+      top_k: 50
+      threshold: 0.3
+      checkpoint_path: pipelines/games/checkpoints/em_blocking/sc_block/variant_hard/best
+  blocking_type: hybrid
+  enabled_by_default: true
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+required_axes:
+  blocking_type:
+  - lexical
+  - sparse
+  - embedding
+  - hybrid
+column_mapping:
+  dbpedia:
+    title: name
+    launch_yr: releaseYear
+    studio: developer
+    system: platform
+    genre: genres
+    franchise: series
+  metacritic:
+    game_title: name
+    year_published: releaseYear
+    made_by: developer
+    console: platform
+    press_rating: criticScore
+    player_rating: userScore
+    age_rating: ESRB
+  sales:
+    prod_title: name
+    launch_dt: releaseYear
+    studio: developer
+    dist: publisher
+    hw: platform
+    genre: genres
+    press_score: criticScore
+    comm_rating: userScore
+    age_classification: ESRB
+    units_sold_mm: globalSales

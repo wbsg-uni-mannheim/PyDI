@@ -1623,6 +1623,18 @@ _BLOCKER_AVG_KEYS = [
     "gold_positives",
     "covered",
     "missed",
+    # R7b dual-model dual-test cells — stored per-pair (committee_em.py
+    # ~2168) but previously omitted here, so the aggregated
+    # macro_pair_recall_*_model_on_*_test fields rolled up as 0.0. Include
+    # them so the frozen-baseline blocking surface
+    # (macro_pair_recall_baseline_model_on_regen_test) is populated,
+    # symmetric with the matching headline. For the 5 non-trainable blockers
+    # the four cells alias (variant==baseline); only sc_block carries a
+    # genuine variant-vs-baseline distinction.
+    "pair_recall_baseline_model_on_baseline_test",
+    "pair_recall_baseline_model_on_regen_test",
+    "pair_recall_variant_model_on_baseline_test",
+    "pair_recall_variant_model_on_regen_test",
 ]
 
 

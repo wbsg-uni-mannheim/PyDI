@@ -1,6 +1,6 @@
 # Validation report - music / easy
 
-_Generated at 2026-06-05T20:14:00.623877+00:00_
+_Generated at 2026-06-06T02:35:14.209463+00:00_
 
 - domain: `music`
 - level: `easy`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T20:14:00.623877+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.9004 | 0.7430 | 0.1574 |
 | norm | macro_f1 | 0.8557 | 0.9786 | -0.1228 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9680 | 0.9505 | 0.0175 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8727 | 0.8242 | 0.0485 |
 | fusion | overall_accuracy | 0.8660 | 0.7789 | 0.0870 |
 

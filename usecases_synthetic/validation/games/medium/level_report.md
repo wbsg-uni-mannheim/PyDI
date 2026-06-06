@@ -1,6 +1,6 @@
 # Validation report - games / medium
 
-_Generated at 2026-06-05T23:17:13.435487+00:00_
+_Generated at 2026-06-06T03:11:37.613976+00:00_
 
 - domain: `games`
 - level: `medium`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T23:17:13.435487+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.7700 | 0.7478 | 0.0221 |
 | norm | macro_f1 | 0.8718 | 0.8971 | -0.0254 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9540 | 0.9560 | -0.0020 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.6716 | 0.6093 | 0.0623 |
 | fusion | overall_accuracy | 0.6869 | 0.7202 | -0.0333 |
 

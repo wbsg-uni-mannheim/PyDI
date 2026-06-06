@@ -1,6 +1,6 @@
 # Validation report - products / easy
 
-_Generated at 2026-06-05T04:43:14.894267+00:00_
+_Generated at 2026-06-06T02:20:35.951389+00:00_
 
 - domain: `products`
 - level: `easy`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T04:43:14.894267+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.7449 | 0.6764 | 0.0685 |
 | norm | macro_f1 | 0.6287 | 0.5931 | 0.0356 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.8463 | 0.8500 | -0.0037 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8674 | 0.9003 | -0.0329 |
 | fusion | overall_accuracy | 0.5412 | 0.6981 | -0.1569 |
 

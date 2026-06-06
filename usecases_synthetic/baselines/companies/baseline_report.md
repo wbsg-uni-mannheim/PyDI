@@ -1,6 +1,6 @@
 # Baseline report - companies
 
-_Generated at 2026-06-05T03:03:58.735008+00:00_
+_Generated at 2026-06-06T02:07:00.369430+00:00_
 
 ## Stage: sm
 
@@ -73,10 +73,10 @@ _Generated at 2026-06-05T03:03:58.735008+00:00_
 | best_member_pair_recall | 0.9735 |
 | best_member_reduction_ratio | 0.9985 |
 | macro_pair_recall | 0.9876 |
-| macro_pair_recall_baseline_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_baseline_model_on_regen_test | 0.0000 |
-| macro_pair_recall_variant_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_variant_model_on_regen_test | 0.0000 |
+| macro_pair_recall_baseline_model_on_baseline_test | 0.9876 |
+| macro_pair_recall_baseline_model_on_regen_test | 0.9876 |
+| macro_pair_recall_variant_model_on_baseline_test | 0.9876 |
+| macro_pair_recall_variant_model_on_regen_test | 0.9876 |
 | macro_reduction_ratio | 0.9861 |
 | max_pair_recall | 1.0000 |
 | min_pair_recall | 0.9735 |

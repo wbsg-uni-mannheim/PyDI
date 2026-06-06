@@ -1,6 +1,6 @@
 # Baseline report - games
 
-_Generated at 2026-06-05T22:17:25.782568+00:00_
+_Generated at 2026-06-06T02:24:36.435617+00:00_
 
 ## Stage: sm
 
@@ -79,10 +79,10 @@ _Generated at 2026-06-05T22:17:25.782568+00:00_
 | best_member_pair_recall | 0.9858 |
 | best_member_reduction_ratio | 0.9988 |
 | macro_pair_recall | 0.9560 |
-| macro_pair_recall_baseline_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_baseline_model_on_regen_test | 0.0000 |
-| macro_pair_recall_variant_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_variant_model_on_regen_test | 0.0000 |
+| macro_pair_recall_baseline_model_on_baseline_test | 0.9560 |
+| macro_pair_recall_baseline_model_on_regen_test | 0.9560 |
+| macro_pair_recall_variant_model_on_baseline_test | 0.9560 |
+| macro_pair_recall_variant_model_on_regen_test | 0.9560 |
 | macro_reduction_ratio | 0.9899 |
 | max_pair_recall | 1.0000 |
 | min_pair_recall | 0.9155 |

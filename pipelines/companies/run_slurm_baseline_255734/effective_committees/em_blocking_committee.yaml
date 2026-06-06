@@ -1,0 +1,146 @@
+seed: 42
+preprocess_text: normalize_text
+members:
+- name: token_blocker
+  description: Token-set inverted-index blocker on name (lexical, incumbent)
+  blocker:
+    class: TokenBlocker
+    module: PyDI.entitymatching.blocking.token_blocking
+    params:
+      column: name
+      min_token_len: 2
+  blocking_type: lexical
+  enabled_by_default: true
+- name: standard_blocker
+  description: "Equality on derived name_first_3 key (lexical). Switched from name_first_token\
+    \ \u2192 name_first_3 per the R5 EM blocking sweep sign-off (2026-05-10): pair_recall\
+    \ lifted 0.921 \u2192 0.935 with rr unchanged at 0.998 on the baseline companies\
+    \ sources. The first-3-chars prefix is a tighter discriminator than the first\
+    \ alphabetic token for company names where the first token is often a stopword-like\
+    \ prefix (\"Bank of\", \"The X Group\", etc.). Runner derives `name_first_3` via\
+    \ the pattern-based key generator in committee_em._generate_blocking_keys."
+  blocker:
+    class: StandardBlocker
+    module: PyDI.entitymatching.blocking.standard
+    params:
+      'on':
+      - name_first_3
+  blocking_type: lexical
+  enabled_by_default: true
+- name: embedding_blocker
+  description: "Dense ANN top-k retrieval (embedding). Backbone: BAAI/bge-base-en-v1.5\
+    \ (retrieval-tuned, 768-dim). Selected by the R5 EM blocking sweep (2026-05-10):\
+    \ the only model in the 5-model panel (MiniLM-L6, MPNet-base, BGE-base, BGE-small,\
+    \ E5-base) clearing the 0.97 pair-recall floor on ALL THREE domains. Per-domain\
+    \ recall: companies 0.974, games 0.989, music 0.995 \u2014 mean=0.986, beating\
+    \ MiniLM-L6 (0.981) by 0.5pp. MPS/CPU friendly; ~10-13s per source-pair encoding\
+    \ on companies- sized sources. Pending #1 closed."
+  blocker:
+    class: EmbeddingBlocker
+    module: PyDI.entitymatching.blocking.embedding
+    params:
+      text_cols:
+      - name
+      model: BAAI/bge-base-en-v1.5
+      top_k: 50
+      threshold: 0.3
+  blocking_type: embedding
+  enabled_by_default: true
+- name: sorted_neighbourhood_blocker
+  description: 'Sliding-window blocker over a sort key (lexical). Tuned by the R5
+    EM blocking sweep (2026-05-10): key=name_norm (lowercased full name) + window=40
+    wins on all 3 domains, beating key=name+window=20 by +2.4pp recall on companies,
+    +4.4pp on games, +5.4pp on music. The full-name sort with a wider window out-discriminates
+    prefix/token sort keys because surface-form ordering is preserved at higher resolution.
+    Runner derives `name_norm` via committee_em._generate_blocking_keys.'
+  blocker:
+    class: SortedNeighbourhoodBlocker
+    module: PyDI.entitymatching.blocking.sorted_neighbourhood
+    params:
+      key: name_norm
+      window: 40
+  blocking_type: lexical
+  enabled_by_default: true
+- name: bm25_blocker
+  description: "Okapi BM25 over character n-grams (sparse, bm25s backend, char_wb\
+    \ tokenisation). Strongest non-learned baseline that survives K1 paraphrase: word-level\
+    \ BM25 loses the whole-word signal when surface forms get rewritten at hard, char-ngrams\
+    \ retain enough shared substrings to keep recall up. Word-level tokenisation was\
+    \ retired 2026-05-22 per plan_revision.md \xA7C4 (decision recorded against the\
+    \ EM-block ceiling cliff)."
+  blocker:
+    class: BM25Blocker
+    module: usecases_synthetic.lib.bm25_blocker
+    params:
+      text_cols:
+      - name
+      top_k: 50
+      tokenizer: char_ngram
+      ngram_range:
+      - 3
+      - 5
+      k1: 1.5
+      b: 0.75
+  blocking_type: sparse
+  enabled_by_default: true
+- name: sc_block
+  description: "Supervised-contrastive encoder + ANN retrieval (hybrid). Brinkmann\
+    \ et al., ESWC 2024 (Mannheim WBSG, MIT). Per-domain checkpoint trained via scripts/sc_block/train.py:\
+    \ roberta-base + SupCon loss (\u03C4=0.07) over EM-gold cluster graph with in-batch\
+    \ random negatives. text_cols match the per-domain Ditto field set so train \u2194\
+    \ inference share the [COL]/[VAL] serialisation shape. Companies sc_block training\
+    \ best_val_pair_recall = 0.9904 (R10-H retrain 2026-06-02 over the wide-9 text_cols;\
+    \ reproduces the prior R5 figure). Blocking top_k/threshold set by the R9 sweep\
+    \ below."
+  blocker:
+    class: SCBlockBlocker
+    module: usecases_synthetic.lib.sc_block_blocker
+    params:
+      text_cols:
+      - name
+      - country
+      - city
+      - industry
+      - sector
+      - founded
+      - keypeople
+      - assets
+      - revenue
+      top_k: 100
+      threshold: 0.0
+      checkpoint_path: pipelines/companies/checkpoints/em_blocking/sc_block/baseline/best
+  blocking_type: hybrid
+  enabled_by_default: true
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+required_axes:
+  blocking_type:
+  - lexical
+  - sparse
+  - embedding
+  - hybrid
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded

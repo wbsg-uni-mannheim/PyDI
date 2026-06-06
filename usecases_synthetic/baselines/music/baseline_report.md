@@ -1,6 +1,6 @@
 # Baseline report - music
 
-_Generated at 2026-06-05T19:10:52.590395+00:00_
+_Generated at 2026-06-06T02:17:25.039308+00:00_
 
 ## Stage: sm
 
@@ -73,10 +73,10 @@ _Generated at 2026-06-05T19:10:52.590395+00:00_
 | best_member_pair_recall | 0.9970 |
 | best_member_reduction_ratio | 0.9964 |
 | macro_pair_recall | 0.9505 |
-| macro_pair_recall_baseline_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_baseline_model_on_regen_test | 0.0000 |
-| macro_pair_recall_variant_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_variant_model_on_regen_test | 0.0000 |
+| macro_pair_recall_baseline_model_on_baseline_test | 0.9505 |
+| macro_pair_recall_baseline_model_on_regen_test | 0.9505 |
+| macro_pair_recall_variant_model_on_baseline_test | 0.9505 |
+| macro_pair_recall_variant_model_on_regen_test | 0.9505 |
 | macro_reduction_ratio | 0.9789 |
 | max_pair_recall | 1.0000 |
 | min_pair_recall | 0.8498 |

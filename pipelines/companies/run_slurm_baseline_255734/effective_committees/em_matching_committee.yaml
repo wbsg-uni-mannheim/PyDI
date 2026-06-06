@@ -1,0 +1,158 @@
+seed: 42
+preprocess_text: normalize_text
+members:
+- name: ditto_plm
+  description: "Ditto PLM matcher (learned, missing-value tolerant). R2 checkpoint\
+    \ at usecases_synthetic/cache/ditto_checkpoints/companies/best. Fields include\
+    \ both `industry` (forbes' business_segment) AND `sector` (dbpedia.sector) \u2014\
+    \ they map to distinct canonical attributes per K2's canonical_schema. The column_mapping\
+    \ at the bottom of this file preserves the distinction (dbpedia.sector stays as\
+    \ `sector`, not collapsed to `industry`)."
+  matcher:
+    class: DittoMatcher
+    module: usecases_synthetic.lib.ditto_matcher
+    params:
+      checkpoint_path: pipelines/companies/checkpoints/em_matching/ditto/baseline/best
+      fields:
+      - name
+      - country
+      - city
+      - industry
+      - sector
+      - founded
+      - keypeople
+      - assets
+      - revenue
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: magellan
+  description: "Classical-ML matcher: auto-generated comparator-vector features +\
+    \ sklearn RandomForest. The Magellan philosophy ported to PyDI's comparator stack\
+    \ (py_entitymatching itself does not install on Python 3.12 \u2014 its py-stringsimjoin\
+    \ dep fails to build). The classifier's `feature_importances_` performs implicit\
+    \ feature selection across the generated feature bank (~10 features per string\
+    \ column \xD7 LexicalExtendedJaccard + 4 per numeric column). `training_gold_path`\
+    \ is runner-injected per source pair."
+  matcher:
+    class: MagellanMatcher
+    module: usecases_synthetic.lib.magellan_em_matcher
+    params:
+      numeric_attributes:
+      - founded
+      - assets
+      - revenue
+      date_attributes: []
+      classifier_class: sklearn.ensemble.RandomForestClassifier
+      classifier_params:
+        n_estimators: 100
+        max_depth: 20
+        random_state: 42
+        n_jobs: 1
+        class_weight: balanced
+      preprocess: normalize_text
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: llm_matcher
+  description: "MatchGPT-style zero-shot LLM matcher. Structured `Record A` / `Record\
+    \ B` serialization, bare Yes/No response, file-backed response cache keyed by\
+    \ sha256(prompt_version | model_id | prompt_text). Zero-shot mode locked: no demonstrations\
+    \ retrieval, no per-pair training data needed. Closure-only source pairs (e.g.\
+    \ companies dbpedia\u2194fullcontact with no train CSV) are scored zero-shot just\
+    \ like every other pair."
+  matcher:
+    class: MatchGPTMatcher
+    module: usecases_synthetic.lib.matchgpt_em_matcher
+    params:
+      fields:
+      - name
+      - country
+      - city
+      - industry
+      - sector
+      - founded
+      - keypeople
+      - assets
+      - revenue
+      chat_model_name: openai/gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: comem
+  description: "Compound Entity Matching (ComEM) \u2014 two-stage LLM pipeline. Stage\
+    \ 1 (Selecting) groups candidates by left-side id and asks the LLM to pick matching\
+    \ candidates from a multi-option prompt; Stage 2 (Matching) confirms each Stage-1\
+    \ survivor with a binary Yes/No prompt. stage1_set_size=10 + skip_stage1_below=2\
+    \ are the ComEM paper \xA7\"Parameters\" defaults. stage2_model=None reuses stage1_model\
+    \ (single-model configuration). File-backed response cache under usecases_synthetic/cache/comem_prompts/."
+  matcher:
+    class: ComEMMatcher
+    module: usecases_synthetic.lib.comem_em_matcher
+    params:
+      fields:
+      - name
+      - country
+      - city
+      - industry
+      - sector
+      - founded
+      - keypeople
+      - assets
+      - revenue
+      stage1_model: openai/gpt-5.4-mini
+      stage2_model: null
+      stage1_set_size: 10
+      skip_stage1_below: 2
+      temperature: 0.0
+      max_tokens_stage1: 2048
+      max_tokens_stage2: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+required_axes:
+  matching_type:
+  - learned
+  - llm
+  missing_value_tolerant:
+  - true
+column_mapping:
+  dbpedia:
+    org_name: name
+    established: founded
+    nation: country
+    headquarters: city
+    sector: sector
+    keypeople_name: keypeople
+    total_assets_val: assets
+    annual_income: revenue
+  forbes:
+    company: name
+    region: country
+    business_segment: industry
+    asset_value: assets
+    sales_figure: revenue
+    url: website
+  fullcontact:
+    Attribute_2: name
+    Attribute_3: country
+    Attribute_4: city
+    Attribute_5: keypeople
+    Attribute_6: founded

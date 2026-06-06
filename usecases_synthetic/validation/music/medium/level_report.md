@@ -1,6 +1,6 @@
 # Validation report - music / medium
 
-_Generated at 2026-06-05T21:14:00.670629+00:00_
+_Generated at 2026-06-06T02:52:12.669547+00:00_
 
 - domain: `music`
 - level: `medium`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T21:14:00.670629+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.7683 | 0.7430 | 0.0253 |
 | norm | macro_f1 | 0.7874 | 0.9786 | -0.1912 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9437 | 0.9505 | -0.0068 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8345 | 0.8242 | 0.0103 |
 | fusion | overall_accuracy | 0.7654 | 0.7789 | -0.0135 |
 

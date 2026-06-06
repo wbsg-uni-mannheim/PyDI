@@ -1,6 +1,6 @@
 # Validation report - companies / hard
 
-_Generated at 2026-06-05T04:31:14.864929+00:00_
+_Generated at 2026-06-06T02:16:16.939650+00:00_
 
 - domain: `companies`
 - level: `hard`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T04:31:14.864929+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.6459 | 0.7270 | -0.0811 |
 | norm | macro_f1 | 0.7252 | 0.8706 | -0.1454 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9838 | 0.9876 | -0.0038 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8737 | 0.8842 | -0.0106 |
 | fusion | overall_accuracy | 0.3484 | 0.4577 | -0.1093 |
 

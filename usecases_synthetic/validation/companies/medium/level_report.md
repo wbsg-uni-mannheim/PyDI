@@ -1,6 +1,6 @@
 # Validation report - companies / medium
 
-_Generated at 2026-06-05T03:52:35.865291+00:00_
+_Generated at 2026-06-06T02:13:12.256072+00:00_
 
 - domain: `companies`
 - level: `medium`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T03:52:35.865291+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.7702 | 0.7270 | 0.0431 |
 | norm | macro_f1 | 0.7185 | 0.8706 | -0.1521 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9822 | 0.9876 | -0.0054 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8721 | 0.8842 | -0.0121 |
 | fusion | overall_accuracy | 0.4130 | 0.4577 | -0.0447 |
 

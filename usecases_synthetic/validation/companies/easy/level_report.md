@@ -1,6 +1,6 @@
 # Validation report - companies / easy
 
-_Generated at 2026-06-05T03:30:03.893483+00:00_
+_Generated at 2026-06-06T02:10:03.915414+00:00_
 
 - domain: `companies`
 - level: `easy`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T03:30:03.893483+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.8620 | 0.7270 | 0.1349 |
 | norm | macro_f1 | 0.6089 | 0.8706 | -0.2617 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9829 | 0.9876 | -0.0047 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.9066 | 0.8842 | 0.0224 |
 | fusion | overall_accuracy | 0.4003 | 0.4577 | -0.0574 |
 

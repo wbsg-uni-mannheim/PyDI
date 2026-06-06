@@ -1,6 +1,6 @@
 # Validation report - products / hard
 
-_Generated at 2026-06-05T07:03:30.788519+00:00_
+_Generated at 2026-06-06T02:33:22.599029+00:00_
 
 - domain: `products`
 - level: `hard`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T07:03:30.788519+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.6207 | 0.6764 | -0.0557 |
 | norm | macro_f1 | 0.5184 | 0.5931 | -0.0747 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.8662 | 0.8500 | 0.0162 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8215 | 0.9003 | -0.0788 |
 | fusion | overall_accuracy | 0.5138 | 0.6981 | -0.1843 |
 

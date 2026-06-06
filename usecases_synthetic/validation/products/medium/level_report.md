@@ -1,6 +1,6 @@
 # Validation report - products / medium
 
-_Generated at 2026-06-05T05:43:33.008628+00:00_
+_Generated at 2026-06-06T02:27:00.083720+00:00_
 
 - domain: `products`
 - level: `medium`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T05:43:33.008628+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.6864 | 0.6764 | 0.0100 |
 | norm | macro_f1 | 0.5310 | 0.5931 | -0.0620 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.8752 | 0.8500 | 0.0252 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8221 | 0.9003 | -0.0782 |
 | fusion | overall_accuracy | 0.6112 | 0.6981 | -0.0869 |
 

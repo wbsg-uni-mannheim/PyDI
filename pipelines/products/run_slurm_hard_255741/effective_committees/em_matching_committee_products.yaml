@@ -1,0 +1,289 @@
+seed: 42
+preprocess_text: normalize_text
+members:
+- name: ditto_plm
+  description: "Ditto PLM matcher (learned, missing-value tolerant). Per-domain checkpoint\
+    \ path \u2014 the current 19-field checkpoint (run_20260530) matches the EM field\
+    \ scope, which intentionally stays at 19: the 5 sparse dims (color/width/length/height_mm/weight_g)\
+    \ are excluded from EM matching per the 2026-06-02 scope decision (3-15% coverage,\
+    \ too sparse to aid matching), so no products EM retrain is required. Fields list\
+    \ matches sc_block text_cols (canonical invariant) and is the same set llm_matcher\
+    \ / comem see, minus price (numeric-only fields flow through magellan's ``numeric_attributes``)."
+  matcher:
+    class: DittoMatcher
+    module: usecases_synthetic.lib.ditto_matcher
+    params:
+      checkpoint_path: pipelines/products/checkpoints/em_matching/ditto/variant_hard/best
+      fields:
+      - title
+      - brand
+      - description
+      - price
+      - priceCurrency
+      - title_description
+      - product_type
+      - model
+      - model_number
+      - chipset_name
+      - vram_gb
+      - storage_gb
+      - bus_type
+      - interface_type
+      - memory_type
+      - storage_connection_type
+      - form_factor
+      - read_speed_mb_s
+      - write_speed_mb_s
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: llm_matcher
+  description: 'MatchGPT-style zero-shot LLM matcher. Description noise is exactly
+    what an LLM''s semantic equivalence judgement absorbs better than lexical comparators.
+    Zero-shot locked: no demonstrations retrieval per the canonical em_matching roster.'
+  matcher:
+    class: MatchGPTMatcher
+    module: usecases_synthetic.lib.matchgpt_em_matcher
+    params:
+      fields:
+      - title
+      - brand
+      - description
+      - price
+      - priceCurrency
+      - title_description
+      - product_type
+      - model
+      - model_number
+      - chipset_name
+      - vram_gb
+      - storage_gb
+      - bus_type
+      - interface_type
+      - memory_type
+      - storage_connection_type
+      - form_factor
+      - read_speed_mb_s
+      - write_speed_mb_s
+      chat_model_name: openai/gpt-5.4-mini
+      temperature: 0.0
+      max_tokens: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: magellan
+  description: 'Classical-ML matcher: auto-generated comparator-vector features +
+    sklearn RandomForest (games-style, see em_matching_committee_games.yaml). ``training_gold_path``
+    is runner-injected per source pair. ``attributes`` scopes the auto-generator to
+    the in-scope subset so the long-tail sparse columns (read_speed_mb_s, bus_type,
+    color, ...) don''t pollute the feature vector; ``numeric_attributes`` flags the
+    numeric fields so the numeric-bank comparators fire instead of string similarity.'
+  matcher:
+    class: MagellanMatcher
+    module: usecases_synthetic.lib.magellan_em_matcher
+    params:
+      attributes:
+      - title
+      - brand
+      - description
+      - price
+      - priceCurrency
+      - title_description
+      - product_type
+      - model
+      - model_number
+      - chipset_name
+      - vram_gb
+      - storage_gb
+      - bus_type
+      - interface_type
+      - memory_type
+      - storage_connection_type
+      - form_factor
+      - read_speed_mb_s
+      - write_speed_mb_s
+      numeric_attributes:
+      - price
+      - vram_gb
+      - storage_gb
+      - read_speed_mb_s
+      - write_speed_mb_s
+      date_attributes: []
+      classifier_class: sklearn.ensemble.RandomForestClassifier
+      classifier_params:
+        n_estimators: 100
+        max_depth: 10
+        random_state: 42
+        n_jobs: 1
+        class_weight: null
+      preprocess: normalize_text
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: learned
+  missing_value_tolerant: true
+  enabled_by_default: true
+- name: comem
+  description: Compound Entity Matching (ComEM). Two-stage LLM pipeline. Paper defaults
+    locked.
+  matcher:
+    class: ComEMMatcher
+    module: usecases_synthetic.lib.comem_em_matcher
+    params:
+      fields:
+      - title
+      - brand
+      - description
+      - price
+      - priceCurrency
+      - title_description
+      - product_type
+      - model
+      - model_number
+      - chipset_name
+      - vram_gb
+      - storage_gb
+      - bus_type
+      - interface_type
+      - memory_type
+      - storage_connection_type
+      - form_factor
+      - read_speed_mb_s
+      - write_speed_mb_s
+      stage1_model: openai/gpt-5.4-mini
+      stage2_model: null
+      stage1_set_size: 10
+      skip_stage1_below: 2
+      temperature: 0.0
+      max_tokens_stage1: 2048
+      max_tokens_stage2: 2048
+      seed: 42
+  comparators: []
+  weights: []
+  threshold: 0.5
+  matching_type: llm
+  missing_value_tolerant: true
+  enabled_by_default: true
+required_axes:
+  matching_type:
+  - learned
+  - llm
+  missing_value_tolerant:
+  - true
+column_mapping:
+  products_1:
+    manufacturer: brand
+    product_name: title
+    product_description: description
+    list_price: price
+    currency_code: priceCurrency
+    cluster_id: cluster_id
+    product_url: url
+    name_and_description: title_description
+    model_name: model
+    manufacturer_part_number: model_number
+    category: product_type
+    gpu_chipset: chipset_name
+    video_memory_gb: vram_gb
+    capacity_gb: storage_gb
+    sequential_read_mb_s: read_speed_mb_s
+    sequential_write_mb_s: write_speed_mb_s
+    bus_standard: bus_type
+    interface: interface_type
+    width_millimeters: width_mm
+    length_millimeters: length_mm
+    height_millimeters: height_mm
+    weight_grams: weight_g
+    connector: storage_connection_type
+    memory_technology: memory_type
+    colour: color
+    form_factor: form_factor
+  products_2:
+    brandName: brand
+    name: title
+    descriptionText: description
+    priceAmount: price
+    currency: priceCurrency
+    cluster_id: cluster_id
+    productUrl: url
+    titleAndDescription: title_description
+    modelName: model
+    mpn: model_number
+    productCategory: product_type
+    chipset: chipset_name
+    vramGb: vram_gb
+    capacityGb: storage_gb
+    readSpeedMbps: read_speed_mb_s
+    writeSpeedMbps: write_speed_mb_s
+    busType: bus_type
+    interfaceType: interface_type
+    widthMm: width_mm
+    depthMm: length_mm
+    heightMm: height_mm
+    weightG: weight_g
+    connectionType: storage_connection_type
+    memoryType: memory_type
+    color: color
+    formFactor: form_factor
+  products_3:
+    Brand: brand
+    ProductTitle: title
+    Details: description
+    Price: price
+    Currency: priceCurrency
+    cluster_id: cluster_id
+    Link: url
+    TitleDetails: title_description
+    Model: model
+    PartNo: model_number
+    Type: product_type
+    Chipset: chipset_name
+    MemorySizeGB: vram_gb
+    CapacityGB: storage_gb
+    ReadMBs: read_speed_mb_s
+    WriteMBs: write_speed_mb_s
+    Bus: bus_type
+    Interface: interface_type
+    WidthMM: width_mm
+    LengthMM: length_mm
+    HeightMM: height_mm
+    WeightG: weight_g
+    Connector: storage_connection_type
+    MemoryType: memory_type
+    Colour: color
+    FormFactor: form_factor
+  products_4:
+    mfr: brand
+    name: title
+    desc: description
+    amt: price
+    cur: priceCurrency
+    cluster_id: cluster_id
+    link: url
+    name_desc: title_description
+    mdl: model
+    pn: model_number
+    cat: product_type
+    chip: chipset_name
+    vram: vram_gb
+    cap_gb: storage_gb
+    rd_mbs: read_speed_mb_s
+    wr_mbs: write_speed_mb_s
+    bus: bus_type
+    iface: interface_type
+    w_mm: width_mm
+    l_mm: length_mm
+    h_mm: height_mm
+    wt_g: weight_g
+    conn: storage_connection_type
+    mem: memory_type
+    clr: color
+    ff: form_factor

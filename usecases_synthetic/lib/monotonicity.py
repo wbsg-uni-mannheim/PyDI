@@ -32,7 +32,7 @@ M10 triages.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Literal, Mapping, Sequence
 
@@ -405,6 +405,30 @@ def load_knob_expected_signals(path: Path) -> dict[str, list[SignalExpectation]]
                     source=card,
                 )
             )
+        # point-0 (variant audit): the frozen-baseline EM difficulty signal is
+        # primarily reported on the corner_filled (regen) test surface. The
+        # corner_filled surface backfills negatives and its positive set
+        # composition drifts per level, which can mask injected difficulty
+        # (e.g. games-hard looks EASIER on corner_filled but HARDER on the
+        # pruned surface). The baseline_pruned surface is composition-stable
+        # (baseline gold pruned to surviving records only), so report BOTH:
+        # clone every em_matching frozen-regen signal into a *_pruned sibling
+        # pointing at the baseline_pruned aggregate. pool_check is dropped on
+        # the sibling so the collapse cross-check is not double-counted.
+        _REGEN = "aggregated.macro_f1_baseline_model_on_regen_test"
+        _PRUNED = "aggregated.macro_f1_baseline_model_on_baseline_test"
+        pruned_siblings = [
+            replace(
+                exp,
+                signal_id=f"{exp.signal_id}_pruned",
+                metric=_PRUNED,
+                pool_check=False,
+                notes=(exp.notes + "\n[baseline_pruned surface companion]").strip(),
+            )
+            for exp in items
+            if exp.stage == "em_matching" and exp.metric == _REGEN
+        ]
+        items.extend(pruned_siblings)
         out[key] = items
     return out
 

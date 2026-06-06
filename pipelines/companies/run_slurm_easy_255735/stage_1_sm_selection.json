@@ -1,0 +1,31 @@
+{
+  "stage": "sm",
+  "winner": "coma_hybrid",
+  "metric_key": "f1",
+  "val_score": 1.0,
+  "test_score": 1.0,
+  "per_member_val": {
+    "duplicate_majority": 0.8,
+    "label_jw": 1.0,
+    "instance_tf_cosine": 0.5625,
+    "embedding_sbert": 0.7777777777777778,
+    "llm_openai": 1.0,
+    "magneto_slm_llm": 0.8936170212765957,
+    "coma_hybrid": 1.0
+  },
+  "per_member_test": {
+    "duplicate_majority": 0.8,
+    "label_jw": 1.0,
+    "instance_tf_cosine": 0.5625,
+    "embedding_sbert": 0.7777777777777778,
+    "llm_openai": 1.0,
+    "magneto_slm_llm": 0.8936170212765957,
+    "coma_hybrid": 1.0
+  },
+  "runtime_s": 23.553266658971552,
+  "notes": {
+    "test_eq_val": true,
+    "test_eq_val_reason": "no held-out SM test split for baseline"
+  },
+  "peak_memory_mb": 1990.54296875
+}

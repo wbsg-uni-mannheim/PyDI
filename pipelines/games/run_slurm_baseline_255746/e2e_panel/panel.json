@@ -1,0 +1,475 @@
+{
+  "usecase": "games",
+  "run_id": "",
+  "silver_source": "",
+  "headline": {
+    "RF": {
+      "composite_score": 0.742751894378592
+    },
+    "GR": {
+      "bcubed_f1": 1.0,
+      "macro_accuracy": 0.819047619047619,
+      "composite_score": 0.7239967916572164
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 65108,
+        "n_rows_largest_input": 46580,
+        "row_gain_vs_largest_input": 0.39776728209531986
+      },
+      "GR": {
+        "n_reference": 15,
+        "row_count_abs_diff": 65093,
+        "row_count_rel_diff": 4339.533333333334,
+        "n_recovered": 15,
+        "n_partial": 0,
+        "n_lost": 0,
+        "n_fabricated": 65093,
+        "recovery_rate": 1.0
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.6552051975179701,
+        "density_largest_input": 0.0,
+        "density_gain": 0.6552051975179701
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "ESRB": 0.2022109657629974,
+          "criticScore": 0.0794984071952002,
+          "developer": 0.7682422059291852,
+          "name": 0.7689580523425039,
+          "platform": 0.6229240943104144,
+          "userScore": 0.1435450215717142,
+          "publisher": 0.4293221207076724
+        },
+        "overall_drift": 0.43067155254566963,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "releaseYear": {
+            "reference_density": 1.0,
+            "pipe_density": 0.979280579959452,
+            "delta": -0.020719420040548053
+          },
+          "developer": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9833046630214413,
+            "delta": -0.01669533697855874
+          },
+          "genres": {
+            "reference_density": 0.0,
+            "pipe_density": 0.9972353627818394,
+            "delta": 0.9972353627818394
+          },
+          "publisher": {
+            "reference_density": 1.0,
+            "pipe_density": 0.12096823739018248,
+            "delta": -0.8790317626098175
+          },
+          "platform": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9956533759292253,
+            "delta": -0.004346624070774685
+          },
+          "criticScore": {
+            "reference_density": 1.0,
+            "pipe_density": 0.3898445659519567,
+            "delta": -0.6101554340480433
+          },
+          "userScore": {
+            "reference_density": 0.9333333333333333,
+            "pipe_density": 0.3561620691773668,
+            "delta": -0.5771712641559665
+          },
+          "ESRB": {
+            "reference_density": 1.0,
+            "pipe_density": 0.35504085519444617,
+            "delta": -0.6449591448055538
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {
+        "winning_source_distribution_per_attribute": {
+          "ESRB": {
+            "metacritic": 0.6562359297613688,
+            "sales": 0.34376407023863126
+          },
+          "criticScore": {
+            "metacritic": 0.6663024475524476,
+            "sales": 0.33369755244755245
+          },
+          "developer": {
+            "dbpedia": 0.4183420745920843,
+            "metacritic": 0.3755099067599109,
+            "sales": 0.20614801864801424
+          },
+          "genres": {
+            "dbpedia": 0.42552933177934205,
+            "metacritic": 0.37082362082362397,
+            "sales": 0.20364704739704337
+          },
+          "id": {
+            "dbpedia": 0.42766608391609445,
+            "metacritic": 0.3693181818181848,
+            "sales": 0.20301573426573025
+          },
+          "name": {
+            "dbpedia": 0.42766608391609445,
+            "metacritic": 0.3693181818181848,
+            "sales": 0.20301573426573025
+          },
+          "platform": {
+            "dbpedia": 0.41921620046621,
+            "metacritic": 0.3749271561771602,
+            "sales": 0.20585664335663909
+          },
+          "publisher": {
+            "sales": 1.0
+          },
+          "releaseYear": {
+            "dbpedia": 0.4237567987568089,
+            "metacritic": 0.37218337218337566,
+            "sales": 0.20405982905982492
+          },
+          "userScore": {
+            "metacritic": 0.6897911832946636,
+            "sales": 0.31020881670533645
+          }
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": 0.0,
+          "pipe": 0.0,
+          "delta": 0.0,
+          "by_source": {
+            "dbpedia": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "metacritic": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "sales": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.5826841765304209,
+        "per_source_coverage_rate": {
+          "dbpedia": {
+            "reference": 0.0,
+            "pipe": 0.7154266756773361,
+            "delta": 0.7154266756773361
+          },
+          "metacritic": {
+            "reference": 1.0,
+            "pipe": 0.31476930638324013,
+            "delta": -0.6852306936167598
+          },
+          "sales": {
+            "reference": 0.0,
+            "pipe": 0.12098359648583891,
+            "delta": 0.12098359648583891
+          }
+        },
+        "source_mix_distribution_reference": {
+          "metacritic": 1.0
+        },
+        "source_mix_distribution_pipe": {
+          "dbpedia": 0.6100018430914788,
+          "dbpedia|metacritic": 0.047367451004484855,
+          "dbpedia|metacritic|sales": 0.04575474596055784,
+          "dbpedia|sales": 0.012302635620814647,
+          "metacritic": 0.22164710941819746,
+          "sales": 0.06292621490446643
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "ESRB": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 23116
+        },
+        "criticScore": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 25382
+        },
+        "developer": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 64021
+        },
+        "genres": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 64928
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 65108
+        },
+        "platform": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 64825
+        },
+        "releaseYear": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 63759
+        },
+        "series": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 24387
+        },
+        "userScore": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 23189
+        },
+        "publisher": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 7876
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "GR": {
+      "validity_per_column": {
+        "ESRB": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 23116,
+          "n_evaluated_reference": 15
+        },
+        "criticScore": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 25382,
+          "n_evaluated_reference": 15
+        },
+        "developer": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 64021,
+          "n_evaluated_reference": 15
+        },
+        "genres": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 64928,
+          "n_evaluated_reference": 0
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 65108,
+          "n_evaluated_reference": 15
+        },
+        "platform": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 64825,
+          "n_evaluated_reference": 15
+        },
+        "releaseYear": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 63759,
+          "n_evaluated_reference": 15
+        },
+        "userScore": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 23189,
+          "n_evaluated_reference": 14
+        },
+        "publisher": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 7876,
+          "n_evaluated_reference": 15
+        }
+      },
+      "mean_validity_delta": 0.0
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "GR": {
+        "bcubed": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "alignment": {
+          "mean_jaccard": 1.0,
+          "matched_cluster_rate_at_threshold": 1.0,
+          "matched_threshold": 0.5,
+          "size_match_rate": 1.0,
+          "mean_size_delta": 0.0,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "GR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.8666666666666667,
+            "count": 15,
+            "similarity_mean": 0.9886363636363636,
+            "accuracy_similarity_gap": 0.12196969696969695,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "releaseYear": {
+            "accuracy": 1.0,
+            "count": 15,
+            "similarity_mean": 1.0
+          },
+          "developer": {
+            "accuracy": 0.8,
+            "count": 15,
+            "similarity_mean": 0.8780124015418134,
+            "accuracy_similarity_gap": 0.07801240154181333,
+            "mismatch_fingerprint": "mixed"
+          },
+          "publisher": {
+            "accuracy": 0.8,
+            "count": 15,
+            "similarity_mean": 0.8074074074074074,
+            "pct_within_tolerance": 0.0,
+            "accuracy_similarity_gap": 0.007407407407407307,
+            "mismatch_fingerprint": "real_value_errors"
+          },
+          "platform": {
+            "accuracy": 1.0,
+            "count": 15,
+            "similarity_mean": 1.0
+          },
+          "criticScore": {
+            "accuracy": 0.9333333333333333,
+            "count": 15,
+            "similarity_mean": 0.9333333333333333,
+            "mae": 0.06666666666666667,
+            "medae": 0.0,
+            "pct_within_tolerance": 1.0
+          },
+          "userScore": {
+            "accuracy": 0.2857142857142857,
+            "count": 14,
+            "similarity_mean": 0.2857142857142857,
+            "mae": 0.8357142857142856,
+            "medae": 0.7499999999999996,
+            "pct_within_tolerance": 0.35714285714285715
+          },
+          "ESRB": {
+            "accuracy": 0.8666666666666667,
+            "count": 15,
+            "similarity_mean": 0.8833333333333333
+          }
+        },
+        "macro_accuracy": 0.819047619047619,
+        "micro_accuracy": 0.8235294117647058,
+        "conflict_only_accuracy": 0.0,
+        "conflict_only_micro_accuracy": 0.0,
+        "conflict_only_per_attribute": {},
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.0,
+        "conflict_rate_delta": 0.0,
+        "fully_correct_cluster_rate": 0.26666666666666666,
+        "list_attribute_set_metrics": {}
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [
+    "Source-attribution and synthesis-rate metrics skipped against gold (gold.cell_provenance is None)."
+  ],
+  "gold_source": "test_set.xml"
+}

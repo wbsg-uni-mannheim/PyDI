@@ -1,6 +1,6 @@
 # Validation report - games / easy
 
-_Generated at 2026-06-05T22:45:23.045423+00:00_
+_Generated at 2026-06-06T02:48:05.131466+00:00_
 
 - domain: `games`
 - level: `easy`
@@ -13,7 +13,7 @@ _Generated at 2026-06-05T22:45:23.045423+00:00_
 |---|---|---|---|---|
 | sm | macro_f1 | 0.8709 | 0.7478 | 0.1231 |
 | norm | macro_f1 | 0.8854 | 0.8971 | -0.0118 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9588 | 0.9560 | 0.0027 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.6275 | 0.6093 | 0.0182 |
 | fusion | overall_accuracy | 0.7114 | 0.7202 | -0.0089 |
 

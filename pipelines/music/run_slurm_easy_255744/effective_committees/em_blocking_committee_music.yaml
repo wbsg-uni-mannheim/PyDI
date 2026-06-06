@@ -1,0 +1,135 @@
+seed: 42
+preprocess_text: normalize_text
+blocking_name_column: name
+members:
+- name: token_blocker
+  description: Token-set inverted-index blocker on name (lexical, incumbent)
+  blocker:
+    class: TokenBlocker
+    module: PyDI.entitymatching.blocking.token_blocking
+    params:
+      column: name
+      min_token_len: 2
+  blocking_type: lexical
+  enabled_by_default: true
+- name: standard_blocker
+  description: "Equality on derived name_first_token key (lexical). Verified by the\
+    \ R5 EM blocking sweep (2026-05-10) \u2014 name_first_token wins on music at pair_recall=0.864\
+    \ (vs 0.862 for name_first_3 and 0.856 for name_first_5). First-alphabetic-token\
+    \ discriminates track titles cleanly (e.g. \"The Sound of Silence\" \u2014 first\
+    \ meaningful token \"sound\"). Companies + games adopt different prefixes (3 /\
+    \ 5 chars); music keeps the legacy token key."
+  blocker:
+    class: StandardBlocker
+    module: PyDI.entitymatching.blocking.standard
+    params:
+      'on':
+      - name_first_token
+  blocking_type: lexical
+  enabled_by_default: true
+- name: embedding_blocker
+  description: "Dense ANN top-k (embedding). Backbone: BAAI/bge-base-en-v1.5 (retrieval-tuned,\
+    \ 768-dim). Selected by the R5 EM blocking sweep (2026-05-10): pair_recall=0.995\
+    \ on music (matches BGE-small; beats MiniLM-L6 0.989 by 0.6pp). Cross-domain mean\
+    \ 0.986 \u2014 only model clearing 0.97 floor on all 3 domains."
+  blocker:
+    class: EmbeddingBlocker
+    module: PyDI.entitymatching.blocking.embedding
+    params:
+      text_cols:
+      - name
+      model: BAAI/bge-base-en-v1.5
+      top_k: 50
+      threshold: 0.3
+  blocking_type: embedding
+  enabled_by_default: true
+- name: sorted_neighbourhood_blocker
+  description: 'Sliding-window over sort key (lexical). Tuned by the R5 EM blocking
+    sweep (2026-05-10): key=name_norm + window=40 wins on music at pair_recall=0.854
+    (vs key=name+window=20 at 0.800; +5.4pp). Same winner across all 3 domains.'
+  blocker:
+    class: SortedNeighbourhoodBlocker
+    module: PyDI.entitymatching.blocking.sorted_neighbourhood
+    params:
+      key: name_norm
+      window: 40
+  blocking_type: lexical
+  enabled_by_default: true
+- name: bm25_blocker
+  description: "Okapi BM25 over character n-grams (sparse, bm25s backend, char_wb\
+    \ tokenisation). Char-ngrams give paraphrase / typo tolerance that word-BM25 lacks\
+    \ at hard, where K1 paraphrase rewrites the surface form. Word-level BM25 (previously\
+    \ here) was retired 2026-05-22 per plan_revision.md \xA7C4."
+  blocker:
+    class: BM25Blocker
+    module: usecases_synthetic.lib.bm25_blocker
+    params:
+      text_cols:
+      - name
+      top_k: 50
+      tokenizer: char_ngram
+      ngram_range:
+      - 3
+      - 5
+      k1: 1.5
+      b: 0.75
+  blocking_type: sparse
+  enabled_by_default: true
+- name: sc_block
+  description: "Supervised-contrastive encoder + ANN retrieval (hybrid). Brinkmann\
+    \ et al., ESWC 2024 (Mannheim WBSG, MIT). Per-domain checkpoint trained via scripts/sc_block/train.py:\
+    \ roberta-base + SupCon loss (tau=0.07) over EM-gold cluster graph with in-batch\
+    \ random negatives. text_cols match the per-domain Ditto field set so train \u2194\
+    \ inference share the [COL]/[VAL] serialisation shape. R9 EM-blocking re-sweep\
+    \ (2026-06-01) winner: top_k=100 + threshold=0.0, mean_pair_recall=0.9993 (mb-discogs\
+    \ 1.0000, mb-lastfm 0.9987) vs the prior R5 top_k=50/threshold=0.3 sign-off. Recall-maximising\
+    \ (threshold=0.0 keeps the full top_k); RR 0.9927."
+  blocker:
+    class: SCBlockBlocker
+    module: usecases_synthetic.lib.sc_block_blocker
+    params:
+      text_cols:
+      - name
+      - artist
+      - release-date
+      - release-country
+      - duration
+      - label
+      - genre
+      - tracks
+      top_k: 100
+      threshold: 0.0
+      checkpoint_path: pipelines/music/checkpoints/em_blocking/sc_block/variant_easy/best
+  blocking_type: hybrid
+  enabled_by_default: true
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+required_axes:
+  blocking_type:
+  - lexical
+  - sparse
+  - embedding
+  - hybrid
+column_mapping:
+  musicbrainz:
+    Attribute_2: name
+    Attribute_3: artist
+    Attribute_4: release-date
+    Attribute_5: release-country
+    Attribute_6: duration
+    Attribute_9: tracks
+  discogs:
+    title_str: name
+    performer: artist
+    pub_dt: release-date
+    origin_loc: release-country
+    imprint: label
+    category: genre
+    tracks_track-name: tracks
+  lastfm:
+    album_title: name
+    band: artist
+    album_length: duration
+    tracks_track-name: tracks

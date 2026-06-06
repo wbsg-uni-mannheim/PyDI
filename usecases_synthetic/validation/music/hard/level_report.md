@@ -1,6 +1,6 @@
 # Validation report - music / hard
 
-_Generated at 2026-06-05T21:59:05.506156+00:00_
+_Generated at 2026-06-06T03:05:29.544646+00:00_
 
 - domain: `music`
 - level: `hard`
@@ -11,9 +11,9 @@ _Generated at 2026-06-05T21:59:05.506156+00:00_
 
 | stage | metric | measured | baseline | delta |
 |---|---|---|---|---|
-| sm | macro_f1 | 0.6580 | 0.7430 | -0.0849 |
+| sm | macro_f1 | 0.6549 | 0.7430 | -0.0881 |
 | norm | macro_f1 | 0.7811 | 0.9786 | -0.1974 |
-| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.0000 | 0.0000 | 0.0000 |
+| em_blocking | macro_pair_recall_variant_model_on_regen_test | 0.9322 | 0.9505 | -0.0183 |
 | em_matching | macro_f1_variant_model_on_regen_test | 0.8560 | 0.8242 | 0.0318 |
 | fusion | overall_accuracy | 0.5661 | 0.7789 | -0.2128 |
 
@@ -26,7 +26,7 @@ _Generated at 2026-06-05T21:59:05.506156+00:00_
 | embedding_sbert | 0.7391 | 0.7568 | -0.0176 |
 | instance_tf_cosine | 0.6047 | 0.7317 | -0.1271 |
 | label_jw | 0.3636 | 0.3200 | 0.0436 |
-| llm_openai | 0.9200 | 1.0000 | -0.0800 |
+| llm_openai | 0.8980 | 1.0000 | -0.1020 |
 | magneto_slm_llm | 0.7347 | 0.9756 | -0.2409 |
 
 ## Stage: norm - per member

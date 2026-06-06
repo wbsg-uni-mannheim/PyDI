@@ -1,0 +1,52 @@
+{
+  "stage": "em_blocking",
+  "winner": "sc_block",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 1.0,
+  "test_score": 1.0,
+  "per_member_val": {
+    "token_blocker": 1.0,
+    "standard_blocker": 0.6466666666666666,
+    "embedding_blocker": 0.9866666666666667,
+    "sorted_neighbourhood_blocker": 0.6133333333333333,
+    "bm25_blocker": 0.9,
+    "sc_block": 1.0
+  },
+  "per_member_test": {
+    "token_blocker": 1.0,
+    "standard_blocker": 0.6466666666666666,
+    "embedding_blocker": 0.9866666666666667,
+    "sorted_neighbourhood_blocker": 0.6133333333333333,
+    "bm25_blocker": 0.9,
+    "sc_block": 1.0
+  },
+  "runtime_s": 48.88578936102567,
+  "notes": {
+    "per_pair_winner": {
+      "products_1_products_2": "sc_block",
+      "products_1_products_3": "sc_block",
+      "products_1_products_4": "sc_block"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "token_blocker": 0.6411211346038711,
+      "standard_blocker": 0.951920612772536,
+      "embedding_blocker": 0.9309782143156969,
+      "sorted_neighbourhood_blocker": 0.9486205181435223,
+      "bm25_blocker": 0.9309782143156969,
+      "sc_block": 0.9491494474047625
+    },
+    "per_member_reduction_ratio_test": {
+      "token_blocker": 0.6411211346038711,
+      "standard_blocker": 0.951920612772536,
+      "embedding_blocker": 0.9309782143156969,
+      "sorted_neighbourhood_blocker": 0.9486205181435223,
+      "bm25_blocker": 0.9309782143156969,
+      "sc_block": 0.9491494474047625
+    }
+  },
+  "peak_memory_mb": 2739.91796875
+}

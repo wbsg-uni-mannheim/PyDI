@@ -1,0 +1,48 @@
+{
+  "RF": {
+    "composite_score": 0.6437359408388248,
+    "weights": {
+      "entity_coverage": 0.3,
+      "fact_coverage": 0.4,
+      "consistency": 0.3
+    },
+    "subscores": {
+      "entity_coverage": 0.749329625583474,
+      "fact_coverage": 0.48229174938457875,
+      "consistency": 0.7534011780331702
+    },
+    "subscore_recipe": {
+      "entity_coverage": "1 - min(1, |coverage.entity.RF.row_gain_vs_largest_input|) \u2014 penalises both over-merge (row_gain << 0) and fabrication / under-merge (row_gain >> 0).",
+      "fact_coverage": "coverage.fact.RF.density_output \u2014 fraction of non-null cells across evaluable columns. No drift comparison available without a reference.",
+      "consistency": "mean over columns with n_evaluated_pipe > 0 of consistency.RF.validity_per_column[col].validity_rate_pipe. Returns 1.0 when no column was evaluable."
+    }
+  },
+  "GR": {
+    "composite_score": 0.5224166712288465,
+    "weights": {
+      "entity_coverage": 0.1,
+      "fact_coverage": 0.1,
+      "source_based_fact_coverage": 0.1,
+      "consistency": 0.1,
+      "cluster_correctness": 0.3,
+      "fact_correctness": 0.3
+    },
+    "subscores": {
+      "entity_coverage": 0.2525410942587151,
+      "fact_coverage": 0.5097873815507065,
+      "source_based_fact_coverage": 0.5586028589567338,
+      "consistency": 0.7181727748950517,
+      "cluster_correctness": 0.9104662698412698,
+      "fact_correctness": 0.1512212643678161
+    },
+    "subscore_recipe": {
+      "entity_coverage": "mean(1 - |coverage.entity.GR.row_count_rel_diff|, coverage.entity.GR.recovery_rate, 1 - coverage.entity.GR.n_fabricated/coverage.entity.RF.n_rows_output)",
+      "fact_coverage": "1 - mean(coverage.fact.GR.per_column_drift_normalized)",
+      "source_based_fact_coverage": "mean(1 - coverage.source_based.GR.same_source_collision_rate.pipe, 1 - coverage.source_based.GR.source_mix_distribution_js, 1 - mean(coverage.source_based.GR.source_attribution_js_per_attribute))",
+      "consistency": "1 - mean(max(0, -consistency.GR.validity_per_column.delta))",
+      "cluster_correctness": "mean(correctness.cluster.GR.bcubed.f1, correctness.cluster.GR.alignment.mean_jaccard)",
+      "fact_correctness": "mean(correctness.fact.GR.macro_accuracy, correctness.fact.GR.conflict_only_accuracy, correctness.fact.GR.fully_correct_cluster_rate)"
+    }
+  },
+  "caveat": "Composite is a ranking number, not a diagnostic \u2014 inspect per-level subscores and per-attribute metrics under coverage / consistency / correctness to understand failures. Three composites are emitted (one per reference level present): RF reflects only structural signals (entity row-gain shape, output density, format/constraint validity) and is NOT a correctness score \u2014 a pipeline can have a high RF composite while fabricating values; only SR and GR composites incorporate cluster_correctness and fact_correctness against a reference. Compare composites within the same reference level only \u2014 RF, SR, and GR scores are not interchangeable. The 2D aggregated (Quality \u00d7 Reference) weighting design remains pending \u2014 see panel.aggregated placeholder."
+}

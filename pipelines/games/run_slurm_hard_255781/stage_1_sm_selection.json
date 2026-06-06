@@ -1,0 +1,31 @@
+{
+  "stage": "sm",
+  "winner": "llm_openai",
+  "metric_key": "f1",
+  "val_score": 0.9811320754716981,
+  "test_score": 0.9811320754716981,
+  "per_member_val": {
+    "duplicate_majority": 0.851063829787234,
+    "label_jw": 0.303030303030303,
+    "instance_tf_cosine": 0.6666666666666666,
+    "embedding_sbert": 0.6530612244897959,
+    "llm_openai": 0.9811320754716981,
+    "magneto_slm_llm": 0.9454545454545454,
+    "coma_hybrid": 0.5641025641025641
+  },
+  "per_member_test": {
+    "duplicate_majority": 0.851063829787234,
+    "label_jw": 0.303030303030303,
+    "instance_tf_cosine": 0.6666666666666666,
+    "embedding_sbert": 0.6530612244897959,
+    "llm_openai": 0.9811320754716981,
+    "magneto_slm_llm": 0.9454545454545454,
+    "coma_hybrid": 0.5641025641025641
+  },
+  "runtime_s": 23.895242131955456,
+  "notes": {
+    "test_eq_val": true,
+    "test_eq_val_reason": "no held-out SM test split for baseline"
+  },
+  "peak_memory_mb": 2011.90625
+}

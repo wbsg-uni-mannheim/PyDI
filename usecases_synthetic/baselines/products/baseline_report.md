@@ -1,6 +1,6 @@
 # Baseline report - products
 
-_Generated at 2026-06-05T04:15:22.914545+00:00_
+_Generated at 2026-06-06T02:14:17.809915+00:00_
 
 ## Stage: sm
 
@@ -179,10 +179,10 @@ _Generated at 2026-06-05T04:15:22.914545+00:00_
 | best_member_pair_recall | 0.9800 |
 | best_member_reduction_ratio | 0.9490 |
 | macro_pair_recall | 0.8500 |
-| macro_pair_recall_baseline_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_baseline_model_on_regen_test | 0.0000 |
-| macro_pair_recall_variant_model_on_baseline_test | 0.0000 |
-| macro_pair_recall_variant_model_on_regen_test | 0.0000 |
+| macro_pair_recall_baseline_model_on_baseline_test | 0.8500 |
+| macro_pair_recall_baseline_model_on_regen_test | 0.8500 |
+| macro_pair_recall_variant_model_on_baseline_test | 0.8500 |
+| macro_pair_recall_variant_model_on_regen_test | 0.8500 |
 | macro_reduction_ratio | 0.8921 |
 | max_pair_recall | 1.0000 |
 | min_pair_recall | 0.5333 |

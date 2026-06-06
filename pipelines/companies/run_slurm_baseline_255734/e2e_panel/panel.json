@@ -1,0 +1,472 @@
+{
+  "usecase": "companies",
+  "run_id": "",
+  "silver_source": "",
+  "headline": {
+    "RF": {
+      "composite_score": 0.7319010662323173
+    },
+    "GR": {
+      "bcubed_f1": 0.9729299363057324,
+      "macro_accuracy": 0.4120146520146521,
+      "composite_score": 0.5725018600759453
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 12022,
+        "n_rows_largest_input": 10085,
+        "row_gain_vs_largest_input": 0.19206742687159148
+      },
+      "GR": {
+        "n_reference": 100,
+        "row_count_abs_diff": 11922,
+        "row_count_rel_diff": 119.22,
+        "n_recovered": 91,
+        "n_partial": 9,
+        "n_lost": 0,
+        "n_fabricated": 11922,
+        "recovery_rate": 0.91
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.5675532357344868,
+        "density_largest_input": 0.0,
+        "density_gain": 0.5675532357344868
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "assets": 0.09006142092807308,
+          "city": 0.7319446290606376,
+          "country": 0.29962193027821415,
+          "name": 0.80462050617687,
+          "revenue": 0.6527653801841005
+        },
+        "overall_drift": 0.5158027733255791,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 0.91,
+            "pipe_density": 1.0,
+            "delta": 0.08999999999999997
+          },
+          "founded": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9046747629346199,
+            "delta": -0.0953252370653801
+          },
+          "country": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9929296290134753,
+            "delta": -0.007070370986524743
+          },
+          "city": {
+            "reference_density": 1.0,
+            "pipe_density": 0.8681583763100982,
+            "delta": -0.13184162368990182
+          },
+          "assets": {
+            "reference_density": 1.0,
+            "pipe_density": 0.20745300282814838,
+            "delta": -0.7925469971718516
+          },
+          "revenue": {
+            "reference_density": 1.0,
+            "pipe_density": 0.3120113125935784,
+            "delta": -0.6879886874064216
+          },
+          "keypeople": {
+            "reference_density": 0.0,
+            "pipe_density": 0.09241390783563463,
+            "delta": 0.09241390783563463
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {
+        "winning_source_distribution_per_attribute": {
+          "assets": {
+            "forbes": 0.9446297531687792,
+            "dbpedia": 0.05537024683122081
+          },
+          "city": {
+            "dbpedia": 0.4235641891891892,
+            "fullcontact": 0.5764358108108109
+          },
+          "country": {
+            "forbes": 0.5349877040017889,
+            "dbpedia": 0.19695953498770422,
+            "fullcontact": 0.2680527610105071
+          },
+          "founded": {
+            "dbpedia": 0.5031418312387792,
+            "fullcontact": 0.49685816876122085
+          },
+          "id": {
+            "forbes": 0.4449633088725828,
+            "dbpedia": 0.17611741160773955,
+            "fullcontact": 0.37891927951968
+          },
+          "keypeople": {
+            "fullcontact": 0.55,
+            "dbpedia": 0.45
+          },
+          "name": {
+            "forbes": 0.4449633088725828,
+            "dbpedia": 0.17611741160773955,
+            "fullcontact": 0.37891927951968
+          },
+          "revenue": {
+            "forbes": 0.8965977318212142,
+            "dbpedia": 0.10340226817878585
+          }
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": 0.01,
+          "pipe": 0.0,
+          "delta": -0.01,
+          "by_source": {
+            "dbpedia": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "forbes": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "fullcontact": {
+              "reference": 0.01,
+              "pipe": 0.0,
+              "delta": -0.01
+            },
+            "unknown": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.87060762710709,
+        "per_source_coverage_rate": {
+          "dbpedia": {
+            "reference": 0.64,
+            "pipe": 0.8388787223423723,
+            "delta": 0.19887872234237225
+          },
+          "forbes": {
+            "reference": 1.0,
+            "pipe": 0.16636167027116952,
+            "delta": -0.8336383297288305
+          },
+          "fullcontact": {
+            "reference": 0.53,
+            "pipe": 0.16062219264681418,
+            "delta": -0.3693778073531858
+          },
+          "unknown": {
+            "reference": 0.82,
+            "pipe": 0.0,
+            "delta": -0.82
+          }
+        },
+        "source_mix_distribution_reference": {
+          "dbpedia|forbes|unknown": 0.22,
+          "dbpedia|forbes": 0.09,
+          "dbpedia|forbes|fullcontact|unknown": 0.28,
+          "forbes|fullcontact|unknown": 0.16,
+          "forbes|unknown": 0.16,
+          "forbes|fullcontact": 0.04,
+          "dbpedia|forbes|fullcontact": 0.05
+        },
+        "source_mix_distribution_pipe": {
+          "dbpedia|forbes|fullcontact": 0.041174513392114455,
+          "forbes|fullcontact": 0.06704375311928132,
+          "fullcontact": 0.0524039261354184,
+          "dbpedia": 0.7812344035934121,
+          "dbpedia|forbes": 0.016469805356845783,
+          "forbes": 0.04167359840292797
+        },
+        "source_attribution_js_per_attribute": {
+          "assets": 0.6437992930196592,
+          "city": 0.25075864347638743,
+          "country": 0.0511826793985779,
+          "founded": 0.22958632518893782,
+          "id": 1.0,
+          "keypeople": 0.7291160066511688,
+          "name": 0.047436677036294096,
+          "revenue": 0.6395247994023707
+        },
+        "synthesis_rate_per_attribute": {
+          "assets": {
+            "silver": 0.0,
+            "pipe": 0.35789473684210527,
+            "delta": 0.35789473684210527
+          },
+          "city": {
+            "silver": 0.1,
+            "pipe": 0.5555555555555556,
+            "delta": 0.4555555555555556
+          },
+          "country": {
+            "silver": 0.5,
+            "pipe": 0.9894736842105263,
+            "delta": 0.4894736842105263
+          },
+          "founded": {
+            "silver": 0.08536585365853659,
+            "pipe": 0.34831460674157305,
+            "delta": 0.26294875308303645
+          },
+          "id": {
+            "silver": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          },
+          "keypeople": {
+            "silver": 0.012195121951219513,
+            "pipe": 0.2,
+            "delta": 0.1878048780487805
+          },
+          "name": {
+            "silver": 0.37,
+            "pipe": 1.0,
+            "delta": 0.63
+          },
+          "revenue": {
+            "silver": 0.0,
+            "pipe": 0.5578947368421052,
+            "delta": 0.5578947368421052
+          }
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "assets": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 2494
+        },
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 10437
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 11937
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 10876
+        },
+        "industry": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 1957
+        },
+        "keypeople": {
+          "validity_rate_pipe": 0.0,
+          "parse_failures_pipe": 1111,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 1111
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 12022
+        },
+        "revenue": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 3751
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "GR": {
+      "validity_per_column": {
+        "assets": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 2494,
+          "n_evaluated_reference": 100
+        },
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 10437,
+          "n_evaluated_reference": 100
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 11937,
+          "n_evaluated_reference": 100
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 10876,
+          "n_evaluated_reference": 100
+        },
+        "keypeople": {
+          "validity_rate_pipe": 0.0,
+          "validity_rate_reference": 1.0,
+          "delta": -1.0,
+          "parse_failures_pipe": 1111,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 1111,
+          "n_evaluated_reference": 0
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 12022,
+          "n_evaluated_reference": 91
+        },
+        "revenue": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 3751,
+          "n_evaluated_reference": 100
+        }
+      },
+      "mean_validity_delta": -0.14285714285714285
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "GR": {
+        "bcubed": {
+          "precision": 1.0,
+          "recall": 0.9472868217054263,
+          "f1": 0.9729299363057324
+        },
+        "alignment": {
+          "mean_jaccard": 0.96,
+          "matched_cluster_rate_at_threshold": 0.99,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.91,
+          "mean_size_delta": -0.1,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "GR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.9120879120879121,
+            "count": 91,
+            "similarity_mean": 0.9504582718868434,
+            "accuracy_similarity_gap": 0.03837035979893133,
+            "mismatch_fingerprint": "real_value_errors"
+          },
+          "founded": {
+            "accuracy": 0.0,
+            "count": 100,
+            "similarity_mean": 0.38716878402903815,
+            "pct_within_tolerance": 0.0
+          },
+          "country": {
+            "accuracy": 0.84,
+            "count": 100,
+            "similarity_mean": 0.8855783909073384
+          },
+          "city": {
+            "accuracy": 0.4,
+            "count": 100,
+            "similarity_mean": 0.534450160153967,
+            "pct_within_tolerance": 0.0
+          },
+          "assets": {
+            "accuracy": 0.14,
+            "count": 100,
+            "similarity_mean": 0.14,
+            "mae": 35192574062.58586,
+            "medae": 42000000.0,
+            "pct_within_tolerance": 0.82
+          },
+          "revenue": {
+            "accuracy": 0.18,
+            "count": 100,
+            "similarity_mean": 0.18,
+            "mae": 5747199557.30303,
+            "medae": 140000000.0,
+            "pct_within_tolerance": 0.75
+          }
+        },
+        "macro_accuracy": 0.4120146520146521,
+        "micro_accuracy": 0.40439932318104904,
+        "conflict_only_accuracy": 0.0,
+        "conflict_only_micro_accuracy": 0.0,
+        "conflict_only_per_attribute": {},
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.0,
+        "conflict_rate_delta": 0.0,
+        "fully_correct_cluster_rate": 0.0,
+        "list_attribute_set_metrics": {}
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [],
+  "gold_source": "test_set.xml"
+}
