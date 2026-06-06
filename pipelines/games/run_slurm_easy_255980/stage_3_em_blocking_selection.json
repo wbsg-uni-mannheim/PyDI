@@ -1,0 +1,51 @@
+{
+  "stage": "em_blocking",
+  "winner": "standard_blocker",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9904761904761905,
+  "test_score": 0.9904761904761905,
+  "per_member_val": {
+    "token_blocker": 1.0,
+    "standard_blocker": 0.9904761904761905,
+    "embedding_blocker": 0.9428571428571428,
+    "sorted_neighbourhood_blocker": 0.9193847450484618,
+    "bm25_blocker": 0.9428571428571428,
+    "sc_block": 0.9431942688579857
+  },
+  "per_member_test": {
+    "token_blocker": 1.0,
+    "standard_blocker": 0.9904761904761905,
+    "embedding_blocker": 0.9428571428571428,
+    "sorted_neighbourhood_blocker": 0.9193847450484618,
+    "bm25_blocker": 0.9428571428571428,
+    "sc_block": 0.9431942688579857
+  },
+  "runtime_s": 2978.8283323119977,
+  "notes": {
+    "per_pair_winner": {
+      "metacritic_dbpedia": "standard_blocker",
+      "dbpedia_sales": "sorted_neighbourhood_blocker"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "token_blocker": 0.9632976933668647,
+      "standard_blocker": 0.9987348993908741,
+      "embedding_blocker": 0.9972792201450544,
+      "sorted_neighbourhood_blocker": 0.9989923283771073,
+      "bm25_blocker": 0.9972792201450544,
+      "sc_block": 0.9972792201450544
+    },
+    "per_member_reduction_ratio_test": {
+      "token_blocker": 0.9632976933668647,
+      "standard_blocker": 0.9987348993908741,
+      "embedding_blocker": 0.9972792201450544,
+      "sorted_neighbourhood_blocker": 0.9989923283771073,
+      "bm25_blocker": 0.9972792201450544,
+      "sc_block": 0.9972792201450544
+    }
+  },
+  "peak_memory_mb": 12330.94921875
+}

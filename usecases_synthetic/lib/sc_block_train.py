@@ -109,16 +109,34 @@ DOMAIN_TEXT_COLS: dict[str, list[str]] = {
         "write_speed_mb_s",
     ],
     "papers": [
+        # ALL target_schema attributes EXCEPT the identity keys ``doi`` and
+        # ``id`` (2026-06-06). ``doi`` is a perfect deterministic identity key
+        # that would trivialise EM, so it is excluded from every EM step
+        # (blocking + matching) and used ONLY for fusion (the fusion-gold join
+        # key); ``id`` is the synthetic primary key. Blocking (sc_block) and
+        # matching (ditto/magellan/comem) share this exact set (block == match).
         "title",
         "authors",
         "journal",
         "publication_year",
-        "doi",
         "type",
         "volume",
         "issue",
+        "first_page",
+        "last_page",
+        "referenced_works_count",
+        "cited_by_count",
     ],
 }
+
+
+# Optional per-domain override letting blocking (sc_block) text_cols DIVERGE
+# from the matching field set (``DOMAIN_TEXT_COLS``). Currently EMPTY: every
+# domain blocks on its full ``DOMAIN_TEXT_COLS`` (block == match, the R10-I
+# default). (Papers briefly blocked on ``[title]`` only while chasing a slow
+# sc_block setup; that turned out to be an O(n^2) cluster-tally bug — since
+# fixed — so papers is back to block == match over all non-doi/id attributes.)
+SC_BLOCK_TEXT_COLS_OVERRIDE: dict[str, list[str]] = {}
 
 
 # ---------------------------------------------------------------------------

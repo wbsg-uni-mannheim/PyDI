@@ -1,0 +1,52 @@
+{
+  "stage": "em_blocking",
+  "winner": "bm25_blocker",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9710144927536232,
+  "test_score": 0.9710144927536232,
+  "per_member_val": {
+    "token_blocker": 0.9855072463768115,
+    "standard_blocker": 0.7021489255372314,
+    "embedding_blocker": 1.0,
+    "sorted_neighbourhood_blocker": 0.7021489255372314,
+    "bm25_blocker": 0.9710144927536232,
+    "sc_block": 1.0
+  },
+  "per_member_test": {
+    "token_blocker": 0.9855072463768115,
+    "standard_blocker": 0.7021489255372314,
+    "embedding_blocker": 1.0,
+    "sorted_neighbourhood_blocker": 0.7021489255372314,
+    "bm25_blocker": 0.9710144927536232,
+    "sc_block": 1.0
+  },
+  "runtime_s": 2606.797034599993,
+  "notes": {
+    "per_pair_winner": {
+      "products_1_products_3": "embedding_blocker",
+      "products_1_products_2": "bm25_blocker",
+      "products_1_products_4": "bm25_blocker"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "token_blocker": 0.7990234931231971,
+      "standard_blocker": 0.9775335490825348,
+      "embedding_blocker": 0.9343484285004754,
+      "sorted_neighbourhood_blocker": 0.9494544896440066,
+      "bm25_blocker": 0.9343484285004754,
+      "sc_block": 0.8987506200490823
+    },
+    "per_member_reduction_ratio_test": {
+      "token_blocker": 0.7990234931231971,
+      "standard_blocker": 0.9775335490825348,
+      "embedding_blocker": 0.9343484285004754,
+      "sorted_neighbourhood_blocker": 0.9494544896440066,
+      "bm25_blocker": 0.9343484285004754,
+      "sc_block": 0.8987506200490823
+    }
+  },
+  "peak_memory_mb": 2917.10546875
+}

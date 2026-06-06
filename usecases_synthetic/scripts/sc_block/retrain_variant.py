@@ -108,11 +108,16 @@ def _invoke_scblock_train(
     eval_pair: tuple[str, str],
     output_dir: Path,
     data_override: _DataOverride,
+    eval_top_k: int = 50,
 ) -> dict[str, Any]:
     """Run the SC-Block trainer with injected variant data.
 
     Isolated as a single boundary so the smoke test can monkeypatch it
     (the real call trains a RoBERTa encoder, which needs MPS/CUDA).
+
+    ``eval_top_k`` caps the per-query candidate set in the per-epoch val
+    recall eval (the dominant cost on large domains like papers); lower it
+    to speed training. Defaults to 50 to preserve the trainer default.
     """
     from usecases_synthetic.scripts.sc_block.train import train as sc_train
 
@@ -121,6 +126,7 @@ def _invoke_scblock_train(
         eval_pair=eval_pair,
         output_dir=output_dir,
         data_override=data_override,
+        eval_top_k=eval_top_k,
     )
 
 
@@ -131,6 +137,7 @@ def retrain_variant_sc_block(
     eval_pair: tuple[str, str] | None = None,
     root_override: Path | None = None,
     out_dir: Path | None = None,
+    eval_top_k: int = 50,
 ) -> Path:
     """Retrain + place the variant SC-Block checkpoint for ``(domain, level)``.
 
@@ -178,6 +185,7 @@ def retrain_variant_sc_block(
         chosen,
         output_dir,
         (sources_mapped, em_train_by_pair, em_splits_by_pair),
+        eval_top_k=eval_top_k,
     )
     best = output_dir / "best"
     logger.info("Variant SC-Block checkpoint ready: %s", best)

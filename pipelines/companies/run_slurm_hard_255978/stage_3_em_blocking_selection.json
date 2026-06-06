@@ -1,0 +1,51 @@
+{
+  "stage": "em_blocking",
+  "winner": "bm25_blocker",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9687395937395937,
+  "test_score": 0.9687395937395937,
+  "per_member_val": {
+    "token_blocker": 0.9665750915750915,
+    "standard_blocker": 0.9182484182484183,
+    "embedding_blocker": 0.9687395937395937,
+    "sorted_neighbourhood_blocker": 0.915605228105228,
+    "bm25_blocker": 0.9687395937395937,
+    "sc_block": 0.9800407925407926
+  },
+  "per_member_test": {
+    "token_blocker": 0.9665750915750915,
+    "standard_blocker": 0.9182484182484183,
+    "embedding_blocker": 0.9687395937395937,
+    "sorted_neighbourhood_blocker": 0.915605228105228,
+    "bm25_blocker": 0.9687395937395937,
+    "sc_block": 0.9800407925407926
+  },
+  "runtime_s": 432.5563220420154,
+  "notes": {
+    "per_pair_winner": {
+      "forbes_dbpedia": "bm25_blocker",
+      "forbes_fullcontact": "sc_block"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "token_blocker": 0.9931574866728465,
+      "standard_blocker": 0.9976758385154817,
+      "embedding_blocker": 0.985042081890445,
+      "sorted_neighbourhood_blocker": 0.9872452596849982,
+      "bm25_blocker": 0.985042081890445,
+      "sc_block": 0.9700841637808899
+    },
+    "per_member_reduction_ratio_test": {
+      "token_blocker": 0.9931574866728465,
+      "standard_blocker": 0.9976758385154817,
+      "embedding_blocker": 0.985042081890445,
+      "sorted_neighbourhood_blocker": 0.9872452596849982,
+      "bm25_blocker": 0.985042081890445,
+      "sc_block": 0.9700841637808899
+    }
+  },
+  "peak_memory_mb": 3263.25390625
+}

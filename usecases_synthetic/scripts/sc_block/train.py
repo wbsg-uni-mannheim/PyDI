@@ -59,6 +59,7 @@ import logging
 import os
 import sys
 import time
+from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -90,6 +91,7 @@ from usecases_synthetic.lib.loaders import (  # noqa: E402
 from usecases_synthetic.lib.sc_block_blocker import SCBlockBlocker  # noqa: E402
 from usecases_synthetic.lib.sc_block_train import (  # noqa: E402
     DOMAIN_TEXT_COLS,
+    SC_BLOCK_TEXT_COLS_OVERRIDE,
     ClusterBalancedSampler,
     build_record_clusters,
     build_train_records,
@@ -447,7 +449,9 @@ def train(
     from torch.optim import AdamW
     from transformers import AutoModel, AutoTokenizer, get_linear_schedule_with_warmup
 
-    text_cols = DOMAIN_TEXT_COLS[domain]
+    # Blocking text_cols may be narrower than the matching field set (e.g.
+    # papers blocks on [title] only); fall back to DOMAIN_TEXT_COLS otherwise.
+    text_cols = SC_BLOCK_TEXT_COLS_OVERRIDE.get(domain, DOMAIN_TEXT_COLS[domain])
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     run_dir = output_dir / f"run_{timestamp}"
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -491,14 +495,13 @@ def train(
 
     record_to_cluster = build_record_clusters(em_train_by_pair, sources_mapped)
     records = build_train_records(sources_mapped, record_to_cluster, text_cols)
-    n_clusters = len({r.cluster_id for r in records})
-    n_multi = len(
-        {
-            r.cluster_id
-            for r in records
-            if sum(1 for x in records if x.cluster_id == r.cluster_id) >= 2
-        }
-    )
+    # O(n) cluster-size tally via Counter. The previous form computed
+    # ``n_multi`` with a nested ``sum(1 for x in records ...)`` per record —
+    # O(n_records^2), which silently hung for hours on large domains (papers
+    # has ~182k records => ~3.3e10 ops, single-core, before the blocker init).
+    _cluster_sizes = Counter(r.cluster_id for r in records)
+    n_clusters = len(_cluster_sizes)
+    n_multi = sum(1 for _sz in _cluster_sizes.values() if _sz >= 2)
     logger.info(
         "n_records=%d n_clusters=%d n_clusters_with_>=2_records=%d",
         len(records),

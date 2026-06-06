@@ -1,0 +1,522 @@
+{
+  "usecase": "companies",
+  "run_id": "",
+  "silver_source": "",
+  "headline": {
+    "RF": {
+      "composite_score": 0.6920420906795182
+    },
+    "GR": {
+      "bcubed_f1": 0.9721115537848605,
+      "macro_accuracy": 0.33769230769230774,
+      "composite_score": 0.5710487633381586
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 13203,
+        "n_rows_largest_input": 10583,
+        "row_gain_vs_largest_input": 0.2475668524992913
+      },
+      "GR": {
+        "n_reference": 100,
+        "row_count_abs_diff": 13103,
+        "row_count_rel_diff": 131.03,
+        "n_recovered": 90,
+        "n_partial": 10,
+        "n_lost": 0,
+        "n_fabricated": 13103,
+        "recovery_rate": 0.9
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.4936756797697493,
+        "density_largest_input": 0.5574978739487858,
+        "density_gain": -0.0638221941790365
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "assets": 0.06872518386569525,
+          "city": 0.7323959411282082,
+          "country": 0.3085677347692718,
+          "name": 0.8058176179033554,
+          "revenue": 0.17994271956314722
+        },
+        "overall_drift": 0.4190898394459356,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 0.91,
+            "pipe_density": 0.944482314625464,
+            "delta": 0.03448231462546392
+          },
+          "founded": {
+            "reference_density": 1.0,
+            "pipe_density": 0.7877755055669167,
+            "delta": -0.21222449443308333
+          },
+          "country": {
+            "reference_density": 1.0,
+            "pipe_density": 0.8995682799363781,
+            "delta": -0.10043172006362189
+          },
+          "city": {
+            "reference_density": 1.0,
+            "pipe_density": 0.7401348178444294,
+            "delta": -0.25986518215557064
+          },
+          "assets": {
+            "reference_density": 1.0,
+            "pipe_density": 0.17140043929409987,
+            "delta": -0.8285995607059001
+          },
+          "revenue": {
+            "reference_density": 1.0,
+            "pipe_density": 0.2483526471256533,
+            "delta": -0.7516473528743467
+          },
+          "keypeople": {
+            "reference_density": 0.0,
+            "pipe_density": 0.011512535029917448,
+            "delta": 0.011512535029917448
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {
+        "winning_source_distribution_per_attribute": {
+          "assets": {
+            "forbes": 0.828654004954583,
+            "dbpedia": 0.171345995045417
+          },
+          "city": {
+            "dbpedia": 0.3237997957099081,
+            "fullcontact": 0.676200204290092
+          },
+          "country": {
+            "forbes": 0.4736133548734522,
+            "fullcontact": 0.37022078621432397,
+            "dbpedia": 0.15616585891222443
+          },
+          "founded": {
+            "fullcontact": 0.5874125874125874,
+            "dbpedia": 0.4125874125874126
+          },
+          "id": {
+            "forbes": 0.4511652264990839,
+            "fullcontact": 0.38085886357685234,
+            "dbpedia": 0.1483372610631059,
+            "k04__fab__forbes__fullcontact_909": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Cabot_Oil_&_Gas": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1479": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_China_Life_Insurance_Company_(Taiwan)": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Dai_Nippon_Printing": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1672": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1334": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_MOL_Group": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1685": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Harbin_Power_Equipment": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Lindt_&_Spr%C3%BCngli": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1788": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1840": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Chang_Hwa_Bank": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_920": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Shenzhen_Overseas_Chinese_Town_Holding_Company": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1256": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Graub%C3%BCndner_Kantonalbank": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1649": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Bank_of_Ningbo": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Sumitomo_Chemical": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1564": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_COSCO": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1386": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1286": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_China_International_Marine_Containers": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1436": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Nanto_Bank": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_CNR_Dalian": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1242": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Energias_de_Portugal": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1960": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1414": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Monster_Beverage": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Minsheng_Banking_Corp": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_894": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Beijing_Enterprises": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1560": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1735": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_China_Yangtze_Power": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1643": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Guangdong_Investment": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Financial_Street_Holding": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1825": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_996": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_Tesoro": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_China_Shipbuilding_Industry_Corporation": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_968": 0.00039277297721916735,
+            "k04__fab__forbes__fullcontact_1364": 0.00039277297721916735,
+            "k04__fab__fullcontact__http___dbpedia.org_resource_CNOOC_Limited": 0.00039277297721916735
+          },
+          "keypeople": {
+            "dbpedia": 0.7738095238095238,
+            "fullcontact": 0.2261904761904762
+          },
+          "name": {
+            "forbes": 0.46020299145299187,
+            "fullcontact": 0.3884882478632476,
+            "dbpedia": 0.1513087606837611
+          },
+          "revenue": {
+            "forbes": 0.8200164744645799,
+            "dbpedia": 0.1799835255354201
+          }
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": 0.01,
+          "pipe": 0.0,
+          "delta": -0.01,
+          "by_source": {
+            "dbpedia": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "forbes": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "fullcontact": {
+              "reference": 0.01,
+              "pipe": 0.0,
+              "delta": -0.01
+            },
+            "unknown": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.8899010348031238,
+        "per_source_coverage_rate": {
+          "dbpedia": {
+            "reference": 0.64,
+            "pipe": 0.8015602514580019,
+            "delta": 0.1615602514580019
+          },
+          "forbes": {
+            "reference": 1.0,
+            "pipe": 0.15337423312883436,
+            "delta": -0.8466257668711656
+          },
+          "fullcontact": {
+            "reference": 0.53,
+            "pipe": 0.16405362417632358,
+            "delta": -0.36594637582367645
+          },
+          "unknown": {
+            "reference": 0.82,
+            "pipe": 0.0,
+            "delta": -0.82
+          }
+        },
+        "source_mix_distribution_reference": {
+          "dbpedia|forbes|unknown": 0.22,
+          "dbpedia|forbes": 0.09,
+          "dbpedia|forbes|fullcontact|unknown": 0.28,
+          "forbes|fullcontact|unknown": 0.16,
+          "forbes|unknown": 0.16,
+          "forbes|fullcontact": 0.04,
+          "dbpedia|forbes|fullcontact": 0.05
+        },
+        "source_mix_distribution_pipe": {
+          "dbpedia|forbes|fullcontact": 0.022570627887601304,
+          "fullcontact": 0.08119366810573354,
+          "forbes|fullcontact": 0.06028932818298872,
+          "dbpedia": 0.7654320987654321,
+          "dbpedia|forbes": 0.013557524804968567,
+          "forbes": 0.05695675225327577
+        },
+        "source_attribution_js_per_attribute": {
+          "assets": 0.636663841182719,
+          "city": 0.2532867753584186,
+          "country": 0.05174799666246509,
+          "founded": 0.2434273180265366,
+          "id": 1.0,
+          "keypeople": 0.732106950182039,
+          "name": 0.04185881858863108,
+          "revenue": 0.6366290756228458
+        },
+        "synthesis_rate_per_attribute": {
+          "assets": {
+            "silver": 0.0,
+            "pipe": 0.7244897959183674,
+            "delta": 0.7244897959183674
+          },
+          "city": {
+            "silver": 0.1,
+            "pipe": 0.5555555555555556,
+            "delta": 0.4555555555555556
+          },
+          "country": {
+            "silver": 0.5,
+            "pipe": 1.0,
+            "delta": 0.5
+          },
+          "founded": {
+            "silver": 0.08536585365853659,
+            "pipe": 0.5813953488372093,
+            "delta": 0.49602949517867273
+          },
+          "id": {
+            "silver": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          },
+          "keypeople": {
+            "silver": 0.012195121951219513,
+            "pipe": 0.05263157894736842,
+            "delta": 0.04043645699614891
+          },
+          "name": {
+            "silver": 0.37,
+            "pipe": 1.0,
+            "delta": 0.63
+          },
+          "revenue": {
+            "silver": 0.0,
+            "pipe": 0.7244897959183674,
+            "delta": 0.7244897959183674
+          }
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "assets": {
+          "validity_rate_pipe": 0.896155545735749,
+          "parse_failures_pipe": 235,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 2263
+        },
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 9772
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 11877
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 10401
+        },
+        "industry": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 1930
+        },
+        "keypeople": {
+          "validity_rate_pipe": 0.27631578947368424,
+          "parse_failures_pipe": 110,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 152
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 12470
+        },
+        "revenue": {
+          "validity_rate_pipe": 0.996645318694724,
+          "parse_failures_pipe": 11,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 3279
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "GR": {
+      "validity_per_column": {
+        "assets": {
+          "validity_rate_pipe": 0.896155545735749,
+          "validity_rate_reference": 1.0,
+          "delta": -0.10384445426425104,
+          "parse_failures_pipe": 235,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 2263,
+          "n_evaluated_reference": 100
+        },
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 9772,
+          "n_evaluated_reference": 100
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 11877,
+          "n_evaluated_reference": 100
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 10401,
+          "n_evaluated_reference": 100
+        },
+        "keypeople": {
+          "validity_rate_pipe": 0.27631578947368424,
+          "validity_rate_reference": 1.0,
+          "delta": -0.7236842105263157,
+          "parse_failures_pipe": 110,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 152,
+          "n_evaluated_reference": 0
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 12470,
+          "n_evaluated_reference": 91
+        },
+        "revenue": {
+          "validity_rate_pipe": 0.996645318694724,
+          "validity_rate_reference": 1.0,
+          "delta": -0.0033546813052760527,
+          "parse_failures_pipe": 11,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 3279,
+          "n_evaluated_reference": 100
+        }
+      },
+      "mean_validity_delta": -0.11869762087083469
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "GR": {
+        "bcubed": {
+          "precision": 1.0,
+          "recall": 0.945736434108527,
+          "f1": 0.9721115537848605
+        },
+        "alignment": {
+          "mean_jaccard": 0.9516666666666665,
+          "matched_cluster_rate_at_threshold": 0.99,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.9,
+          "mean_size_delta": -0.11,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "GR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.8461538461538461,
+            "count": 91,
+            "similarity_mean": 0.893294976069191,
+            "accuracy_similarity_gap": 0.047141129915344804,
+            "mismatch_fingerprint": "real_value_errors"
+          },
+          "founded": {
+            "accuracy": 0.0,
+            "count": 100,
+            "similarity_mean": 0.16190562613430123,
+            "pct_within_tolerance": 0.0
+          },
+          "country": {
+            "accuracy": 0.71,
+            "count": 100,
+            "similarity_mean": 0.8152396112659271
+          },
+          "city": {
+            "accuracy": 0.47,
+            "count": 100,
+            "similarity_mean": 0.5736123959018253,
+            "pct_within_tolerance": 0.0
+          },
+          "assets": {
+            "accuracy": 0.0,
+            "count": 100,
+            "similarity_mean": 0.015961538461538458,
+            "mae": 48062386264.193535,
+            "medae": 19641999980.4,
+            "pct_within_tolerance": 0.0
+          },
+          "revenue": {
+            "accuracy": 0.0,
+            "count": 100,
+            "similarity_mean": 0.0,
+            "mae": 24671431805.107002,
+            "medae": 11728499986.3,
+            "pct_within_tolerance": 0.01
+          }
+        },
+        "macro_accuracy": 0.33769230769230774,
+        "micro_accuracy": 0.3299492385786802,
+        "conflict_only_accuracy": 0.0,
+        "conflict_only_micro_accuracy": 0.0,
+        "conflict_only_per_attribute": {},
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.0,
+        "conflict_rate_delta": 0.0,
+        "fully_correct_cluster_rate": 0.0,
+        "list_attribute_set_metrics": {}
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [],
+  "gold_source": "test_set.xml"
+}

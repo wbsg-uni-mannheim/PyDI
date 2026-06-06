@@ -106,7 +106,10 @@ members:
       class: SCBlockBlocker
       module: usecases_synthetic.lib.sc_block_blocker
       params:
-        text_cols: [title, authors, journal]
+        # All non-doi/id attributes (block == match; equals DOMAIN_TEXT_COLS
+        # [papers] and the matching fields). doi excluded — perfect identity
+        # key that would trivialise EM.
+        text_cols: [title, authors, journal, publication_year, type, volume, issue, first_page, last_page, referenced_works_count, cited_by_count]
         top_k: 20
         threshold: 0.0
         checkpoint_path: usecases_synthetic/cache/sc_block_checkpoints/papers/best

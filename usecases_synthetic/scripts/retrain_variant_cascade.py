@@ -76,7 +76,7 @@ def _is_corner_filled_data_gap(exc: Exception) -> bool:
 
 
 def retrain_domain_level(
-    domain: str, level: str, *, out_root: Path | None = None
+    domain: str, level: str, *, out_root: Path | None = None, eval_top_k: int = 50
 ) -> dict[str, Path | None]:
     """Retrain both variant matchers for one ``(domain, level)``.
 
@@ -125,7 +125,9 @@ def retrain_domain_level(
                 exc,
             )
         try:
-            sc_ckpt = retrain_variant_sc_block(domain, level, out_dir=sc_out)
+            sc_ckpt = retrain_variant_sc_block(
+                domain, level, out_dir=sc_out, eval_top_k=eval_top_k
+            )
         except RuntimeError as exc:
             if not _is_corner_filled_data_gap(exc):
                 raise
@@ -151,17 +153,20 @@ def run_cascade(
     levels: tuple[str, ...] = _VARIANT_LEVELS,
     *,
     out_root: Path | None = None,
+    eval_top_k: int = 50,
 ) -> dict[tuple[str, str], dict[str, Path | None]]:
     """Retrain variant checkpoints for every ``(domain, level)``.
 
     ``out_root`` (when set) redirects all checkpoints into the
     pipeline-isolated tree — see :func:`retrain_domain_level`.
+    ``eval_top_k`` caps the sc_block per-epoch val-recall eval candidate
+    set (the dominant cost on large domains); lower it to speed training.
     """
     results: dict[tuple[str, str], dict[str, Path | None]] = {}
     for domain in domains:
         for level in levels:
             results[(domain, level)] = retrain_domain_level(
-                domain, level, out_root=out_root
+                domain, level, out_root=out_root, eval_top_k=eval_top_k
             )
     return results
 
@@ -196,13 +201,26 @@ def main() -> None:
             "passing a domain-specific --out-root."
         ),
     )
+    parser.add_argument(
+        "--eval-top-k",
+        type=int,
+        default=50,
+        help=(
+            "sc_block per-epoch val-recall eval candidate cap (top-k per "
+            "query) — the dominant training cost on large domains. Lower to "
+            "~20 to speed papers. Default 50 (trainer default)."
+        ),
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
     )
     results: dict[tuple[str, str], dict[str, Any]] = run_cascade(
-        args.domain, tuple(args.levels), out_root=args.out_root
+        args.domain,
+        tuple(args.levels),
+        out_root=args.out_root,
+        eval_top_k=args.eval_top_k,
     )
     for (domain, level), ckpts in results.items():
         logger.info(

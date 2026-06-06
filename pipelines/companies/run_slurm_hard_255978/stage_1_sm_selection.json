@@ -1,0 +1,31 @@
+{
+  "stage": "sm",
+  "winner": "magneto_slm_llm",
+  "metric_key": "f1",
+  "val_score": 0.9130434782608696,
+  "test_score": 0.9130434782608696,
+  "per_member_val": {
+    "duplicate_majority": 0.8,
+    "label_jw": 0.32,
+    "instance_tf_cosine": 0.5625,
+    "embedding_sbert": 0.6060606060606061,
+    "llm_openai": 0.9047619047619048,
+    "magneto_slm_llm": 0.9130434782608696,
+    "coma_hybrid": 0.32
+  },
+  "per_member_test": {
+    "duplicate_majority": 0.8,
+    "label_jw": 0.32,
+    "instance_tf_cosine": 0.5625,
+    "embedding_sbert": 0.6060606060606061,
+    "llm_openai": 0.9047619047619048,
+    "magneto_slm_llm": 0.9130434782608696,
+    "coma_hybrid": 0.32
+  },
+  "runtime_s": 33.734508572961204,
+  "notes": {
+    "test_eq_val": true,
+    "test_eq_val_reason": "no held-out SM test split for baseline"
+  },
+  "peak_memory_mb": 1923.2578125
+}

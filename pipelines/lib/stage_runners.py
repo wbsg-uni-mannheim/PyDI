@@ -305,14 +305,39 @@ def _swap_em_gold(
         The previous ``em_gold`` mapping (for restoration). ``None``
         when no val/test split files exist (caller should fall through).
     """
+    bundle = state.bundle
+    is_variant = getattr(bundle, "level", "baseline") not in (None, "baseline")
+    regen = getattr(bundle, "em_gold_regenerated", {}) or {}
+    em_splits = getattr(bundle, "em_splits", {}) or {}
+
     out: dict[tuple[str, str], pd.DataFrame] = {}
-    for pair, splits in state.bundle.em_splits.items():
-        if split in splits:
-            out[pair] = splits[split]
+    for pair in set(em_splits) | set(regen):
+        gold: pd.DataFrame | None = None
+        if is_variant:
+            # Prefer the variant-aligned corner-filled gold for this split,
+            # mirroring _em_test_gold_for. The plain em_splits gold references
+            # the *original* records, ~1/3 of which perturbation drops/re-keys;
+            # scoring blocking pair-completeness against it counts those
+            # unreachable pairs as misses and collapses the metric (a
+            # measurement artefact, not blocker quality). Both blocking recall
+            # and matcher selection then run on the reachable corner-filled
+            # surface, consistent with the entity-matching eval-target policy.
+            pair_regen = regen.get(pair, {}) or {}
+            gold = (pair_regen.get(split, {}) or {}).get("corner_filled")
+            # Games ships no val split (the committee derives a stratified
+            # train hold-out), so there is no corner-filled *val* gold; fall
+            # back to the corner-filled *test* surface so blocking is still
+            # scored on reachable gold rather than the unreachable plain split.
+            if (gold is None or getattr(gold, "empty", True)) and split == "val":
+                gold = (pair_regen.get("test", {}) or {}).get("corner_filled")
+        if gold is None or getattr(gold, "empty", True):
+            gold = (em_splits.get(pair, {}) or {}).get(split)
+        if gold is not None and not getattr(gold, "empty", True):
+            out[pair] = gold
     if not out:
         return None
-    previous = state.bundle.em_gold
-    state.bundle.em_gold = out
+    previous = bundle.em_gold
+    bundle.em_gold = out
     return previous
 
 
@@ -369,8 +394,15 @@ def _build_em_blocking_selection(
             if pair_metrics.get("selected"):
                 blocker_per_pair[pair_key] = blocker_name
 
+    # The committee stores blocker recall under ``pair_recall`` (see
+    # committee_em._BLOCKER_AVG_KEYS). Older code read ``pair_completeness``,
+    # which is never set, so every blocker's reported recall was silently 0.0
+    # (cosmetic — selection always used the correct ``pair_recall``). Read
+    # ``pair_recall`` first, keeping the legacy key as a fallback.
     blocker_per_member_val_recall = {
-        name: float(m.metrics.get("pair_completeness", 0.0))
+        name: float(
+            m.metrics.get("pair_recall", m.metrics.get("pair_completeness", 0.0))
+        )
         for name, m in per_blocker.items()
     }
     blocker_per_member_val_rr = {
@@ -423,6 +455,33 @@ def _build_em_blocking_selection(
         },
     )
     return selection, blocker_per_pair
+
+
+def _em_test_gold_for(bundle: Any, pair: tuple[str, str]) -> "pd.DataFrame | None":
+    """Held-out EM *test* gold for a source ``pair``.
+
+    Surface policy (2026-06-05 directive):
+
+    * **Variant** runs (``bundle.level != "baseline"``) are evaluated against
+      the *variant-aligned* corner-filled test gold
+      (``em_gold_regenerated[pair]["test"]["corner_filled"]``). The standard
+      ``em_splits[pair]["test"]`` references the *original* records, ~half of
+      which perturbation drops/re-keys — scoring against it counts those
+      unrecoverable pairs as false negatives and halves the F1 (a measurement
+      artifact, not matcher quality).
+    * **Base** runs are evaluated against the standard held-out test split
+      (``em_splits[pair]["test"]``); the base tree has no regenerated gold.
+
+    Falls back to the standard test split if a variant pair somehow ships no
+    corner-filled test (keeps scoring robust rather than dropping the pair).
+    """
+    is_variant = getattr(bundle, "level", "baseline") not in (None, "baseline")
+    if is_variant:
+        regen = (getattr(bundle, "em_gold_regenerated", {}) or {}).get(pair, {})
+        corner = (regen.get("test", {}) or {}).get("corner_filled")
+        if corner is not None and not getattr(corner, "empty", True):
+            return corner
+    return (getattr(bundle, "em_splits", {}) or {}).get(pair, {}).get("test")
 
 
 def run_em(
@@ -493,8 +552,14 @@ def run_em(
             test_per_member_f1[name] = float("nan")
             continue
         pair_f1s: list[float] = []
-        for pair, splits in state.bundle.em_splits.items():
-            if "test" not in splits:
+        # Variant runs score against the variant-aligned corner-filled test
+        # gold; base runs against the standard test split (see
+        # _em_test_gold_for). Iterate the canonical pair set so the right gold
+        # is selected per pair regardless of which split-dict it lives in.
+        pairs = list(state.bundle.em_gold) or list(state.bundle.em_splits)
+        for pair in pairs:
+            test_gold = _em_test_gold_for(state.bundle, pair)
+            if test_gold is None or test_gold.empty:
                 continue
             test_split_available = True
             pair_key = f"{pair[0]}_{pair[1]}"
@@ -502,7 +567,7 @@ def run_em(
             if pair_preds is None or pair_preds.empty:
                 pair_f1s.append(0.0)
                 continue
-            metrics = score_em_correspondences_closed_set(pair_preds, splits["test"])
+            metrics = score_em_correspondences_closed_set(pair_preds, test_gold)
             pair_f1s.append(float(metrics.get("f1", 0.0)))
         test_per_member_f1[name] = (
             sum(pair_f1s) / len(pair_f1s) if pair_f1s else float("nan")

@@ -590,6 +590,27 @@ def _load_canonical_papers_sources(
         id_col = f"{name}_id"
         if id_col in df.columns and "id" not in df.columns:
             df = df.rename(columns={id_col: "id"})
+        # Canonicalize the heterogeneous per-source papers schema (dblp
+        # ``publication_title`` / crossref ``title_text`` / open_alex
+        # ``display_title`` -> ``title``; ``author_list`` etc. -> ``authors``;
+        # ...) so the EM/fusion committees see the canonical columns their
+        # ``blocking_name_column: title`` / ``text_cols: [title, ...]`` and
+        # ditto fields expect. This matches the *variant* papers loader (which
+        # already ships canonical columns) and the synthetic
+        # ``normalize_loaded_source``. Without it, the committee
+        # ``column_mapping: {}`` (papers P1 fix, correct for the canonicalizing
+        # loader) leaves blocking with no ``title`` column -> zero candidates
+        # -> empty EM. papers SM gold is unauthored (SM scoring is skipped), so
+        # there is no raw-name learning to preserve here.
+        from usecases_synthetic.lib.loaders import _PAPERS_SOURCE_COLUMN_MAP
+
+        canon = {
+            k: v
+            for k, v in _PAPERS_SOURCE_COLUMN_MAP.get(name, {}).items()
+            if k in df.columns and v not in df.columns
+        }
+        if canon:
+            df = df.rename(columns=canon)
         # Authors ship as JSON arrays, so ``load_json`` loads them as
         # Python lists. List-valued cells break every scalar-assuming
         # SM/EM matcher (coma_hybrid: pd.notna(list) array-truthiness;

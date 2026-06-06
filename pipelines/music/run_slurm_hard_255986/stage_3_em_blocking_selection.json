@@ -1,0 +1,51 @@
+{
+  "stage": "em_blocking",
+  "winner": "sc_block",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9963054187192117,
+  "test_score": 0.9963054187192117,
+  "per_member_val": {
+    "token_blocker": 0.964785707574395,
+    "standard_blocker": 0.780033153917397,
+    "embedding_blocker": 0.9588898135595496,
+    "sorted_neighbourhood_blocker": 0.7751070455430129,
+    "bm25_blocker": 0.9662789761211259,
+    "sc_block": 0.9963054187192117
+  },
+  "per_member_test": {
+    "token_blocker": 0.964785707574395,
+    "standard_blocker": 0.780033153917397,
+    "embedding_blocker": 0.9588898135595496,
+    "sorted_neighbourhood_blocker": 0.7751070455430129,
+    "bm25_blocker": 0.9662789761211259,
+    "sc_block": 0.9963054187192117
+  },
+  "runtime_s": 2661.935750765959,
+  "notes": {
+    "per_pair_winner": {
+      "musicbrainz_discogs": "sc_block",
+      "musicbrainz_lastfm": "sc_block"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "token_blocker": 0.9118032984163712,
+      "standard_blocker": 0.9867956621701244,
+      "embedding_blocker": 0.9961997107911831,
+      "sorted_neighbourhood_blocker": 0.9955190686855302,
+      "bm25_blocker": 0.9961997107911831,
+      "sc_block": 0.9923994215823662
+    },
+    "per_member_reduction_ratio_test": {
+      "token_blocker": 0.9118032984163712,
+      "standard_blocker": 0.9867956621701244,
+      "embedding_blocker": 0.9961997107911831,
+      "sorted_neighbourhood_blocker": 0.9955190686855302,
+      "bm25_blocker": 0.9961997107911831,
+      "sc_block": 0.9923994215823662
+    }
+  },
+  "peak_memory_mb": 4712.98046875
+}
