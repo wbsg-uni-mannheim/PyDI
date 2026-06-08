@@ -710,9 +710,11 @@ def load_canonical_papers_bundle() -> VariantBundle:
     """Return a baseline :class:`VariantBundle` for papers sourced
     from canonical ``usecases/papers/``.
 
-    SM gold is intentionally left as ``None`` — the papers domain
-    does not (yet) ship a ``sm_mapping_gold.csv``. Downstream SM
-    committee scoring will be unavailable until the file is authored.
+    The papers SM gold (``sm_mapping_gold.json``) is authored against
+    the RAW on-disk source columns, so it is reconciled here to the
+    canonical column names that :func:`_load_canonical_papers_sources`
+    produces — otherwise every SM committee member scores 0.0 from a
+    raw-vs-canonical column mismatch.
     """
     papers_root = REPO_ROOT / "usecases" / "papers"
     if not papers_root.exists():
@@ -728,6 +730,26 @@ def load_canonical_papers_bundle() -> VariantBundle:
         target_schema = json.load(f)
 
     sm_mapping = _load_sm_gold(papers_root / "input" / "schemamatching", baseline=True)
+
+    # The committed papers SM gold (sm_mapping_gold.json) is authored against the
+    # RAW on-disk source columns (doi_value/display_title/work_kind/...), but
+    # _load_canonical_papers_sources renames every source column to its canonical
+    # name via _PAPERS_SOURCE_COLUMN_MAP before any committee sees the frames.
+    # Reconcile the gold's source_column to the same canonical names so the SM
+    # committee scores its (canonical-named) predictions against a canonical-keyed
+    # gold; without this every SM member scores 0.0 from a raw-vs-canonical tuple
+    # mismatch. Mirrors variant_loader._reconcile_sm_gold_source_columns; rows
+    # whose source_column is already canonical (none, here) pass through unchanged.
+    if sm_mapping is not None and not sm_mapping.empty:
+        from usecases_synthetic.lib.loaders import _PAPERS_SOURCE_COLUMN_MAP
+
+        sm_mapping = sm_mapping.copy()
+        sm_mapping["source_column"] = [
+            _PAPERS_SOURCE_COLUMN_MAP.get(str(ds), {}).get(str(sc), sc)
+            for ds, sc in zip(
+                sm_mapping["source_dataset"], sm_mapping["source_column"]
+            )
+        ]
 
     logger.info(
         "Loaded canonical papers bundle from %s "
