@@ -99,6 +99,35 @@ def _load_bundle_for_domain(domain: str):
     return load_pipeline_bundle(domain, bundle_source=bundle_source)
 
 
+def _canonicalize_sources_for_panel(bundle) -> "list[pd.DataFrame]":
+    """Rename each source's columns from raw to canonical (target-schema)
+    names using the bundle's SM gold mapping.
+
+    The panel's conflict-only accuracy / conflict-rate read source-record
+    values **by canonical attribute name** (``column_types`` keys), but the
+    raw source tables still carry their original column names (e.g.
+    ``manufacturer`` rather than ``brand``). Without this translation every
+    per-attribute source lookup returns ``None``, so no conflicts are ever
+    detected and both metrics collapse to ~0. Renaming here (non-mutating —
+    it returns copies) makes the source values visible to the detector.
+    """
+    sm = getattr(bundle, "sm_mapping", None)
+    out: list[pd.DataFrame] = []
+    for df in bundle.sources.values():
+        name = df.attrs.get("dataset_name")
+        rename: dict = {}
+        if sm is not None and not sm.empty:
+            for _, r in sm.iterrows():
+                if str(r.get("source_dataset")) == str(name):
+                    src_col, tgt_col = r.get("source_column"), r.get("target_column")
+                    if src_col and tgt_col and src_col != tgt_col:
+                        rename[str(src_col)] = str(tgt_col)
+        new_df = df.rename(columns=rename) if rename else df.copy()
+        new_df.attrs["dataset_name"] = name
+        out.append(new_df)
+    return out
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -338,6 +367,50 @@ def cache_notebook_output(
 # ---------------------------------------------------------------------------
 
 
+def _fusion_sources_are_prefixed(
+    fused: pd.DataFrame,
+    source_prefix_map: Mapping[str, str],
+) -> bool:
+    """Heuristically decide whether a notebook fused frame's
+    ``_fusion_sources`` already use the prefixed synthetic-side ID scheme
+    (e.g. ``mbrainz_1``, ``http://www.forbes.com/...``) rather than bare
+    integers (e.g. ``12198483``).
+
+    Prefixed IDs are directly comparable to the best-of-breed pipe output
+    and must NOT be run through the bare-int translator: ``int('mbrainz_1')``
+    raises and the row is dropped, which silently empties the membership and
+    collapses every cluster-correctness metric to zero. Returns True when the
+    first parseable ``_fusion_sources`` entry starts with a known source
+    prefix or is otherwise non-integer; False when it is a bare integer.
+    """
+    import ast as _ast
+
+    if "_fusion_sources" not in fused.columns:
+        return False
+    prefixes = tuple(str(p) for p in (source_prefix_map or {}).keys())
+    for value in fused["_fusion_sources"].dropna():
+        if isinstance(value, str):
+            try:
+                items = _ast.literal_eval(value)
+            except (ValueError, SyntaxError):
+                items = [value]
+        elif isinstance(value, list):
+            items = value
+        else:
+            continue
+        if not items:
+            continue
+        sample = str(items[0])
+        if prefixes and sample.startswith(prefixes):
+            return True
+        try:
+            int(sample)
+            return False
+        except ValueError:
+            return True
+    return False
+
+
 def build_silver_standard_from_notebook(
     cache_dir: Path,
     *,
@@ -376,8 +449,32 @@ def build_silver_standard_from_notebook(
     # returns a frame, not a series).
     fused_raw = fused_raw.drop(columns=["cluster_id"], errors="ignore")
 
-    # Translate the master-source bare-int p1_id → prefixed (cluster_id).
-    if "p1_id" in fused_raw.columns:
+    # The notebook's ``_fusion_sources`` come in one of two ID schemes:
+    #   * already-prefixed synthetic-side IDs (e.g. ``mbrainz_1``,
+    #     ``http://www.forbes.com/...``) — music / games / companies. These
+    #     already match the best-of-breed pipe output, so we key the cluster
+    #     on ``_id`` and build membership with the pass-through builder.
+    #   * bare-int IDs (e.g. ``12198483``) — products. These need translation
+    #     to the prefixed scheme via the parallel ``_fusion_source_datasets``
+    #     list, with the master ``p1_id`` giving the cluster key.
+    # Running the bare-int translator on already-prefixed sources parses
+    # ``int('mbrainz_1')``, drops every membership row, and collapses all
+    # cluster-correctness metrics to zero — so detect the scheme first.
+    if _fusion_sources_are_prefixed(fused_raw, config.source_prefix_map):
+        if "_id" not in fused_raw.columns:
+            raise KeyError(
+                "notebook fused output has prefixed _fusion_sources but no "
+                f"_id column for the cluster key (columns: "
+                f"{list(fused_raw.columns)[:10]}...)"
+            )
+        translated_fused = fused_raw.copy()
+        translated_fused["cluster_id"] = translated_fused["_id"].astype(str)
+        # Pass-through builder: keys the cluster on ``_id`` (== cluster_id
+        # above) and treats _fusion_sources as already-prefixed record IDs,
+        # exactly as for the best-of-breed pipe side.
+        membership = _build_membership_from_prefixed_sources(translated_fused)
+    elif "p1_id" in fused_raw.columns:
+        # Bare-int notebook (products): translate p1_id → prefixed cluster_id.
         translated_fused = translate_bare_int_to_prefixed(
             fused_raw,
             id_column="p1_id",
@@ -389,6 +486,11 @@ def build_silver_standard_from_notebook(
         translated_fused = translated_fused.rename(
             columns={"_translated_id": "cluster_id"}
         )
+        membership = _build_notebook_membership(
+            translated_fused,
+            cluster_id_column="cluster_id",
+            source_prefix_map=config.source_prefix_map,
+        )
     else:
         translated_fused = fused_raw.copy()
         if (
@@ -396,13 +498,11 @@ def build_silver_standard_from_notebook(
             and "_id" in translated_fused.columns
         ):
             translated_fused["cluster_id"] = translated_fused["_id"]
-
-    # Build membership from _fusion_sources + _fusion_source_datasets.
-    membership = _build_notebook_membership(
-        translated_fused,
-        cluster_id_column="cluster_id",
-        source_prefix_map=config.source_prefix_map,
-    )
+        membership = _build_notebook_membership(
+            translated_fused,
+            cluster_id_column="cluster_id",
+            source_prefix_map=config.source_prefix_map,
+        )
 
     return SilverStandard(
         fused=translated_fused,
@@ -608,12 +708,17 @@ def compute_panel_on_cached_notebook(
         source_prefix_map=config.source_prefix_map,
     )
 
+    schema_path = (
+        Path(bundle.variant_root) / "input" / "schemamatching" / "target_schema.json"
+    )
     panel = compute_e2e_panel(
         pipe_fused=translated,
         correspondences_pipe=corr_translated,
-        sources_pipe=list(bundle.sources.values()),
+        sources_pipe=_canonicalize_sources_for_panel(bundle),
         silver=silver,
         column_types=col_types,
+        target_schema=schema_path,
+        taxonomy_base_path=Path(bundle.variant_root),
         pipe_id_column=translated_id_col,
         silver_id_column="cluster_id",
         pipe_membership=pipe_membership,
@@ -672,12 +777,17 @@ def compute_panel_pipe_vs_notebook(
     fused_cols = set(pipe_fused.columns) | set(silver.fused.columns)
     col_types = {k: v for k, v in config.column_types.items() if k in fused_cols}
 
+    schema_path = (
+        Path(bundle.variant_root) / "input" / "schemamatching" / "target_schema.json"
+    )
     panel = compute_e2e_panel(
         pipe_fused=pipe_fused,
         correspondences_pipe=pipe_corr,
-        sources_pipe=list(bundle.sources.values()),
+        sources_pipe=_canonicalize_sources_for_panel(bundle),
         silver=silver,
         column_types=col_types,
+        target_schema=schema_path,
+        taxonomy_base_path=Path(bundle.variant_root),
         pipe_id_column="_id",
         silver_id_column="cluster_id",
         pipe_membership=pipe_membership,

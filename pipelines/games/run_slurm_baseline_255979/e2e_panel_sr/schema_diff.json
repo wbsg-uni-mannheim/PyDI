@@ -1,0 +1,49 @@
+{
+  "columns_shared": [
+    "ESRB",
+    "_fusion_confidence",
+    "_fusion_metadata",
+    "_fusion_source_datasets",
+    "_fusion_sources",
+    "_id",
+    "criticScore",
+    "developer",
+    "genres",
+    "id",
+    "name",
+    "platform",
+    "publisher",
+    "releaseYear",
+    "series",
+    "userScore"
+  ],
+  "columns_silver_only": [
+    "cluster_id",
+    "metacritic_id",
+    "name_longest_token"
+  ],
+  "columns_pipe_only": [
+    "globalSales"
+  ],
+  "dtype_mismatches": [],
+  "column_types_used": {
+    "id": "identifier",
+    "cluster_id": "identifier",
+    "name": "text",
+    "releaseYear": "temporal",
+    "developer": "text",
+    "genres": "list",
+    "publisher": "text",
+    "platform": "categorical",
+    "criticScore": "numerical",
+    "userScore": "numerical",
+    "ESRB": "categorical",
+    "series": "categorical"
+  },
+  "skipped_columns_for_per_column_metrics": [
+    "cluster_id",
+    "globalSales",
+    "metacritic_id",
+    "name_longest_token"
+  ]
+}

@@ -246,6 +246,17 @@ class E2EPanel:
         return written
 
 
+def _schema_property_names(target_schema: SchemaInput) -> set[str]:
+    """Names of the target schema's declared properties (the canonical
+    attributes). Used to restrict the scored column set to the schema."""
+    if isinstance(target_schema, Mapping):
+        schema = target_schema
+    else:
+        with open(target_schema, "r", encoding="utf-8") as f:
+            schema = json.load(f)
+    return set((schema.get("properties") or {}).keys())
+
+
 def compute_e2e_panel(
     *,
     pipe_fused: pd.DataFrame,
@@ -377,11 +388,12 @@ def compute_e2e_panel(
         (:func:`evaluate_schema_consistency`) — it validates each filled
         cell against the schema's native constraints plus the
         ``x-pydi-*`` extensions and reports a cell-weighted
-        ``consistency_score`` + per-column breakdown. When omitted, the
-        RF consistency block falls back to the schema-agnostic
-        per-column ``validity_per_column`` rates (backward compatible).
-        The SR/GR consistency deltas always use the
-        ``validity_per_column`` comparison.
+        ``consistency_score`` + per-column breakdown. It is required for
+        the consistency dimension: at RF the pipeline output is scored, and
+        at SR/GR both the output and the reference are scored so the block
+        carries ``consistency_score_pipe``, ``consistency_score_reference``,
+        and their ``delta``. When omitted, the consistency blocks are empty
+        (the type-only ``validity_per_column`` fallback has been removed).
     taxonomy_base_path : str or Path, optional
         Root for resolving relative ``x-pydi-taxonomy`` CSV paths in
         ``target_schema``. Defaults to the schema directory.
@@ -437,36 +449,72 @@ def compute_e2e_panel(
         if cell_provenance_pipe.empty:
             cell_provenance_pipe = None
 
-    # --- Schema diff (only when a silver reference is supplied) ---
+    # --- Restrict the scored column set to the target schema ---
+    # Only attributes declared in the target schema are relevant for the
+    # value / distribution / density metrics (RF density + gain, value drift,
+    # value-density delta, value correctness, validity) at every reference
+    # level. Identifier-typed columns (id, cluster_id, doi, url, ...) are
+    # dropped, and columns present in column_types but absent from the schema
+    # (e.g. source-only extras) are NOT scored. Cluster- and row-level metrics
+    # (recovery, BCubed, Jaccard, row gain, fusion ratio) are unaffected, and
+    # the schema-aware consistency score already follows this rule.
+    if target_schema is not None:
+        _schema_props = _schema_property_names(target_schema)
+        if _schema_props:
+            column_types = {
+                c: t
+                for c, t in column_types.items()
+                if c in _schema_props and t != "identifier"
+            }
+
+    # --- Per-reference schema diff → independent skipped-column sets ---
+    # Reference-free metrics never skip columns (there is no reference to
+    # mismatch against); each reference block uses ONLY its own schema diff, so
+    # silver and gold are scored independently within a single call (passing
+    # one no longer perturbs RF or the other reference's numbers).
     schema_diff_result: Optional[Dict[str, Any]] = None
-    columns_skipped: set[str] = set()
     column_metrics_df: Optional[pd.DataFrame] = None
-    pipe_source_records: Dict[str, Mapping[str, Any]] = {}
+    silver_columns_skipped: set[str] = set()
+    gold_columns_skipped: set[str] = set()
+
+    def _columns_skipped_against(reference_fused: pd.DataFrame) -> set[str]:
+        d = schema_diff(pipe_fused, reference_fused)
+        # Only genuinely absent columns are skipped. dtype mismatches are NOT
+        # skipped: the per-column metrics route by the declared column_types and
+        # coerce (pd.to_numeric / pd.to_datetime), so a pandas dtype difference
+        # — e.g. a numeric attribute parsed from gold XML as strings vs a typed
+        # pipe column — does not prevent the comparison.
+        return set(d["columns_pipe_only"]) | set(d["columns_silver_only"])
+
+    # Source records power conflict detection and are available whenever
+    # sources are supplied, independent of which reference(s) are present.
+    pipe_source_records: Dict[str, Mapping[str, Any]] = _index_source_records(
+        sources_pipe, pipe_source_id_column or "id"
+    )
+
     if silver is not None:
         schema_diff_result = schema_diff(pipe_fused, silver.fused)
-        columns_skipped = {m["column"] for m in schema_diff_result["dtype_mismatches"]}
-        columns_skipped |= set(schema_diff_result["columns_pipe_only"])
-        columns_skipped |= set(schema_diff_result["columns_silver_only"])
-
-        pipe_source_records = _index_source_records(
-            sources_pipe, pipe_source_id_column or "id"
+        silver_columns_skipped = (
+            set(schema_diff_result["columns_pipe_only"])
+            | set(schema_diff_result["columns_silver_only"])
         )
-
         # column_metrics.csv stays silver-only (per plan §3)
         column_metrics_rows = compute_type_routed_metrics(
             pipe_fused,
             silver.fused,
             column_types,
-            skipped_columns=columns_skipped,
+            skipped_columns=silver_columns_skipped,
         )
         column_metrics_df = pd.DataFrame(column_metrics_rows)
+    if gold is not None:
+        gold_columns_skipped = _columns_skipped_against(gold.fused)
 
-    # --- Reference-free (RF) metrics — always computed ---
+    # --- Reference-free (RF) metrics — always computed, reference-free ---
     rf_blocks = _compute_reference_free(
         pipe_fused=pipe_fused,
         sources_pipe=sources_pipe,
         column_types=column_types,
-        columns_skipped=columns_skipped,
+        columns_skipped=set(),
         cell_provenance_pipe=cell_provenance_pipe,
         source_prefix_map=source_prefix_map,
         column_constraints=column_constraints,
@@ -483,7 +531,7 @@ def compute_e2e_panel(
             reference=silver,
             column_types=column_types,
             column_constraints=column_constraints,
-            columns_skipped=columns_skipped,
+            columns_skipped=silver_columns_skipped,
             pipe_id_column=pipe_id_column,
             reference_id_column=silver_id_column,
             numerical_tolerance=numerical_tolerance,
@@ -494,6 +542,8 @@ def compute_e2e_panel(
             reference_source_records=silver_source_records,
             cell_provenance_pipe=cell_provenance_pipe,
             source_prefix_map=source_prefix_map,
+            target_schema=target_schema,
+            taxonomy_base_path=taxonomy_base_path,
             warnings_sink=warnings,
             reference_label_for_warnings="silver",
         )
@@ -507,7 +557,7 @@ def compute_e2e_panel(
             reference=gold,
             column_types=column_types,
             column_constraints=column_constraints,
-            columns_skipped=columns_skipped,
+            columns_skipped=gold_columns_skipped,
             pipe_id_column=pipe_id_column,
             reference_id_column=gold_id_column,
             numerical_tolerance=numerical_tolerance,
@@ -518,6 +568,8 @@ def compute_e2e_panel(
             reference_source_records=gold_source_records,
             cell_provenance_pipe=cell_provenance_pipe,
             source_prefix_map=source_prefix_map,
+            target_schema=target_schema,
+            taxonomy_base_path=taxonomy_base_path,
             warnings_sink=warnings,
             reference_label_for_warnings="gold",
         )
@@ -540,8 +592,9 @@ def compute_e2e_panel(
         "RF": rf_blocks["consistency"],
         "_design_extensions_pending": (
             "Broader consistency design (ontology-style disjointness checks, "
-            "cross-attribute constraints) is still pending. validity_per_column "
-            "is the first first-class consistency signal."
+            "cross-attribute constraints) is still pending. The target-schema "
+            "consistency_score (native + x-pydi constraints) is the first "
+            "first-class consistency signal."
         ),
     }
     correctness: Dict[str, Any] = {}
@@ -656,7 +709,7 @@ def compute_e2e_panel(
     if schema_diff_result is not None:
         schema_payload = {
             **_schema_payload(schema_diff_result, column_types),
-            "skipped_columns_for_per_column_metrics": sorted(columns_skipped),
+            "skipped_columns_for_per_column_metrics": sorted(silver_columns_skipped),
         }
 
     if gold_source_label:
@@ -848,11 +901,12 @@ def _compute_reference_free(
         if winning:
             coverage_source_based["winning_source_distribution_per_attribute"] = winning
 
+    # Reference-free consistency is ALWAYS schema-aware: every filled cell is
+    # validated against the target schema's native constraints + x-pydi-*
+    # extensions (the same engine that backs the per-usecase consistency.json).
+    # The former type-only ``validity_per_column`` fallback has been removed —
+    # without a target schema there is no reference-free consistency score.
     if target_schema is not None:
-        # Schema-aware engine: validate each filled cell against the
-        # canonical target schema's native constraints + x-pydi-*
-        # extensions. This is the same engine that backs the per-usecase
-        # consistency.json, so the panel and that file agree.
         consistency = evaluate_schema_consistency(
             pipe_fused,
             target_schema,
@@ -860,26 +914,7 @@ def _compute_reference_free(
             exclude_identifier_columns=True,
         )
     else:
-        # Schema-agnostic fallback: per-column type+constraint validity
-        # rate (backward compatible with callers that pass no schema).
-        constraints = column_constraints or {}
-        validity_per_column: Dict[str, Any] = {}
-        for column in pipe_fused.columns:
-            col_type = column_types.get(column)
-            if col_type is None or col_type == "identifier":
-                continue
-            if column in columns_skipped:
-                continue
-            info = column_validity_rate(
-                pipe_fused[column], col_type, constraints.get(column)
-            )
-            validity_per_column[column] = {
-                "validity_rate_pipe": info["validity_rate"],
-                "parse_failures_pipe": info["parse_failures"],
-                "constraint_failures_pipe": info["constraint_failures"],
-                "n_evaluated_pipe": info["n_evaluated"],
-            }
-        consistency = {"validity_per_column": validity_per_column}
+        consistency = {}
 
     return {
         "coverage_entity": coverage_entity,
@@ -951,6 +986,8 @@ def _compute_against_reference(
     reference_source_records: Optional[Mapping[str, Mapping[str, Any]]],
     cell_provenance_pipe: Optional[pd.DataFrame],
     source_prefix_map: Optional[Mapping[str, str]],
+    target_schema: Optional[SchemaInput],
+    taxonomy_base_path: Optional[Union[str, Path]],
     warnings_sink: List[str],
     reference_label_for_warnings: str,
 ) -> Dict[str, Any]:
@@ -962,7 +999,8 @@ def _compute_against_reference(
     * ``coverage_fact``         — per-column drift + density delta
     * ``coverage_source_based`` — source composition (+ source attribution
                                   / synthesis rate when provenance available)
-    * ``consistency``           — validity_per_column + mean_validity_delta
+    * ``consistency``           — schema-aware consistency_score for pipe and
+                                  reference + their delta (per column too)
     * ``correctness_cluster``   — bcubed + alignment scalars
     * ``correctness_fact``      — per_attribute (with fingerprint) + macro/
                                   micro + conflict + fully-correct + list F1
@@ -989,10 +1027,48 @@ def _compute_against_reference(
         column_metrics_df_local, pipe_fused, reference.fused, column_types
     )
 
-    # Constraint validity
-    validity_per_column = compare_column_validity(
-        pipe_fused, reference.fused, column_types, column_constraints
-    )
+    # Schema-aware consistency (pipe vs reference): both sides are scored
+    # against the target schema's native + x-pydi constraints, so the
+    # reference levels report a schema-driven validity delta. The type-only
+    # compare_column_validity fallback has been removed.
+    if target_schema is not None:
+        pipe_consistency = evaluate_schema_consistency(
+            pipe_fused,
+            target_schema,
+            taxonomy_base_path=taxonomy_base_path,
+            exclude_identifier_columns=True,
+        )
+        reference_consistency = evaluate_schema_consistency(
+            reference.fused,
+            target_schema,
+            taxonomy_base_path=taxonomy_base_path,
+            exclude_identifier_columns=True,
+        )
+        cs_pipe = pipe_consistency.get("consistency_score")
+        cs_ref = reference_consistency.get("consistency_score")
+        pipe_pc = pipe_consistency.get("per_column") or {}
+        ref_pc = reference_consistency.get("per_column") or {}
+        per_column_consistency: Dict[str, Any] = {}
+        for col in sorted(set(pipe_pc) | set(ref_pc)):
+            p = (pipe_pc.get(col) or {}).get("consistency_score")
+            r = (ref_pc.get(col) or {}).get("consistency_score")
+            per_column_consistency[col] = {
+                "consistency_score_pipe": p,
+                "consistency_score_reference": r,
+                "delta": (p - r) if (p is not None and r is not None) else None,
+            }
+        consistency_block = {
+            "consistency_score_pipe": cs_pipe,
+            "consistency_score_reference": cs_ref,
+            "delta": (
+                (cs_pipe - cs_ref)
+                if (cs_pipe is not None and cs_ref is not None)
+                else None
+            ),
+            "per_column": per_column_consistency,
+        }
+    else:
+        consistency_block = {}
 
     # Cluster-level metrics
     bcubed = bcubed_scores(pipe_membership, reference.membership)
@@ -1145,10 +1221,6 @@ def _compute_against_reference(
     }
     coverage_source_based.update(source_attribution_block)
 
-    consistency_block = {
-        "validity_per_column": validity_per_column,
-        "mean_validity_delta": mean_validity_delta(validity_per_column),
-    }
     correctness_cluster = {
         "bcubed": bcubed,
         "alignment": {
@@ -1526,24 +1598,23 @@ def _diagnostic_warnings(
             "confirm."
         )
 
-    # Constraint-validity regression — reads consistency.SR.validity_per_column
+    # Schema-consistency regression — reads consistency.SR.per_column deltas
     cons_sr = consistency.get("SR") or {}
-    validity = cons_sr.get("validity_per_column") or {}
+    per_column = cons_sr.get("per_column") or {}
     validity_regressions = [
         (col, info["delta"])
-        for col, info in validity.items()
-        if info.get("delta", 0.0) <= -0.05 and info.get("n_evaluated_pipe", 0) > 0
+        for col, info in per_column.items()
+        if info.get("delta") is not None and info["delta"] <= -0.05
     ]
     if validity_regressions:
         worst = min(validity_regressions, key=lambda kv: kv[1])
         warnings.append(
-            f"Constraint-validity dropped by ≥ 5pp on "
+            f"Schema consistency dropped by ≥ 5pp vs silver on "
             f"{len(validity_regressions)} column(s); worst: '{worst[0]}' "
-            f"delta={worst[1]:+.3f}. The pipeline is emitting cells that "
-            "violate the column's declared type or constraints (parse "
-            "failures, out-of-range values, enum violations). Read "
-            "consistency.SR.validity_per_column.<column> for the failure "
-            "counts."
+            f"delta={worst[1]:+.3f}. The pipeline emits cells that violate the "
+            "target schema's declared type or constraints (out-of-range "
+            "values, enum/taxonomy violations). Read "
+            "consistency.SR.per_column.<column> for the per-side scores."
         )
 
     return warnings

@@ -353,6 +353,64 @@ def _load_targets_from_xml(path: Path) -> dict[str, dict[str, list[str]]]:
     return out
 
 
+def _load_targets(domain: str, path: Path) -> dict[str, dict[str, list[str]]]:
+    """Parse one fusion gold file into the entity->attribute target shape,
+    dispatching on CONTENT (not the filename).
+
+    Papers ships fusion gold as JSON-lines keyed by DOI with no per-record
+    ``id`` (``fusion_{val,test}.jsonl`` for baseline; JSONL content copied under
+    ``{validation,test}_set.xml`` for variants). For JSONL we map each gold DOI
+    to its per-DOI anchor source-record id — the same anchor
+    ``protection.load_fusion_target_values`` uses — so the normalized source
+    cells line up; XML files use the per-``<entity>`` parse. Without this papers
+    yields zero eval-target entities -> n_cells=0 -> a misleading norm
+    macro_f1=0.0.
+    """
+    if not path.exists():
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            head = f.read(256).lstrip()
+    except OSError:
+        return {}
+    if head[:1] not in ("{", "["):
+        return _load_targets_from_xml(path)
+    # JSON-lines (papers): reuse the protection per-DOI anchor mapping so the
+    # target shape matches load_fusion_target_values exactly. Parse the records
+    # content-aware (NOT via protection._read_fusion_records, which dispatches on
+    # the ``.jsonl`` suffix) because papers VARIANTS copy JSONL content under a
+    # ``{validation,test}_set.xml`` filename.
+    from .protection import (
+        _PAPERS_NON_TARGET_ATTRS,
+        _coerce_target_values,
+        _doi_to_anchor_id,
+        _normalize_doi,
+    )
+
+    text = path.read_text(encoding="utf-8").strip()
+    if text.startswith("["):
+        records = json.loads(text)
+    else:  # one JSON object per line
+        records = [json.loads(ln) for ln in text.splitlines() if ln.strip()]
+    anchors = _doi_to_anchor_id(domain)
+    out: dict[str, dict[str, list[str]]] = {}
+    for record in records:
+        ndoi = _normalize_doi(record.get("doi"))
+        if ndoi is None or ndoi not in anchors:
+            continue
+        eid = anchors[ndoi]
+        attrs: dict[str, list[str]] = {}
+        for key, value in record.items():
+            if key in _PAPERS_NON_TARGET_ATTRS:
+                continue
+            vals = _coerce_target_values(value)
+            if vals:
+                attrs[key] = vals
+        if attrs:
+            out[eid] = attrs
+    return out
+
+
 def _load_val_and_test_targets(
     domain: str,
 ) -> tuple[dict[str, dict[str, list[str]]], dict[str, dict[str, list[str]]]]:
@@ -362,8 +420,8 @@ def _load_val_and_test_targets(
     drives val-selection; ``test`` drives the headline per-member F1.
     """
     cfg = load_domain_config(domain)
-    val = _load_targets_from_xml(cfg.fusion_validation_path())
-    test = _load_targets_from_xml(cfg.fusion_test_path())
+    val = _load_targets(domain, cfg.fusion_validation_path())
+    test = _load_targets(domain, cfg.fusion_test_path())
     return val, test
 
 
@@ -383,8 +441,8 @@ def _load_eval_targets_for_bundle(
         return _load_val_and_test_targets(domain)
     fusion_dir = bundle.variant_root / "input" / "fusion"
     return (
-        _load_targets_from_xml(fusion_dir / "validation_set.xml"),
-        _load_targets_from_xml(fusion_dir / "test_set.xml"),
+        _load_targets(domain, fusion_dir / "validation_set.xml"),
+        _load_targets(domain, fusion_dir / "test_set.xml"),
     )
 
 

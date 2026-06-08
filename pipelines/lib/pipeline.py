@@ -821,7 +821,27 @@ class BestOfBreedPipeline:
             )
             gold_source_label = "test_set.xml"
 
-        sources_pipe = [df for df in state.bundle.sources.values()]
+        # Conflict-only accuracy / conflict-rate read source-record values by
+        # CANONICAL attribute name (column_types keys), but raw source tables
+        # carry their original column names (e.g. ``manufacturer`` not
+        # ``brand``). Rename via the SM gold mapping so the conflict detector
+        # can see the source values; without it every per-attribute lookup is
+        # None and the conflict metrics collapse to ~0. No-op when columns are
+        # already canonical (mapping rewritten to identity upstream).
+        sm_map = state.bundle.sm_mapping
+        sources_pipe = []
+        for df in state.bundle.sources.values():
+            _name = df.attrs.get("dataset_name")
+            _rename: dict = {}
+            if sm_map is not None and not sm_map.empty:
+                for _, _r in sm_map.iterrows():
+                    if str(_r.get("source_dataset")) == str(_name):
+                        _sc, _tc = _r.get("source_column"), _r.get("target_column")
+                        if _sc and _tc and _sc != _tc:
+                            _rename[str(_sc)] = str(_tc)
+            _df = df.rename(columns=_rename) if _rename else df
+            _df.attrs["dataset_name"] = _name
+            sources_pipe.append(_df)
 
         # Filter column_types to columns the fused output actually has —
         # avoids spurious schema_diff entries for declared-but-absent
@@ -846,12 +866,25 @@ class BestOfBreedPipeline:
         pipe_id_column = "_id"
         pipe_membership = self._build_pipe_membership_from_fused(state)
 
+        # Reference-free consistency is always scored against the use case's
+        # target schema (native + x-pydi constraints); taxonomy paths in the
+        # schema are relative to the variant root, so it is the taxonomy base.
+        variant_root = Path(state.bundle.variant_root)
+        schema_path = variant_root / "input" / "schemamatching" / "target_schema.json"
+        if not schema_path.exists():
+            raise FileNotFoundError(
+                f"target_schema.json not found at {schema_path}; the panel's "
+                "reference-free consistency score requires the target schema."
+            )
+
         return compute_e2e_panel(
             pipe_fused=state.fused,
             correspondences_pipe=state.correspondences,
             sources_pipe=sources_pipe,
             gold=gold,
             column_types=col_types,
+            target_schema=schema_path,
+            taxonomy_base_path=variant_root,
             pipe_id_column=pipe_id_column,
             gold_id_column="cluster_id",
             pipe_membership=pipe_membership,

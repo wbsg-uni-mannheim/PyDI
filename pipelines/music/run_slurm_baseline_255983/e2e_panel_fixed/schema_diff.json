@@ -1,0 +1,42 @@
+{
+  "columns_shared": [
+    "_fusion_confidence",
+    "_fusion_metadata",
+    "_fusion_source_datasets",
+    "_fusion_sources",
+    "_id",
+    "artist",
+    "duration",
+    "genre",
+    "id",
+    "label",
+    "name",
+    "release-country",
+    "release-date",
+    "tracks"
+  ],
+  "columns_silver_only": [
+    "cluster_id",
+    "mbrainz_id",
+    "name_longest_token"
+  ],
+  "columns_pipe_only": [],
+  "dtype_mismatches": [],
+  "column_types_used": {
+    "id": "identifier",
+    "cluster_id": "identifier",
+    "name": "text",
+    "artist": "text",
+    "release-date": "temporal",
+    "release-country": "categorical",
+    "label": "categorical",
+    "genre": "categorical",
+    "tracks": "list",
+    "duration": "numerical"
+  },
+  "skipped_columns_for_per_column_metrics": [
+    "cluster_id",
+    "mbrainz_id",
+    "name_longest_token"
+  ]
+}

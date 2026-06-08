@@ -416,6 +416,13 @@ class TestColumnMetricsMissingnessFingerprint:
 
 
 class TestPanelConsistency:
+    _YEAR_SCHEMA = {
+        "properties": {
+            "title": {"type": "string"},
+            "year": {"type": "integer", "minimum": 1900, "maximum": 2030},
+        }
+    }
+
     def test_validity_surfaces_under_consistency_sr(self):
         result = compute_e2e_panel(
             pipe_fused=_pipe_fused_perfect(),
@@ -423,17 +430,18 @@ class TestPanelConsistency:
             sources_pipe=_make_sources(),
             silver=_silver_aligned_to_pipe_groups(),
             column_types=COLUMN_TYPES,
+            target_schema=self._YEAR_SCHEMA,
             pipe_source_id_column="id",
             pipe_id_column="cluster_id",
         )
         cons_sr = result.panel["consistency"]["SR"]
-        assert "validity_per_column" in cons_sr
-        assert "mean_validity_delta" in cons_sr
-        assert cons_sr["mean_validity_delta"] == pytest.approx(0.0)
+        assert "consistency_score_pipe" in cons_sr
+        assert "consistency_score_reference" in cons_sr
+        assert cons_sr["delta"] == pytest.approx(0.0)
         assert "_design_extensions_pending" in result.panel["consistency"]
 
     def test_constraint_violation_drops_validity_and_warns(self):
-        # Pipe emits a year outside the declared [1900, 2030] range
+        # Pipe emits a year outside the schema's [1900, 2030] range
         pipe = pd.DataFrame(
             [
                 {"cluster_id": "group_0", "title": "Album A", "year": 1990},
@@ -446,17 +454,17 @@ class TestPanelConsistency:
             sources_pipe=_make_sources(),
             silver=_silver_aligned_to_pipe_groups(),
             column_types=COLUMN_TYPES,
-            column_constraints={"year": {"range": [1900, 2030]}},
+            target_schema=self._YEAR_SCHEMA,
             pipe_source_id_column="id",
             pipe_id_column="cluster_id",
         )
-        year_validity = result.panel["consistency"]["SR"]["validity_per_column"]["year"]
-        assert year_validity["validity_rate_reference"] == pytest.approx(1.0)
-        assert year_validity["validity_rate_pipe"] == pytest.approx(0.5)
-        assert year_validity["delta"] < 0
+        cons_sr = result.panel["consistency"]["SR"]
+        assert cons_sr["consistency_score_reference"] == pytest.approx(1.0)
+        assert cons_sr["delta"] < 0
+        assert cons_sr["per_column"]["year"]["delta"] < 0
         assert any(
-            "Constraint-validity dropped" in w for w in result.warnings
-        ), f"expected constraint-validity warning, got: {result.warnings}"
+            "Schema consistency dropped" in w for w in result.warnings
+        ), f"expected schema-consistency warning, got: {result.warnings}"
 
 
 class TestPanelSemanticValueMatching:
@@ -765,8 +773,9 @@ class TestPanelRFOnlyMode:
             "No reference supplied" in w for w in result.warnings
         ), f"expected RF-only warning, got: {result.warnings}"
 
-    def test_rf_consistency_pipe_only_validity(self):
-        # Pipe with one invalid year (9999) under a [1900, 2030] constraint
+    def test_rf_consistency_requires_target_schema(self):
+        # The type-only validity_per_column fallback was removed: without a
+        # target_schema there is no reference-free consistency score.
         pipe = pd.DataFrame(
             [
                 {"cluster_id": "g0", "title": "A", "year": 1990},
@@ -777,11 +786,9 @@ class TestPanelRFOnlyMode:
             pipe_fused=pipe,
             sources_pipe=_make_sources(),
             column_types=COLUMN_TYPES,
-            column_constraints={"year": {"range": [1900, 2030]}},
         )
-        validity = result.panel["consistency"]["RF"]["validity_per_column"]
-        assert validity["year"]["validity_rate_pipe"] == pytest.approx(0.5)
-        assert validity["year"]["constraint_failures_pipe"] == 1
+        assert result.panel["consistency"]["RF"] == {}
+        assert "validity_per_column" not in result.panel["consistency"]["RF"]
 
 
 class TestPanelReferenceFree:

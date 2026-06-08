@@ -87,11 +87,17 @@ sm_mapping:
 
 rename_table:
   dblp:
+    # ``doi`` is the fusion-gold join key, NOT a schema-matching target
+    # (it is excluded from SM / EM the same way it is from the value
+    # knobs). Its HEADER must stay ``doi`` at every rung, otherwise the
+    # fusion doi-join cannot find it on the renamed variant sources and
+    # fusion silently scores 0 (this is exactly what broke hard:
+    # overall_accuracy=0.0 while baseline/easy/medium kept doi as "doi").
     doi:
       descriptive: doi
-      abbreviated: doi_id
-      cryptic: dx
-      anonymized: Attribute_2
+      abbreviated: doi
+      cryptic: doi
+      anonymized: doi
     type:
       descriptive: type
       abbreviated: typ
@@ -159,11 +165,12 @@ rename_table:
       anonymized: Attribute_15
 
   crossref:
+    # doi header pinned to "doi" at every rung — fusion join key, see dblp note.
     doi:
       descriptive: doi
-      abbreviated: DOI
-      cryptic: di
-      anonymized: Attribute_2
+      abbreviated: doi
+      cryptic: doi
+      anonymized: doi
     type:
       descriptive: type
       abbreviated: typ
@@ -231,11 +238,12 @@ rename_table:
       anonymized: Attribute_15
 
   open_alex:
+    # doi header pinned to "doi" at every rung — fusion join key, see dblp note.
     doi:
       descriptive: doi
-      abbreviated: doi_url
-      cryptic: do
-      anonymized: Attribute_2
+      abbreviated: doi
+      cryptic: doi
+      anonymized: doi
     type:
       descriptive: type
       abbreviated: work_type

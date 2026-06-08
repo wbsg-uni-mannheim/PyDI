@@ -1,0 +1,405 @@
+{
+  "usecase": "music",
+  "run_id": "",
+  "silver_source": "human_baseline_notebook",
+  "headline": {
+    "RF": {
+      "composite_score": 0.7714576428037482
+    },
+    "SR": {
+      "bcubed_f1": 0.8192921122227692,
+      "macro_accuracy": 0.7093784597599271,
+      "composite_score": 0.6275141607072665
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 31217,
+        "n_rows_largest_input": 22627,
+        "row_gain_vs_largest_input": 0.3796349493967384
+      },
+      "SR": {
+        "n_reference": 3624,
+        "row_count_abs_diff": 27593,
+        "row_count_rel_diff": 7.613962472406181,
+        "n_recovered": 2738,
+        "n_partial": 886,
+        "n_lost": 0,
+        "n_fabricated": 27593,
+        "recovery_rate": 0.7555187637969095
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.807120319056924,
+        "density_largest_input": 0.5698059840014142,
+        "density_gain": 0.2373143350555098
+      },
+      "SR": {
+        "per_column_drift_normalized": {
+          "artist": 0.36577066821118054,
+          "duration": 0.007088906685586571,
+          "genre": 0.05628457080681647,
+          "label": 0.5191312109146727,
+          "name": 0.17939481077376077,
+          "release-country": 0.5951869954468247
+        },
+        "overall_drift": 0.2871428604731403,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "artist": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "release-date": {
+            "reference_density": 0.9555739514348786,
+            "pipe_density": 0.7052247173014703,
+            "delta": -0.25034923413340826
+          },
+          "release-country": {
+            "reference_density": 0.9183222958057395,
+            "pipe_density": 0.7493993657302112,
+            "delta": -0.1689229300755284
+          },
+          "label": {
+            "reference_density": 0.7157836644591611,
+            "pipe_density": 0.7248294198673799,
+            "delta": 0.009045755408218836
+          },
+          "genre": {
+            "reference_density": 0.7157836644591611,
+            "pipe_density": 0.7248294198673799,
+            "delta": 0.009045755408218836
+          },
+          "tracks": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "duration": {
+            "reference_density": 1.0,
+            "pipe_density": 0.5526796296889516,
+            "delta": -0.44732037031104843
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {},
+      "SR": {
+        "same_source_collision_rate": {
+          "reference": 0.19619205298013245,
+          "pipe": 0.0,
+          "delta": -0.19619205298013245,
+          "by_source": {
+            "discogs": {
+              "reference": 0.15176600441501104,
+              "pipe": 0.0,
+              "delta": -0.15176600441501104
+            },
+            "lastfm": {
+              "reference": 0.07560706401766004,
+              "pipe": 0.0,
+              "delta": -0.07560706401766004
+            },
+            "musicbrainz": {
+              "reference": 0.07781456953642384,
+              "pipe": 0.0,
+              "delta": -0.07781456953642384
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.6888737179605939,
+        "per_source_coverage_rate": {
+          "discogs": {
+            "reference": 0.7157836644591612,
+            "pipe": 0.7248294198673799,
+            "delta": 0.009045755408218725
+          },
+          "lastfm": {
+            "reference": 0.6771523178807947,
+            "pipe": 0.31601371047826504,
+            "delta": -0.3611386074025296
+          },
+          "musicbrainz": {
+            "reference": 1.0,
+            "pipe": 0.15257712144024088,
+            "delta": -0.8474228785597591
+          }
+        },
+        "source_mix_distribution_reference": {
+          "discogs|musicbrainz": 0.3228476821192053,
+          "discogs|lastfm|musicbrainz": 0.39293598233995586,
+          "lastfm|musicbrainz": 0.28421633554083886
+        },
+        "source_mix_distribution_pipe": {
+          "discogs|lastfm|musicbrainz": 0.04936412851971682,
+          "discogs": 0.6328282666495819,
+          "discogs|musicbrainz": 0.04263702469808117,
+          "lastfm": 0.21459461191017715,
+          "lastfm|musicbrainz": 0.05205497004837108,
+          "musicbrainz": 0.00852099817407182
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "artist": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 31217
+        },
+        "duration": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 17253
+        },
+        "genre": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 22627
+        },
+        "label": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 22627
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 31217
+        },
+        "release-country": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 23394
+        },
+        "release-date": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 22015
+        },
+        "tracks": {
+          "validity_rate_pipe": 0.0,
+          "parse_failures_pipe": 31217,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 31217
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "SR": {
+      "validity_per_column": {
+        "artist": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 31217,
+          "n_evaluated_reference": 3624
+        },
+        "duration": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 17253,
+          "n_evaluated_reference": 3624
+        },
+        "genre": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 22627,
+          "n_evaluated_reference": 2594
+        },
+        "label": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 22627,
+          "n_evaluated_reference": 2594
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 31217,
+          "n_evaluated_reference": 3624
+        },
+        "release-country": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 23394,
+          "n_evaluated_reference": 3328
+        },
+        "release-date": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 22015,
+          "n_evaluated_reference": 3463
+        },
+        "tracks": {
+          "validity_rate_pipe": 0.0,
+          "validity_rate_reference": 0.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 31217,
+          "parse_failures_reference": 3624,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 31217,
+          "n_evaluated_reference": 3624
+        }
+      },
+      "mean_validity_delta": 0.0
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "SR": {
+        "bcubed": {
+          "precision": 0.999077038447117,
+          "recall": 0.6943441739853944,
+          "f1": 0.8192921122227692
+        },
+        "alignment": {
+          "mean_jaccard": 0.8864599166202297,
+          "matched_cluster_rate_at_threshold": 0.9368101545253863,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.7557947019867549,
+          "mean_size_delta": -0.8769315673289183,
+          "max_size_overshoot": -115
+        }
+      }
+    },
+    "fact": {
+      "SR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.5816777041942605,
+            "count": 3624,
+            "similarity_mean": 0.9038565710855699,
+            "accuracy_similarity_gap": 0.3221788668913095,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "artist": {
+            "accuracy": 0.7353752759381899,
+            "count": 3624,
+            "similarity_mean": 0.8386504733052584,
+            "accuracy_similarity_gap": 0.10327519736706858,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "release-date": {
+            "accuracy": 0.8674559630378285,
+            "count": 3463,
+            "similarity_mean": 0.9440947155645393,
+            "pct_within_tolerance": 0.0
+          },
+          "release-country": {
+            "accuracy": 0.37710336538461536,
+            "count": 3328,
+            "similarity_mean": 0.6333618588276041,
+            "pct_within_tolerance": 0.0
+          },
+          "label": {
+            "accuracy": 0.8831919814957594,
+            "count": 2594,
+            "similarity_mean": 0.9011331808575358,
+            "pct_within_tolerance": 0.0
+          },
+          "genre": {
+            "accuracy": 0.9286815728604472,
+            "count": 2594,
+            "similarity_mean": 0.938469873274646,
+            "pct_within_tolerance": 0.0
+          },
+          "duration": {
+            "accuracy": 0.5921633554083885,
+            "count": 3624,
+            "similarity_mean": 0.5921633554083885,
+            "mae": 364.2548090326178,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.8250551876379691
+          }
+        },
+        "macro_accuracy": 0.7093784597599271,
+        "micro_accuracy": 0.6948492407334471,
+        "conflict_only_accuracy": 0.22924901185770752,
+        "conflict_only_micro_accuracy": 0.22924901185770752,
+        "conflict_only_per_attribute": {
+          "duration": {
+            "accuracy": 0.22924901185770752,
+            "count": 253
+          }
+        },
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.06981236203090507,
+        "conflict_rate_delta": -0.06981236203090507,
+        "fully_correct_cluster_rate": 0.11892935982339956,
+        "list_attribute_set_metrics": {
+          "tracks": {
+            "set_f1": 0.7798013245033113,
+            "set_jaccard": 0.7798013245033113,
+            "count": 3624
+          }
+        }
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [
+    "Source-attribution and synthesis-rate metrics skipped against silver (silver.cell_provenance is None, cell_provenance_pipe was not passed).",
+    "Source coverage dropped by more than 15pp for 2 source(s); worst: musicbrainz delta=-0.847. Likely cause: blocking-recall or matcher-recall regression on cross-source pairs for that source.",
+    "Possible normalization differences (accuracy \u226a similarity_mean) on text attributes: ['artist', 'name']. Share the NormalizationSpec between silver builder and pipeline to rule out, or pass a semantic_value_similarity callable to confirm."
+  ]
+}

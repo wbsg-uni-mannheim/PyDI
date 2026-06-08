@@ -432,6 +432,42 @@ def _trivial_short_circuit(
     )
 
 
+# All four global-batch truth-discovery makers (fusionquery/truthfinder/ltm/
+# casefusion) pool every claim for an attribute into one ``ans_set`` of length V
+# and then iterate an EM/Gibbs fit over it. Neither scales to a high-cardinality
+# corpus:
+#   * FusionQuery's EMFusioner builds a dense (source_num, V, V) float64 array
+#     (fusion.py:74/110) -> papers 'title' V~159k => 3*159k^2*8B ~= 564 GiB,
+#     which OOM-kills the job (on large-RAM nodes the cgroup SIGKILLs mid-
+#     allocation, uncatchable -- so we must refuse BEFORE allocating).
+#   * TruthFinder/LTM/CASEFusion are only O(source*V) in memory but peg a single
+#     core for many hours at that V (observed: a papers run stuck 10.7h, ~100%
+#     CPU, in the per-attribute-optimal sweep).
+# So above a scale cutoff we refuse the fit; the C12 runner's per-member
+# try/except then skips the candidate and the per-attribute-optimal sweep falls
+# back to the conventional resolvers (voting/longest_string/prefer_higher_trust/
+# median/...) + the bounded accusim. Calibration: the largest V across the
+# committed 4-domain runs is ~23k (FusionQuery matrix ~13 GiB, fits, fast); the
+# cutoff at 46k sits well above that and well below papers' ~159k, so this never
+# changes the committed domains -- only papers.
+_TD_MAX_CLAIMS = 46_000
+
+
+def _guard_td_scale(rule: str, n_claims: int) -> None:
+    """Refuse a global-batch truth-discovery fit that does not scale to
+    ``n_claims`` pooled claims. Raises ``ValueError`` so the C12 runner's
+    per-member ``try/except`` skips this candidate (falling back to the
+    conventional resolvers) instead of OOM-killing or hanging the pipeline."""
+    if n_claims > _TD_MAX_CLAIMS:
+        raise ValueError(
+            f"{rule}: refusing batch truth-discovery on {n_claims} pooled "
+            f"claims (> {_TD_MAX_CLAIMS} cutoff) -- does not scale (FusionQuery "
+            f"OOMs at ~{3 * n_claims * n_claims * 8 / 1024**3:.0f} GiB; "
+            f"TruthFinder/LTM/CASEFusion peg one core for hours); skipping this "
+            f"member so the sweep falls back to conventional resolvers."
+        )
+
+
 def make_truthfinder_resolver(
     datasets: Sequence[pd.DataFrame],
     correspondences: pd.DataFrame,
@@ -456,6 +492,8 @@ def make_truthfinder_resolver(
     cand_answer, source_names, flat_claims = _build_cand_answer(claims_by_source)
     if len(cand_answer) < 2:
         return _trivial_short_circuit(flat_claims, "truthfinder_batch")
+
+    _guard_td_scale("truthfinder_batch", len(flat_claims))
 
     np.random.seed(seed)
     finder = _TruthFinder(
@@ -513,6 +551,8 @@ def make_ltm_resolver(
     cand_answer, source_names, flat_claims = _build_cand_answer(claims_by_source)
     if len(cand_answer) < 2:
         return _trivial_short_circuit(flat_claims, "ltm_batch")
+
+    _guard_td_scale("ltm_batch", len(flat_claims))
 
     np.random.seed(seed)
     model = _LTMFusion(
@@ -602,6 +642,8 @@ def make_casefusion_resolver(
     if len(cand_answer) < 2:
         return _trivial_short_circuit(flat_claims, "casefusion_batch")
 
+    _guard_td_scale("casefusion_batch", len(flat_claims))
+
     np.random.seed(seed)
     _stdlib_random.seed(seed)
     model = _CASEFusion(
@@ -660,6 +702,9 @@ def make_fusionquery_resolver(
     cand_answer, source_names, flat_claims = _build_cand_answer(claims_by_source)
     if len(cand_answer) < 2:
         return _trivial_short_circuit(flat_claims, "fusionquery_batch")
+
+    # Refuse the (source_num, V, V) blowup before allocating (see _guard_td_scale).
+    _guard_td_scale("fusionquery_batch", len(flat_claims))
 
     np.random.seed(seed)
     _EMFusioner.his_data_size = None

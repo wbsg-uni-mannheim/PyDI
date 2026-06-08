@@ -179,3 +179,56 @@ def test_em_blocking_selection_fallback_uses_recall_when_no_per_pair() -> None:
     # 'token' has the higher recall; the fallback ranks by recall.
     assert sel.winner == "token"
     assert sel.val_score == 0.997
+
+
+# ---------------------------------------------------------------------------
+# EM test-gold surface selection (2026-06-05 directive): variants score on the
+# variant-aligned corner-filled test; base scores on the standard test split.
+# ---------------------------------------------------------------------------
+import pandas as pd  # noqa: E402
+
+from pipelines.lib.stage_runners import _em_test_gold_for  # noqa: E402
+
+
+@dataclass
+class _FakeBundle:
+    level: str
+    em_splits: dict
+    em_gold_regenerated: dict
+
+
+def _gold(tag: str) -> pd.DataFrame:
+    return pd.DataFrame({"id1": [f"{tag}_a"], "id2": [f"{tag}_b"], "label": ["true"]})
+
+
+def test_base_uses_standard_test_split() -> None:
+    pair = ("p1", "p2")
+    b = _FakeBundle(
+        level="baseline",
+        em_splits={pair: {"test": _gold("std")}},
+        em_gold_regenerated={},
+    )
+    out = _em_test_gold_for(b, pair)
+    assert out is not None and out.iloc[0]["id1"] == "std_a"
+
+
+def test_variant_uses_corner_filled_test() -> None:
+    pair = ("p1", "p2")
+    b = _FakeBundle(
+        level="hard",
+        em_splits={pair: {"test": _gold("std")}},
+        em_gold_regenerated={pair: {"test": {"corner_filled": _gold("corner")}}},
+    )
+    out = _em_test_gold_for(b, pair)
+    assert out is not None and out.iloc[0]["id1"] == "corner_a"
+
+
+def test_variant_falls_back_to_standard_when_no_corner_filled() -> None:
+    pair = ("p1", "p2")
+    b = _FakeBundle(
+        level="easy",
+        em_splits={pair: {"test": _gold("std")}},
+        em_gold_regenerated={pair: {"test": {}}},  # no corner_filled
+    )
+    out = _em_test_gold_for(b, pair)
+    assert out is not None and out.iloc[0]["id1"] == "std_a"

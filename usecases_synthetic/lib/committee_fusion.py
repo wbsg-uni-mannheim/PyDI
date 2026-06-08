@@ -620,6 +620,32 @@ class FusionCommitteeRunner(CommitteeRunner):
                 if col in gold_df.columns:
                     gold_df[col] = gold_df[col].map(_safe_literal)
 
+        # DOI-keyed fusion gold (papers): the gold is keyed by ``doi`` rather
+        # than a source-record ``id``. The best-of-breed pipeline clusters from
+        # the EM winner's correspondences, so its fused records are keyed by
+        # source ids (primary id + ``_fusion_sources``, both source-id space) —
+        # none of which equal a ``doi``, so DataFusionEvaluator finds zero
+        # matches and fusion silently scores ~0. (The validation path sidesteps
+        # this by keying its gold-derived perfect clusters BY doi; BoB has no
+        # such gold-derived clusters.) Attach a ``source_ids`` column mapping
+        # each gold doi -> its source-record ids so the evaluator's existing
+        # ``source_ids`` fallback aligns the EM-clustered fused output to the
+        # doi gold. Reuses the validation fix's doi->record map for identical
+        # normalisation.
+        if (
+            self._roster.gold_id_column == "doi"
+            and "doi" in gold_df.columns
+            and "source_ids" not in gold_df.columns
+        ):
+            from .fusion_perfect_clusters import _doi_to_record_ids, _normalize_doi
+
+            doi_to_records = _doi_to_record_ids(bundle)
+            gold_df = gold_df.copy()
+            gold_df["source_ids"] = [
+                ",".join(doi_to_records.get(_normalize_doi(d) or "", []))
+                for d in gold_df["doi"]
+            ]
+
         if correspondences is None:
             correspondences = _build_correspondences_from_bundle(bundle)
 

@@ -197,37 +197,21 @@ def _consistency_subscore(
     if block is None:
         return None
     if level == "RF":
-        # Schema-aware engine: a single cell-weighted consistency_score
-        # in [0, 1] (None when nothing was evaluable). Present only when
-        # the panel was given a target_schema.
+        # Schema-aware consistency only: a single cell-weighted
+        # consistency_score in [0, 1] (None when nothing was evaluable).
+        # The type-only validity_per_column fallback has been removed; a
+        # missing score is treated as non-penalising (1.0).
         if "consistency_score" in block:
             score = block.get("consistency_score")
             return 1.0 if score is None else _clip01(score)
-        # Schema-agnostic fallback — pipe-only per-column validity rate.
-        validity = block.get("validity_per_column") or {}
-        if not validity:
-            return 1.0
-        rates = [
-            _clip01(v.get("validity_rate_pipe"))
-            for v in validity.values()
-            if v.get("n_evaluated_pipe", 0) > 0
-        ]
-        if not rates:
-            return 1.0
-        return _clip01(float(np.mean(rates)))
-    # SR / GR: only negative deltas penalise — pipeline more strict than
-    # reference isn't punished.
-    validity = block.get("validity_per_column") or {}
-    if not validity:
         return 1.0
-    penalties = [
-        max(0.0, -v.get("delta", 0.0))
-        for v in validity.values()
-        if v.get("n_evaluated_pipe", 0) > 0
-    ]
-    if not penalties:
+    # SR / GR: schema-aware consistency delta (pipe vs reference). Only a
+    # pipeline LESS consistent than the reference is penalised; being more
+    # consistent than the reference is not punished.
+    delta = block.get("delta")
+    if delta is None:
         return 1.0
-    return _clip01(1.0 - float(np.mean(penalties)))
+    return _clip01(1.0 + min(0.0, float(delta)))
 
 
 def _cluster_correctness_subscore(
@@ -294,9 +278,9 @@ _SUBSCORE_RECIPES: Dict[str, Dict[str, str]] = {
             "without a reference."
         ),
         "consistency": (
-            "mean over columns with n_evaluated_pipe > 0 of "
-            "consistency.RF.validity_per_column[col].validity_rate_pipe. "
-            "Returns 1.0 when no column was evaluable."
+            "consistency.RF.consistency_score — cell-weighted fraction of "
+            "filled cells passing the target schema's native + x-pydi "
+            "constraints. Returns 1.0 when no schema-aware score is available."
         ),
     },
     "SR": {
@@ -311,7 +295,7 @@ _SUBSCORE_RECIPES: Dict[str, Dict[str, str]] = {
             "1 - coverage.source_based.SR.source_mix_distribution_js, "
             "1 - mean(coverage.source_based.SR.source_attribution_js_per_attribute))"
         ),
-        "consistency": ("1 - mean(max(0, -consistency.SR.validity_per_column.delta))"),
+        "consistency": ("1 + min(0, consistency.SR.delta) (schema-aware pipe vs silver)"),
         "cluster_correctness": (
             "mean(correctness.cluster.SR.bcubed.f1, "
             "correctness.cluster.SR.alignment.mean_jaccard)"
@@ -334,7 +318,7 @@ _SUBSCORE_RECIPES: Dict[str, Dict[str, str]] = {
             "1 - coverage.source_based.GR.source_mix_distribution_js, "
             "1 - mean(coverage.source_based.GR.source_attribution_js_per_attribute))"
         ),
-        "consistency": ("1 - mean(max(0, -consistency.GR.validity_per_column.delta))"),
+        "consistency": ("1 + min(0, consistency.GR.delta) (schema-aware pipe vs gold)"),
         "cluster_correctness": (
             "mean(correctness.cluster.GR.bcubed.f1, "
             "correctness.cluster.GR.alignment.mean_jaccard)"

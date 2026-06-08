@@ -1,0 +1,69 @@
+{
+  "columns_shared": [
+    "_fusion_confidence",
+    "_fusion_metadata",
+    "_fusion_source_datasets",
+    "_fusion_sources",
+    "_id",
+    "assets",
+    "city",
+    "country",
+    "founded",
+    "id",
+    "industry",
+    "name",
+    "revenue"
+  ],
+  "columns_silver_only": [
+    "Attribute_5",
+    "cluster_id",
+    "forbes_id",
+    "keypeople_name",
+    "match_city",
+    "match_country",
+    "url"
+  ],
+  "columns_pipe_only": [
+    "keypeople",
+    "sector",
+    "website"
+  ],
+  "dtype_mismatches": [
+    {
+      "column": "assets",
+      "pipe_dtype": "float64",
+      "silver_dtype": "int64"
+    },
+    {
+      "column": "revenue",
+      "pipe_dtype": "float64",
+      "silver_dtype": "int64"
+    }
+  ],
+  "column_types_used": {
+    "id": "identifier",
+    "cluster_id": "identifier",
+    "name": "text",
+    "founded": "temporal",
+    "country": "categorical",
+    "city": "categorical",
+    "industry": "categorical",
+    "assets": "numerical",
+    "revenue": "numerical",
+    "keypeople": "list"
+  },
+  "skipped_columns_for_per_column_metrics": [
+    "Attribute_5",
+    "assets",
+    "cluster_id",
+    "forbes_id",
+    "keypeople",
+    "keypeople_name",
+    "match_city",
+    "match_country",
+    "revenue",
+    "sector",
+    "url",
+    "website"
+  ]
+}

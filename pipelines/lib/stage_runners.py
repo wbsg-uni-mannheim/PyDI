@@ -857,6 +857,32 @@ def run_fusion(
     val_gold_df = state.bundle.fusion_validation
     val_available = val_gold_df is not None and not val_gold_df.empty
 
+    # DOI-keyed gold (papers): the val gold is keyed by ``doi`` while the fused
+    # output is keyed by source ids, so DataFusionEvaluator can only align it
+    # through its ``source_ids`` fallback. Attach a ``source_ids`` column (gold
+    # doi -> comma-joined source-record ids) so val scoring — and therefore the
+    # fusion winner selection that runs off it — isn't silently 0. Mirrors the
+    # test-gold augmentation in committee_fusion.run() and the C12 validation
+    # fix. No-op for id-keyed domains (gold_id_column != "doi"), so
+    # companies/games/music/products are unchanged.
+    if (
+        val_available
+        and gold_id_column == "doi"
+        and "doi" in val_gold_df.columns
+        and "source_ids" not in val_gold_df.columns
+    ):
+        from usecases_synthetic.lib.fusion_perfect_clusters import (
+            _doi_to_record_ids,
+            _normalize_doi,
+        )
+
+        doi_to_records = _doi_to_record_ids(state.bundle)
+        val_gold_df = val_gold_df.copy()
+        val_gold_df["source_ids"] = [
+            ",".join(doi_to_records.get(_normalize_doi(d) or "", []))
+            for d in val_gold_df["doi"]
+        ]
+
     per_member_val: dict[str, float] = {}
     per_member_test: dict[str, float] = {}
     per_member_predictions: dict[str, pd.DataFrame] = {}

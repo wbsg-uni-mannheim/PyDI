@@ -1,0 +1,359 @@
+{
+  "usecase": "companies",
+  "run_id": "",
+  "silver_source": "human_baseline_notebook",
+  "headline": {
+    "RF": {
+      "composite_score": 0.8567913363748185
+    },
+    "SR": {
+      "bcubed_f1": 0.7753026132905452,
+      "macro_accuracy": 0.554733173569782,
+      "composite_score": 0.5640872427748876
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 12019,
+        "n_rows_largest_input": 10085,
+        "row_gain_vs_largest_input": 0.19176995537927616
+      },
+      "SR": {
+        "n_reference": 1737,
+        "row_count_abs_diff": 10282,
+        "row_count_rel_diff": 5.919401266551525,
+        "n_recovered": 638,
+        "n_partial": 1099,
+        "n_lost": 0,
+        "n_fabricated": 10282,
+        "recovery_rate": 0.3672999424294761
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.7858058074715035,
+        "density_largest_input": 0.0,
+        "density_gain": 0.7858058074715035
+      },
+      "SR": {
+        "per_column_drift_normalized": {
+          "city": 0.38835618582063147,
+          "country": 0.13573097284914176,
+          "industry": 0.4079192172558383,
+          "name": 0.46786740455805365
+        },
+        "overall_drift": 0.3499684451209163,
+        "density_delta_per_attribute": {
+          "name": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "founded": {
+            "reference_density": 0.9205526770293609,
+            "pipe_density": 0.9050669772859639,
+            "delta": -0.015485699743397086
+          },
+          "country": {
+            "reference_density": 0.9976971790443293,
+            "pipe_density": 0.9930110658124636,
+            "delta": -0.004686113231865741
+          },
+          "city": {
+            "reference_density": 0.92573402417962,
+            "pipe_density": 0.8681254680089858,
+            "delta": -0.057608556170634206
+          },
+          "industry": {
+            "reference_density": 0.9913644214162349,
+            "pipe_density": 0.16282552625010405,
+            "delta": -0.8285388951661309
+          },
+          "assets": {
+            "reference_density": 1.0,
+            "pipe_density": 0.20742158249438392,
+            "delta": -0.7925784175056161
+          },
+          "revenue": {
+            "reference_density": 1.0,
+            "pipe_density": 0.31208919211248853,
+            "delta": -0.6879108078875115
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {},
+      "SR": {
+        "same_source_collision_rate": {
+          "reference": 0.0,
+          "pipe": 0.0,
+          "delta": 0.0,
+          "by_source": {
+            "dbpedia": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "forbes": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "fullcontact": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            }
+          }
+        },
+        "source_mix_distribution_js": 0.7418388870114152,
+        "per_source_coverage_rate": {
+          "dbpedia": {
+            "reference": 0.8071387449625792,
+            "pipe": 0.8390881104917215,
+            "delta": 0.03194936552914229
+          },
+          "forbes": {
+            "reference": 1.0,
+            "pipe": 0.16640319494134287,
+            "delta": -0.8335968050586571
+          },
+          "fullcontact": {
+            "reference": 0.6275187104202649,
+            "pipe": 0.16066228471586655,
+            "delta": -0.46685642570439834
+          }
+        },
+        "source_mix_distribution_reference": {
+          "dbpedia|forbes|fullcontact": 0.434657455382844,
+          "forbes|fullcontact": 0.19286125503742085,
+          "dbpedia|forbes": 0.3724812895797352
+        },
+        "source_mix_distribution_pipe": {
+          "dbpedia|forbes|fullcontact": 0.040935185955570344,
+          "forbes|fullcontact": 0.06739329395124387,
+          "fullcontact": 0.05233380480905234,
+          "dbpedia": 0.7812630002496048,
+          "dbpedia|forbes": 0.0168899242865463,
+          "forbes": 0.04118479074798236
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "validity_per_column": {
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 10434
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 11935
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 10878
+        },
+        "industry": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 1957
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "parse_failures_pipe": 0,
+          "constraint_failures_pipe": 0,
+          "n_evaluated_pipe": 12019
+        }
+      }
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. validity_per_column is the first first-class consistency signal.",
+    "SR": {
+      "validity_per_column": {
+        "assets": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 2493,
+          "n_evaluated_reference": 1737
+        },
+        "city": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 10434,
+          "n_evaluated_reference": 1608
+        },
+        "country": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 11935,
+          "n_evaluated_reference": 1733
+        },
+        "founded": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 10878,
+          "n_evaluated_reference": 1599
+        },
+        "industry": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 1957,
+          "n_evaluated_reference": 1722
+        },
+        "name": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 12019,
+          "n_evaluated_reference": 1737
+        },
+        "revenue": {
+          "validity_rate_pipe": 1.0,
+          "validity_rate_reference": 1.0,
+          "delta": 0.0,
+          "parse_failures_pipe": 0,
+          "parse_failures_reference": 0,
+          "constraint_failures_pipe": 0,
+          "constraint_failures_reference": 0,
+          "n_evaluated_pipe": 3751,
+          "n_evaluated_reference": 1737
+        }
+      },
+      "mean_validity_delta": 0.0
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "SR": {
+        "bcubed": {
+          "precision": 0.9474264995664855,
+          "recall": 0.6561046740758257,
+          "f1": 0.7753026132905452
+        },
+        "alignment": {
+          "mean_jaccard": 0.6834100940318556,
+          "matched_cluster_rate_at_threshold": 0.8290155440414507,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.3857225100748417,
+          "mean_size_delta": -0.7461139896373057,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "SR": {
+        "per_attribute": {
+          "name": {
+            "accuracy": 0.563615428900403,
+            "count": 1737,
+            "similarity_mean": 0.7671493693026189,
+            "accuracy_similarity_gap": 0.20353394040221595,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "founded": {
+            "accuracy": 0.6941838649155723,
+            "count": 1599,
+            "similarity_mean": 0.841213258286429,
+            "pct_within_tolerance": 0.0
+          },
+          "country": {
+            "accuracy": 0.5804962492787075,
+            "count": 1733,
+            "similarity_mean": 0.7280335068651224,
+            "pct_within_tolerance": 0.0
+          },
+          "city": {
+            "accuracy": 0.8059701492537313,
+            "count": 1608,
+            "similarity_mean": 0.8247231670680709,
+            "pct_within_tolerance": 0.0
+          },
+          "industry": {
+            "accuracy": 0.2607433217189315,
+            "count": 1722,
+            "similarity_mean": 0.3589414047260434,
+            "pct_within_tolerance": 0.0
+          },
+          "assets": {
+            "accuracy": 0.510650546919977,
+            "count": 1737,
+            "similarity_mean": 0.510650546919977,
+            "mae": 59193608217.81863,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.5377086931491076
+          },
+          "revenue": {
+            "accuracy": 0.4674726540011514,
+            "count": 1737,
+            "similarity_mean": 0.4674726540011514,
+            "mae": 19818585426.518963,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.5164075993091537
+          }
+        },
+        "macro_accuracy": 0.554733173569782,
+        "micro_accuracy": 0.5507453886970437,
+        "conflict_only_accuracy": 0.0,
+        "conflict_only_micro_accuracy": 0.0,
+        "conflict_only_per_attribute": {},
+        "conflict_rate_pipe": 0.0,
+        "conflict_rate_reference": 0.0,
+        "conflict_rate_delta": 0.0,
+        "fully_correct_cluster_rate": 0.11398963730569948,
+        "list_attribute_set_metrics": {}
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [
+    "Source-attribution and synthesis-rate metrics skipped against silver (silver.cell_provenance is None, cell_provenance_pipe was not passed).",
+    "Source coverage dropped by more than 15pp for 2 source(s); worst: forbes delta=-0.834. Likely cause: blocking-recall or matcher-recall regression on cross-source pairs for that source.",
+    "Possible normalization differences (accuracy \u226a similarity_mean) on text attributes: ['name']. Share the NormalizationSpec between silver builder and pipeline to rule out, or pass a semantic_value_similarity callable to confirm."
+  ]
+}

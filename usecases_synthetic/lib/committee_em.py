@@ -53,7 +53,11 @@ from PyDI.entitymatching.post_clustering.maximum_bipartite_matching import (
 )
 
 from .column_mapping import apply_column_mapping
-from .loaders import em_gold_candidates, read_em_gold_pair
+from .loaders import (
+    _source_filename_tokens,
+    em_gold_candidates,
+    read_em_gold_pair,
+)
 from .committee import CommitteeResult, CommitteeRunner, MemberResult
 from .committee_em_scoring import (
     blocking_pair_recall,
@@ -392,13 +396,31 @@ def _resolve_pair_train_path(
     """
     em_dir = bundle.variant_root / "input" / "entitymatching"
     src1, src2 = pair
-    candidates = [
-        em_dir / f"{src1}_2_{src2}_train.csv",
-        em_dir / f"{src2}_2_{src1}_train.csv",
-    ]
-    for path in candidates:
-        if path.exists():
-            return path
+    # Non-versioned canonical names FIRST so every domain that ships
+    # ``<src1>_2_<src2>_train.csv`` resolves exactly as before. The 2026
+    # papers domain ships NO non-versioned train file under that name; it
+    # uses condensed, ``_2_``-less naming (``dblp_crossref_train.csv``) and
+    # for variants only the K2 split versions exist, so fall back to
+    # ``_train_corner_filled`` (matched-distribution training set) then
+    # ``_train_baseline_pruned``. Each name is also tried under the
+    # condensed papers source tokens (``open_alex`` -> ``openalex``) via
+    # ``_source_filename_tokens``, which is a no-op for every other domain.
+    suffixes = ("train", "train_corner_filled", "train_baseline_pruned")
+    seen: set[Path] = set()
+    for suffix in suffixes:
+        for t1 in _source_filename_tokens(src1):
+            for t2 in _source_filename_tokens(src2):
+                for cand in (
+                    em_dir / f"{t1}_2_{t2}_{suffix}.csv",
+                    em_dir / f"{t2}_2_{t1}_{suffix}.csv",
+                    em_dir / f"{t1}_{t2}_{suffix}.csv",
+                    em_dir / f"{t2}_{t1}_{suffix}.csv",
+                ):
+                    if cand in seen:
+                        continue
+                    seen.add(cand)
+                    if cand.exists():
+                        return cand
     return None
 
 
@@ -1099,13 +1121,14 @@ class EMCommitteeRunner(CommitteeRunner):
                 matcher_pair_metrics[m_name][pair_key].get("f1", 0.0)
                 for m_name in matcher_pair_metrics
                 if pair_key in matcher_pair_metrics[m_name]
+                and not _is_nan(matcher_pair_metrics[m_name][pair_key].get("f1"))
             ]
             n = len(f1s)
             per_partition[pair_key].update(
                 {
-                    "macro_f1": sum(f1s) / n if n else 0.0,
-                    "min_f1": min(f1s) if n else 0.0,
-                    "max_f1": max(f1s) if n else 0.0,
+                    "macro_f1": sum(f1s) / n if n else float("nan"),
+                    "min_f1": min(f1s) if n else float("nan"),
+                    "max_f1": max(f1s) if n else float("nan"),
                     "n_members": float(n),
                 }
             )
@@ -1747,13 +1770,6 @@ def _compute_aggregated(
             "macro_pool_recall": 0.0,
         }
 
-    f1s = [m.metrics.get("f1", 0.0) for m in per_member.values()]
-    precisions = [m.metrics.get("precision", 0.0) for m in per_member.values()]
-    recalls = [m.metrics.get("recall", 0.0) for m in per_member.values()]
-    pool_precs = [m.metrics.get("pool_precision", 0.0) for m in per_member.values()]
-    pool_recs = [m.metrics.get("pool_recall", 0.0) for m in per_member.values()]
-    n = len(f1s)
-
     def _macro(key: str) -> float:
         values = [
             float(m.metrics.get(key, 0.0))
@@ -1762,14 +1778,23 @@ def _compute_aggregated(
         ]
         return sum(values) / len(values) if values else float("nan")
 
+    # NaN-skip the headline macros + min/max so a single skipped member
+    # (e.g. magellan with no per-pair train CSV) cannot poison the whole
+    # committee aggregate to NaN. Mirrors the per-key ``_macro`` helper.
+    f1s = [
+        float(m.metrics.get("f1", 0.0))
+        for m in per_member.values()
+        if not _is_nan(m.metrics.get("f1"))
+    ]
+
     return {
-        "macro_f1": sum(f1s) / n,
-        "min_f1": min(f1s),
-        "max_f1": max(f1s),
-        "macro_precision": sum(precisions) / n,
-        "macro_recall": sum(recalls) / n,
-        "macro_pool_precision": sum(pool_precs) / n,
-        "macro_pool_recall": sum(pool_recs) / n,
+        "macro_f1": _macro("f1"),
+        "min_f1": min(f1s) if f1s else float("nan"),
+        "max_f1": max(f1s) if f1s else float("nan"),
+        "macro_precision": _macro("precision"),
+        "macro_recall": _macro("recall"),
+        "macro_pool_precision": _macro("pool_precision"),
+        "macro_pool_recall": _macro("pool_recall"),
         "macro_f1_baseline_test": _macro("f1_baseline_test"),
         "macro_f1_regen_test": _macro("f1_regen_test"),
         "macro_f1_vs_pool": _macro("f1_vs_pool"),
@@ -2807,12 +2832,13 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
             f1s = [
                 matcher_pair_metrics[m.name][pair_key].get("f1", 0.0)
                 for m in self._matching_specs
+                if not _is_nan(matcher_pair_metrics[m.name][pair_key].get("f1"))
             ]
             n = len(f1s)
             per_partition[pair_key] = {
-                "macro_f1": sum(f1s) / n if n else 0.0,
-                "min_f1": min(f1s) if n else 0.0,
-                "max_f1": max(f1s) if n else 0.0,
+                "macro_f1": sum(f1s) / n if n else float("nan"),
+                "min_f1": min(f1s) if n else float("nan"),
+                "max_f1": max(f1s) if n else float("nan"),
                 "n_members": float(n),
             }
 
@@ -2879,9 +2905,6 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
                 },
             )
 
-        f1s = [m.metrics.get("f1", 0.0) for m in per_member.values()]
-        n = len(per_member) or 1
-
         def _macro(key: str) -> float:
             values = [
                 float(m.metrics.get(key, 0.0))
@@ -2890,13 +2913,27 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
             ]
             return sum(values) / len(values) if values else float("nan")
 
+        # NaN-skip the headline f1 macros + min/max + best-member selection so
+        # a single skipped member (e.g. magellan with no per-pair train CSV)
+        # never poisons the committee aggregate or hides the real best member.
+        f1s = [
+            float(m.metrics.get("f1", 0.0))
+            for m in per_member.values()
+            if not _is_nan(m.metrics.get("f1"))
+        ]
+
         best_name = max(
-            per_member.values(), key=lambda m: m.metrics.get("f1", 0.0)
+            per_member.values(),
+            key=lambda m: (
+                m.metrics.get("f1", 0.0)
+                if not _is_nan(m.metrics.get("f1"))
+                else float("-inf")
+            ),
         ).name
         aggregated = {
-            "macro_f1": sum(f1s) / n if f1s else 0.0,
-            "min_f1": min(f1s) if f1s else 0.0,
-            "max_f1": max(f1s) if f1s else 0.0,
+            "macro_f1": _macro("f1"),
+            "min_f1": min(f1s) if f1s else float("nan"),
+            "max_f1": max(f1s) if f1s else float("nan"),
             "macro_precision": _macro("precision"),
             "macro_recall": _macro("recall"),
             # R7b dual-model dual-test aggregates. The load-bearing

@@ -60,6 +60,8 @@ column_types:
   assets: numerical
   revenue: numerical
   keypeople: list  # array of names; handled at cluster level (skip distributional)
+  sector: categorical
+  website: identifier  # Forbes source URL, not a real website — declared so it is not silently undeclared, but excluded from value scoring like products' url
 
 # Panel numerical tolerance. Companies notebook uses
 # numeric_tolerance_match(tolerance=0.1) for revenue and assets.

@@ -833,8 +833,21 @@ def _run_val_selection(
 def _apply_gold_aliases_and_lists(
     roster: _C12FusionRoster,
     gold_df: pd.DataFrame,
+    bundle: VariantBundle | None = None,
 ) -> pd.DataFrame:
-    """Apply gold_column_aliases + gold_list_columns to a gold DataFrame."""
+    """Apply gold_column_aliases + gold_list_columns to a gold DataFrame.
+
+    When the gold is DOI-keyed (papers: ``gold_id_column == 'doi'``) and a
+    ``bundle`` is supplied, also attach a ``source_ids`` column mapping each
+    gold doi -> its comma-joined source-record ids. The C12 fused output is
+    keyed by source ids (the engine fuses ``id`` to one source id and records
+    ``_fusion_sources``), never by a doi, so ``DataFusionEvaluator`` can only
+    align the doi gold through its ``source_ids`` fallback
+    (``PyDI/fusion/evaluation.py`` ~line 529/543-546, which splits on ',').
+    Without it papers fusion silently scores 0 (no fused row aligns to gold).
+    The block is a no-op for id-keyed domains (``gold_id_column != 'doi'``),
+    so companies/games/music/products are unchanged.
+    """
     out = gold_df
     if roster.gold_column_aliases:
         out = out.rename(
@@ -842,6 +855,20 @@ def _apply_gold_aliases_and_lists(
                 k: v for k, v in roster.gold_column_aliases.items() if k in out.columns
             }
         )
+    if (
+        bundle is not None
+        and roster.gold_id_column == "doi"
+        and "doi" in out.columns
+        and "source_ids" not in out.columns
+    ):
+        from .fusion_perfect_clusters import _doi_to_record_ids, _normalize_doi
+
+        doi_to_records = _doi_to_record_ids(bundle)
+        out = out.copy()
+        out["source_ids"] = [
+            ",".join(doi_to_records.get(_normalize_doi(d) or "", []))
+            for d in out["doi"]
+        ]
     if roster.gold_list_columns:
         import ast as _ast
 
@@ -966,7 +993,7 @@ class C12FusionCommitteeRunner(CommitteeRunner):
                 f"No fusion gold for {bundle.domain}/{bundle.level}. "
                 "Ensure test_set.xml exists in the fusion directory."
             )
-        gold_df = _apply_gold_aliases_and_lists(self._roster, gold_df)
+        gold_df = _apply_gold_aliases_and_lists(self._roster, gold_df, bundle)
 
         if correspondences is None:
             correspondences = _build_correspondences_from_bundle(bundle)
@@ -980,6 +1007,41 @@ class C12FusionCommitteeRunner(CommitteeRunner):
             self._roster.trust_scores,
             column_mapping=effective_column_mapping,
         )
+
+        # Memory (papers): the variant sources (load_variant) ship raw bloat
+        # columns the fusion never uses — notably crossref ``abstract_text``
+        # (full abstracts). DataFusionEngine rebuilds ~182k record groups
+        # holding full record copies once PER member (~50 members), so carrying
+        # the bloat grows host RSS past 512G and OOM-kills the job. The baseline
+        # path (canonical_loader) already ships clean canonical sources and
+        # stays ~9G — so restrict each variant source to the columns fusion
+        # actually needs (id/doi + provenance + the canonical target attrs),
+        # making the engine process slim records like baseline. attrs (the
+        # per-source trust_score) are preserved. Gated to papers, so the
+        # committed 4-domain fusion is unchanged.
+        if bundle.domain in ("papers", "papers-small"):
+            _keep = {
+                "id",
+                "_id",
+                "doi",
+                "cluster_id",
+                "source",
+                "_source",
+                "source_ids",
+                "_fusion_sources",
+            }
+            _keep |= set(self._roster.eval_specs)
+            _keep |= set(self._roster.attribute_types)
+            # ``datasets`` is a LIST of DataFrames (each carries its source name
+            # + trust in ``df.attrs`` — dataset_name/trust_score), not a dict.
+            # Slim each and copy attrs back (indexing drops .attrs).
+            _slim: list[pd.DataFrame] = []
+            for _df in datasets:
+                _cols = [c for c in _df.columns if c in _keep]
+                _sd = _df[_cols].copy()
+                _sd.attrs = dict(_df.attrs)
+                _slim.append(_sd)
+            datasets = _slim
 
         # ---- Val-selection: pull from cache or run sweep -----------------
         canonical_domain = _canonical_domain(bundle.domain)
@@ -1008,7 +1070,7 @@ class C12FusionCommitteeRunner(CommitteeRunner):
                         "fusion_validation set."
                     )
                 val_gold_df = _apply_gold_aliases_and_lists(
-                    self._roster, bundle.fusion_validation
+                    self._roster, bundle.fusion_validation, bundle
                 )
                 val_entity_ids = {
                     str(v)
@@ -1039,6 +1101,11 @@ class C12FusionCommitteeRunner(CommitteeRunner):
         t0_total = time.monotonic()
 
         op_log_dir = _op_log_dir(bundle.domain, bundle.level)
+
+        # Memory (papers): keep_only_winner trackers. We retain the fused frame
+        # for only the running best-by-val member (see store block below).
+        _best_fused_name: str | None = None
+        _best_fused_val = float("-inf")
 
         for member in self._roster.members:
             t0 = time.monotonic()
@@ -1093,10 +1160,22 @@ class C12FusionCommitteeRunner(CommitteeRunner):
                 and not bundle.fusion_validation.empty
                 and not fused.empty
             ):
+                # DOI-keyed gold (papers) needs the doi->source_ids bridge (and
+                # its alias/list prep) for this val surface too, else it scores
+                # 0. id-keyed domains keep the RAW val gold here exactly as
+                # before — gating on gold_id_column=="doi" guarantees no change
+                # to committed companies/games/music/products val metrics.
+                val_gold_for_scoring = (
+                    _apply_gold_aliases_and_lists(
+                        self._roster, bundle.fusion_validation, bundle
+                    )
+                    if self._roster.gold_id_column == "doi"
+                    else bundle.fusion_validation
+                )
                 try:
                     val_metrics = score_fusion(
                         fused_df=fused,
-                        gold_df=bundle.fusion_validation,
+                        gold_df=val_gold_for_scoring,
                         eval_specs=self._roster.eval_specs,
                         eval_params=self._roster.eval_params,
                         fused_id_column=self._roster.fused_id_column,
@@ -1127,6 +1206,31 @@ class C12FusionCommitteeRunner(CommitteeRunner):
                 "native_types": sorted(_NATIVE_TYPES_BY_MEMBER[member.name]),
             }
 
+            # Memory (papers): retaining every member's full fused frame across
+            # the ~50 attribute×strategy members blows past 256/512G — each frame
+            # carries ~30 object-dtype text columns incl huge raw text
+            # (abstract_text, raw author/keyword lists) that neither fusion
+            # scoring nor the e2e panel use. Slim each RETAINED frame to the
+            # columns scoring needs (id/doi/source_ids/_fusion_sources + the
+            # target attributes) AFTER test+val scoring above consumed the full
+            # frame. Gated to papers so the committed 4-domain fusion outputs are
+            # byte-identical.
+            if bundle.domain in ("papers", "papers-small") and not fused.empty:
+                _keep = {
+                    "id",
+                    "_id",
+                    "doi",
+                    "cluster_id",
+                    "source_ids",
+                    "_fusion_sources",
+                    "_source",
+                    "source",
+                }
+                _keep |= set(self._roster.eval_specs)
+                _keep |= set(self._roster.attribute_types)
+                _cols = [c for c in fused.columns if c in _keep]
+                fused = fused[_cols].copy()
+
             per_member[member.name] = MemberResult(
                 name=member.name,
                 predictions=fused,
@@ -1134,6 +1238,27 @@ class C12FusionCommitteeRunner(CommitteeRunner):
                 runtime_s=elapsed,
                 notes=notes,
             )
+
+            # Memory (papers): keep_only_winner. Even after the per-frame slim
+            # above, retaining all ~50 attribute×strategy fused frames at once
+            # OOMs past 256/512G. stage_runners selects the fusion winner by val
+            # macro_accuracy and treats empty predictions as val 0, so only the
+            # single best-by-val frame must survive. Stream-drop every non-best
+            # frame's predictions, bounding peak retention to ~one frame. The
+            # per-member metrics (incl. macro_accuracy/_val used by aggregation)
+            # are scalars and are always kept. Gated to papers so the committed
+            # 4-domain fusion outputs are unchanged.
+            if bundle.domain in ("papers", "papers-small"):
+                _v = metrics.get(
+                    "macro_accuracy_val", metrics.get("macro_accuracy", 0.0)
+                )
+                if _best_fused_name is None or _v > _best_fused_val:
+                    if _best_fused_name is not None:
+                        per_member[_best_fused_name].predictions = pd.DataFrame()
+                    _best_fused_name = member.name
+                    _best_fused_val = float(_v)
+                else:
+                    per_member[member.name].predictions = pd.DataFrame()
 
         total_runtime = time.monotonic() - t0_total
 

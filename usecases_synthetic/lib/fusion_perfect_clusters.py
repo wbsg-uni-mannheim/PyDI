@@ -37,6 +37,7 @@ gold").
 from __future__ import annotations
 
 import logging
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -90,6 +91,43 @@ def _transitive_closure(seed: str, partners: dict[str, set[str]]) -> set[str]:
 
 
 # ---------------------------------------------------------------------------
+# DOI-keyed fusion gold (papers): map gold DOIs to source-record anchors
+# ---------------------------------------------------------------------------
+
+_DOI_PREFIX_RE = re.compile(r"^(https?://)?(dx\.)?doi\.org/", re.IGNORECASE)
+
+
+def _normalize_doi(value: object) -> str | None:
+    """Lowercase + prefix-strip a DOI; ``None`` for empty/NaN. Mirrors
+    ``build_pool_papers._normalize_doi`` so the gold DOI and the source DOI
+    column normalise identically before matching."""
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in ("none", "nan"):
+        return None
+    text = _DOI_PREFIX_RE.sub("", text)
+    return text.lower() or None
+
+
+def _doi_to_record_ids(bundle: VariantBundle) -> dict[str, list[str]]:
+    """Return ``{normalized_doi: [source_record_id, ...]}`` across all sources.
+
+    Used for the papers fusion gold, which is keyed by DOI rather than a
+    per-record ``id``: a DOI's source records are exactly its fusion cluster
+    (the pool is built from DOI-exact matches)."""
+    out: dict[str, list[str]] = {}
+    for df in bundle.sources.values():
+        if "doi" not in df.columns or "id" not in df.columns:
+            continue
+        for rid, doi in zip(df["id"].astype(str), df["doi"], strict=False):
+            nd = _normalize_doi(doi)
+            if nd is not None:
+                out.setdefault(nd, []).append(rid)
+    return out
+
+
+# ---------------------------------------------------------------------------
 # Public surface
 # ---------------------------------------------------------------------------
 
@@ -105,15 +143,42 @@ def build_perfect_clusters(domain: str, bundle: VariantBundle) -> dict[str, set[
     if bundle.fusion_gold is None or bundle.fusion_gold.empty:
         return {}
     partners = _partner_graph(domain)
+    fg = bundle.fusion_gold
     clusters: dict[str, set[str]] = {}
-    for entity_id in bundle.fusion_gold["id"].astype(str):
-        eid = entity_id.strip()
-        if not eid:
-            continue
-        cluster = _transitive_closure(eid, partners)
-        if not cluster:
-            cluster = {eid}
-        clusters[eid] = cluster
+    if "id" in fg.columns:
+        # Standard domains: each fusion-gold entity ID is itself a source-record
+        # ID and an anchor node in the pool partner graph.
+        for entity_id in fg["id"].astype(str):
+            eid = entity_id.strip()
+            if not eid:
+                continue
+            cluster = _transitive_closure(eid, partners)
+            if not cluster:
+                cluster = {eid}
+            clusters[eid] = cluster
+    elif "doi" in fg.columns:
+        # Papers: the fusion gold is keyed by DOI (no per-record ``id``). The
+        # pool is built from DOI-exact matches, so a DOI's source records ARE
+        # its cluster. Map each gold DOI to its source records and seed the
+        # closure from them; key the cluster by the normalized DOI (the fusion
+        # eval joins on DOI).
+        doi_to_records = _doi_to_record_ids(bundle)
+        for raw_doi in fg["doi"].astype(str):
+            nd = _normalize_doi(raw_doi)
+            if nd is None:
+                continue
+            anchors = doi_to_records.get(nd, [])
+            if not anchors:
+                continue
+            cluster: set[str] = set()
+            for rid in anchors:
+                cluster |= _transitive_closure(rid, partners)
+            clusters[nd] = cluster or set(anchors)
+    else:
+        raise KeyError(
+            f"fusion_gold for domain {domain!r} has neither an 'id' nor a 'doi' "
+            f"column to key clusters on; columns={list(fg.columns)}"
+        )
     return clusters
 
 
