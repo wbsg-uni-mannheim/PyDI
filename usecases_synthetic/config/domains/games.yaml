@@ -34,15 +34,9 @@ source_pairs:
   # source_pairs declaration would yield ``Original EM split missing``
   # warnings and zero-sized regen.
 
-# Fusion val/test split. The workflow notebook (and downstream pipeline)
-# now reads the larger 200-entity sets shipped at *_set_final.xml; the
-# smaller 100-line legacy files are retained on disk but no longer
-# canonical. Companies still uses the canonical names (no _final.xml on
-# disk); the *-small variants default to validation_set.xml/test_set.xml
-# via DomainConfig.fusion_files.
 fusion_files:
-  validation: validation_set_final.xml
-  test: test_set_final.xml
+  validation: validation_set.xml
+  test: test_set.xml
 
 # Canonical attributes drawn from input/schemamatching/target_schema.json
 # (Videogame Record). Class assignments follow the pattern used for

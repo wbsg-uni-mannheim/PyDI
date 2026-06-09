@@ -700,9 +700,17 @@ def _load_canonical_papers_fusion(
         raise FileNotFoundError(
             f"Canonical papers fusion test silver missing at {test_path}"
         )
-    test = pd.read_json(test_path, lines=True)
+    def _read_jsonl(path: Path) -> pd.DataFrame:
+        records = [
+            json.loads(line)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        return pd.DataFrame(records)
+
+    test = _read_jsonl(test_path)
     val_path = fusion_dir / "fusion_val.jsonl"
-    validation = pd.read_json(val_path, lines=True) if val_path.exists() else None
+    validation = _read_jsonl(val_path) if val_path.exists() else None
     return test, validation
 
 
