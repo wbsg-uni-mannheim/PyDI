@@ -1,0 +1,43 @@
+{
+  "stage": "em_blocking",
+  "winner": "sc_block",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9984848484848485,
+  "test_score": 0.9984848484848485,
+  "per_member_val": {
+    "embedding_blocker": 0.8891959104725062,
+    "sorted_neighbourhood_blocker": 0.9696601271069356,
+    "bm25_blocker": 0.942327530625403,
+    "sc_block": 0.9984848484848485
+  },
+  "per_member_test": {
+    "embedding_blocker": 0.8891959104725062,
+    "sorted_neighbourhood_blocker": 0.9696601271069356,
+    "bm25_blocker": 0.942327530625403,
+    "sc_block": 0.9984848484848485
+  },
+  "runtime_s": 4326.699749336112,
+  "notes": {
+    "per_pair_winner": {
+      "dblp_crossref": "sc_block",
+      "dblp_open_alex": "sc_block"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "embedding_blocker": 0.9996708439177275,
+      "sorted_neighbourhood_blocker": 0.9996665574094734,
+      "bm25_blocker": 0.9996708439177275,
+      "sc_block": 0.9996708439177275
+    },
+    "per_member_reduction_ratio_test": {
+      "embedding_blocker": 0.9996708439177275,
+      "sorted_neighbourhood_blocker": 0.9996665574094734,
+      "bm25_blocker": 0.9996708439177275,
+      "sc_block": 0.9996708439177275
+    }
+  },
+  "peak_memory_mb": 8520.2109375
+}

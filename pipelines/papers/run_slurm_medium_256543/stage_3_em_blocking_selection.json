@@ -1,0 +1,43 @@
+{
+  "stage": "em_blocking",
+  "winner": "sc_block",
+  "metric_key": "pair_completeness (>=0.97 floor; reduction_ratio tiebreak)",
+  "val_score": 0.9954954954954955,
+  "test_score": 0.9954954954954955,
+  "per_member_val": {
+    "embedding_blocker": 0.8888888888888888,
+    "sorted_neighbourhood_blocker": 0.960960960960961,
+    "bm25_blocker": 0.942942942942943,
+    "sc_block": 0.9954954954954955
+  },
+  "per_member_test": {
+    "embedding_blocker": 0.8888888888888888,
+    "sorted_neighbourhood_blocker": 0.960960960960961,
+    "bm25_blocker": 0.942942942942943,
+    "sc_block": 0.9954954954954955
+  },
+  "runtime_s": 25650.583460920025,
+  "notes": {
+    "per_pair_winner": {
+      "dblp_open_alex": "sc_block",
+      "dblp_crossref": "sc_block"
+    },
+    "selection_strategy": "composition (per-pair: pair_completeness >= 0.97, reduction_ratio tiebreak)",
+    "val_split_available": true,
+    "test_split_available": true,
+    "recall_floor": 0.97,
+    "per_member_reduction_ratio_val": {
+      "embedding_blocker": 0.9996707059912363,
+      "sorted_neighbourhood_blocker": 0.999666221487833,
+      "bm25_blocker": 0.9996707059912363,
+      "sc_block": 0.9996707059912363
+    },
+    "per_member_reduction_ratio_test": {
+      "embedding_blocker": 0.9996707059912363,
+      "sorted_neighbourhood_blocker": 0.999666221487833,
+      "bm25_blocker": 0.9996707059912363,
+      "sc_block": 0.9996707059912363
+    }
+  },
+  "peak_memory_mb": 8368.71875
+}

@@ -1,0 +1,121 @@
+seed: 42
+preprocess_text: normalize_text
+blocking_name_column: title
+members:
+- name: token_blocker
+  description: 'Token-set blocker on title (lexical). DISABLED for papers (2026-06-04):
+    TokenBlocker''s `_iter_batches` keeps a single cross-token `seen_pairs: set[(str,str)]`
+    (token_blocking.py:295) that never clears between tokens. Papers titles produce
+    2,183,600,065 token-block pair-frequencies (debug CSV) - dominated by 2-3 char
+    English words (''for''=499M, ''of''=370M, ''and''=331M, ''in''=181M, ''the''=98M)
+    that all pass min_token_len=2 without stopword filtering. The seen_pairs set bloats
+    to ~50-100M (str,str) tuples and the main thread livelocks inside CPython''s cycle-GC
+    (`set_traverse -> visit_decref` at 1632/1638 sample stack frames) - 96% CPU for
+    2h+ with zero forward progress. Other domains escape because their total token-block
+    pair-frequencies are 100-15000x smaller (music 4.6M, games 19.4M, companies 132k).
+    Re-enable only after token_blocking.py is patched (drop the cross-token dedup
+    or wrap materialize() in gc.disable()) AND a stopword filter is added.'
+  blocker:
+    class: TokenBlocker
+    module: PyDI.entitymatching.blocking.token_blocking
+    params:
+      column: title
+      min_token_len: 2
+  blocking_type: lexical
+  enabled_by_default: false
+- name: standard_blocker
+  description: 'Equality on name_first_20 (lexical). Papers titles need a wider prefix
+    than first-token (block "a" alone = 18k records) or first-5-chars (block "multi"
+    = 3069 records, "deep " = 1628). First-20-char prefix yields a manageable distribution:
+    top block "performance analysis" = 160 records, top-10 blocks contribute ~137k
+    pairs total (vs ~28M for first-5-chars). The 20-char window captures ~3 words
+    for most academic titles, giving strong-enough discrimination without sliding
+    into per-title uniqueness.'
+  blocker:
+    class: StandardBlocker
+    module: PyDI.entitymatching.blocking.standard
+    params:
+      'on':
+      - name_first_20
+  blocking_type: lexical
+  enabled_by_default: false
+- name: embedding_blocker
+  description: Dense ANN top-k; BAAI/bge-base-en-v1.5
+  blocker:
+    class: EmbeddingBlocker
+    module: PyDI.entitymatching.blocking.embedding
+    params:
+      text_cols:
+      - title
+      model: BAAI/bge-base-en-v1.5
+      top_k: 20
+      threshold: 0.3
+  blocking_type: embedding
+  enabled_by_default: true
+- name: sorted_neighbourhood_blocker
+  description: Sliding-window over name_norm (lexical)
+  blocker:
+    class: SortedNeighbourhoodBlocker
+    module: PyDI.entitymatching.blocking.sorted_neighbourhood
+    params:
+      key: name_norm
+      window: 20
+  blocking_type: lexical
+  enabled_by_default: true
+- name: bm25_blocker
+  description: BM25 over char n-grams (sparse)
+  blocker:
+    class: BM25Blocker
+    module: usecases_synthetic.lib.bm25_blocker
+    params:
+      text_cols:
+      - title
+      top_k: 20
+      tokenizer: char_ngram
+      ngram_range:
+      - 3
+      - 5
+      k1: 1.5
+      b: 0.75
+  blocking_type: sparse
+  enabled_by_default: true
+- name: sc_block
+  description: 'SupCon encoder + ANN retrieval (hybrid). RE-ENABLED for papers (2026-06-06):
+    the earlier disable (2026-06-04) was an MPS-encoder runtime pathology on the dblp
+    <-> open_alex pair (pair 2 ran 2h45m+ with no completion under MPS waitUntilCompleted).
+    The committee now trains + runs on the CUDA cluster, which removes that pathology
+    (re-enable condition (a): encoder off MPS -> CUDA), and top_k was lowered 100
+    -> 20 to bound the eval candidate set. Baseline + variant sc_block trained cleanly
+    on CUDA (val_pair_recall=1.0).'
+  blocker:
+    class: SCBlockBlocker
+    module: usecases_synthetic.lib.sc_block_blocker
+    params:
+      text_cols:
+      - title
+      - authors
+      - journal
+      - publication_year
+      - type
+      - volume
+      - issue
+      - first_page
+      - last_page
+      - referenced_works_count
+      - cited_by_count
+      top_k: 20
+      threshold: 0.0
+      checkpoint_path: pipelines/papers/checkpoints/em_blocking/sc_block/variant_easy/best
+  blocking_type: hybrid
+  enabled_by_default: true
+composition:
+  strategy: select_best
+  recall_floor: 0.97
+  tie_breaker: reduction_ratio
+required_axes:
+  blocking_type:
+  - lexical
+  - sparse
+  - embedding
+  - hybrid
+column_mapping: {}

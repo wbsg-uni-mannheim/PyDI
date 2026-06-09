@@ -851,10 +851,38 @@ def _compute_reference_free(
         if n_rows_largest_input
         else 0.0
     )
+    # Fusion ratio: share of output records that fuse >=2 source records
+    # (non-singleton clusters) -- a reference-free measure of how much
+    # cross-source integration actually took place. Read from the fused
+    # output's ``_fusion_sources`` provenance list; None when that column is
+    # absent (the panel cannot otherwise know cluster sizes here).
+    fusion_ratio: Optional[float] = None
+    if "_fusion_sources" in pipe_fused.columns and n_rows_output:
+        import ast as _ast
+
+        def _n_sources(value: Any) -> int:
+            if isinstance(value, (list, tuple, set)):
+                return len(value)
+            if isinstance(value, str):
+                try:
+                    parsed = _ast.literal_eval(value)
+                    return (
+                        len(parsed)
+                        if isinstance(parsed, (list, tuple, set))
+                        else 1
+                    )
+                except (ValueError, SyntaxError):
+                    return 1
+            return 0
+
+        n_multi = sum(1 for v in pipe_fused["_fusion_sources"] if _n_sources(v) >= 2)
+        fusion_ratio = n_multi / n_rows_output
+
     coverage_entity = {
         "n_rows_output": n_rows_output,
         "n_rows_largest_input": n_rows_largest_input,
         "row_gain_vs_largest_input": row_gain,
+        "fusion_ratio": fusion_ratio,
     }
 
     evaluable_columns = [
@@ -1203,10 +1231,20 @@ def _compute_against_reference(
         "n_fabricated": n_fabricated,
         "recovery_rate": recovery_rate,
     }
+    _density_deltas = [
+        v["delta"]
+        for v in density_delta.values()
+        if isinstance(v, dict) and v.get("delta") is not None
+    ]
     coverage_fact = {
         "per_column_drift_normalized": per_column_drift_normalized,
         "overall_drift": overall_drift,
         "density_delta_per_attribute": density_delta,
+        # Mean per-attribute density delta — the single aggregate the
+        # DI_Bench tab:e2e-detailed "Value-density Δ" row reports.
+        "value_density_delta_mean": (
+            float(np.mean(_density_deltas)) if _density_deltas else None
+        ),
     }
     coverage_source_based = {
         "same_source_collision_rate": source_composition["same_source_collision_rate"],
