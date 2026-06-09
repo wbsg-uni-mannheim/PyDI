@@ -83,6 +83,44 @@ if [ ! -f "${CONFIG}" ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Pipeline-isolated EM checkpoints (no committee-cache reuse).
+#
+# ditto_plm + sc_block are LOUDLY disabled by the pipeline when their YAML
+# default checkpoint_path sits under usecases_synthetic/cache/ and no override
+# is supplied. To honour "do not silently drop any breed members", we derive
+# the BoB-isolated checkpoints from DOMAIN + VARIANT (trained by
+# cluster/slurm/run_bob_em_train.sbatch into pipelines/<domain>/checkpoints/)
+# and ASSERT they exist before running — a missing checkpoint fails the job
+# loudly rather than letting the member be dropped. Explicit overrides set in
+# the environment win; SKIP_EM_CHECKPOINT_CHECK=1 bypasses the assertion.
+# ---------------------------------------------------------------------------
+case "${VARIANT}" in
+    baseline)          LEVELKEY="baseline" ;;
+    easy|medium|hard)  LEVELKEY="variant_${VARIANT}" ;;
+    *) echo "Unrecognized VARIANT: ${VARIANT}" >&2; exit 3 ;;
+esac
+DITTO_CHECKPOINT_OVERRIDE="${DITTO_CHECKPOINT_OVERRIDE:-pipelines/${DOMAIN}/checkpoints/em_matching/ditto/${LEVELKEY}/best}"
+SC_BLOCK_CHECKPOINT_OVERRIDE="${SC_BLOCK_CHECKPOINT_OVERRIDE:-pipelines/${DOMAIN}/checkpoints/em_blocking/sc_block/${LEVELKEY}/best}"
+
+if [ -z "${SKIP_EM_CHECKPOINT_CHECK:-}" ]; then
+    require_ckpt () {
+        # require_ckpt <member-label> <best-dir> <required-file>
+        local label="$1" dir="$2" must="$3"
+        if [ ! -e "${dir}/${must}" ]; then
+            echo "FATAL: ${label} checkpoint missing: ${dir}/${must}" >&2
+            echo "Refusing to run: a neural EM breed member would be dropped " \
+                 "(no silent dropping directive)." >&2
+            echo "Train the isolated checkpoints first:" >&2
+            echo "  DOMAIN=${DOMAIN} sbatch cluster/slurm/run_bob_em_train.sbatch" >&2
+            echo "(or set SKIP_EM_CHECKPOINT_CHECK=1 to bypass — drops the member)." >&2
+            exit 4
+        fi
+    }
+    require_ckpt "ditto_plm" "${DITTO_CHECKPOINT_OVERRIDE}" "model.pt"
+    require_ckpt "sc_block"  "${SC_BLOCK_CHECKPOINT_OVERRIDE}" "model.safetensors"
+fi
+
+# ---------------------------------------------------------------------------
 # Per-stage LLM toggles (defaults reflect the 2026-06-01 directive:
 # SM on, EM off, Fusion off). Env vars must be literal "true" / "false".
 # ---------------------------------------------------------------------------

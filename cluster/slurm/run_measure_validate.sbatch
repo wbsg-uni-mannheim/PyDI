@@ -121,17 +121,46 @@ python usecases_synthetic/scripts/measure_baseline.py \
     "${STAGES_FLAG[@]}"
 
 # ---------------------------------------------------------------------------
-# Phase 3 — per-variant validation (inherits the baseline scoring surface)
+# Phase 3 — per-variant validation (inherits the baseline scoring surface).
+#
+# Phase 1 above already wrote baseline_metrics.json — the ONLY thing the
+# per-level validations need. Each level writes its own
+# validation/<domain>/<level>/ dir (no output races), only READS the shared
+# fusion_committee_selection.json (written once in Phase 1), and uses
+# content-addressed (concurrent-safe) LLM prompt caches. So the levels are
+# independent and run in PARALLEL by default: this job fans them out as
+# separate one-GPU jobs via run_validate_level.sbatch and exits once they are
+# submitted (track them with `squeue -u $USER`). Set VALIDATE_PARALLEL=false to
+# keep them sequential inside this job instead (e.g. to cap concurrent OpenAI
+# load under WITH_LLM=true, since the parallel level jobs share one rate limit).
 # ---------------------------------------------------------------------------
-for level in ${LEVELS}; do
-    echo "==== [2/2] validate_variant domain=${DOMAIN} level=${level} ===="
-    python usecases_synthetic/scripts/validate_variant.py \
-        --domain "${DOMAIN}" \
-        --level "${level}" \
-        "${LLM_FLAG[@]}" \
-        "${STAGES_FLAG[@]}"
-done
+VALIDATE_PARALLEL="${VALIDATE_PARALLEL:-true}"
+VALIDATE_PARALLEL_LC="$(printf '%s' "${VALIDATE_PARALLEL}" | tr '[:upper:]' '[:lower:]')"
 
-echo "==== measure-validate DONE for ${DOMAIN} ===="
-echo "baseline   : usecases_synthetic/baselines/${DOMAIN}/baseline_metrics.json"
-echo "validation : usecases_synthetic/validation/${DOMAIN}/{${LEVELS// /,}}/"
+case "${VALIDATE_PARALLEL_LC}" in
+    true|1|yes|on)
+        echo "==== [2/2] validate_variant domain=${DOMAIN} levels='${LEVELS}' (PARALLEL fan-out) ===="
+        for level in ${LEVELS}; do
+            sbatch \
+                --export=ALL,DOMAIN="${DOMAIN}",LEVEL="${level}",WITH_LLM="${WITH_LLM}",STAGES="${STAGES:-}",PYDI_VENV="${PYDI_VENV}" \
+                cluster/slurm/run_validate_level.sbatch
+        done
+        echo "==== measure_baseline DONE + ${LEVELS// /,} validate jobs submitted (parallel) for ${DOMAIN} ===="
+        echo "baseline   : usecases_synthetic/baselines/${DOMAIN}/baseline_metrics.json"
+        echo "validation : track the per-level validate-level jobs with: squeue -u \$USER"
+        ;;
+    *)
+        echo "==== [2/2] validate_variant domain=${DOMAIN} levels='${LEVELS}' (SEQUENTIAL) ===="
+        for level in ${LEVELS}; do
+            echo "==== validate_variant domain=${DOMAIN} level=${level} ===="
+            python usecases_synthetic/scripts/validate_variant.py \
+                --domain "${DOMAIN}" \
+                --level "${level}" \
+                "${LLM_FLAG[@]}" \
+                "${STAGES_FLAG[@]}"
+        done
+        echo "==== measure-validate DONE for ${DOMAIN} ===="
+        echo "baseline   : usecases_synthetic/baselines/${DOMAIN}/baseline_metrics.json"
+        echo "validation : usecases_synthetic/validation/${DOMAIN}/{${LEVELS// /,}}/"
+        ;;
+esac

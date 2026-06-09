@@ -1,0 +1,858 @@
+{
+  "usecase": "papers",
+  "run_id": "",
+  "silver_source": "papers_workflow_minimal.ipynb",
+  "headline": {
+    "RF": {
+      "composite_score": 0.8727595375723053
+    },
+    "SR": {
+      "bcubed_f1": 0.9811670529047006,
+      "macro_accuracy": 0.9137648128409315,
+      "composite_score": 0.8076809053271653
+    },
+    "GR": {
+      "bcubed_f1": 1.0,
+      "macro_accuracy": 0.7259041631755939,
+      "composite_score": 0.6476205806827213
+    }
+  },
+  "coverage": {
+    "entity": {
+      "RF": {
+        "n_rows_output": 75314,
+        "n_rows_largest_input": 60749,
+        "row_gain_vs_largest_input": 0.23975703303758086
+      },
+      "SR": {
+        "n_reference": 56731,
+        "row_count_abs_diff": 18583,
+        "row_count_rel_diff": 0.3275634133013696,
+        "n_recovered": 52840,
+        "n_partial": 3891,
+        "n_lost": 0,
+        "n_fabricated": 18610,
+        "recovery_rate": 0.9314131603532461
+      },
+      "GR": {
+        "n_reference": 100,
+        "row_count_abs_diff": 75214,
+        "row_count_rel_diff": 752.14,
+        "n_recovered": 100,
+        "n_partial": 0,
+        "n_lost": 0,
+        "n_fabricated": 75214,
+        "recovery_rate": 1.0
+      }
+    },
+    "fact": {
+      "RF": {
+        "density_output": 0.8758743394322437,
+        "density_largest_input": 0.9022140282144562,
+        "density_gain": -0.02633968878221249
+      },
+      "SR": {
+        "per_column_drift_normalized": {
+          "first_page": 0.00016995110641550022,
+          "issue": 0.0010477707738025949,
+          "journal": 0.029043837327604925,
+          "last_page": 0.00016994785753628565,
+          "referenced_works_count": 0.0016476328484497267,
+          "title": 0.012039320371815312,
+          "type": 0.0023073512358236445,
+          "volume": 0.001990473232037104
+        },
+        "overall_drift": 0.006052035594185636,
+        "density_delta_per_attribute": {
+          "type": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "title": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9988315585415726,
+            "delta": -0.0011684414584274272
+          },
+          "authors": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9990572801869506,
+            "delta": -0.0009427198130493863
+          },
+          "publication_year": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "journal": {
+            "reference_density": 0.7956320177680634,
+            "pipe_density": 0.8095838755078737,
+            "delta": 0.013951857739810336
+          },
+          "volume": {
+            "reference_density": 0.7714829634591317,
+            "pipe_density": 0.789388427118464,
+            "delta": 0.01790546365933232
+          },
+          "issue": {
+            "reference_density": 0.4966949286985951,
+            "pipe_density": 0.4900018588841384,
+            "delta": -0.00669306981445672
+          },
+          "first_page": {
+            "reference_density": 0.9254199643933652,
+            "pipe_density": 0.8662400084977561,
+            "delta": -0.05917995589560909
+          },
+          "last_page": {
+            "reference_density": 0.9254023373464244,
+            "pipe_density": 0.8662532862416018,
+            "delta": -0.0591490511048226
+          },
+          "referenced_works_count": {
+            "reference_density": 0.989564788211031,
+            "pipe_density": 0.9393870993440795,
+            "delta": -0.05017768886695151
+          }
+        }
+      },
+      "GR": {
+        "per_column_drift_normalized": {
+          "first_page": 1.0,
+          "issue": 0.21323390294540326,
+          "journal": 0.25527379340598844,
+          "last_page": 1.0,
+          "referenced_works_count": 0.0264400896603719,
+          "title": 0.4907826372695034,
+          "type": 0.158965613345765,
+          "volume": 1.0
+        },
+        "overall_drift": 0.518087004578379,
+        "density_delta_per_attribute": {
+          "type": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "title": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9988315585415726,
+            "delta": -0.0011684414584274272
+          },
+          "authors": {
+            "reference_density": 1.0,
+            "pipe_density": 0.9990572801869506,
+            "delta": -0.0009427198130493863
+          },
+          "publication_year": {
+            "reference_density": 1.0,
+            "pipe_density": 1.0,
+            "delta": 0.0
+          },
+          "journal": {
+            "reference_density": 0.99,
+            "pipe_density": 0.8095838755078737,
+            "delta": -0.1804161244921263
+          },
+          "volume": {
+            "reference_density": 0.91,
+            "pipe_density": 0.789388427118464,
+            "delta": -0.12061157288153601
+          },
+          "issue": {
+            "reference_density": 0.78,
+            "pipe_density": 0.4900018588841384,
+            "delta": -0.28999814111586164
+          },
+          "first_page": {
+            "reference_density": 0.96,
+            "pipe_density": 0.8662400084977561,
+            "delta": -0.0937599915022439
+          },
+          "last_page": {
+            "reference_density": 0.94,
+            "pipe_density": 0.8662532862416018,
+            "delta": -0.07374671375839814
+          },
+          "referenced_works_count": {
+            "reference_density": 0.92,
+            "pipe_density": 0.9393870993440795,
+            "delta": 0.01938709934407945
+          }
+        }
+      }
+    },
+    "source_based": {
+      "RF": {},
+      "SR": {
+        "same_source_collision_rate": {
+          "reference": 0.0,
+          "pipe": 0.7438988767028707,
+          "delta": 0.7438988767028707,
+          "by_source": {
+            "crossref": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "dblp": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "open_alex": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "unknown": {
+              "reference": 0.0,
+              "pipe": 0.7438988767028707,
+              "delta": 0.7438988767028707
+            }
+          }
+        },
+        "source_mix_distribution_js": 1.0,
+        "per_source_coverage_rate": {
+          "crossref": {
+            "reference": 0.9124288307979764,
+            "pipe": 0.0,
+            "delta": -0.9124288307979764
+          },
+          "dblp": {
+            "reference": 1.0,
+            "pipe": 0.0,
+            "delta": -1.0
+          },
+          "open_alex": {
+            "reference": 0.9814916007121327,
+            "pipe": 0.0,
+            "delta": -0.9814916007121327
+          },
+          "unknown": {
+            "reference": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          }
+        },
+        "source_mix_distribution_reference": {
+          "crossref|dblp|open_alex": 0.8939204315101091,
+          "crossref|dblp": 0.018508399287867305,
+          "dblp|open_alex": 0.08757116920202358
+        },
+        "source_mix_distribution_pipe": {
+          "unknown": 1.0
+        }
+      },
+      "GR": {
+        "same_source_collision_rate": {
+          "reference": 0.0,
+          "pipe": 0.7438988767028707,
+          "delta": 0.7438988767028707,
+          "by_source": {
+            "crossref": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "dblp": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "open_alex": {
+              "reference": 0.0,
+              "pipe": 0.0,
+              "delta": 0.0
+            },
+            "unknown": {
+              "reference": 0.0,
+              "pipe": 0.7438988767028707,
+              "delta": 0.7438988767028707
+            }
+          }
+        },
+        "source_mix_distribution_js": 1.0,
+        "per_source_coverage_rate": {
+          "crossref": {
+            "reference": 1.0,
+            "pipe": 0.0,
+            "delta": -1.0
+          },
+          "dblp": {
+            "reference": 1.0,
+            "pipe": 0.0,
+            "delta": -1.0
+          },
+          "open_alex": {
+            "reference": 1.0,
+            "pipe": 0.0,
+            "delta": -1.0
+          },
+          "unknown": {
+            "reference": 0.0,
+            "pipe": 1.0,
+            "delta": 1.0
+          }
+        },
+        "source_mix_distribution_reference": {
+          "crossref|dblp|open_alex": 1.0
+        },
+        "source_mix_distribution_pipe": {
+          "unknown": 1.0
+        }
+      }
+    }
+  },
+  "consistency": {
+    "RF": {
+      "consistency_score": 0.9811230390356069,
+      "n_evaluated": 734970,
+      "n_consistent": 721096,
+      "n_inconsistent": 13874,
+      "per_column": {
+        "id": {
+          "consistency_score": null,
+          "n_evaluated": 0,
+          "n_consistent": 0,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": true,
+          "skipped": true,
+          "skip_reason": "identifier_column"
+        },
+        "doi": {
+          "consistency_score": 1.0,
+          "n_evaluated": 75314,
+          "n_consistent": 75314,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "type": {
+          "consistency_score": 1.0,
+          "n_evaluated": 75314,
+          "n_consistent": 75314,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "title": {
+          "consistency_score": 1.0,
+          "n_evaluated": 75226,
+          "n_consistent": 75226,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "authors": {
+          "consistency_score": 1.0,
+          "n_evaluated": 75243,
+          "n_consistent": 75243,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "publication_year": {
+          "consistency_score": 0.9999867222561543,
+          "n_evaluated": 75314,
+          "n_consistent": 75313,
+          "n_inconsistent": 1,
+          "failure_counts": {
+            "maximum": 1
+          },
+          "excluded_from_dataset_score": false
+        },
+        "journal": {
+          "consistency_score": 1.0,
+          "n_evaluated": 60973,
+          "n_consistent": 60973,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "volume": {
+          "consistency_score": 1.0,
+          "n_evaluated": 59452,
+          "n_consistent": 59452,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        },
+        "issue": {
+          "consistency_score": 0.9999458053327552,
+          "n_evaluated": 36904,
+          "n_consistent": 36902,
+          "n_inconsistent": 2,
+          "failure_counts": {
+            "pattern": 2
+          },
+          "excluded_from_dataset_score": false
+        },
+        "first_page": {
+          "consistency_score": 0.8937155119558553,
+          "n_evaluated": 65240,
+          "n_consistent": 58306,
+          "n_inconsistent": 6934,
+          "failure_counts": {
+            "page_locator.numeric_range": 6917,
+            "pattern": 17
+          },
+          "excluded_from_dataset_score": false
+        },
+        "last_page": {
+          "consistency_score": 0.8936711577075765,
+          "n_evaluated": 65241,
+          "n_consistent": 58304,
+          "n_inconsistent": 6937,
+          "failure_counts": {
+            "page_locator.numeric_comparison": 2,
+            "page_locator.numeric_range": 6917,
+            "pattern": 18
+          },
+          "excluded_from_dataset_score": false
+        },
+        "referenced_works_count": {
+          "consistency_score": 1.0,
+          "n_evaluated": 70749,
+          "n_consistent": 70749,
+          "n_inconsistent": 0,
+          "failure_counts": {},
+          "excluded_from_dataset_score": false
+        }
+      },
+      "columns_missing_from_dataframe": [
+        "cited_by_count"
+      ],
+      "extra_columns_ignored": [
+        "_id",
+        "_fusion_sources",
+        "keywords"
+      ],
+      "n_empty_columns_excluded": 0
+    },
+    "_design_extensions_pending": "Broader consistency design (ontology-style disjointness checks, cross-attribute constraints) is still pending. The target-schema consistency_score (native + x-pydi constraints) is the first first-class consistency signal.",
+    "SR": {
+      "consistency_score_pipe": 0.9811230390356069,
+      "consistency_score_reference": 0.8131061179087875,
+      "delta": 0.16801692112681943,
+      "per_column": {
+        "authors": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "doi": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "first_page": {
+          "consistency_score_pipe": 0.8937155119558553,
+          "consistency_score_reference": 0.0,
+          "delta": 0.8937155119558553
+        },
+        "id": {
+          "consistency_score_pipe": null,
+          "consistency_score_reference": null,
+          "delta": null
+        },
+        "issue": {
+          "consistency_score_pipe": 0.9999458053327552,
+          "consistency_score_reference": 0.9999290226417773,
+          "delta": 1.67826909779345e-05
+        },
+        "journal": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "last_page": {
+          "consistency_score_pipe": 0.8936711577075765,
+          "consistency_score_reference": 0.0,
+          "delta": 0.8936711577075765
+        },
+        "publication_year": {
+          "consistency_score_pipe": 0.9999867222561543,
+          "consistency_score_reference": 0.9998237295305917,
+          "delta": 0.00016299272556252742
+        },
+        "referenced_works_count": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "title": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "type": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "volume": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        }
+      }
+    },
+    "GR": {
+      "consistency_score_pipe": 0.9811230390356069,
+      "consistency_score_reference": 0.8965819456617002,
+      "delta": 0.0845410933739067,
+      "per_column": {
+        "authors": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "cited_by_count": {
+          "consistency_score_pipe": null,
+          "consistency_score_reference": 1.0,
+          "delta": null
+        },
+        "doi": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "first_page": {
+          "consistency_score_pipe": 0.8937155119558553,
+          "consistency_score_reference": 0.9895833333333334,
+          "delta": -0.09586782137747807
+        },
+        "id": {
+          "consistency_score_pipe": null,
+          "consistency_score_reference": null,
+          "delta": null
+        },
+        "issue": {
+          "consistency_score_pipe": 0.9999458053327552,
+          "consistency_score_reference": 1.0,
+          "delta": -5.419466724476685e-05
+        },
+        "journal": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "last_page": {
+          "consistency_score_pipe": 0.8936711577075765,
+          "consistency_score_reference": 1.0,
+          "delta": -0.10632884229242345
+        },
+        "publication_year": {
+          "consistency_score_pipe": 0.9999867222561543,
+          "consistency_score_reference": 1.0,
+          "delta": -1.3277743845740986e-05
+        },
+        "referenced_works_count": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "title": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 1.0,
+          "delta": 0.0
+        },
+        "type": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 0.74,
+          "delta": 0.26
+        },
+        "volume": {
+          "consistency_score_pipe": 1.0,
+          "consistency_score_reference": 0.0,
+          "delta": 1.0
+        }
+      }
+    }
+  },
+  "correctness": {
+    "cluster": {
+      "SR": {
+        "bcubed": {
+          "precision": 0.992333384092178,
+          "recall": 0.9702492259276179,
+          "f1": 0.9811670529047006
+        },
+        "alignment": {
+          "mean_jaccard": 0.9681846491923873,
+          "matched_cluster_rate_at_threshold": 0.9884542842537589,
+          "matched_threshold": 0.5,
+          "size_match_rate": 0.9441398882445224,
+          "mean_size_delta": -0.05901535315788546,
+          "max_size_overshoot": 0
+        }
+      },
+      "GR": {
+        "bcubed": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "alignment": {
+          "mean_jaccard": 1.0,
+          "matched_cluster_rate_at_threshold": 1.0,
+          "matched_threshold": 0.5,
+          "size_match_rate": 1.0,
+          "mean_size_delta": 0.0,
+          "max_size_overshoot": 0
+        }
+      }
+    },
+    "fact": {
+      "SR": {
+        "per_attribute": {
+          "type": {
+            "accuracy": 0.9932312139747228,
+            "count": 56731,
+            "similarity_mean": 0.9944515479937032
+          },
+          "title": {
+            "accuracy": 0.7149706509668435,
+            "count": 56731,
+            "similarity_mean": 0.8551291009528167,
+            "pct_within_tolerance": 0.0,
+            "accuracy_similarity_gap": 0.14015844998597315,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "publication_year": {
+            "accuracy": 0.9706685938904656,
+            "count": 56731,
+            "similarity_mean": 0.9875420845745713
+          },
+          "journal": {
+            "accuracy": 0.8199038482841128,
+            "count": 45137,
+            "similarity_mean": 0.9117485103624884,
+            "pct_within_tolerance": 0.0,
+            "accuracy_similarity_gap": 0.0918446620783756,
+            "mismatch_fingerprint": "mixed"
+          },
+          "volume": {
+            "accuracy": 0.9686978773962117,
+            "count": 43767,
+            "similarity_mean": 0.9734667621774346,
+            "pct_within_tolerance": 0.0
+          },
+          "issue": {
+            "accuracy": 0.9592589963801548,
+            "count": 28178,
+            "similarity_mean": 0.9617920431001558,
+            "pct_within_tolerance": 0.0
+          },
+          "first_page": {
+            "accuracy": 0.9501714285714286,
+            "count": 52500,
+            "similarity_mean": 0.9502053968253968,
+            "mae": 9080059811.606413,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.951467225609756
+          },
+          "last_page": {
+            "accuracy": 0.9499038076915751,
+            "count": 52499,
+            "similarity_mean": 0.9500280957732529,
+            "mae": 9080237097.471386,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.9513319867372995
+          },
+          "referenced_works_count": {
+            "accuracy": 0.8970768984128681,
+            "count": 56139,
+            "similarity_mean": 0.8970768984128681,
+            "mae": 2.53605855693835,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.906802757441351
+          }
+        },
+        "macro_accuracy": 0.9137648128409315,
+        "micro_accuracy": 0.9110440598287739,
+        "conflict_only_accuracy": 0.7849255531832825,
+        "conflict_only_micro_accuracy": 0.8027062606556316,
+        "conflict_only_per_attribute": {
+          "type": {
+            "accuracy": 0.9762669962917182,
+            "count": 16180
+          },
+          "title": {
+            "accuracy": 0.7106261347906592,
+            "count": 55627
+          },
+          "referenced_works_count": {
+            "accuracy": 0.8888455115275338,
+            "count": 46107
+          },
+          "journal": {
+            "accuracy": 0.7827196095829636,
+            "count": 36064
+          },
+          "first_page": {
+            "accuracy": 0.7415790174410865,
+            "count": 7511
+          },
+          "last_page": {
+            "accuracy": 0.7407407407407407,
+            "count": 7533
+          },
+          "publication_year": {
+            "accuracy": 0.8556182212581345,
+            "count": 11525
+          },
+          "volume": {
+            "accuracy": 0.64896,
+            "count": 3125
+          },
+          "issue": {
+            "accuracy": 0.7189737470167065,
+            "count": 1676
+          }
+        },
+        "conflict_rate_pipe": 0.7436598773136469,
+        "conflict_rate_reference": 0.9996827131550652,
+        "conflict_rate_delta": -0.2560228358414183,
+        "fully_correct_cluster_rate": 0.5465089633533694,
+        "list_attribute_set_metrics": {
+          "authors": {
+            "set_f1": 0.6152015652817684,
+            "set_jaccard": 0.6152015652817684,
+            "count": 56731
+          }
+        }
+      },
+      "GR": {
+        "per_attribute": {
+          "type": {
+            "accuracy": 0.73,
+            "count": 100,
+            "similarity_mean": 0.8583115079365079
+          },
+          "title": {
+            "accuracy": 0.54,
+            "count": 100,
+            "similarity_mean": 0.8029512725377793,
+            "accuracy_similarity_gap": 0.2629512725377793,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "publication_year": {
+            "accuracy": 0.96,
+            "count": 100,
+            "similarity_mean": 0.9825
+          },
+          "journal": {
+            "accuracy": 0.8080808080808081,
+            "count": 99,
+            "similarity_mean": 0.9107489874597041,
+            "pct_within_tolerance": 0.0,
+            "accuracy_similarity_gap": 0.10266817937889605,
+            "mismatch_fingerprint": "normalization_difference_suspected"
+          },
+          "volume": {
+            "accuracy": 0.0,
+            "count": 91,
+            "similarity_mean": 0.4967032967032968
+          },
+          "issue": {
+            "accuracy": 1.0,
+            "count": 78,
+            "similarity_mean": 1.0
+          },
+          "first_page": {
+            "accuracy": 0.90625,
+            "count": 96,
+            "similarity_mean": 0.9097222222222223,
+            "mae": 0.0,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.9090909090909091
+          },
+          "last_page": {
+            "accuracy": 0.9148936170212766,
+            "count": 94,
+            "similarity_mean": 0.9184397163120568,
+            "mae": 0.125,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.9186046511627907
+          },
+          "referenced_works_count": {
+            "accuracy": 0.6739130434782609,
+            "count": 92,
+            "similarity_mean": 0.6739130434782609,
+            "mae": 3.0869565217391304,
+            "medae": 0.0,
+            "pct_within_tolerance": 0.8478260869565217
+          }
+        },
+        "macro_accuracy": 0.7259041631755939,
+        "micro_accuracy": 0.7247058823529412,
+        "conflict_only_accuracy": 0.806562161786575,
+        "conflict_only_micro_accuracy": 0.741424802110818,
+        "conflict_only_per_attribute": {
+          "referenced_works_count": {
+            "accuracy": 0.6629213483146067,
+            "count": 89
+          },
+          "title": {
+            "accuracy": 0.4943820224719101,
+            "count": 89
+          },
+          "journal": {
+            "accuracy": 0.8850574712643678,
+            "count": 87
+          },
+          "first_page": {
+            "accuracy": 0.8421052631578947,
+            "count": 19
+          },
+          "last_page": {
+            "accuracy": 0.8421052631578947,
+            "count": 19
+          },
+          "publication_year": {
+            "accuracy": 0.9259259259259259,
+            "count": 54
+          },
+          "type": {
+            "accuracy": 0.8,
+            "count": 15
+          },
+          "issue": {
+            "accuracy": 1.0,
+            "count": 7
+          }
+        },
+        "conflict_rate_pipe": 0.7436598773136469,
+        "conflict_rate_reference": 1.0,
+        "conflict_rate_delta": -0.2563401226863531,
+        "fully_correct_cluster_rate": 0.0,
+        "list_attribute_set_metrics": {
+          "authors": {
+            "set_f1": 0.0,
+            "set_jaccard": 0.0,
+            "count": 100
+          }
+        }
+      }
+    }
+  },
+  "task_step": {
+    "_placeholder": true,
+    "_design_intent": "Integrate per-stage metrics from PyDI.{schemamatching,entitymatching,fusion}.evaluation. Caller passes them in via the optional task_step_metrics kwarg; orchestrator packs them verbatim into this block."
+  },
+  "aggregated": {
+    "_placeholder": true,
+    "_design_intent": "Two-dimensional weighting (Quality \u00d7 Reference). Revisit after collecting first metric results across multiple pipelines. headline.<level>.composite_score carries a per-reference-level single-axis composite in the meantime."
+  },
+  "warnings": [
+    "Source-attribution and synthesis-rate metrics skipped against silver (silver.cell_provenance is None, cell_provenance_pipe was not passed).",
+    "Source-attribution and synthesis-rate metrics skipped against gold (gold.cell_provenance is None, cell_provenance_pipe was not passed).",
+    "correctness.cluster.SR.bcubed.f1 = 0.981 looks healthy but coverage.source_based.SR.same_source_collision_rate.pipe is 0.744. The pipeline is lumping multiple records from the same source into one cluster \u2014 likely EM false positives that BCubed averages over. Read coverage.source_based.SR.same_source_collision_rate.by_source for the offending sources.",
+    "Source coverage dropped by more than 15pp for 3 source(s); worst: dblp delta=-1.000. Likely cause: blocking-recall or matcher-recall regression on cross-source pairs for that source.",
+    "Possible normalization differences (accuracy \u226a similarity_mean) on text attributes: ['title']. Share the NormalizationSpec between silver builder and pipeline to rule out, or pass a semantic_value_similarity callable to confirm."
+  ],
+  "gold_source": "fusion_test.jsonl"
+}
