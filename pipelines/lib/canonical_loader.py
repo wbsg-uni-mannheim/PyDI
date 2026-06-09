@@ -774,3 +774,62 @@ def load_canonical_papers_bundle() -> VariantBundle:
         pooled_positives=None,
         variant_root=papers_root,
     )
+
+
+def load_canonical_papers_workflow_silver(split: str = "test") -> "Any":
+    """Build a :class:`SilverStandard` for papers from the DOI-keyed fusion
+    gold (``fusion_<split>.jsonl``) + the source records' DOIs.
+
+    Papers ships no membership/provenance silver (its fusion gold is flat JSONL
+    keyed by ``doi``), so the four-tier e2e panel skipped it. This reconstructs
+    the SilverStandard shape the panel needs:
+
+    * ``fused`` — one row per gold DOI (``cluster_id`` = normalized doi) with the
+      canonical fused attribute values from ``fusion_<split>.jsonl``.
+    * ``membership`` — ``(record_id, source, cluster_id)`` for every source
+      record whose DOI is in the gold. A DOI's source records are exactly its
+      fusion cluster (the pool is built from DOI-exact matches), mirroring
+      ``fusion_perfect_clusters._doi_to_record_ids``. Record ids use the same
+      ``<source>-<NNNNN>`` scheme as the pipeline's fused ``_fusion_sources``, so
+      the panel aligns pipe and gold clusters by shared record ids.
+    """
+    from PyDI.evaluation.silver_standard import SilverStandard
+
+    from usecases_synthetic.lib.fusion_perfect_clusters import _normalize_doi
+
+    papers_root = REPO_ROOT / "usecases" / "papers"
+    gold_path = papers_root / "input" / "fusion" / f"fusion_{split}.jsonl"
+    if not gold_path.exists():
+        raise FileNotFoundError(gold_path)
+    fused = pd.read_json(gold_path, lines=True)
+    fused["cluster_id"] = [_normalize_doi(d) for d in fused["doi"]]
+    fused = fused[fused["cluster_id"].notna()].reset_index(drop=True)
+    gold_dois = set(fused["cluster_id"])
+
+    # Membership: scan the canonical sources for records whose DOI is in the
+    # gold and group by normalized DOI (== cluster_id). source name is the
+    # dataset (dblp/crossref/open_alex), matching the pipe's
+    # _fusion_source_datasets; record_id is the <source>-<NNNNN> id.
+    sources = _load_canonical_papers_sources(papers_root)
+    rows: list[dict[str, Any]] = []
+    for name, df in sources.items():
+        if "doi" not in df.columns or "id" not in df.columns:
+            continue
+        for rid, doi in zip(df["id"].astype(str), df["doi"], strict=False):
+            nd = _normalize_doi(doi)
+            if nd is not None and nd in gold_dois:
+                rows.append({"record_id": rid, "source": name, "cluster_id": nd})
+    membership = (
+        pd.DataFrame(rows, columns=["record_id", "source", "cluster_id"])
+        .drop_duplicates(subset=["record_id", "source", "cluster_id"])
+        .reset_index(drop=True)
+    )
+
+    logger.info(
+        "Loaded canonical papers workflow silver (%s): %d clusters, %d "
+        "membership rows",
+        split,
+        len(fused),
+        len(membership),
+    )
+    return SilverStandard(fused=fused, membership=membership, cell_provenance=None)
