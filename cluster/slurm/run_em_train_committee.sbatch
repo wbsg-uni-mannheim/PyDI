@@ -125,11 +125,17 @@ if step_enabled ditto; then
     DITTO_TEST_FLAG=()
     [ -f "${PREP_DIR}/test.json.gz" ] && DITTO_TEST_FLAG=(--test-json-gz "${PREP_DIR}/test.json.gz")
     mkdir -p "${DITTO_OUT}"
+    # --config is REQUIRED: train.py's argparse default (configs/ditto/default_train.yaml)
+    # is a stale relative path that does not exist from the repo root. The real
+    # recipe lives under usecases_synthetic/config/ditto/ (same path run_em_training.sbatch
+    # and ditto/retrain_variant.py use). --domain still overrides the recipe's
+    # products-default `fields` with the per-domain wide committee scope.
     python usecases_synthetic/scripts/ditto/train.py \
         --domain "${DOMAIN}" \
         --train-json-gz "${PREP_DIR}/train.json.gz" \
         --val-json-gz "${PREP_DIR}/val.json.gz" \
         "${DITTO_TEST_FLAG[@]}" \
+        --config usecases_synthetic/config/ditto/default_train.yaml \
         --output-dir "${DITTO_OUT}"
     # Point <domain>/best at the run just produced (relative symlink, matching
     # the sc_block convention). LATEST_RUN holds the run dir path.
@@ -154,10 +160,19 @@ fi
 # baseline checkpoints.
 # ---------------------------------------------------------------------------
 if step_enabled variants; then
-    echo "==== [variants] retrain_variant_cascade domain=${DOMAIN} levels='${LEVELS}' (ditto + sc_block) ===="
+    # EVAL_TOP_K (optional): caps the sc_block per-epoch val-recall eval
+    # candidate set (top-k per query) — the dominant variant-train cost on
+    # large domains. Set EVAL_TOP_K=20 to speed papers. Unset -> cascade
+    # default (50).
+    VARIANT_EVAL_FLAG=()
+    if [ -n "${EVAL_TOP_K:-}" ]; then
+        VARIANT_EVAL_FLAG=(--eval-top-k "${EVAL_TOP_K}")
+    fi
+    echo "==== [variants] retrain_variant_cascade domain=${DOMAIN} levels='${LEVELS}' eval_top_k='${EVAL_TOP_K:-50}' (ditto + sc_block) ===="
     python usecases_synthetic/scripts/retrain_variant_cascade.py \
         --domain "${DOMAIN}" \
-        --levels ${LEVELS}
+        --levels ${LEVELS} \
+        "${VARIANT_EVAL_FLAG[@]}"
 fi
 
 echo "==== em-train-committee DONE for ${DOMAIN} ===="

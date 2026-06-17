@@ -544,6 +544,12 @@ def run_em(
     # test gold. Same scoring contract the committee uses internally,
     # without paying for blocker re-runs + auto-feature regeneration.
     test_per_member_f1: dict[str, float] = {}
+    # Per-member, per-source-pair test F1 — the disaggregated view of the
+    # ``test_per_member_f1`` averages. Persisted under
+    # ``matching_selection.notes["per_pair_test_f1"]`` so the paper's
+    # per-pair EM table reports the winning matcher's score on each source
+    # pair (no committee or cross-pair averaging).
+    test_per_member_per_pair: dict[str, dict[str, float]] = {}
     test_split_available = False
     for name, member in val_result.per_member.items():
         preds = member.predictions
@@ -551,6 +557,7 @@ def run_em(
             test_per_member_f1[name] = float("nan")
             continue
         pair_f1s: list[float] = []
+        per_pair_f1: dict[str, float] = {}
         # Variant runs score against the variant-aligned corner-filled test
         # gold; base runs against the standard test split (see
         # _em_test_gold_for). Iterate the canonical pair set so the right gold
@@ -565,12 +572,16 @@ def run_em(
             pair_preds = preds.get(pair_key)
             if pair_preds is None or pair_preds.empty:
                 pair_f1s.append(0.0)
+                per_pair_f1[pair_key] = 0.0
                 continue
             metrics = score_em_correspondences_closed_set(pair_preds, test_gold)
-            pair_f1s.append(float(metrics.get("f1", 0.0)))
+            f1 = float(metrics.get("f1", 0.0))
+            pair_f1s.append(f1)
+            per_pair_f1[pair_key] = f1
         test_per_member_f1[name] = (
             sum(pair_f1s) / len(pair_f1s) if pair_f1s else float("nan")
         )
+        test_per_member_per_pair[name] = per_pair_f1
 
     # --- Blocker selection summary (already chosen by the committee
     # composition; here we expose it for the per-stage record). ---
@@ -626,6 +637,7 @@ def run_em(
             "val_split_available": val_split_available,
             "test_split_available": test_split_available,
             "clustering_applied_within_em": clustering,
+            "per_pair_test_f1": test_per_member_per_pair,
         },
     )
 
