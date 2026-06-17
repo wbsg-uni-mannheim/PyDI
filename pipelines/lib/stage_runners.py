@@ -324,8 +324,7 @@ def _swap_em_gold(
             # surface, consistent with the entity-matching eval-target policy.
             pair_regen = regen.get(pair, {}) or {}
             gold = (pair_regen.get(split, {}) or {}).get("corner_filled")
-            # Games ships no val split (the committee derives a stratified
-            # train hold-out), so there is no corner-filled *val* gold; fall
+            # Some generated variants ship no corner-filled *val* gold; fall
             # back to the corner-filled *test* surface so blocking is still
             # scored on reachable gold rather than the unreachable plain split.
             if (gold is None or getattr(gold, "empty", True)) and split == "val":

@@ -468,9 +468,9 @@ def _stratified_holdout_val(
 ) -> pd.DataFrame:
     """Hold out a stratified val slice from a train gold frame.
 
-    Used for EM evaluation when a pair ships no ``*_val`` split (e.g. games,
-    train-only by design). The slice matches the trainer's own held-out val
-    (``ditto/_prep_games._split_train_val_stratified``: seed=42,
+    Used for EM evaluation when a legacy or generated pair ships no
+    ``*_val`` split. The slice matches the trainer's own held-out val
+    fallback (``ditto/_prep_games._split_train_val_stratified``: seed=42,
     val_fraction=0.2, stratified on ``label``), so the reported EM val F1 is a
     true held-out number rather than a skipped pair.
     """
@@ -546,10 +546,10 @@ def _load_labelled_split_from_bundle(
     )
     if match is not None:
         return read_em_gold_pair(*match)
-    # Fallback: no ``*_val`` gold for this pair (e.g. games, train-only by
-    # design). Derive the val surface from a stratified hold-out of the SAME
-    # train version — the exact slice the trainer early-stops on — so EM val
-    # scoring has a true held-out gold instead of skipping the pair.
+    # Fallback: no ``*_val`` gold for this pair. Derive the val surface from a
+    # stratified hold-out of the SAME train version — the exact slice the
+    # trainer early-stops on — so EM val scoring has a true held-out gold
+    # instead of skipping the pair.
     if split == "val":
         train_gold = _load_labelled_split_from_bundle(
             bundle, pair, "train", version=version
@@ -2059,7 +2059,7 @@ class EMBlockingCommitteeRunner(CommitteeRunner):
             )
             test_gold_corner = gold_df if _test_corner is None else _test_corner
             # VAL surface (user spec: score val AND test). Shared loader, so
-            # games (no shipped val) gets the stratified train hold-out.
+            # layouts with no shipped val get the stratified train hold-out.
             val_gold_corner = _load_labelled_split_from_bundle(
                 bundle, pair, "val", version="corner_filled"
             )
@@ -2684,9 +2684,9 @@ class EMMatchingCommitteeRunner(CommitteeRunner):
                         # matchers have no val/test distinction (no tunable
                         # hyperparameters) so their val == test and is filled
                         # from `primary` below (m_val stays None) — avoids
-                        # doubling LLM cost. games (no shipped val) is covered
-                        # because _load_labelled_split derives a stratified
-                        # hold-out from train.
+                        # doubling LLM cost. Layouts with no shipped val are
+                        # covered because _load_labelled_split derives a
+                        # stratified hold-out from train.
                         if (
                             m_spec.matching_type == "learned"
                             and val_gold_corner is not None

@@ -2,18 +2,18 @@
   "metric": "consistency",
   "metadata": {
     "usecase": "music",
-    "schema_path": "usecases/music/input/schemamatching/target_schema.json",
-    "fusion_output_path": "usecases/music/output/data_fusion/debug_fusion.jsonl",
+    "schema_path": "/Users/aaronsteiner/Documents/GitHub/PyDI/usecases/music/input/schemamatching/target_schema.json",
+    "fusion_output_path": "/Users/aaronsteiner/Documents/GitHub/PyDI/usecases/music/output/data_fusion/debug_fusion.jsonl",
     "rows_evaluated": 3624,
-    "fused_table_source": "reconstructed_from_fusion_debug_jsonl",
+    "fused_table_source": "music_workflow.fused",
     "identifier_columns_excluded": true,
     "open_taxonomy_policy": "non_exhaustive_membership_is_diagnostic_not_penalizing"
   },
   "result": {
-    "consistency_score": 0.9286581663630844,
+    "consistency_score": 0.9390179113539769,
     "n_evaluated": 26352,
-    "n_consistent": 24472,
-    "n_inconsistent": 1880,
+    "n_consistent": 24745,
+    "n_inconsistent": 1607,
     "per_column": {
       "id": {
         "consistency_score": null,
@@ -42,15 +42,11 @@
         "excluded_from_dataset_score": false
       },
       "release-date": {
-        "consistency_score": 0.9211666185388392,
+        "consistency_score": 1.0,
         "n_evaluated": 3463,
-        "n_consistent": 3190,
-        "n_inconsistent": 273,
-        "failure_counts": {
-          "date_range": 273,
-          "format.date": 273,
-          "pattern": 273
-        },
+        "n_consistent": 3463,
+        "n_inconsistent": 0,
+        "failure_counts": {},
         "excluded_from_dataset_score": false
       },
       "release-country": {
@@ -108,10 +104,13 @@
     },
     "columns_missing_from_dataframe": [],
     "extra_columns_ignored": [
-      "_fusion_group_id",
       "_id",
+      "_fusion_sources",
+      "_fusion_source_datasets",
       "mbrainz_id",
-      "name_longest_token"
+      "name_longest_token",
+      "_fusion_confidence",
+      "_fusion_metadata"
     ],
     "n_empty_columns_excluded": 0
   }

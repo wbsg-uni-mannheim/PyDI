@@ -1260,8 +1260,8 @@ def _write_splits_sheet(
     ``pos_rate``). Fusion gets its own group at the bottom with
     ``validation`` / ``test`` rows × ``entities`` metric.
 
-    Empty cells are meaningful: e.g. games has no val EM files at any
-    level, so the val rows render blank across all 4 levels.
+    Empty cells are meaningful: if a split has no file at any level, its rows
+    render blank across all 4 levels.
     """
     ws = wb.create_sheet("splits")
     headers = ["group", "split", "metric"] + list(LEVELS)
@@ -1284,9 +1284,8 @@ def _write_splits_sheet(
             cell.font = _GROUP_FONT
         row_idx += 1
 
-    # EM gold blocks. Splits with no file at any level (e.g. games has
-    # no EM val files anywhere) are skipped entirely so the sheet only
-    # shows things that actually exist on disk.
+    # EM gold blocks. Splits with no file at any level are skipped entirely so
+    # the sheet only shows things that actually exist on disk.
     metric_rows = ("total", "positive", "negative", "pos_rate")
     seen_pairs: set[str] = set()
     # Pre-compute which (pair, split) tuples have at least one populated

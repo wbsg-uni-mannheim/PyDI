@@ -280,7 +280,7 @@ GAMES_SPEC = DomainSpec(
     # metacritic_2_dbpedia_train.csv plus dbpedia_2_metacritic_test.csv);
     # all are deduplicated post-canonical_pair. Only the files that
     # actually ship are listed (corrected 2026-06-02): the
-    # metacritic<->dbpedia pair has train (metacritic-first) + test
+    # metacritic<->dbpedia pair has train/val (metacritic-first) + test
     # (dbpedia-first) — metacritic_2_dbpedia_test.csv was never shipped.
     # The metacritic<->sales pair was dropped (plan_s1_final §F11; no gold
     # on disk) — its positives come transitively via dbpedia, matching
@@ -290,17 +290,19 @@ GAMES_SPEC = DomainSpec(
             sources=("dbpedia", "metacritic"),
             gold_files=[
                 "metacritic_2_dbpedia_train.csv",
+                "metacritic_2_dbpedia_val.csv",
                 "dbpedia_2_metacritic_test.csv",
             ],
-            val_files=[],  # no _val split shipped; falls back to first file
+            val_files=["metacritic_2_dbpedia_val.csv"],
         ),
         PairSpec(
             sources=("dbpedia", "sales"),
             gold_files=[
                 "dbpedia_2_sales_train.csv",
+                "dbpedia_2_sales_val.csv",
                 "dbpedia_2_sales_test.csv",
             ],
-            val_files=[],
+            val_files=["dbpedia_2_sales_val.csv"],
         ),
     ],
     ditto_fields=[

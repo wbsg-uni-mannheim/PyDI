@@ -159,6 +159,38 @@ def test_other_domains_resolve_to_canonical_via_default_loader(
     assert bundle.variant_root == REPO_ROOT / "usecases" / domain
 
 
+def test_games_canonical_em_validation_splits_present_and_stratified() -> None:
+    bundle = load_pipeline_bundle("games", bundle_source="canonical")
+    expected = {
+        ("dbpedia", "sales"): {
+            "train": {"total": 474, "FALSE": 311, "TRUE": 163},
+            "val": {"total": 119, "FALSE": 78, "TRUE": 41},
+            "test": {"total": 402, "FALSE": 286, "TRUE": 116},
+        },
+        ("metacritic", "dbpedia"): {
+            "train": {"total": 460, "FALSE": 313, "TRUE": 147},
+            "val": {"total": 115, "FALSE": 78, "TRUE": 37},
+            "test": {"total": 337, "FALSE": 231, "TRUE": 106},
+        },
+    }
+    assert set(expected).issubset(bundle.em_splits)
+    for pair, split_expectations in expected.items():
+        splits = bundle.em_splits[pair]
+        assert {"train", "val", "test"}.issubset(splits)
+        assert "all" not in splits
+
+        for split, counts in split_expectations.items():
+            frame = splits[split]
+            label_counts = frame["label"].astype(str).str.upper().value_counts()
+            assert len(frame) == counts["total"]
+            assert int(label_counts.get("FALSE", 0)) == counts["FALSE"]
+            assert int(label_counts.get("TRUE", 0)) == counts["TRUE"]
+
+        train_pairs = set(map(tuple, splits["train"][["id1", "id2"]].values))
+        val_pairs = set(map(tuple, splits["val"][["id1", "id2"]].values))
+        assert train_pairs.isdisjoint(val_pairs)
+
+
 def test_load_pipeline_bundle_rejects_unknown_bundle_source() -> None:
     with pytest.raises(ValueError, match="Unknown bundle_source"):
         load_pipeline_bundle("products", bundle_source="bogus")

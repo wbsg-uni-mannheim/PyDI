@@ -119,11 +119,12 @@ python pipelines/scripts/compare_to_human_baseline.py \
 
 ## Games
 
-Notebook anchor source: metacritic. Caveat: the EM gold under
-`usecases/games/input/entitymatching/` ships only `_train` and `_test`
-splits (no `_val` or `_all`). Variant_loader serves `_test` as the
-blocking gold and trains the matchers on `_train`; any committee
-member that needs a held-out val surface re-thresholds against train.
+Notebook anchor source: metacritic. The EM gold under
+`usecases/games/input/entitymatching/` now ships dedicated stratified
+`_val` splits for the declared source pairs, alongside `_train` and
+`_test`. `_all` is still not authored for games; `variant_loader`
+continues to serve `_test` as the headline held-out EM gold and trains
+matchers on `_train`.
 
 ```bash
 python pipelines/scripts/run_best_of_breed.py \

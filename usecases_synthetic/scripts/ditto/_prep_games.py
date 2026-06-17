@@ -81,9 +81,9 @@ OUTPUT_DIR_PYDI_NORMALIZED = (
     SYNTHETIC_DIR / "output" / "ditto" / f"{DOMAIN}_pydi_normalized"
 )
 
-# 80/20 train/val split for the PyDI-train path (PyDI ships no on-disk
-# val for games — train CSV gets split here with a fixed seed so reruns
-# are deterministic).
+# Fallback 80/20 train/val split for PyDI pairs that do not ship an
+# on-disk validation file. Canonical games now has dedicated _val.csv files;
+# keep this for older/variant layouts that still only provide _train.csv.
 PYDI_VAL_FRACTION = 0.2
 PYDI_SPLIT_SEED = 42
 
@@ -192,6 +192,24 @@ def _load_pydi_train_for_pair(pair: "Pair") -> pd.DataFrame | None:
             }
         )
         return df
+    return None
+
+
+def _load_pydi_val_for_pair(pair: "Pair") -> pd.DataFrame | None:
+    """Load PyDI val CSV for ``pair``, normalizing id1/id2 direction."""
+    fwd = PYDI_EM_GOLD_DIR / f"{pair.src_left}_2_{pair.src_right}_val.csv"
+    rev = PYDI_EM_GOLD_DIR / f"{pair.src_right}_2_{pair.src_left}_val.csv"
+    if fwd.exists():
+        return _normalize_pair_df(read_em_gold_csv(fwd))
+    if rev.exists():
+        df_rev = _normalize_pair_df(read_em_gold_csv(rev))
+        return pd.DataFrame(
+            {
+                "id1": df_rev["id2"].values,
+                "id2": df_rev["id1"].values,
+                "label": df_rev["label"].values,
+            }
+        )
     return None
 
 
@@ -308,9 +326,10 @@ def main() -> None:
         help=(
             "Where train + val records come from. 'pydi' (default, "
             "committee-correct per plan_revision.md R6-3) loads "
-            "<pair>_train.csv from usecases/games/input/entitymatching/ "
-            "and holds out 20%% as val with seed=42 (PyDI has no "
-            "on-disk val for games). 'adi' is the legacy R2 setup that "
+            "<pair>_train.csv and <pair>_val.csv from "
+            "usecases/games/input/entitymatching/; if a val file is "
+            "missing, it holds out 20%% of train with seed=42. 'adi' is "
+            "the legacy R2 setup that "
             "trains on automatic-data-integration's labeled pool — "
             "kept only for pool-builder use; must NOT be wired to the "
             "committee."
@@ -383,12 +402,17 @@ def main() -> None:
         elif train_source == "pydi":
             pydi_train = _load_pydi_train_for_pair(pair)
             if pydi_train is not None:
-                # 80/20 train/val split (stratified by label, fixed seed).
-                train_df, val_df = _split_train_val_stratified(
-                    pydi_train,
-                    val_fraction=PYDI_VAL_FRACTION,
-                    seed=PYDI_SPLIT_SEED,
-                )
+                pydi_val = _load_pydi_val_for_pair(pair)
+                if pydi_val is not None:
+                    train_df, val_df = pydi_train, pydi_val
+                else:
+                    # Fallback: 80/20 train/val split (stratified by label,
+                    # fixed seed) for layouts that still lack _val.csv.
+                    train_df, val_df = _split_train_val_stratified(
+                        pydi_train,
+                        val_fraction=PYDI_VAL_FRACTION,
+                        seed=PYDI_SPLIT_SEED,
+                    )
 
         train_dropped = 0
         if train_df is not None:
