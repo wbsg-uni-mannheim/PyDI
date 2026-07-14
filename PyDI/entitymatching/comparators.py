@@ -101,6 +101,17 @@ class StringComparator(BaseComparator):
         except KeyError:
             logging.warning(f"Column '{self.column}' not found in one or both records")
             return 0.0
+        except TypeError as e:
+            # A TypeError here is almost always a CALLING-CONVENTION error
+            # (compare() takes record rows, e.g. pd.Series — passing raw
+            # values indexes a str and raises "string indices must be
+            # integers"). Swallowing it into 0.0 made the misuse look like
+            # a broken similarity function (identical strings scored 0.0),
+            # so it must raise, loudly and with the fix in the message.
+            raise TypeError(
+                f"StringComparator.compare() takes two RECORDS (e.g. pd.Series "
+                f"rows with a '{self.column}' entry), not raw values: {e}"
+            ) from e
         except Exception as e:
             logging.warning(f"Error in StringComparator: {e}")
             return 0.0
@@ -329,6 +340,17 @@ class NumericComparator(BaseComparator):
         except KeyError:
             logging.warning(f"Column '{self.column}' not found in one or both records")
             return 0.0
+        except TypeError as e:
+            # A TypeError here is almost always a CALLING-CONVENTION error
+            # (compare() takes record rows, e.g. pd.Series — passing raw
+            # values indexes a str and raises "string indices must be
+            # integers"). Swallowing it into 0.0 made the misuse look like
+            # a broken similarity function (identical strings scored 0.0),
+            # so it must raise, loudly and with the fix in the message.
+            raise TypeError(
+                f"NumericComparator.compare() takes two RECORDS (e.g. pd.Series "
+                f"rows with a '{self.column}' entry), not raw values: {e}"
+            ) from e
         except Exception as e:
             logging.warning(f"Error in NumericComparator: {e}")
             return 0.0
@@ -519,6 +541,17 @@ class DateComparator(BaseComparator):
         except KeyError:
             logging.warning(f"Column '{self.column}' not found in one or both records")
             return 0.0
+        except TypeError as e:
+            # A TypeError here is almost always a CALLING-CONVENTION error
+            # (compare() takes record rows, e.g. pd.Series — passing raw
+            # values indexes a str and raises "string indices must be
+            # integers"). Swallowing it into 0.0 made the misuse look like
+            # a broken similarity function (identical strings scored 0.0),
+            # so it must raise, loudly and with the fix in the message.
+            raise TypeError(
+                f"DateComparator.compare() takes two RECORDS (e.g. pd.Series "
+                f"rows with a '{self.column}' entry), not raw values: {e}"
+            ) from e
         except Exception as e:
             logging.warning(f"Error in DateComparator: {e}")
             return 0.0

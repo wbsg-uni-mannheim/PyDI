@@ -203,13 +203,29 @@ def build_record_groups_from_correspondences(
         return id_to_sort_key.get(record_id, (len(normalized_datasets), record_id))
 
     def dfs(node_id: str, component: Set[str]):
-        """Depth-first search to find connected component."""
-        if node_id in visited:
-            return
-        visited.add(node_id)
-        component.add(node_id)
-        for neighbor in sorted(graph.get(node_id, set()), key=sort_key):
-            dfs(neighbor, component)
+        """Iterative depth-first search to find connected component.
+
+        Deliberately NOT recursive: correspondence graphs from noisy
+        matchers can contain chain-shaped components thousands of records
+        deep, and a self-recursive walk exceeds Python's recursion limit
+        (observed: RecursionError on a ~3,000-record component). The
+        explicit stack pops nodes in the same sorted order the recursive
+        version visited them, so group contents and ordering are unchanged.
+        """
+        stack = [node_id]
+        while stack:
+            current = stack.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            component.add(current)
+            # reversed: pushing onto a LIFO stack, so reverse-sorted input
+            # pops in ascending sort order — identical traversal to the
+            # old recursion
+            for neighbor in sorted(graph.get(current, set()), key=sort_key,
+                                   reverse=True):
+                if neighbor not in visited:
+                    stack.append(neighbor)
 
     # Process all nodes that appear in correspondences
     all_correspondence_ids = set()
